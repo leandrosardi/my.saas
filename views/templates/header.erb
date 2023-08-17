@@ -12,8 +12,8 @@ end
 # get extension
 e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase && e.show_in_top_bar }.first
 if e.nil?
-	@service = DEFAULT_SERVICE 
-	e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase }.first
+	@service = nil 
+	e = nil
 end
 %>
 
@@ -52,7 +52,7 @@ end
 										<i class='icon-coffee'></i> <span id='service_name'><%=@service.to_s.capitalize.encode_html%> <i class="icon-chevron-down"></span></i>  
 									</a>
 									<ul class="dropdown-menu" style='width:250px;'>
-										<li><a href="/dashboard?service=<%=DEFAULT_SERVICE%>"><i class="icon-home"></i> Home</a></li>
+										<li><a href="/dashboard"><i class="icon-home"></i> Home</a></li>
 										<%
 										# getting full list of sections
 										sections.each { |section|

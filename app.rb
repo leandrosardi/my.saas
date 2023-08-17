@@ -139,7 +139,7 @@ set(:auth) do |*roles|
       redirect "/unavailable"      
     else
       @login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
-      @service = @login.user.preference('service', DEFAULT_SERVICE, params[:service])
+      @service = @login.user.preference('service', '', params[:service])
     end
   end
 end
@@ -489,8 +489,7 @@ get '/', :auth => true do
   redirect BlackStack::Funnel.url_after_login(@login, 'funnels.main')
 end
 get '/dashboard', :auth => true, :agent => /(.*)/ do
-  #erb :'views/dashboard', :layout => :'/views/layouts/core'
-  redirect BlackStack::Funnel.url_after_login(@login, 'funnels.main')
+  erb :'views/dashboard', :layout => :'/views/layouts/core'
 end
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
