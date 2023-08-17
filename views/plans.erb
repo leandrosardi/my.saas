@@ -1,0 +1,241 @@
+
+<%
+trial = !@login.user.account.disabled_trial
+err = params[:err]
+trial_url_1 = '/settings/filter_create_invoice?item_number=dfyl.1&n=1'
+trial_url_2 = '/settings/filter_create_invoice?item_number=dfyl.2&n=1'
+trial_url_3 = '/settings/filter_create_invoice?item_number=dfyl.3&n=1'
+%>
+
+<style>
+body {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+	background-color: #fff;
+}
+
+section.container {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+div.span12 {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+.top_banner {
+	background-image: url('/leads/images/guarda.png');
+	height: 16px;
+}
+
+section.header {
+	width: 100%;
+	text-align: center;
+}
+
+section.header h1 {
+	font-size: 4.5em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #555;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
+
+}
+
+section.header h2 {
+	font-size: 2.5em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #333;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+</style>
+
+<style>
+div.faq {
+	font-family: 'Open Sans', sans-serif;
+	font-size:20px;
+	padding-top:25px;
+	padding-botton:25px;
+	padding-left:25px;
+	border-bottom: 1px solid #999;
+}
+
+div.faq p {
+	padding-bottom:10px;
+	line-height: 1.5;
+	letter-spacing: 2px;
+}
+</style>
+
+<div class="top_banner"></div>
+
+<% 
+if !err.nil? 
+%>
+	<div class="alert alert-error">
+		<%=err.to_s.encode_html%>
+	</div>
+<% 
+end # err
+%>
+
+<section class="container">
+	<section class="row-fluid">
+		<div class='span12'>
+			<center>
+				<h1>Price & Plans</h1>
+				<h3>Emails Scraping + Verification + Personalization Insights.</h3>
+			</center>
+		</div>
+	</section>
+
+	<section class="row-fluid">
+		<div class='span2 plans'></div>
+		<div class='span3 plans'>
+			<div class="plan">
+				<h2 class="plan-title">
+					Robin
+				</h2>
+				<p class="plan-price">
+					$47
+					<span class="plan-unit">per month</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:left;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 2,611 <span class="plan-feature-unit">data credits.</span><br/>
+						<span class="plan-feature-name">1.8&#162; per VERIFIED email.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;'></i> Fanatical<span class="plan-feature-unit"> Support.</span><br/>
+						<span class="plan-feature-name">Get Support from Product Owners</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Verification <span class="plan-feature-unit"></span><br/>
+						<span class="plan-feature-name">Integrated Email Verification.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Insights <span class="plan-feature-unit"></span><br/>
+						<span class="plan-feature-name">Research and append information for personalize your outreach.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Roll Over <span class="plan-feature-unit">Credits</span><br/>
+						<span class="plan-feature-name">So long as you remain an active customer on a paid plan.</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<%
+				if trial
+				%>
+				<a href="<%=trial_url_1%>" class="plan-button">Start Trial</a>
+				<%
+				else # if trial
+				%>
+				<a href="<%=trial_url_1%>" class="plan-button">Go Robin</a>
+				<%
+				end # if trial
+				%>
+			</div>
+		</div>
+		<div class='span3 plans'>
+			<div class="plan plan-highlight">
+				<p class="plan-recommended">Most Popular</p>
+				<h2 class="plan-title">
+					Batman
+				</h2>
+				<p class="plan-price">
+					$97
+					<span class="plan-unit">per month</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:left;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 6,062 <span class="plan-feature-unit">data credits.</span><br/>
+						<span class="plan-feature-name">1.6&#162; per VERIFIED email.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;'></i> Fanatical<span class="plan-feature-unit"> Support.</span><br/>
+						<span class="plan-feature-name">Get Support from Product Owners</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Verification <span class="plan-feature-unit"></span><br/>
+						<span class="plan-feature-name">Integrated Email Verification.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Insights <span class="plan-feature-unit"></span><br/>
+						<span class="plan-feature-name">Research and append information for personalize your outreach.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Roll Over <span class="plan-feature-unit">Credits</span><br/>
+						<span class="plan-feature-name">So long as you remain an active customer on a paid plan.</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<%
+				if trial
+				%>
+				<a href="<%=trial_url_2%>" class="plan-button">Start Trial</a>
+				<%
+				else # if trial
+				%>
+				<a href="<%=trial_url_2%>" class="plan-button">Go Batman</a>
+				<%
+				end # if trial
+				%>
+				<!--
+				<a href="<%=BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')%>" class="btn btn-link btn-large">Continue Free</a>
+				-->
+			</div>
+		</div>
+		<div class='span3 plans'>
+			<div class="plan">
+				<h2 class="plan-title">
+					Hulk
+				</h2>
+				<p class="plan-price">
+					$197
+					<span class="plan-unit">per month</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:left;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 14,071 <span class="plan-feature-unit">data credits</span><br/>
+						<span class="plan-feature-name">1.4&#162; per VERIFIED email.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;'></i> Fanatical<span class="plan-feature-unit"> Support.</span><br/>
+						<span class="plan-feature-name">Get Support from Product Owners</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Verification <span class="plan-feature-unit"></span><br/>
+						<span class="plan-feature-name">Integrated Email Verification.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Insights <span class="plan-feature-unit"></span><br/>
+						<span class="plan-feature-name">Research and append information for personalize your outreach.</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Roll Over <span class="plan-feature-unit">Credits</span><br/>
+						<span class="plan-feature-name">So long as you remain an active customer on a paid plan.</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<%
+				if trial
+				%>
+				<a href="<%=trial_url_3%>" class="plan-button">Start Trial</a>
+				<%
+				else # if trial
+				%>
+				<a href="<%=trial_url_3%>" class="plan-button">Go Hulk</a>
+				<%
+				end # if trial
+				%>
+				<!--
+				<a href="<%=BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')%>" class="btn btn-link btn-large">Continue Free</a>
+				-->
+			</div>
+		</div>
+	</section>
+</section>
+

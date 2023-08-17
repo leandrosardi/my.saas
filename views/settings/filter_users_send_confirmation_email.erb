@@ -1,0 +1,8 @@
+<%
+begin
+	@login.user.send_confirmation_email(params)
+rescue => e
+	redirect "/settings/users?err="+CGI::escape(e.message)
+end
+redirect "/settings/users?msg=#{CGI::escape("Confirmation Email Sent!.")}"
+%>

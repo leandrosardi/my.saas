@@ -1,0 +1,49 @@
+<%
+begin
+	# if a glitch happens here, it will generates an infinite redirection.
+	# so I have to catch any exception here.
+	message = params[:backtrace].map { |e| e[1]  }.join("\n")
+	url = "/api1.3/bots/boterror.json"
+	#PROCESS.notifyError(nil, "Error 500: #{message}", nil, nil, url, File.basename(__FILE__))
+rescue => e
+	message = 'Fatal Error when uploading issue to boterrorlog: ' + e.to_html
+end
+%>
+
+<div class='top-right-logo-with-title'>
+	<a href='/'><img src="/apps/images/logo/logo-16-01.png" title="ConnectionSphere Logo"></a><br/>
+</div>
+
+<br/>
+<br/>
+<br/>
+	
+<section class='row-fluid'>
+	<div class='span6'>
+		<h1>Oops!<br/>Something went wrong...</h1>
+		<p><%=params[:message].to_s.encode_html%></p>
+
+		<a href="/dashboard" class="btn btn-primary btn-large"><i class="icon-long-arrow-left"></i> Go Home</a>
+		<br/>
+		<br/>
+
+		<b>Error Backtrace:</b><br/>
+		<br/>
+		<%
+		i = 0
+		n = params[:backtrace_size].to_i
+		while i < n
+			s = message # params[:backtrace][i.to_s].to_s
+			%><p><%=s.to_s.encode_html%></p><%
+			i += 1
+		end
+		%>
+	</div>
+	<div class='span6'>
+		<img src='apps/images/noavailable.png' alt='Page Not Found' />
+	</div>
+</section>
+
+<br/>
+<br/>
+<br/>

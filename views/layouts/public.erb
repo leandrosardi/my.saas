@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
+
+<html>
+	<!-- Message and error alerts -->
+	<%= ERB.new(File.read(File.expand_path("views/templates/head.public.erb"))).result(binding) %>
+	<!-- / Message and error alerts -->
+
+	<body>
+
+		<!-- Page content -->
+		<section class="row-fluid">
+
+			<!-- Content here -->
+			<%=yield%>
+			<!-- / Content here -->			
+		</section>
+
+		<!-- Page footer -->
+		<%= ERB.new(File.read(File.expand_path("views/templates/footer.public.erb"))).result(binding) %>
+		<!-- / Page footer -->
+
+
+
+		<!-- begin olark code --><script type="text/javascript" async>
+		;(function(o,l,a,r,k,y){if(o.olark)return;
+		r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
+		y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
+		y=o.olark=function(){k.s.push(arguments);k.t.push(+new Date)};
+		y.extend=function(i,j){y("extend",i,j)};
+		y.identify=function(i){y("identify",k.i=i)};
+		y.configure=function(i,j){y("configure",i,j);k.c[i]=j};
+		k=y._={s:[],t:[+new Date],c:{},l:a};
+		})(window,document,"static.olark.com/jsclient/loader.js");/* custom configuration goes here (www.olark.com/documentation) */olark.identify('3090-804-10-5034');</script><!-- end olark code -->
+		
+
+	</body>
+</html>

@@ -1,0 +1,184 @@
+<%
+begin
+  # get name chosen for the new campaign
+  name = @login.user.preference('leads.wizard.name', '', nil)
+  filename = name.gsub(' ', '-')
+  
+  # get the chosen template and script
+  text_spintax = params[:spintax]
+  id_template = params[:id_template]
+
+  # load the template
+  t = id_template.to_s.empty? ? nil : BlackStack::Emails::Template.where(:id=>id_template.to_guid).first
+
+  # format spintax from TEXT to HTML
+  spintax = ''
+  if id_template.to_s.empty?
+    text_spintax.split(/\n/).each { |line|
+      spintax += "<p>#{line.encode_html}</p>"
+    }
+  else
+    spintax = text_spintax
+  end # if 
+
+  # build the search from the filters in the wizard.
+  selected_positions = @login.user.preference('leads.wizard.job_positions', '', nil).split(/,/)
+  industry_name = @login.user.preference('leads.wizard.industry_name', '', nil)
+  h = {
+      'name' => "#{name} search",
+      'description' => "#{name} search.",
+      'id_user' => @login.user.id,
+      'saved' => true,
+      'no_of_results' => -1,
+      'no_of_companies' => -1,
+      'positions' => selected_positions.map { |position| { 'value' => position, 'positive' => true } },
+      'locations' => [],
+      'industries' => [],
+      'verified_only' => true
+  }
+  h['industries'] << { 'name' => industry_name.to_s, 'positive' => true } if industry_name.to_s.length > 0
+  s = BlackStack::DfyLeads::Search.new(h)
+  s.save
+
+  # setting the search preference
+  sid = @login.user.preference("leads.results.sid", '', s.id.to_guid)
+
+  # build dfyl order
+  o = BlackStack::DfyLeads::Order.new
+  o.id = guid
+  o.id_user = @login.user.id
+  o.create_time = now
+  o.name = "#{name} order"
+  o.status = true
+  o.type = BlackStack::DfyLeads::Order::TYPE_SNS # this is the only type of scraping we support so far
+  o.id_search = s.id
+  o.save
+
+  # targeting USA
+  sl = BlackStack::Leads::SearchLocation.new({
+    'positive'=>true,
+    'id_search'=>s.id,
+    'value'=>'United States'
+  }).save
+
+  # updating order URL
+  s.locations << sl
+  o.url = s.sales_navigator_url
+  o.save
+
+  # adding first page to the order
+  p = BlackStack::DfyLeads::Page.new
+  p.id = guid
+  p.create_time = now
+  p.id_order = o.id
+  p.number = 1
+  p.save
+
+  # ---------------------------------------------------------------
+  # build campaign 1: targeting results from the public database
+  # build the export
+  x = BlackStack::Leads::Export.new
+  x.id = guid
+  x.id_user = @login.user.id
+  x.id_search = s.id
+  x.create_time = now
+  x.allow_multiple_contacts_per_company = true
+  x.filename = "#{filename}.public-leads.export"
+  x.continious_restarting = false
+  x.number_of_records = 300 # TODO: parametrizar el numero 300
+  x.save
+
+  # build the campaign
+  y = BlackStack::Emails::Campaign.new
+  y.id = guid
+  y.id_user = @login.user.id
+  y.create_time = now
+  y.name = "#{name} campaign"
+  y.id_export = x.id
+  y.exclude_leads_reached_by_another_campaign = true
+  y.use_public_addresses = true
+  y.stop_followups_if_lead_replied = true
+  y.save
+
+  # build the followup
+  z = BlackStack::Emails::Followup.new
+  z.id = guid
+  z.id_user = @login.user.id
+  z.create_time = now
+  z.name = "#{name} followup"
+  z.id_campaign = y.id
+  z.subject = t.nil? ? "invite" : t.subject
+  z.body = spintax
+  z.type = BlackStack::Emails::Followup::TYPE_TEXT
+  z.status = BlackStack::Emails::Followup::STATUS_ON
+  z.sequence_number = 1
+  z.delay_days = 0
+  z.stat_subject_spintax_variations = 0
+  z.stat_body_spintax_variations = 0
+  z.save
+
+  # ---------------------------------------------------------------
+  # build campaign 2: targeting results of the dfyl order
+
+  # build the export from dfyl-order
+  i = {
+      'name' => "#{name} export #{s.name}",
+      'description' => "#{name} export from dfyl-order.",
+      'id_user' => @login.user.id,
+      'saved' => false,
+      'no_of_results' => -1,
+      'no_of_companies' => -1,
+      'id_order' => o.id,
+  }
+  q = BlackStack::Leads::Search.new(i)
+  q.save
+
+  # build the export
+  e = BlackStack::Leads::Export.new
+  e.id = guid
+  e.id_user = @login.user.id
+  e.id_search = q.id
+  e.create_time = now
+  e.allow_multiple_contacts_per_company = true
+  e.filename = "#{filename}.dfyl-order.export"
+  e.continious_restarting = true
+  e.save
+
+  # build the campaign
+  c = BlackStack::Emails::Campaign.new
+  c.id = guid
+  c.id_user = @login.user.id
+  c.create_time = now
+  c.name = "#{name} campaign"
+  c.id_export = e.id
+  c.exclude_leads_reached_by_another_campaign = true
+  c.use_public_addresses = true
+  c.stop_followups_if_lead_replied = true
+  c.save
+
+  # build the followup
+  f = BlackStack::Emails::Followup.new
+  f.id = guid
+  f.id_user = @login.user.id
+  f.create_time = now
+  f.name = "#{name} followup"
+  f.id_campaign = c.id
+  f.subject = t.nil? ? "invite" : t.subject
+  f.body = spintax
+  f.type = BlackStack::Emails::Followup::TYPE_TEXT
+  f.status = BlackStack::Emails::Followup::STATUS_ON
+  f.sequence_number = 1
+  f.delay_days = 0
+  f.stat_subject_spintax_variations = 0
+  f.stat_body_spintax_variations = 0
+  f.save
+
+  # clear
+  name = @login.user.preference('leads.wizard.name', '', '')
+
+  # redirect
+  redirect "/done?service=emails&sid=#{s.id}&oid=#{o.id}&eid=#{e.id}&cid=#{c.id}&xid=#{x.id}&yid=#{y.id}"
+rescue => e
+  redirect "/step3?err="+ CGI::escape(e.message)
+end
+%>

@@ -1,0 +1,85 @@
+<!-- Page footer
+================================================== -->
+<%= ERB.new(File.read(File.expand_path("./views/templates/footer.public.erb"))).result(binding) %>
+<!-- / Page footer -->
+
+<script type="text/javascript">	
+	//applyReadMore();
+
+	showWait('Loading... ');
+
+	// function to update the credits in the header. TODO: move this to the I2P module
+	// call ajax /ajax/i2p/get_credits.json, and update the credits in the header
+	function i2p_update_header(service) {
+		$.ajax({
+			url: '/ajax/i2p/get_credits.json',
+			type: 'POST',
+			data: {service: service},
+			dataType: 'json',
+			success: function(data) {
+				if (data.status == 'success') {
+					$('#credits').html(data.credits);
+				} else {
+					alert('Error Ocurrend when Updating the Credits in the Header: ' + data.status);
+				}
+			},
+			error: function(data) {
+				alert('Unkown Error Ocurrend when Updating the Credits in the Header: ' + data.status);
+			},
+		});
+	}
+
+	// overload the onload event in order to
+	// hide the "Loading..." message when the 
+	// onload event has done.
+	var old_onload = window.onload;
+	window.onload = function () {
+
+		// making it responsive
+		if ( $(window).width() < 485 ) {
+			// top bar responsive - hide service name if wdith < 485
+			$('header').find('#service_name').remove();
+			$('header').find('#services').width('16px');
+
+			// top bar responsive - hide the 'email support' label
+			$('header').find('#email_support').remove();
+
+			// top bar responsive - hide left bar if width < 485
+			$('#left-panel-content').remove();
+
+		} else {
+			$('header').find('#services').width('125px');
+		}
+
+		// call the original onload function
+		if (typeof old_onload == 'function') {
+			old_onload();
+		}
+
+		// setup smooth scrolling, fiexd top navbar, fixed left bar
+		//ajaxStatus.setup();
+
+		// enable select-all-text when focus on any input with class `select-all-on-focus`
+		enableSelectAllTextOnFocus();
+
+		// apply tooltips
+		applyToolTips();
+
+		// if user press ESC, then I close any popup
+		$('.popup').keydown(function(event) {
+			if (event.key == "Escape") { 
+				$('.popup').hide('fade');
+			};
+		});
+	
+		// if click on this button, then I close any popup
+		$('.popup .cancel-button').click(function() {
+			$('.popup').hide('fade');
+		});	
+
+		// hide the "Loading..." message
+		if (hide_loading_message_after_page_load == true) {
+			hideWait();
+		}
+	}
+</script>

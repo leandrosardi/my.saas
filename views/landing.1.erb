@@ -1,0 +1,134 @@
+<%
+email = session['email']
+err = params[:err]
+
+# map some params who are specific for for the filter
+redirect_on_success = session['redirect_on_success']
+
+# setup default values
+redirect_on_success = '/offer?service=emails' if redirect_on_success.to_s.size == 0
+%>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Free Leads - B2B Leads with Emails and Phone Numbers</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="/leads/css/bootstrap.min.css">
+		<style>
+			body {
+				padding-top: 0px;
+				padding-bottom: 40px;
+			}
+
+			.top_banner {
+				background-image: url('/leads/images/guarda.png');
+				height: 16px;
+			}
+
+			section.header {
+				width: 100%;
+				text-align: center;
+			}
+
+			section.header h1 {
+				font-size: 4.5em;
+				line-height: 1.2;
+				font-weight: bold;
+				color: #555;
+				margin-top: 25px;
+				margin-left: 25px;
+				margin-right: 25px;
+
+			}
+
+			section.header h2 {
+				font-size: 2.5em;
+				line-height: 1.2;
+				font-weight: bold;
+				color: #333;
+				margin-top: 15px;
+				margin-left: 15px;
+				margin-right: 15px;
+			}
+
+		</style>
+		<link rel="stylesheet" href="/leads/css/bootstrap-responsive.min.css">
+		<link rel="stylesheet" href="/leads/css/font-awesome.css">
+		<link rel="stylesheet" href="/leads/css/launch.css">
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<script>window.html5 || document.write('<script src="js/html5shiv.js"><\/script>')</script>
+		<![endif]-->
+	</head>
+
+	<body onload="document.getElementById('id_email').focus();document.getElementById('id_email').select();">
+
+		<div class="top_banner"></div>
+
+		<div class="container">
+			<section class="header">
+				<h1>Meet New Clients, Today</h1>
+				<h2>Get Instant Access to 200M+ B2B Contacts,<br>with Emails & Phone Numbers.</h2>
+				<!--
+				<h1>Meet New Clients, Today</h1>
+				<h2>
+					<u>Free, Done For You</u>,<br/>
+					Leads & Email Outreach System.
+				</h2>
+				-->
+			</section>
+
+			<section id="signup-sect">
+
+				<%
+				if err.to_s.size > 0
+				%>
+				<p style='color:red; font-size:28px;'><%=err%></p>
+				<%
+				else
+				%>
+				<p>Sign Up Below to Get Free Email Records.</p>
+				<!--
+				<p>Sign Up Below to Get Free Email Records, Outreach System & Training.</p>
+				-->
+				<%
+				end # if err.to_s.size > 0
+				%>
+
+				<div class="flex-container text-left">
+
+
+					<form class='fancy-form span5' action="/signup" method="post" style="margin-top: 15px;">
+						<input type="hidden" name="redirect_on_success" id="redirect_on_success" value="<%=redirect_on_success.to_s.encode_html%>" />
+						<input type="hidden" name="redirect_on_error" id="redirect_on_error" value="/landing" />
+						<input type="hidden" name="companyname" id="id_companyname" value="Unknown Company Name" />
+						<input type="hidden" name="username" id="id_username" value="Fellow Marketer"  />
+						<fieldset>
+							<div class="fields">
+								<input id="id_email" name='email' class="span5 input-block-level" style='text-align:center;' type="text" placeholder="your@email.com" tabindex=1 onfocus="this.select();" value='<%=email.to_s.encode_html%>' required>
+							</div>
+							<!--
+							<div class="fields">
+								<input id="id_password" name='password' class=" span5 input-block-level" type="password" placeholder="your password" tabindex=2 value='' required>
+							</div>
+							-->
+							<button class="btn btn-large btn-primary" type="submit" value='START' tabindex=3>SIGNUP</button>
+						</fieldset>
+					</form>
+				</div>
+			</section>
+
+			<br/>
+
+			<footer id="pagefooter">
+				<p class="pull-right" style="margin-left: 20px;">&copy;<%=Date.today.year.to_s%> <%=COMPANY_NAME%>. - <a class='btn btn-blue' href='/login'>Members Area</a></p>
+			</footer>
+		</div> <!-- /container -->
+
+	</body>
+</html>

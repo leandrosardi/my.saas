@@ -1,0 +1,586 @@
+<%
+# choose the theme
+theme = 'black-blue'
+%>
+
+<head>
+	<meta charset="ISO-8859-1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>
+		<%=APP_NAME%>
+	</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="icon" href="/core/images/logo/32x32-01.png">
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<!-- TODO: setup this as an account property -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-XHCG5LE744"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	
+	  gtag('config', 'G-XHCG5LE744');
+	</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+
+	<script src="/core/javascripts/1.3.0/adminflare-demo-init.min.js" type="text/javascript"></script>
+		
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
+	
+	<script type="text/javascript">
+		DEMO_CURRENT_THEME = "<%=theme%>";
+		
+		// Include Bootstrap stylesheet 
+		document.write('<link href="/core/css/' + DEMO_ADMINFLARE_VERSION + '/' + DEMO_CURRENT_THEME + '/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">');
+		// Include AdminFlare stylesheet 
+		document.write('<link href="/core/css/' + DEMO_ADMINFLARE_VERSION + '/' + DEMO_CURRENT_THEME + '/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">');
+		// Include AdminFlare page stylesheet 
+		document.write('<link href="/core/css/' + DEMO_ADMINFLARE_VERSION + '/pages.css" media="all" rel="stylesheet" type="text/css">');
+		// Include Style to Draw Wizards
+		document.write('<link href="/core/css/wizard.css" media="all" rel="stylesheet" type="text/css">');
+		// Include Style to Draw Plan Tables
+		document.write('<link href="/core/css/plantable.css" media="all" rel="stylesheet" type="text/css">');
+		// Include Style to Draw Landing Pages
+//		document.write('<link href="/core/css/landing.css" media="all" rel="stylesheet" type="text/css">');
+		// Include Awesomplete stylesheet
+		document.write('<link href="/core/css/awesomplete.css" media="all" rel="stylesheet" type="text/css">');
+		// Include FilterJS stylesheet
+		document.write('<link href="/core/css/filters.css" media="all" rel="stylesheet" type="text/css">');
+		// Include NavBar
+		document.write('<link href="/landing/css/ajax_status.css" media="all" rel="stylesheet" type="text/css" id="ajax-status-css">');
+
+
+		// Include CSS files of extensions
+		<%
+		# include the CSS files of the extensions
+		# reference: https://github.com/leandrosardi/mysaas/issues/33
+		BlackStack::Extensions.extensions.each { |e|
+			e.css_files.each { |f|
+				%>
+				document.write('<link href="<%=f.to_s.encode_html%>" media="all" rel="stylesheet" type="text/css">');
+				<%
+			}
+		}
+		%>
+	</script>
+
+	<script type="text/javascript">
+
+		// behaviour of pages when load
+		let hide_loading_message_after_page_load = true;
+
+		// 
+		const reLinkedInGroup = /^http(s)?:\/\/(www\.)?linkedin\.com\/groups\/(\d+)(\/(profile)?)?$/;
+		const reLinkedInGroupUrlCode = /(\d+)/		
+		function getLinkedInGroupUrlCode(url) {
+			if (!reLinkedInGroup.test(url)) {
+				return null;
+			}		
+			return url.match(reLinkedInGroupUrlCode)[0];
+		}
+
+		// apply tooltips CSS to any element with a title attribue
+		function applyToolTips() {
+			// $('[title]').tooltip();
+		}		
+
+		// enable select-all-text when focus on any input with class `select-all-on-focus`
+		function enableSelectAllTextOnFocus() {
+			$('.select-all-on-focus').focus(function () {
+				this.select();
+			});
+		}
+
+		// this function check/uncheck all the rows,
+		// then calls methods h['afterCallback'] in order.
+		function enableSelectRows(h) {
+			// update list of selected rows 
+			function updateSelectedIDs() {
+				a = $(".selected-ids");
+				i = 0;
+				a.val('');
+				$(".select-row:checked").each(function(index) {
+					if (i>0) { a.val( a.val() + ',' ); }
+					a.val( a.val() + $(this).data('id') );
+					i++;
+				});
+			}
+
+			// initialize selected rows, only if sessionPersistance is on.
+			if ( h['sessionPersistance'] == true ) {
+				$(".selected-ids").val().split(',').forEach(function(id) {
+					$('.select-row[data-id="'+id+'"]').prop( "checked", true );
+				})
+				// callback function for after you select/unselect rows
+				h['afterCallback']();
+			}
+
+			// select/unselect all rows.
+			$(".select-all-rows").click(function() {
+				b = $(this);
+				d = $(".select-row");
+				if ( b.prop('checked') ) {
+					d.prop( "checked", true );
+				} else {				
+					d.prop( "checked", false );
+				}
+				// update list of selected rows 
+				updateSelectedIDs();
+				// callback function for after you select/unselect rows
+				h['afterCallback']();
+			});
+
+			// select/unselect one signle row
+			$(".select-row").click(function() {
+				// update list of selected rows 
+				updateSelectedIDs();
+				// callback function for after you select/unselect rows
+				h['afterCallback']();
+			});
+		}
+
+		// 
+		function selectRow(id) {
+			$('.select-row[data-id="'+id+'"]').prop( "checked", true );
+		}
+
+		// 
+		function newHttpRequest()
+		{
+			var xmlhttp;
+			if (window.XMLHttpRequest)
+			{	
+			 	// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			}
+			else
+			{
+			 	// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			return xmlhttp ;
+		}
+	
+		// 
+		function newXmlParser(txt) {
+			if (window.DOMParser) {
+				parser = new DOMParser();
+				xmlDoc = parser.parseFromString(txt, "text/xml");
+			} else// Internet Explorer
+			{
+				xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.async = false;
+				xmlDoc.loadXML(txt);
+			}
+	
+			return xmlDoc
+		}
+	
+		// 
+		function addEvent(element, eventName, fn) {
+			if (element.addEventListener)
+				element.addEventListener(eventName, fn, false);
+			else if (element.attachEvent)
+				element.attachEvent('on' + eventName, fn);
+		}
+
+		function showWait(s) {
+			$("#wait").show();
+			$("#wait-caption").text(s);
+		}
+	
+		function hideWait(s) {
+			$("#wait").hide();
+		}
+
+		function semiTransparentLinks() {
+			// make all the .semi-transparent-link semi-transparent
+			$('.semi-transparent-link').css('opacity', '0.5');
+			// a .semi-transparent-link link gets opaciity when the mouse pointer is over
+			$('.semi-transparent-link').hover(function() {
+				$(this).css('opacity', '1');
+			}
+			, function() {
+				$(this).css('opacity', '0.5');
+			});
+		}
+
+		function formatLinks() {
+			// remove text decoration from all links
+			$('a').css('text-decoration', 'none');
+			// remove text decoration from all buttons with class .btn-link
+			$('.btn-link').css('text-decoration', 'none');
+		}
+	</script>
+
+	<script src="/core/javascripts/1.3.0/modernizr-jquery.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/1.3.0/bootstrap.min.js" type="text/javascript"></script>
+	<script src="https://cdn.tiny.cloud/1/b5fa1ntwjvzhtx7q7i0wux6nr7gdlsdixn3kn8cxr1buop6p/tinymce/6/tinymce.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/awesomplete.min.js" type="text/javascript"></script>
+	<!-- TODO: Getting javascript error when enable this line.
+	<script src="/core/javascripts/1.3.0/adminflare.min.js" type="text/javascript"></script>
+	-->
+	<script src="/landing/javascripts/ajax_status-1.0.1.min.js" type="text/javascript"></script>
+	<!-- Include JS files of extensions -->
+	<%
+	# include the CSS files of the extensions
+	# reference: https://github.com/leandrosardi/mysaas/issues/33
+	BlackStack::Extensions.extensions.each { |e|
+		e.js_files.each { |f|
+			%>
+			<%="<script src='#{f.to_s.encode_html}' type='text/javascript'></script>"%>
+			<%
+		}
+	}
+	%>
+	<style>
+	/*
+		// dark-mode
+		body { background-color: black; color: #fff; }
+		body.mysaas { background-color: #111; color: #fff; }
+		//body.default-layout .navbar { background-color: #000; }
+		section.row-fluid { background-color: #111; color: #fff; }
+		section.row-fluid div { background-color: #111; color: #fff; }
+		section.div { background-color: #000; color: #fff; }
+		table { background-color: #000; color: #fff; }
+		th { background-color: #000; color: #fff; }
+		tr { background-color: #000; color: #fff; }
+		td { background-color: #000; color: #fff; }
+		p { color: #fff; }
+		span { color: #fff; }
+		h1 { color: #fff; }
+		h2 { color: #fff; }
+		h3 { color: #fff; }
+		h4 { color: #fff; }
+		a { color: #ddf; }
+		a.hover { color: #ddf; }
+	*/
+	
+		// general styles	
+		a {
+			text-decoration: none;
+		}
+
+		button.btn-link {
+			text-decoration: none;
+		}
+
+		img.avatar {
+			border-radius: 50%;
+		}
+
+		/* 
+		* Dark mode
+		*
+		*/
+		/*
+		body {
+			background-color: black;
+			border-color: black transparent;
+			border: 1px solid black;
+			padding-top: 0px;
+			padding-left: 0px;
+			margin-top: 35px;
+			margin-left: 85px;
+		}
+
+		section {
+			background-color: black;
+			border-color: black transparent;
+			border: 1px solid black;
+			//padding: 0px;
+			//margin: 0px;
+		}
+
+		div {
+			background-color: black;
+			border-color: black transparent;
+			border: 1px solid black;
+			//padding: 0px;
+			//margin: 0px;
+		}
+
+		table {
+			background-color: black;
+			border-color: black transparent;
+			border: 1px solid black;
+			padding: 0px;
+			margin: 0px;
+		}
+
+		tbody {
+			background-color: black;
+			border-color: black transparent;
+			border: 1px solid black;
+			padding: 0px;
+			margin: 0px;
+		}
+
+		thead {
+			background-color: black;
+			border-color: black transparent;
+			border: 1px solid black;
+			padding: 0px;
+			margin: 0px;
+		}
+		*/
+
+		/* 
+		* Dark mode
+		*
+		*/
+		section.dark {
+			background-color: black;
+			color: white;
+		}
+	
+		section.dark input {
+			background-color: black;
+			color: white;
+		}
+	
+		section.dark table tbody tr { 
+			background-color: black;
+			border: 2px none black;
+		}
+	
+		section.dark table tbody tr:hover { 
+			background-color: rgb(30,30,30);
+			border: 2px solid yellow;
+		}
+
+		/* 
+		* Style for fullscreen dashboard
+		*
+		*/
+		section.fullscreen {
+			position:absolute;
+			top:0;
+			left:0;
+			width:100%;
+			height:100%;
+			z-index:999999999;
+		}
+
+		section.maximizable div.controls {
+			position:relative;
+			width: 100%;
+		}
+
+		section.maximizable div.controls button {
+			position:absolute;
+			top:-25px;
+			right:-25px;
+		}
+
+		/*
+			if the section is in fullscreen mode, then the header of the table will be sticky to the top even if the table is scrolled down.
+			reference: https://csslayout.io/sticky-table-headers/
+		*/
+		section.fullscreen table thead {
+			position: sticky;
+			top: 0;
+			z-index: 9999999;
+			opacity: 1.0;
+			background-color: black;
+		}
+
+		/* 
+		* Style for scripts shown in both the responses and pipeline edition screen.
+		*
+		*/
+		pre {
+			mergin: 0px; 
+			padding: 0px; 
+			border:0px; 
+			background-color: transparent; 
+			font-size: 14px; 
+			font-name: Arial; 
+			color: rgb(64, 97, 140);
+		}
+
+		span.filesample {
+			font-size: 12px; 
+			font-name: Arial; 
+			color: rgb(64, 97, 140);
+			border: 1px rgb(175,175,175) solid;
+			border-radius: 5px;
+			background-color: rgb(235,235,235);
+			margin: 5px;
+			padding: 5px;
+
+		}
+
+		pre.filesample {
+			font-size: 12px; 
+			font-name: Arial; 
+			color: rgb(64, 97, 140);
+			border: 1px rgb(175,175,175) solid;
+			border-radius: 5px;
+			background-color: rgb(235,235,235);
+			margin: 5px;
+			padding: 5px;
+
+		}
+
+		/*
+		* Waiting GIF
+		* 
+		*/
+		div.wait {
+			position:   absolute;
+			z-index:    1000;
+			top:        0;
+			left:       0;
+			height:     100%;
+			width:      100%;
+			background: rgba( 255, 255, 255, .8 ) 
+						url('http://i.stack.imgur.com/FhHRx.gif') 
+						50% 50% 
+						no-repeat;
+		}
+
+		/*
+		 * Popups
+		 * 
+		 */
+		div.popup {
+			position:fixed;
+			top:0;
+			left:0;
+			width:100%;
+			height:100%;
+			z-index:99999;
+			background-color:white;
+			opacity: 0.95;
+			overflow-y:scroll;
+			display:none;
+		}
+
+		div.popup div.top-right-buttons {
+			position:absolute;
+			top:17px;
+			right:17px;
+		}
+
+		div.popup div.area {
+			position:relative;
+			top:15%;
+			left:15%;
+			width:70%;
+			height:70%;
+		}
+
+		div.popup div.area h1 {
+			margin-bottom:34px;
+		}
+		
+		/*
+		 * 
+		 */
+		span.yellow-backgrownd {
+			background-color: yellow;
+			color: black;
+		}
+	
+		div.fixed-position {
+			position: fixed;
+		}
+	
+		.same-line {
+			display: inline-block;
+		}
+ 
+		.loading-container {
+			position: fixed;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: white;
+			opacity: 0.5;
+			text-align: center;
+			padding-top: 45vh;
+			display: none;
+			z-index: 9999;
+		}
+	
+		#loader {
+			border: 16px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 16px solid #3498db;
+			width: 120px;
+			height: 120px;
+			-webkit-animation: spin 2s linear infinite;
+			/* Safari */
+			animation: spin 2s linear infinite;
+		}
+
+		td.fix {
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
+		}
+
+		td.fix-75 {
+			width: 75px;
+			max-width: 75px;
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
+		}
+
+	</style>
+
+	<script type="text/javascript">	
+		// draw pagination function
+		// 
+		function drawPagination(o, current_page, total_pages)
+		{
+			url = '?number='; // url to get the next page	
+			
+			o.html("");
+			u = $("<ul></ul>");
+			o.append(u);
+		
+			if (current_page>1) {
+				li = $('<li><a href="'+url+(current_page-1).toString()+'">Prev</a></li>');
+			} else {
+				li = $('<li class="disabled"><a href="#">Prev</a></li>')
+			}
+			u.append(li);
+		
+			i=1
+			i_prev = 1
+			while (i<=total_pages) {
+				if (i==current_page) {
+					sClassActive="class='active'"
+				} else {
+					sClassActive=""
+				}
+				if ( i==1 || i==total_pages || (i>=current_page-2 && i<=current_page+2) ) {
+					if (i>i_prev+1) {
+						li = $('<li><span>...</span></li>')
+						u.append(li)
+					}
+					li = $('<li '+sClassActive+'><a href="'+url+i.toString()+'">'+i.toString()+'</a></li>')
+					u.append(li)
+					i_prev=i
+				}
+				i=i+1
+			}
+		
+			if (current_page<total_pages) {
+				i = $('<li><a href="./'+url+(current_page+1).toString()+'">Next</a></li>');
+			} else {
+				i = $('<li class="disabled"><a href="#">Next</a></li>')
+			}
+			u.append(i);
+		}	
+	</script>
+
+</head>

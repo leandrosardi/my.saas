@@ -1,0 +1,43 @@
+<% 
+nid = params[:nid]
+
+# validar que los parametros no esten vacios
+if (nid.to_s.size==0 || nid.to_s.size==0)
+	redirect "/login?err=#{CGI::escape("Notification ID is Required.")}"
+end
+
+# TODO: Validar que nid tenga el formato de un GUID
+
+# load objects
+notification = BlackStack::MySaaS::NotificationConfirm.where(:id=>nid).first
+
+# verifico si la notificacion existe
+if notification.nil?
+	redirect "/login?err=#{CGI::escape("Notification ID Not Found.")}"
+end
+
+# load objects
+user = BlackStack::MySaaS::User.where(:id=>notification.id_user).first
+
+# if the user is already verified, then redirect to the home page
+if user.verified
+	redirect "/login?msg=#{CGI::escape("Email Was Already Verified.")}"
+end
+
+# verifico que la notificacion no es anterior a NotificationConfirmation::LINK_TIMEOUT
+if notification.oldness > BlackStack::MySaaS::NotificationConfirm::LINK_TIMEOUT
+	redirect "/login?err=#{CGI::escape("Link Expired.")}"
+end
+
+# verifico que el usuario exista
+if user.nil?
+	redirect "/login?err=#{CGI::escape("User Not Found.")}"
+end
+
+# activar la cuenta
+user.verified = true
+user.save
+
+# redirecciono a la pagina de login
+redirect "/login?msg=#{CGI::escape("Email Verification Success!")}"
+%>

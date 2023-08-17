@@ -1,0 +1,85 @@
+<%
+service_name = 'leads'
+# get the service descriptor
+service = BlackStack::I2P::service_descriptor(service_name)
+# get all plans for this service, who are subscriptiosn and who are public
+plan = BlackStack::I2P::plans_descriptor.select { |h| h[:item_number] == 'leads.offer' }.first
+%>
+
+<section class="container">
+	<section class="row-fluid">
+		<div class='span12'>
+			<center>
+				<!--
+				<h1>---One-Time Offer---</h1>
+				-->
+				<p style='font-size:24px;'><b>DFY: Leads & Email Outreach System.</b></p>
+				<br/>
+			</center>
+		</div>
+	</section>
+
+	<section class="row-fluid">
+		<div class='span2'></div>
+		<div class='span4 plans'>
+			<div class="plan plan-highlight">
+				<p class="plan-recommended">One-Time Offer</p>
+				<h3 class="plan-title"><b><%=plan[:name].to_s.encode_html%></b></h3>
+				<p class="plan-price">
+					<span class="plan-feature-name" style='font-size:16px; text-decoration:line-through;'>$70</span> 
+					$<%=plan[:fee].to_i.to_label%>
+					<span class="plan-unit">per month</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature">
+						<%=plan[:trial_credits].to_i.to_label%> <span class="plan-feature-unit">email <%=service[:unit_name].to_s%></span><br/>
+						<span class="plan-feature-name">the first <%=plan[:trial_period]%></span>
+					</li>
+					<!--
+					<li class="plan-feature">&infin; <span class="plan-feature-unit">searches</span></li>
+					<li class="plan-feature">3 <span class="plan-feature-unit">filters</span><br/><span class="plan-feature-name"> position, industry, location</span></li>
+					-->
+					<li class="plan-feature"><span class="plan-feature-unit">Email Support</span></li>
+					<li class="plan-feature">
+						<span class="plan-feature-unit"><b>Bonus:</b> Email Outreach</span><br/>
+						<span class="plan-feature-name">Unlock our seminar to learn how to run cold email campaigns for free.</span>
+					</li>
+					<li class="plan-feature">
+						<span class="plan-feature-unit"><b>Bonus:</b> Proven Scripts</span><br/>
+						<span class="plan-feature-name">Unlock our seminar to learn how to 50% open rates and 1-2% book conversion.</span>
+					</li>
+				</ul>
+				<a href="/settings/filter_create_invoice?item_number=<%=plan[:item_number]%>&n=1" class="plan-button">Go <%=plan[:name].to_s.encode_html%></a>
+			</div>
+		</div>
+		<div class='span4 plans'>
+			<div class="plan">
+				<h3 class="plan-title"><b>Free</b></h3>
+				<p class="plan-price">$0<span class="plan-unit">forever</span></p>
+				<ul class="plan-features">
+					<li class="plan-feature"><%=service[:free_tier][:credits].to_i.to_label%> <span class="plan-feature-unit">email <%=service[:unit_name].to_s%></span><br/><span class="plan-feature-name">every <%=service[:free_tier][:period]%></span></li>
+					<!--
+					<li class="plan-feature">&infin; <span class="plan-feature-unit">searches</span></li>
+					<li class="plan-feature">3 <span class="plan-feature-unit">filters</span><br/><span class="plan-feature-name"> position, industry, location</span></li>
+					-->
+					<li class="plan-feature"><span class="plan-feature-unit"><strike>Email Support</strike></span></li>
+					<li class="plan-feature">
+						<strike>
+							<span class="plan-feature-unit"><b>Bonus:</b> Email Outreach</span><br/>
+						</strike>
+						<span class="plan-feature-name" style='color:rgb(255,120,120)'>Available for premium accounts only. Sorry.</span>
+					</li>
+					<li class="plan-feature">
+						<strike>
+							<span class="plan-feature-unit"><b>Bonus:</b> Proven Scripts</span><br/>
+						</strike>
+						<span class="plan-feature-name" style='color:rgb(255,120,120)'>Available for premium accounts only. Sorry.</span>
+					</li>
+				</ul>
+				<a href="<%=BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')%>" class="plan-button">Continue Free</a>
+			</div>
+		</div>
+		<div class='span2'></div>
+	</section>
+</section>
+

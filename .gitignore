@@ -1,0 +1,89 @@
+# ignore any output file
+*.out
+
+# ignore .sh files into the cli folder, because such a scripts are stored in the backup of proivate files.
+#cli/*.sh
+#!/cli/install.sh
+
+# ignore the .sandbox file.
+.sandbox
+
+# ignore ngrok command
+ngrok
+
+# ignore SSL certificates, except development certificated stored on /ssl/_desa/
+/ssl/prod.crt
+/ssl/prod.key
+/ssl/*/*
+!/ssl/_desa/*
+
+# ignore everthing inside extensions, extept the README.md file
+# reference: for more information, read #33
+/extensions/*
+!/extensions/README.md
+
+# igonore the backups of the configuration files
+config.*.rb
+!config.template.rb
+
+# ignore private key files for accessign servers via SSH
+*.ppk
+*.pem
+
+# ignore certificates for installing CockroachDB nodes
+ca.crt
+ca.key
+
+# picture files in temp folders
+/temp/*.jpg
+/temp/*.png
+/temp/*.gif
+/temp/*.bmp
+/cli/temp/*.jpg
+/cli/temp/*.png
+/cli/temp/*.gif
+/cli/temp/*.bmp
+/p/temp/*.jpg
+/p/temp/*.png
+/p/temp/*.gif
+/p/temp/*.bmp
+
+# ignore database files
+*.ldf
+*.mdf
+
+# ignore lock files
+*.lock
+
+# ignore log files
+*.log
+*.log.data
+
+# ignore .project file created by IDE
+.project
+
+# ignore .maintenance file used to turn the app unavailable
+.maintenance
+
+# ignore .notrial file used to switch between landing pages
+.notrial
+
+# production configuration files
+config.rb
+config.prod*.rb
+config.backup*.rb
+
+# backup files
+*.bak 
+
+# PID files
+*.pid
+
+# clients' storage folder
+/public/clients/*/
+
+# ignore google-api credentials
+google-api.json
+
+# ignore google-api access tokens
+*.token.yaml

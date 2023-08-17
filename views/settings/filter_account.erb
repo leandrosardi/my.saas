@@ -1,0 +1,38 @@
+<%
+account = @login.user.account
+redirect = params[:redirect]
+name = params[:name]
+id_timezone = params[:id_timezone]
+
+billing_address = params[:billing_address]
+billing_city = params[:billing_city]
+billing_state = params[:billing_state]
+billing_zipcode = params[:billing_zipcode]
+billing_country = params[:billing_country]
+
+# validate: name is required
+if name.to_s.size==0
+	redirect "/settings/account?err=#{CGI::escape("Company Name is Required.")}"
+end
+
+# validate: name cannot be longer then 100 characters
+if name.to_s.size>100
+	redirect "/settings/account?redirect=#{CGI::escape(redirect.to_s)}&err=#{CGI::escape("Company Name cannot be longer then 100 characters.")}"
+end
+
+# save
+account.name = name
+account.id_timezone = id_timezone
+account.billing_address = billing_address
+account.billing_city = billing_city
+account.billing_state = billing_state
+account.billing_zipcode = billing_zipcode
+account.billing_country = billing_country
+account.save
+
+if redirect.to_s.empty?
+	redirect "/settings/account?msg=#{CGI::escape("Information Updated.")}"
+else
+	redirect redirect
+end
+%>

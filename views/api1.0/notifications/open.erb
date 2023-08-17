@@ -1,0 +1,16 @@
+<%
+# map parameters
+nid = params[:nid]
+# get the notification
+n = BlackStack::MySaaS::Notification.where(:id => nid).first
+# if n is valid
+if !n.nil?
+    # create the object BlackStack::MySaaS::NotificationOpen and save it
+    o = BlackStack::MySaaS::NotificationOpen.new
+    o.id = guid
+    o.id_notification = n.id
+    o.create_time = now
+    o.id_user = n.id_user
+    o.save
+end
+%>

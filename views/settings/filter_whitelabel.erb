@@ -1,0 +1,60 @@
+<%
+begin
+    account = @login.user.account
+    whitelabel_domain = params[:whitelabel_domain]
+    whitelabel_name = params[:whitelabel_name]
+    whitelabel_email = params[:whitelabel_email]
+    whitelabel_postmark_id = nil
+
+    raise "Domain, Name and Email are required." if whitelabel_domain.to_s.empty?
+    raise "Domain, Name and Email are required." if whitelabel_name.to_s.empty?
+    raise "Domain, Name and Email are required." if whitelabel_email.to_s.empty?
+    raise "Postmark API key is not configured." if BlackStack::Emails.postmark_api_key.nil?
+
+    # create postmark client
+    apikey = BlackStack::Emails.postmark_api_key
+    client = Postmark::AccountApiClient.new(apikey, secure: true, http_ssl_version: :TLSv1_2)
+
+    # load the PostmarkSignature object
+    o = BlackStack::MySaaS::PostmarkSignature.where(:email => whitelabel_email).first
+
+    # if signature doesn't exists, create it and send
+    if o.nil?
+        # new object
+        o = BlackStack::MySaaS::PostmarkSignature.new
+        o.id = guid
+        o.name = whitelabel_name
+        o.email = whitelabel_email
+        o.email_verified = false
+
+        # submit to postmark
+        ret = client.create_sender(name: o.name, from_email: o.email)
+        h = JSON.parse(ret.to_json)
+        o.postmark_id = h[:id] 
+
+        # save
+        o.save
+    else
+        # validate: this signature is not assigned to another account
+        arr = BlackStack::MySaaS::Account.where(:id_postmark_signature=>o.id).all
+        raise "Email is already assigned to another account." unless arr.select { |acc| acc.id==account.id }.size == 0
+        # modify the object
+        o.name = whitelabel_name
+        # edit signature
+        client.update_sender(id, name: o.name)
+        # update record
+        o.save
+    end
+
+    # update account whitelabel domain and email
+    # save
+    account.whitelabel_domain = whitelabel_domain
+    account.id_postmark_signature = o.id
+    account.save
+
+    # redirect to settings page
+    redirect "/settings/whitelabel?msg=#{CGI::escape("Information Updated.")}"
+rescue => e
+    redirect "/settings/whitelabel?err=#{CGI::escape(e.message)}"
+end
+%>

@@ -1,0 +1,1 @@
+alter table "account" add column if not exists premium bool not null default false;

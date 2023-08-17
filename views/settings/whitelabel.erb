@@ -1,0 +1,37 @@
+<%
+user = @login.user
+account = user.account
+%>
+
+<div class='mynavbar mysticky'>
+<section class="row-fluid">	
+	<section class='span6'>
+		<%=nav2("Settings", '/settings/dashboard', 'Account Information')%>
+	</section>
+</section>
+</div>
+
+<section class="container box">
+	<form class="form-horizontal" action="filter_whitelabel" method="post">
+
+		<div class="control-group span12">
+			<h4>White Label <span class='badge badge-blue'>Beta</span></h4>
+			<label class="control-label" for="whitelabel_domain">White Label Domain</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="whitelabel_domain" id="whitelabel_domain" placeholder="Write your domain to host this product." value="<%=account.whitelabel_domain.to_s.encode_html%>">
+			</div>
+			<br/>
+			<label class="control-label" for="whitelabel_email">White Label Email</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="whitelabel_email" id="whitelabel_email" placeholder="Write your email address to use as the sender in the email notifications." value="<%=account.whitelabel_email.to_s.encode_html%>">
+			</div>
+			<br/>
+
+			<br/>
+			<div class="controls">
+				<button type="submit" id="update" class="btn btn-blue">Update</button>
+				<a id="cancel" class="btn btn-default" href='/settings'>Cancel</a>
+			</div>
+		</div>
+	</form>
+</section>

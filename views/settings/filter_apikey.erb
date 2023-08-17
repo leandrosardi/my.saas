@@ -1,0 +1,9 @@
+<%
+account = @login.user.account
+
+# save
+account.api_key = guid.to_guid
+account.save
+
+redirect "/settings/apikey?msg=#{CGI::escape("New API Key Created.")}"
+%>

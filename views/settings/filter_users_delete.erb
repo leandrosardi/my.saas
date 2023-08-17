@@ -1,0 +1,18 @@
+<%
+# map params key-values to session key-values 
+params_to_session('settings.users')
+
+# login
+begin
+	# guardar el ID de intento de l en una variable de sesion
+	@login.user.remove_users(params)
+rescue => e
+	# libero recursos
+	DB.disconnect
+	GC.start
+	# redirect
+	redirect "/settings/users?err="+CGI::escape(e.message)
+end
+
+redirect "/settings/users?msg=#{CGI::escape("User Deleted.")}"
+%>

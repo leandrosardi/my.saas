@@ -1,0 +1,18 @@
+<%
+return_message = {}
+refresh_token = @body['refresh_token']
+begin
+    # get the refresh token
+    ret = `curl --silent --location --request POST 'https://api.dropboxapi.com/oauth2/token' -u '#{DROPBOX_APP_KEY}:#{DROPBOX_APP_SECRET}' -d 'grant_type=refresh_token' -d 'refresh_token=#{refresh_token}'`
+    h = JSON.parse(ret)
+    if h.include? 'error'
+        raise h['error_description']
+    else
+        return_message[:status] = 'success'
+        return_message[:access_token] = h['access_token']
+    end
+rescue => e
+    return_message[:status] = e.to_s
+end
+return return_message.to_json
+%>

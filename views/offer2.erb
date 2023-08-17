@@ -1,0 +1,81 @@
+<%
+if @login.user.account.disabled_trial
+	redirect '/plans'
+end
+%>
+
+<section class="container">
+	<section class="row-fluid">
+		<div class='span12'>
+			<center>
+				<h2>
+					--- <u>One-Time Offer</u> ---
+					<br/>
+					Go Premium 85% OFF.
+				</h2>
+				<br/>
+			</center>
+		</div>
+	</section>
+
+	<section class="row-fluid">
+		<div class='span3'></div>
+		<div class='span6 plans'>
+			<div class="plan plan-highlight">
+				<p class="plan-recommended">One-Time Offer</p>
+				<h3 class="plan-title">
+					<b>--- 85% Off ---</b>
+				</h3>
+				<p class="plan-price">
+					<span class="plan-feature-name" style='font-size:16px; text-decoration:line-through;'>$47</span> 
+					$7
+					<span class="plan-unit">the first 15-Days.<br/>Then, $47 per month.</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:center;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 2,850 <span class="plan-feature-unit">leads/mo.</span><br/>
+						<span class="plan-feature-name">Scraping + Email Appending + Verification</span><br/>
+						<br/>
+						<!--
+						<i class='icon-ok' style='color:green;'></i> 2,850 <span class="plan-feature-unit">deliveries/mo.</span><br/>
+						<span class="plan-feature-name">Emails Delivery from Stable Addresses</span><br/>
+						<br/>
+						<i class='icon-ok' style='color:green;'></i> Fanatical Support<br/>
+						<span class="plan-feature-name">Get Support Directly from the Product Owner</span><br/>
+						<br/>
+						-->
+					</li>
+				</ul>
+				<a href="/settings/filter_create_invoice?item_number=leads.hulk.2&n=1" class="plan-button">Start Trial</a>
+				<a href="<%=BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')%>" class="btn btn-link btn-large">Continue Free</a>
+			</div>
+		</div>
+		<!--
+		<div class='span5 plans'>
+			<div class="plan">
+				<h3 class="plan-title"><b>Free</b></h3>
+				<p class="plan-price">
+					$0 
+					<span class="plan-unit">Life-Time<br/>-</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature">
+						<i class='icon-ok' style='color:green;'></i> 50 <span class="plan-feature-unit">leads/mo.</span><br/>
+						<span class="plan-feature-name">Scraping + Email Appending + Verification</span><br/>
+						<br/>
+						<i class='icon-remove' style='color:red;'></i> No <span class="plan-feature-unit">deliveries</span><br/>
+						<span class="plan-feature-name">-</span><br/>
+						<br/>
+						<i class='icon-remove' style='color:red;'></i> No Support<br/>
+						<span class="plan-feature-name">-</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<a href="<%=BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')%>" class="plan-button">Continue Free</a>
+			</div>
+		</div>
+		-->
+		<div class='span3'></div>
+	</section>
+</section>
+

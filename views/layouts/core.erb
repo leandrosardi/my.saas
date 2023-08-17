@@ -1,0 +1,80 @@
+<%
+# get parameters
+err = params[:err]
+msg = params[:msg]
+%>
+
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
+
+<!-- Message and error alerts -->
+<%= ERB.new(File.read(File.expand_path("views/templates/head.erb"))).result(binding) %>
+<!-- / Message and error alerts -->
+
+<body class="mysaas default-layout wysihtml5-supported" style>
+	<!-- Main navigation bar -->
+	<%= ERB.new(File.read(File.expand_path("views/templates/header.erb"))).result(binding) %>
+	<!-- / Main navigation bar -->
+	
+
+	<!-- Left navigation panel -->
+	<%= ERB.new(File.read(File.expand_path("views/templates/leftbar.erb"))).result(binding) %>
+	<!-- / Left navigation panel -->
+
+	<section class="row-fluid">
+		<div class='span12'>
+		<%
+		if !err.nil?
+		%>
+		<br/>
+		<br/>
+		<br/>
+		<div class="alert alert-error">
+			<%=err.to_s.encode_html%>
+		</div>
+		<%
+		end # err
+		%>
+						
+		<%
+		if !msg.nil?
+		%>
+		<br/>
+		<br/>
+		<br/>
+		<div class="alert alert-success">
+			<%=msg.to_s%>
+		</div>
+		<%
+		end # msg
+		%>
+	</section>
+	
+	<!-- Page content -->
+	<section class="row-fluid" style='max-width:1024px;'>
+
+		<!-- Content here -->
+		<%=yield%>
+		<!-- / Content here -->
+		
+		<!-- Page footer -->
+		<%= ERB.new(File.read(File.expand_path("views/templates/footer.erb"))).result(binding) %>
+		<!-- / Page footer -->
+	</section>
+	
+	<!-- begin olark code --><script type="text/javascript" async>
+	;(function(o,l,a,r,k,y){if(o.olark)return;
+	r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
+	y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
+	y=o.olark=function(){k.s.push(arguments);k.t.push(+new Date)};
+	y.extend=function(i,j){y("extend",i,j)};
+	y.identify=function(i){y("identify",k.i=i)};
+	y.configure=function(i,j){y("configure",i,j);k.c[i]=j};
+	k=y._={s:[],t:[+new Date],c:{},l:a};
+	})(window,document,"static.olark.com/jsclient/loader.js");/* custom configuration goes here (www.olark.com/documentation) */olark.identify('3090-804-10-5034');</script><!-- end olark code -->
+	
+</body>
+</html>

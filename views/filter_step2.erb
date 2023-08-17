@@ -1,0 +1,10 @@
+<%
+begin
+  # remember the industry
+  @login.user.preference('leads.wizard.industry_name', '', params[:industry_name])
+  # go to step3
+  redirect "/step3?service=emails"
+rescue => e
+  redirect "/step2?err="+ CGI::escape(e.message)
+end
+%>

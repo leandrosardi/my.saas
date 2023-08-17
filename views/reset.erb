@@ -1,0 +1,96 @@
+<%
+err = params[:err]
+msg = params[:msg]
+nid = params[:nid]
+
+# validar que los parametros no esten vacios
+if nid.to_s.size==0
+	redirect "/recover?err=#{CGI::escape("Notification ID is Required.")}"
+end
+
+# TODO: Validar que nid tenga el formato de un GUID
+
+# load objects
+notification = BlackStack::MySaaS::NotificationConfirm.where(:id=>nid).first
+
+# verifico si la notificacion existe
+if notification.nil?
+	redirect "/recover?err=#{CGI::escape("Notification ID Not Found.")}"
+end
+
+# load objects
+user = BlackStack::MySaaS::User.where(:id=>notification.id_user).first
+
+# verifico que la notificacion no es anterior a NotificationReset::LINK_TIMEOUT
+if notification.oldness > BlackStack::MySaaS::NotificationReset::LINK_TIMEOUT
+	redirect "/recover?err=#{CGI::escape("Link Expired.")}"
+end
+
+# verifico que el usuario exista
+if user.nil?
+	redirect "/recover?err=#{CGI::escape("User Not Found.")}"
+end
+%>
+
+<div style='position:absolute;left:50px;top:25px;height:90px;'>
+	<a href='/'><img src="/core/images/logo/logo-16-01.png" height="90px" title="ConnectionSphere Logo"></a>
+</div>
+
+<br/>
+<br/>
+<br/>
+
+<section class='box span10'>	
+	<%
+	if err!=nil
+	%>
+	<div class="alert alert-error">
+	<%=err.to_s.encode_html%>
+	</div>
+	<%
+	end # err
+	%>
+
+	<%
+	if msg!=nil
+	%>
+	<div class="alert alert-info">
+		<a href="#" class="close" data-dismiss="alert"><i class='icon-remove-sign'></i></a><%=msg.encode_html%>
+	</div>
+	<%
+	end # msg
+	%>
+
+	<span align='left'>
+		<h4>Reset your password</b></h4>
+	</span>
+
+	<form action="/reset" method="post">
+		<input type="hidden" name="nid" id="nid" value="<%=nid%>">
+		<fieldset>
+			<div class="fields">				
+				<input type="password" class='input-xlarge' name="new_password_1" id="id_password_1" placeholder="Write New Password" tabindex="3" value="" onfocus="$(this).select();">
+				<input type="password" class='input-xlarge' name="new_password_2" id="id_password_2" placeholder="Repeat Password" tabindex="4" value="" onfocus="$(this).select();">
+			</div>
+			<button type="submit" class="btn btn-primary" tabindex="5">Reset</button>
+		</fieldset>
+	</form>
+
+	<div>
+		</br>
+		<p>Did you remember your password?<br/><a href='./login'>Log In here</a>.</p>
+		</br>
+		<p>Don't have an account?<br/><a href='/prospecting/pipeline/new/welcome'>Sign Up Here</a>.</p>
+	</div>
+</section>
+
+<br/>
+<br/>
+<br/>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	     document.getElementById("id_password_1").focus();
+	});
+</script>
+

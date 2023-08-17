@@ -1,0 +1,55 @@
+<%
+# get extension
+e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase }.first
+
+%>
+
+<nav id="left-panel">
+	<div id="left-panel-content">
+		<%
+		services = BlackStack::Extensions::extensions.select { |e| e.show_in_top_bar == true && !e.services_section.nil? }
+		if services.size > 1
+		%>
+		<a href="/dashboard">
+			<img src='/<%=@service%>/images/logo.png' title='<%=@service.capitalize%>' style='width:50px;margin-top:10px;'/>
+		</a>
+		<%
+		end # if services.size > 1
+		%>
+
+		<ul>
+			<%
+			if e.nil? # I am in the home
+			%>
+			<li>
+				<a href="/dashboard"><span class="icon-dashboard"></span>Dashboard</a>
+			</li>
+			<%
+			else # I am in a service
+				e.leftbar_icons.each { |i|
+					%>
+					<li style='position:relative;'>
+						<a href="/<%=e.name.downcase.to_s.encode_html%>/<%=i.screen.to_s.downcase.encode_html%>">
+							<span class="icon-<%=i.icon.to_s%>"></span> <%=i.label.encode_html%>
+						</a>
+						<%
+						if !i.badge_color.to_s.empty?
+						%>
+							<div style='position:absolute;right:10px;top:10px;'>
+								<span class='badge badge-<%=i.badge_color.to_s%>' title='<%=i.badge_title.to_s.encode_html%>'><i class='icon-<%=i.badge_icon.to_s%>'></i> <%=i.badge_text.to_s.encode_html%></span>
+							</div>
+						<%
+						end
+						%>
+					</li>
+					<%
+				}
+			end
+			%>
+			<!-- this is shwn for all the services -->
+			<li class="lp-dropdown">
+				<a href="/settings/dashboard" class="lp-dropdown-toggle" id="settings-dropdown"><span class="icon-cog"></span>Settings</a>
+			</li>
+		</ul>
+	</div>
+</nav>

@@ -1,0 +1,33 @@
+<%
+  # map params key-values to session key-values
+  params_to_session
+
+  # map some params who are specific for for the filter
+  redirect_on_success = session['redirect_on_success']
+  redirect_on_error = session['redirect_on_error']
+
+  # setup default values
+  redirect_on_error = "/landing" if redirect_on_error.to_s.size == 0
+  redirect_on_success = "/offer" if redirect_on_success.to_s.size == 0
+
+
+  # signup new account
+  begin
+    params[:companyname] = params[:username]
+    params[:password] = guid
+    # guardar el ID de intento de l en una variable de sesion
+    @login = BlackStack::MySaaS::Account.signup(params)
+  rescue => e
+    # libero recursos
+    DB.disconnect
+    GC.start
+    # redirect
+    redirect "#{redirect_on_error}?err="+ CGI::escape(e.message)
+  end
+
+  # blanquo la variable de sesion de redirect
+  session['redirect_on_success'] = nil
+
+  # redirect
+  redirect redirect_on_success
+%>

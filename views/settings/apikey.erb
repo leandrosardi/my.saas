@@ -1,0 +1,52 @@
+<%
+user = @login.user
+account = user.account
+%>
+
+<div class='mynavbar mysticky'>
+<section class="row-fluid">	
+	<section class='span6'>
+		<%=nav2("Settings", '/settings/dashboard', 'API-Key')%>
+	</section>
+</section>
+</div>
+
+<section class="container box">
+	<form class="form-horizontal" action="filter_apikey" method="post">
+		<div class="control-group span12">
+			<label class="control-label" for="inputKeywords">API Key</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge disabled api-key select-all-on-focus" name="api_key" id="api_key" placeholder="No API key yet." value="<%=account.api_key.to_s.encode_html%>" readonly>
+				<%
+				if account.api_key.to_s.size > 0
+				%>
+					<a id="copy-button" href='#' class="btn-link" title='Copy to Clipboard.' onclick=""><i id='copy-icon' class='icon-copy'></i></a>
+					<br/>
+					<br/>
+					<span class="help-block" style='color:red;'><b>WARNING:</b> If you click on <b>Reset API Key</b>, the current key will be lost forever.</span>
+				<%
+				end # if !account.api_key.to_s.empty?
+				%>
+			</div>
+			<br/>
+							
+			<div class="controls">
+				<button type="submit" id="update" class="btn btn-blue">Reset API Key</button>
+				<a id="cancel" class="btn btn-default" href='/settings'>Cancel</a>
+			</div>
+		</div>
+	</form>
+</section>
+
+<script>
+	$('#copy-button').click(function() {
+		let api_key = $('.api-key').val();
+		navigator.clipboard.writeText(api_key);
+		$('#copy-icon').removeClass('icon-copy');
+		$('#copy-icon').addClass('icon-ok');
+		$('#copy-button').removeClass('btn-link');
+		$('#copy-button').removeAttr('href');
+		$('#copy-button').attr('title', 'Copied to Clipboard.');
+		applyToolTips();
+	});
+</script>

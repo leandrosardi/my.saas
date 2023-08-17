@@ -1,0 +1,32 @@
+<%
+message = "Sorry, this page isn't here or has moved: #{params[:url].to_s}"
+url = "/api1.3/bots/boterror.json"
+#PROCESS.notifyError(nil, "Error 404: #{message}", nil, nil, url, File.basename(__FILE__))
+%>
+
+<div class='top-right-logo-with-title'>
+	<a href='/'><img src="/apps/images/logo/logo-16-01.png" title="ConnectionSphere Logo"></a><br/>
+</div>
+
+<br/>
+<br/>
+<br/>
+
+<section class='row-fluid'>
+	<div class='span6'>
+		<h1>Page not found (404).</h1>
+		<p>
+			<%=message.encode_html%>
+		</p>
+
+		<a href="/dashboard" class="btn btn-primary btn-large"><i class="icon-long-arrow-left"></i> Go Home</a>&nbsp;&nbsp;
+	</div>
+	<div class='span6'>
+		<img src='apps/images/noavailable.png' alt='Page Not Found' />
+	</div>
+</section>
+
+
+<br/>
+<br/>
+<br/>

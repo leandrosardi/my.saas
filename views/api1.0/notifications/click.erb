@@ -1,0 +1,18 @@
+<%
+# map parameters
+lid = params[:lid]
+# get the notification link
+l = BlackStack::MySaaS::NotificationLink.where(:id => lid).first
+# if l is valid
+if !l.nil?
+    # create the object BlackStack::MySaaS::NotificationClick and save it
+    o = BlackStack::MySaaS::NotificationClick.new
+    o.id = guid
+    o.id_link = l.id
+    o.create_time = now
+    o.id_user = l.notification.id_user
+    o.save
+    # redirect
+    redirect l.url
+end
+%>

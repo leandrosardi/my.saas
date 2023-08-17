@@ -1,0 +1,96 @@
+<%
+user = @login.user
+account = user.account
+redirect = params[:redirect]
+%>
+
+<div class='mynavbar mysticky'>
+<section class="row-fluid">	
+	<section class='span6'>
+		<%=nav2("Settings", '/settings/dashboard', 'Account Information')%>
+	</section>
+</section>
+</div>
+
+<section class="container box">
+	<form class="form-horizontal" action="filter_account" method="post">
+		<input type="hidden" name="redirect" value="<%=redirect.to_s.encode_html%>">
+
+		<div class="control-group span12">
+
+			<label class="control-label" for="inputKeywords">Company Name</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="name" id="name" placeholder="Write your Company to be used for the invoicing" value="<%=account.name.encode_html%>">
+			</div>
+			<br/>
+							
+			<label class="control-label" for="inputKeywords">Time Zone</label>
+			<div class="controls">
+				<select class="input-xlarge" name="id_timezone" id="id_timezone">
+					<%
+					BlackStack::MySaaS::Timezone.order(:offset, :large_description).all { |t|
+						sSelected = ""
+						if t.id.to_guid == account.id_timezone.to_guid
+							sSelected = "selected"
+						end
+						%>
+						<option value='<%=t.id.to_guid%>' <%=sSelected%>><%=t.short_description.encode_html%> (GMT <%=t.offset.to_s.encode_html%>)</option>
+						<%
+					}
+					%>
+				</select>
+			</div>
+			<br/>
+
+			<h4>Billing Information</h4>
+
+			<label class="control-label" for="billing_address">Billing Address</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="billing_address" id="billing_address" placeholder="Write your address to be used for the invoicing and white label." value="<%=account.billing_address.to_s.encode_html%>">
+			</div>
+			<br/>
+			<label class="control-label" for="billing_city">Billing City</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="billing_city" id="billing_city" placeholder="Write your city to be used for the invoicing and white label." value="<%=account.billing_city.to_s.encode_html%>">
+			</div>
+			<br/>
+			<label class="control-label" for="billing_state">Billing State</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="billing_state" id="billing_state" placeholder="Write your state to be used for the invoicing and white label." value="<%=account.billing_state.to_s.encode_html%>">
+			</div>
+			<br/>
+			<label class="control-label" for="billing_zipcode">Billing ZipCode</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" name="billing_zipcode" id="billing_zipcode" placeholder="Write your zipcode to be used for the invoicing and white label." value="<%=account.billing_zipcode.to_s.encode_html%>">
+			</div>
+			<br/>
+			<label class="control-label" for="billing_country">Billing Country</label>
+			<div class="controls">
+				<select class="input-xlarge" name="billing_country" id="billing_country" placeholder="Choose your country to be used for the invoicing and white label.">
+					<%
+					selected = account.billing_country.to_s.empty? ? "selected" : ""
+					%>
+					<option value="" <%=selected%>></option>
+
+					<%
+					BlackStack::MySaaS::Country.order(:name).all { |c|
+						selected = account.billing_country.to_s == c.name.to_s ? "selected" : ""
+						%>
+						<option value='<%=c.name.to_s.encode_html%>' <%=selected%>><%=c.name.to_s.encode_html%></option>
+						<%
+						DB.disconnect
+						GC.start
+					}
+					%>
+				</select>
+			</div>
+			<br/>
+
+			<br/>
+			<div class="controls">
+				<button type="submit" id="update" class="btn btn-blue">Update</button>
+				<a id="cancel" class="btn btn-default" href='/settings'>Cancel</a>
+			</div>
+		</div>
+	</form>
+</section>

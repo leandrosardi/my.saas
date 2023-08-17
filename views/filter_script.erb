@@ -1,0 +1,59 @@
+<%
+begin
+  # get the chosen template and script
+  text_spintax = params[:spintax]
+  id_export = params[:id_export]
+  id_template = params[:id_template]
+
+  # load the template
+  t = id_template.to_s.empty? ? nil : BlackStack::Emails::Template.where(:id=>id_template.to_guid).first
+
+  # format spintax from TEXT to HTML
+  spintax = ''
+  if id_template.to_s.empty?
+    text_spintax.split(/\n/).each { |line|
+      spintax += "<p>#{line.encode_html}</p>"
+    }
+  else
+    spintax = text_spintax
+  end # if 
+
+  # load the export
+  e = BlackStack::Leads::Export.where(:id=>id_export.to_guid).first
+
+  # build the campaign
+  c = BlackStack::Emails::Campaign.new
+  c.id = guid
+  c.id_user = @login.user.id
+  c.create_time = now
+  c.name = "#{e.filename} campaign"
+  c.id_export = e.id
+  c.exclude_leads_reached_by_another_campaign = true
+  c.use_public_addresses = true
+  c.stop_followups_if_lead_replied = true
+  c.save
+
+  # build the followup
+  f = BlackStack::Emails::Followup.new
+  f.id = guid
+  f.id_user = @login.user.id
+  f.create_time = now
+  f.name = "#{e.filename} followup"
+  f.id_campaign = c.id
+  f.subject = t.nil? ? "invite" : t.subject
+  f.body = spintax
+  f.type = BlackStack::Emails::Followup::TYPE_TEXT
+  f.status = BlackStack::Emails::Followup::STATUS_ON
+  f.sequence_number = 1
+  f.delay_days = 0
+  f.stat_subject_spintax_variations = 0
+  f.stat_body_spintax_variations = 0
+  f.save
+
+  # redirect
+#  redirect "/done?service=emails&cid=#{c.id}"
+  redirect "/emails?service=emails"
+rescue => e
+  redirect "/script?err="+ CGI::escape(e.message)
+end
+%>

@@ -1,0 +1,39 @@
+<%
+# use this to show credits available
+#a = BlackStack::I2P::Account.where(:id=>@@login.user.id_account).first
+
+# getting full list of sections
+sections = BlackStack::Extensions::extensions.select { |e| e.show_in_dashboard == true && !e.services_section.nil? }.map { |e| e.services_section }.uniq.sort.reverse
+%>
+
+<section>
+    <%
+    BlackStack::Extensions::extensions.select { |e| e.show_in_dashboard == true }.each do |e|
+    %>
+    <section class='row-fluid box'>
+    <a href="/<%=e.name.downcase.encode_html%>?service=<%=e.name.downcase.encode_html%>">
+        <section class='span4' style='height:125px;'>
+                <div class='span3'>
+                    <img src='/<%=e.name.downcase%>/images/logo.png' width='64px' />
+                </div>
+                <div class='span9' style='position:relative;height:100%;font-size:18px;'>
+                    <%=e.large_name.encode_html%>
+                    <br/>
+                    <span style='font-size:14px;color:gray;'><b><%=e.name.encode_html%></b></span>
+                </div>
+            </section>
+            <section class='span6' style='position:relative; height:125px;'>
+                <span style='font-size:14px;color:gray;'><%=e.description%></span>
+                <br/>
+                <div style='position:absolute;bottom:0px;right:0px;'>
+                    Go <i class='icon-chevron-right'></i>
+                </div>
+            </section>
+            <section class='span2'>
+            </section>
+        </section>
+    </a>
+    <%
+    end # each
+    %>
+</section>

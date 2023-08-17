@@ -1,0 +1,43 @@
+<% 
+# map params key-values to session key-values 
+params_to_session
+
+# map some params who are specific for for the filter
+redirect_on_success = session['redirect_on_success']
+redirect_on_error = session['redirect_on_error']
+
+# setup default values
+redirect_on_error = "/signup" if redirect_on_error.to_s.size == 0
+
+# signup new account
+begin
+	# guardar el ID de intento de l en una variable de sesion
+	@login = BlackStack::MySaaS::Account.signup(params, true)
+	session['login.id'] = @login.id
+rescue => e
+	# libero recursos
+	DB.disconnect
+	GC.start
+	# redirect
+	redirect "#{redirect_on_error}?err="+ CGI::escape(e.message)
+end
+
+# if the extension I2P exists
+if BlackStack::Extensions.exists?('i2p')
+	# load the i2p account
+	a = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
+	# apply the free tiers
+	BlackStack::I2P::services_descriptor.select { |h| h[:free_tier] }.each { |h|
+	    a.bonus(h[:code], DateTime.new(2300,01,01), h[:free_tier][:credits], 'Free Tier')
+	}
+	# update blance snapshot
+	a.update_balance_snapshot
+end # if
+
+# blanquo la variable de sesion de redirect
+session['redirect_on_success'] = nil
+
+# redirect
+redirect_on_success = BlackStack::Funnel.url_after_signup(@login, 'funnels.main') if redirect_on_success.to_s.size == 0
+redirect redirect_on_success
+%>

@@ -1,0 +1,401 @@
+<%
+# get the search to use in this new campaign
+id_export = @login.user.preference('leads.wizard.id_export', '', params[:id_export])
+
+# if I didn't receive any id_export, I choose one.
+if id_export.to_s.empty?
+	b = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
+	e = b.exports.sort_by { |o| o.filename }.first
+	id_export = e.id if !e.nil?
+end
+
+# 
+err = params[:err]
+a = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
+
+# decide the behavior of the screen: it is the step3 of the wizard, or it is the new campaign screen after creating a search
+# if the url is /step3 or /script
+is_wizard = (request.path == '/step3')
+
+# different validations depending on the behavior
+if is_wizard
+	# validate: the new campaing has a name
+	name = @login.user.preference('leads.wizard.name', '', nil)
+	redirect '/new' if name.to_s.empty?
+else
+	# validate: id_export is not null
+	redirect '/dfy-leads/orders' if id_export.to_s.empty?
+end
+
+# different behavriour: redirect to different filters, depending if it is the wizard, or it is a new script for a just created dfyl order.
+url = is_wizard ? '/filter_step3' : '/filter_script'
+%>
+
+<style>
+body {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+	background-color: #fff;
+}
+
+section.container {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+div.span12 {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+.top_banner {
+	background-image: url('/leads/images/guarda.png');
+	height: 16px;
+}
+
+section.header {
+	width: 100%;
+	text-align: center;
+}
+
+section.header h1 {
+	font-size: 4.5em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #555;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
+
+}
+
+section.header h2 {
+	font-size: 2.5em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #333;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+/*
+select.searches {
+	padding: 32px 32px 17px 17px;
+	margin: 17px 32px 17px 17px;
+	width: 100%;
+	background-color: white;
+	border-radius: 6px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: black:
+	border: 3px solid rgb(0, 162, 232);
+	vertical-align: top;
+}
+
+select.searches option {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+}
+*/
+</style>
+
+<div class="top_banner"></div>
+
+<% if err!=nil %>
+	<div class="alert alert-error">
+		<%=err.to_s.encode_html%>
+	</div>
+<% end # err %>
+
+<style>
+div.templates {
+	width: 100%;
+	height: 100%;
+	margin-left: 5px
+	margin-top: 10px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+div.templates div.template {
+	width: 100%;
+	height: 160px;
+	border: 1px solid #ccc;
+	background-color: #fff;
+	margin: 0px;
+	mouse: pointer;
+	cursor: pointer;
+}
+
+div.templates div.selected {
+	background-color: blue;
+	cursor: auto;
+}
+
+div.templates div.template h1 {
+	font-size: 1.75em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #555;
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+div.templates div.template p {
+	font-size: 1.25em;
+	line-height: 1.2;
+	font-weight: normal;
+	color: #333;
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+div.templates div.selected h1 {
+	color: #fff;
+}
+
+div.templates div.selected p {
+	color: #fff;
+}
+</style>
+
+<section class="contaner box step">
+	<br/>
+	<section class='row-fluid'>
+		<%
+		if is_wizard
+		%>
+		<h1><b>Step 3:</b> Create a Campaign</h1>
+		<%
+		else
+		%>
+		<h1>Create a Campaign</h1>
+		<%
+		end
+		%>
+	</section>
+	<section class='row-fluid'>
+		<h2>Choose One Of Our Proven Templates, and Fill the Blank Spaces.</h2>
+	</section>
+	<section class='row-fluid'>
+		<div class='span4'>
+			<div class='templates'>
+				<%
+				j = 0 
+				BlackStack::Emails::Template.where(
+					:delete_time=>nil, 
+					:shared=>true,
+					:sequence_number=>1
+				).order(
+					:number
+				).all { |t|
+					j += 1
+				%>
+				<div class='template <%=j==1 ? 'selected' : ''%>' data-version-id='<%=t.id.to_guid%>'>
+					<h1>
+						<%=t.name.encode_html%>
+						<%
+						if t.badge_best_converting
+						%>
+						<span class='badge badge-green'><i class='icon-trophy'></i> Best Conversion</span>
+						<%
+						end #if t.badge_best_converting
+						%>
+					</h1>
+					<p><%=t.description.encode_html%></p>
+				</div>
+				<%
+				}
+				%>
+			</div>
+		</div>
+		<div class='span8'>
+			<div id='warning' name='warning' class='alert alert-warning'>
+				<b><i class='icon-warning-sign'></i> Warning:</b> <br/>
+				Our proven scripts are perfect for the first contact with your leads.<br/> 
+				After you get the first positive reply new leads, you can keep warming them using ConnectionSphere.
+			</div>	
+
+			<div id='template' style='width:100%;'> </div>
+
+			<form method='post' action='<%=url%>'>
+				<input type='hidden' name='spintax' id='spintax' value=''>
+				<input type='hidden' name='id_template' id='id_template' value=''>
+				<input type='hidden' name='is_wizard' id='is_wizard' value='<%=is_wizard.to_s%>'>
+				<div align="right">
+					<%
+					if a.premium?
+					%>
+					<a class='btn btn-large btn-link' id='toggle-custom-script'>Write Your Own Script</a>&nbsp;&nbsp;
+					<%
+					end # if a.premium?
+					%>
+					<a href="/step2" class="btn btn-large"><i class="icon-long-arrow-left"></i> Back</a>&nbsp;&nbsp;
+					<button id="step3-next" class="btn btn-primary btn-large">Finish <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
+					<%
+					if !a.premium?
+					%>
+					<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> Want write your own, custom scripts? <a href='/plans'><b>Upgade <i class="icon-long-arrow-right"></i></b></a></p>
+					<%
+					end # if !a.premium?
+					%>
+
+					<%
+					if !is_wizard
+					%>	
+					<br/>
+					<br/>
+					<label><b>Choose a List to Source This Campaign</b></label>
+					<select class='exports' id='id_export' name='id_export'>
+						<%
+						BlackStack::Leads::Export.where(
+							:id_user=>@login.user.account.users.map {|u| u.id}, 
+							:delete_time=>nil
+						).order(:filename).all { |e|
+							selected = id_export==e.id.to_guid ? 'selected' : ''
+							%>
+							<option value='<%=e.id.to_guid%>' <%=selected%>><%=e.filename.encode_html%></option>
+							<%
+						}
+						# release resources
+						DB.disconnect
+						GC.start
+						%>
+					</select>
+					<%
+					end #if is_wizard
+					%>	
+				</div>
+			</form>
+		</div>
+	</section>
+</section>
+
+<script type="text/javascript" charset="utf-8">
+	var ctx = document.getElementById('template');
+	var label_use_custom_script = 'Write Your Own Script';
+	var label_use_proven_script = 'Go Back To Proven Scripts';
+
+	// TODO: call the access point /emails/ajax/get_templates.json, to get JSON array of templates
+
+	function update_template_widget() {
+		update_form();
+		templatesJs.setFocus(ctx);
+		if (templatesJs.isCodeOn(ctx) === true) {
+			$('#toggle-custom-script').html(label_use_proven_script);
+			$('#warning').show();	
+		} else {
+			$('#toggle-custom-script').html(label_use_custom_script);	
+			$('#warning').hide();	
+		}
+		templatesJs.setFocus(ctx);
+	}
+
+	$(document).ready(function() {
+		$(document).ready(function() {
+			// hide warning message
+			$('#warning').hide();
+			// hide custom script
+			$('#toggle-custom-script').html(label_use_custom_script);
+			// draw the component
+			templatesJs.draw(ctx, {
+				allow_code_edition: <%=a.premium?%>, // allow the user to edit the code, only when is premium
+				versions: [
+				<%
+				BlackStack::Emails::Template.where(
+					:delete_time=>nil, 
+					:shared=>true,
+					:sequence_number=>1
+				).order(
+					:number
+				).all { |t|
+				%>
+				{
+					id: '<%=t.id.to_guid%>',
+					title: "<%=t.name.escape_javascript%>", 
+					code: "<%=t.body.escape_javascript%>",
+				},
+				<%
+				}
+				%>
+				],
+				on_version_change: function() {
+					update_form();
+					templatesJs.setFocus(ctx);
+				},
+				on_code_button_toggle: function() {
+					update_template_widget();
+				},
+				on_field_edition: function() {
+					update_form();
+				},
+				on_raw_code_edition: function() {
+					update_form();
+				},
+			});
+			// set focus on the component
+			templatesJs.setFocus(ctx);
+			// enable or disable the next button
+			update_form();
+			// set the click event on the templates
+			$(".templates .template").click(function(){
+				$(".templates .template").removeClass("selected");
+				// select the template in the list
+				$(this).addClass("selected");
+				// change to this template
+				templatesJs.setVersionId(ctx, $(this).attr('data-version-id'));
+				// update widget
+				update_template_widget();
+			});
+			// toggle the custom script
+			$("#toggle-custom-script").click(function(){
+				if ( $('#toggle-custom-script').html() == label_use_custom_script ) {
+					// enable code
+					if (templatesJs.isCodeOn(ctx) === false) {
+						templatesJs.toggleCode(ctx);
+					}
+				} else {
+					// enable code
+					if (templatesJs.isCodeOn(ctx) === true) {
+						templatesJs.toggleCode(ctx);
+					}
+				}
+				// update widget
+				update_template_widget();
+				// update form
+				update_form();
+			});
+		});
+	});
+
+	function update_form(){
+		// update the script field
+		$("#spintax").val(templatesJs.getSpintax(ctx));
+		$("#id_template").val(templatesJs.getVersionId(ctx));
+
+		// update the status enable/disable of the next button
+		if (templatesJs.isCodeOn(ctx) === true) {
+			// if the text area has any value
+			if (templatesJs.getSpintax(ctx).length > 1) {
+				$("#step3-next").removeAttr("disabled");
+			} else {
+				$("#step3-next").attr("disabled","disabled");
+			}
+		} else {
+			if (templatesJs.isReady(ctx) === true) {
+				$("#step3-next").removeAttr("disabled");
+			} else {
+				$("#step3-next").attr("disabled","disabled");
+			}
+		}
+	}
+</script>

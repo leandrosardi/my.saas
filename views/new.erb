@@ -1,0 +1,113 @@
+<%
+name = @login.user.preference('leads.wizard.name', '', nil)
+err = params[:err]
+%>
+
+<style>
+body {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+	background-color: #fff;
+}
+
+section.container {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+div.span12 {
+	padding-top: 0px;
+	padding-bottom: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+.top_banner {
+	background-image: url('/leads/images/guarda.png');
+	height: 16px;
+}
+
+section.header {
+	width: 100%;
+	text-align: center;
+}
+
+section.header h1 {
+	font-size: 4.5em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #555;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
+
+}
+
+section.header h2 {
+	font-size: 2.5em;
+	line-height: 1.2;
+	font-weight: bold;
+	color: #333;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+</style>
+
+<div class="top_banner"></div>
+
+<% if err!=nil %>
+	<div class="alert alert-error">
+		<%=err.to_s.encode_html%>
+	</div>
+<% end # err %>
+
+<section class="box step">
+	<br/>
+	<section class='row-fluid'>
+		<h1>Creating New Campaign</h1>
+	</section>
+	<section class='row-fluid'>
+		<h2>Write a Name for Your New Campaign.</h2>
+	</section>
+	<br/>
+	<form id='name_form' name='name_form' method='post' action='/filter_new'>
+		<section class='row-fluid'>
+			<input class='text' type="text" name="name" id="name" placeholder="Write a name here" value="<%=name.to_s.encode_html%>" tabindex="6">
+		</section>
+		<div align="right">
+			<a href="/emails/campaigns" class="btn btn-large"><i class="icon-long-arrow-left"></i> Exit</a>&nbsp;&nbsp;
+			<button id="new-next" class="btn btn-primary btn-large">Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
+			<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> Want to target by 7 different filters? <a href='/dfy-leads/orders/new'><b>Place a Scraping Order <i class="icon-long-arrow-right"></i></b></a></p>
+		</div>
+	</form>
+</section>
+
+<script type="text/javascript" charset="utf-8">
+
+	$(document).ready(function() {
+		set_button_state();
+		// set focus on the name field
+		$("#name").focus();
+		// set the button state when the name field changes
+		$("#name").keyup(function() {
+			set_button_state();
+		});
+	});
+
+	function set_button_state() {
+		if ($("#name").val().length > 0) {
+			$("#new-next").removeAttr("disabled");
+		} else {
+			$("#new-next").attr("disabled","disabled");
+		}
+	}
+
+</script>

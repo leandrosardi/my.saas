@@ -1,0 +1,101 @@
+<%
+# list of sections added by extensions
+sections = []
+
+# iterate the extensions, and build an array of the `[:setting_screens][:n][:section]` values
+BlackStack::Extensions.extensions.each { |ext|
+	# if the extension has a `:setting_screens` array, then iterate it
+	if ext.setting_screens.size > 0
+		ext.setting_screens.each { |screen|
+			# if the screen has a `:section` key, then add it to the array
+			if screen.section
+				sections << screen.section
+			end
+		}
+	end # if ext[:setting_screens]
+} # BlackStack::Extensions.extensions.each
+%>
+
+<div class='mynavbar mysticky'>
+	<section class="row-fluid">	
+		<section class='span6'>
+			<%=nav1("Settings")%>
+		</section>
+		<section class='span6'>
+		</section>
+	</section>
+</div>
+
+<br/>
+
+<section class="container">
+	<section class="row-fluid">
+		<h4><i class='icon-cogs'></i> Account Settings</h4>
+		<br/>
+	</section>
+
+	<section class="row-fluid">
+		<div class='span3'>
+			<a href='./account'>Account Information</a><br/>
+			<span style='font-size:10px;color:gray;'>Company name. Company time zone.</span>
+		</div>
+
+		<div class='span3'>
+			<a href='./password'>Change Password</a><br/>
+			<span style='font-size:10px;color:gray;'>Update your password.</span>
+		</div>
+
+		<div class='span3'>
+			<a href='./users'>Users</a><br/>
+			<span style='font-size:10px;color:gray;'>Add new users. Remove existing users. Assign roles.</span>
+		</div>
+
+		<div class='span3'>
+			<a href='./apikey'>API Key</a><br/>
+			<span style='font-size:10px;color:gray;'>Generate or change your API key. Get access to API documentation.</span>
+		</div>
+	</section>
+	<!--
+	<section class="row-fluid">
+		<div class='span3'>
+			<a href='./whitelabel'>White Label</a><br/>
+			<span style='font-size:10px;color:gray;'>Domain aliasing. Email aliasing. Resell <%=APP_NAME%> as your own product.</span>
+		</div>
+	</section>
+	-->
+	<br/>
+
+	<%
+	# iterate the sectinons
+	sections.uniq.each { |section|
+		# draw HTML with section title
+		%>
+		<section class="row-fluid">
+			<h4><i class='icon-cogs'></i> <%=section%></h4>
+			<br/>
+		</section>
+		<section class="row-fluid">
+		<%
+		# iterate the extensions, and draw HTML for each one
+		BlackStack::Extensions.extensions.each { |ext|
+			# if the extension has a `:setting_screens` array, then iterate it
+			if ext.setting_screens.size > 0
+				ext.setting_screens.each { |screen|
+					# if the screen has a `:section` key, then draw HTML for it
+					if screen.section == section
+						%>
+						<div class='span3'>
+							<a href='<%=screen.screen.to_s%>'><%=CGI.escapeHTML(screen.label.to_s)%></a><br/>
+						</div>
+						<%
+					end
+				}
+			end # if ext[:setting_screens]
+		} # BlackStack::Extensions.extensions.each
+		%>
+		</section>
+		<%
+	} # sections.uniq.each
+	%>
+
+</section>

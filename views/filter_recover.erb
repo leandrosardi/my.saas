@@ -1,0 +1,24 @@
+<% 
+# map params key-values to session key-values 
+params_to_session
+
+email = params[:email]
+
+# validar que los parametros no esten vacios
+if email.to_s.size == 0
+	redirect "/recover?err=#{CGI::escape("Email is Required.")}"
+end
+
+# verificar que el usuario existe
+user = BlackStack::MySaaS::User.where(:email=>email).first
+
+if user.nil?
+	redirect "/recover?err=#{CGI::escape("User Not Found.")}"
+end
+
+# envio el correo electronico de bienvenida
+n = BlackStack::MySaaS::NotificationReset.new(user).do
+
+# redirecciono
+redirect "/recover?msg=#{CGI::escape("We Sent You an Email to Reset Your Password.<br/>If you don't find it, <b>please check your Spam Folder</b>.")}"
+%>
