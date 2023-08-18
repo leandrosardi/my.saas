@@ -5,12 +5,12 @@ module BlackStack
             many_to_one :account, :class=>:'BlackStack::MySaaS::Account', :key=>:id_account
             one_to_many :preferences, :class=>:'BlackStack::MySaaS::Preference', :key=>:id_user
 
-            # getting a password from a user id
+            # generate a random password from an id
             def self.default_password(uid)
                 "#{uid[0..4]}123abc"
             end
 
-            # getting a password for the user, from its id.
+            # generate a random password from the user.id
             def default_password
                 self.class.default_password(self.id)
             end
@@ -300,21 +300,6 @@ module BlackStack
             # return false if this user is not the owner of its account.
             def account_owner?
                 self.account.user_owner.id.to_guid == self.id.to_guid
-            end
-
-            # get the value of a preference parameter for this user
-            def get_preference(name)
-                # TODO: Code Me!
-            end
-
-            # set the value of a preference parameter for this user
-            def set_preference(name, value)
-                # TODO: Code Me!
-            end
-
-            # return true if exists a preference parameter for this user, with the given name
-            def preference_exists?(name)
-                # TODO: Code Me!
             end
         end # class User
     end # module MySaaS
