@@ -72,7 +72,11 @@ bash install.sh
 Then you need to create a database instance.
 MySaaS runs on CockroachDB. 
 
-- For creating a database for development in your local computer, refer to this [tutorial](https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux).
+- For creating a database for development in your local computer, refer to this [tutorial](https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux), and run it as stand-alone with the command below:
+
+```bash
+cockroach start-single-node --insecure
+```
 
 - For creating cloud and serverless database for production, refer to [this tutorial](./docu/01.Installing-crdb.md) for:
 	1. Creating your free-tier CRDB instance;

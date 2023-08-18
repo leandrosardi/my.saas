@@ -316,16 +316,6 @@ CREATE TABLE IF NOT EXISTS public.notification (
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.notification_click (
-	id uuid NOT NULL,
-	id_link uuid NOT NULL,
-	create_time timestamp NOT NULL,
-	id_user uuid NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
-	CONSTRAINT fk_id_link_ref_notification_link FOREIGN KEY (id_link) REFERENCES public.notification_link(id),
-	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
-);
-
 CREATE TABLE IF NOT EXISTS public.notification_link (
 	id uuid NOT NULL,
 	id_notification uuid NOT NULL,
@@ -334,6 +324,16 @@ CREATE TABLE IF NOT EXISTS public.notification_link (
 	url varchar(8000) NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (id ASC),
 	CONSTRAINT fk_id_notification_ref_notification FOREIGN KEY (id_notification) REFERENCES public.notification(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.notification_click (
+	id uuid NOT NULL,
+	id_link uuid NOT NULL,
+	create_time timestamp NOT NULL,
+	id_user uuid NOT NULL,
+	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT fk_id_link_ref_notification_link FOREIGN KEY (id_link) REFERENCES public.notification_link(id),
+	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.notification_open (
