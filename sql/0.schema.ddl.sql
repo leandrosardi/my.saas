@@ -2,18 +2,18 @@
 -- Reference: https://github.com/leandrosardi/mysaas/issues/29
 SET TIMEZONE = 'America/Argentina/Buenos_Aires';
 
--- Parametric tables
--- 
+-- Static Data (Parameters)
+-- - Tables that contains static data that is not expected to change
 --
 
-CREATE TABLE public.country (
+CREATE TABLE IF NOT EXISTS public.country (
 	id uuid NOT NULL,
 	code varchar(500) NOT NULL,
 	"name" varchar(500) NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (id ASC)
 );
 
-CREATE TABLE public."state" (
+CREATE TABLE IF NOT EXISTS public."state" (
 	id uuid NOT NULL,
 	code varchar(500) NOT NULL,
 	"name" varchar(500) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE public."state" (
 	CONSTRAINT state_id_country_fkey FOREIGN KEY (id_country) REFERENCES public.country(id)
 );
 
-CREATE TABLE public.timeoffset (
+CREATE TABLE IF NOT EXISTS public.timeoffset (
 	id uuid NOT NULL,
 	"region" varchar(500) NOT NULL,
 	utc numeric(2) NOT NULL,
@@ -31,27 +31,27 @@ CREATE TABLE public.timeoffset (
 	CONSTRAINT "primary" PRIMARY KEY (id ASC)
 );
 
-CREATE TABLE public.zipcode (
+CREATE TABLE IF NOT EXISTS public.zipcode (
 	value varchar(500) NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (value ASC)
 );
 
-CREATE TABLE public.daily (
+CREATE TABLE IF NOT EXISTS public.daily (
 	"date" date NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (date ASC)
 );
 
-CREATE TABLE public.hourly (
+CREATE TABLE IF NOT EXISTS public.hourly (
 	"hour" numeric(18) NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (hour ASC)
 );
 
-CREATE TABLE public.minutely (
+CREATE TABLE IF NOT EXISTS public.minutely (
 	"minute" numeric(18) NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (minute ASC)
 );
 
-CREATE TABLE public.timezone (
+CREATE TABLE IF NOT EXISTS public.timezone (
 	id uuid NOT NULL,
 	"offset" float8 NOT NULL,
 	large_description varchar(500) NULL,
@@ -60,10 +60,10 @@ CREATE TABLE public.timezone (
 );
 
 -- User security tables
--- 
+-- - users, roles, permissions, etc
 -- 
 
-CREATE TABLE public.account (
+CREATE TABLE IF NOT EXISTS public.account (
 	id uuid NOT NULL,
 	id_account_owner uuid NOT NULL,
 	"name" varchar(500) NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE public.account (
 
 	disabled_trial bool NULL,
 	premium bool NOT NULL DEFAULT false,
-	movement_last_date_processed date NULL,
+
 	billing_address varchar(500) NULL,
 	billing_city varchar(500) NULL,
 	billing_state varchar(500) NULL,
@@ -94,13 +94,13 @@ CREATE TABLE public.account (
 	CONSTRAINT fk_id_account_owner_ref_account FOREIGN KEY (id_account_owner) REFERENCES public.account(id)
 );
 
-CREATE TABLE public."role" (
+CREATE TABLE IF NOT EXISTS public."role" (
 	id uuid NOT NULL,
 	"name" varchar(500) NOT NULL,
 	CONSTRAINT "primary" PRIMARY KEY (id ASC)
 );
 
-CREATE TABLE public."user" (
+CREATE TABLE IF NOT EXISTS public."user" (
 	id uuid NOT NULL,
 	id_account uuid NOT NULL,
 	create_time timestamp NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE public."user" (
 	CONSTRAINT fk_id_account_ref_account FOREIGN KEY (id_account) REFERENCES public.account(id)
 );
 
-CREATE TABLE public.user_role (
+CREATE TABLE IF NOT EXISTS public.user_role (
 	id uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	id_creator uuid NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE public.user_role (
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
-CREATE TABLE public."login" (
+CREATE TABLE IF NOT EXISTS public."login" (
 	id uuid NOT NULL,
 	id_user uuid NOT NULL,
 	create_time timestamp NOT NULL,
@@ -144,7 +144,7 @@ CREATE TABLE public."login" (
 -- 
 -- 
 
-CREATE TABLE public.buffer_paypal_notification (
+CREATE TABLE IF NOT EXISTS public.buffer_paypal_notification (
 	id uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	txn_type varchar(500) NULL,
@@ -192,7 +192,7 @@ CREATE TABLE public.buffer_paypal_notification (
 	CONSTRAINT "primary" PRIMARY KEY (id ASC)
 );
 
-CREATE TABLE public."subscription" (
+CREATE TABLE IF NOT EXISTS public."subscription" (
 	id uuid NOT NULL,
 	id_buffer_paypal_notification uuid NULL,
 	create_time timestamp NOT NULL,
@@ -228,7 +228,7 @@ CREATE TABLE public."subscription" (
 	CONSTRAINT fk_id_buffer_paypal_notification_ref_buffer_paypal_notification FOREIGN KEY (id_buffer_paypal_notification) REFERENCES public.buffer_paypal_notification(id)
 );
 
-CREATE TABLE public.balance (
+CREATE TABLE IF NOT EXISTS public.balance (
 	id uuid NOT NULL,
 	id_account uuid NOT NULL,
 	service_code varchar(500) NOT NULL,
@@ -240,7 +240,7 @@ CREATE TABLE public.balance (
 	CONSTRAINT balance_id_account_fkey FOREIGN KEY (id_account) REFERENCES public.account(id)
 );
 
-CREATE TABLE public.invoice (
+CREATE TABLE IF NOT EXISTS public.invoice (
 	id uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	id_account uuid NOT NULL,
@@ -261,7 +261,7 @@ CREATE TABLE public.invoice (
 	CONSTRAINT fk_id_previous_invoice_ref_invoice FOREIGN KEY (id_previous_invoice) REFERENCES public.invoice(id)
 );
 
-CREATE TABLE public.invoice_item (
+CREATE TABLE IF NOT EXISTS public.invoice_item (
 	id uuid NOT NULL,
 	id_invoice uuid NOT NULL,
 	service_code varchar(500) NOT NULL,
@@ -276,7 +276,7 @@ CREATE TABLE public.invoice_item (
 	CONSTRAINT fk_id_invoice_ref_invoice FOREIGN KEY (id_invoice) REFERENCES public.invoice(id)
 );
 
-CREATE TABLE public.movement (
+CREATE TABLE IF NOT EXISTS public.movement (
 	id uuid NOT NULL,
 	id_account uuid NOT NULL,
 	create_time timestamp NOT NULL,
@@ -310,7 +310,7 @@ CREATE TABLE public.movement (
 -- 
 -- 
 
-CREATE TABLE public.notification (
+CREATE TABLE IF NOT EXISTS public.notification (
 	id uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	delivery_time timestamp NULL,
@@ -326,7 +326,7 @@ CREATE TABLE public.notification (
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
-CREATE TABLE public.notification_click (
+CREATE TABLE IF NOT EXISTS public.notification_click (
 	id uuid NOT NULL,
 	id_link uuid NOT NULL,
 	create_time timestamp NOT NULL,
@@ -336,7 +336,7 @@ CREATE TABLE public.notification_click (
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
-CREATE TABLE public.notification_link (
+CREATE TABLE IF NOT EXISTS public.notification_link (
 	id uuid NOT NULL,
 	id_notification uuid NOT NULL,
 	create_time timestamp NOT NULL,
@@ -346,7 +346,7 @@ CREATE TABLE public.notification_link (
 	CONSTRAINT fk_id_notification_ref_notification FOREIGN KEY (id_notification) REFERENCES public.notification(id)
 );
 
-CREATE TABLE public.notification_open (
+CREATE TABLE IF NOT EXISTS public.notification_open (
 	id uuid NOT NULL,
 	id_notification uuid NOT NULL,
 	create_time timestamp NOT NULL,
@@ -361,7 +361,7 @@ CREATE TABLE public.notification_open (
 -- 
 -- 
 
-CREATE TABLE public.preference_history (
+CREATE TABLE IF NOT EXISTS public.preference_history (
 	id uuid NOT NULL,
 	update_time timestamp NOT NULL,
 	delete_time timestamp NULL,
@@ -376,7 +376,7 @@ CREATE TABLE public.preference_history (
 	CONSTRAINT "primary" PRIMARY KEY (id ASC, update_time ASC)
 );
 
-CREATE TABLE public.preference (
+CREATE TABLE IF NOT EXISTS public.preference (
 	id uuid NOT NULL,
 	id_user uuid NOT NULL,
 	create_time timestamp NOT NULL,

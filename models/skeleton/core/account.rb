@@ -343,41 +343,6 @@ module BlackStack
           self.user_roles.each { |o| a << o.role }
           a.uniq
         end
-
-        # return the location of the storage for this client
-        def storage_folder
-          "#{BlackStack::Storage::storage_folder}/#{self.id.to_guid}"
-        end
-        
-        def storage_sub_folder(name)
-          "#{BlackStack::Storage::storage_folder}/#{self.id.to_guid}/#{name}"
-        end
-                
-        # returns the max allowed KB in the storage for this client
-        # TODO: make it both: linux and windows compatible - issue #12
-        def storage_used_kb
-          path = self.storage_folder
-          fso = WIN32OLE.new('Scripting.FileSystemObject')
-          folder = fso.GetFolder(path)
-          (folder.size.to_f / 1024.to_f) 
-        end
-        
-        # returns the free available KB in the storage for this client
-        def storage_free_kb
-          total = self.storage_total_kb
-          used = self.storage_used_kb
-          total - used
-        end
-          
-        # si el cliente no tiene creado el storage, entonces se lo crea, carpeta por carpeta, ferificando cada una si no existe ya.
-        def create_storage
-          folder = self.storage_folder
-          Dir.mkdir folder if Dir[folder].size==0        
-          BlackStack::Storage::storage_sub_folders.each { |name|
-            s = "#{folder}/#{name}"
-            Dir.mkdir s if Dir[s].size==0        
-          }
-        end
     end # class Accounts
   end # module MySaaS
 end # module BlackStack

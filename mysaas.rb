@@ -35,10 +35,6 @@ require 'lib/databases'
 require 'lib/emails'
 require 'lib/extensions'
 require 'lib/notifications'
-require 'lib/storages'
-require 'lib/tablehelper'
-#require 'lib/skeletons'
-#require 'lib/stubs'
 
 # Default login and signup screens.
 # 
