@@ -42,190 +42,11 @@ begin
   require 'lib/skeletons'
   puts 'done'.green
 
+  print 'Loading helpers... '
   # helper to redirect with the params
   # TODO: move this to a helper
   def redirect2(url, params)
     redirect url + '?' + params.reject { |key, value| key=='agent' }.map{|key, value| "#{key}=#{value}"}.join("&")
-  end
-
-  # enable this line if you want to work with the live version of blackstack-core.
-  #require_relative '../blackstack-core/lib/blackstack-core' 
-
-  puts '
-
-  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\   
-  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \  
-  \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\ 
-    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/ 
-                                                                      
-  Welcome to MySaaS '+MYSAAS_VERSION.green+'.
-
-  ---> '+'https://github.com/leandrosardi/mysaas'.blue+' <---
-
-  Sandbox Environment: '+(BlackStack.sandbox? ? 'yes'.green : 'no'.red)+'.
-
-  '
-
-  #print "Saving PID... "
-  #File.open('./app.pid', 'w') { |f| f.write(Process.pid) }
-  #puts "done."
-
-  # include the libraries of the extensions
-  # reference: https://github.com/leandrosardi/mysaas/issues/33
-  BlackStack::Extensions.extensions.each { |e|
-    require "extensions/#{e.name.downcase}/main"
-  }
-
-  # Load skeleton classes
-  BlackStack::Extensions.extensions.each { |e|
-    require "extensions/#{e.name.downcase}/lib/skeletons"
-  }
-
-  PORT = parser.value("port")
-
-  configure { set :server, :puma }
-  set :bind, '0.0.0.0'
-  set :port, PORT
-  enable :sessions
-  enable :static
-
-  configure do
-    enable :cross_origin
-  end  
-
-  before do
-    headers 'Access-Control-Allow-Origin' => '*', 
-            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']  
-  end
-
-  set :protection, false
-
-  # Setting the root of views and public folders in the `~/code` folder in order to have access to extensions.
-  # reference: https://stackoverflow.com/questions/69028408/change-sinatra-views-directory-location
-  set :root,  File.dirname(__FILE__)
-  set :views, Proc.new { File.join(root) }
-
-  # Setting the public directory of MySaaS, and the public directories of all the extensions.
-  # Public folder is where we store the files who are referenced from HTML (images, CSS, JS, fonts).
-  # reference: https://stackoverflow.com/questions/18966318/sinatra-multiple-public-directories
-  # reference: https://github.com/leandrosardi/mysaas/issues/33
-  use Rack::TryStatic, :root => 'public', :urls => %w[/]
-  BlackStack::Extensions.extensions.each { |e|
-    use Rack::TryStatic, :root => "extensions/#{e.name.downcase}/public", :urls => %w[/]
-  }
-
-  # page not found redirection
-  not_found do
-    if !logged_in?
-      redirect '/'
-    else
-      redirect '/404'
-    end
-    #redirect "/404?url=#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}#{CGI::escape(request.path_info)}"
-  end
-
-  # unhandled exception redirectiopn
-  error do
-    max_lenght = 8000
-    s = "message=#{CGI.escape(env['sinatra.error'].to_s)}&"
-    s += "backtrace_size=#{CGI.escape(env['sinatra.error'].backtrace.size.to_s)}&"
-    i = 0
-    env['sinatra.error'].backtrace.each { |a| 
-      a = "backtrace[#{i.to_s}]=#{CGI.escape(a.to_s)}&"
-      and_more = "backtrace[#{i.to_s}]=..." 
-      if (s+a).size > max_lenght - and_more.size
-        s += and_more
-        break
-      else
-        s += a
-      end
-      i += 1 
-    }
-    redirect "/500?#{s}"
-  end
-
-  # condition: if there is not authenticated user on the platform, then redirect to the signup page 
-  set(:auth) do |*roles|
-    condition do
-      if !logged_in?
-        # remember the internal page I have to return to after login or signup
-        session['redirect_on_success'] = "#{request.path_info.to_s}?#{request.query_string.to_s}"
-        redirect "/login"
-      elsif unavailable?
-        redirect "/unavailable"      
-      else
-        @login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
-        @service = @login.user.preference('service', '', params[:service])
-      end
-    end
-  end
-
-  # condition: if there is not authenticated user on the platform
-  # it must either be a sysadmin or has a subecription (active or not);
-  # Otherwise, redirect to /offer
-  if BlackStack::Extensions.exists?(:i2p)
-    set(:premium) do |*roles|
-      condition do
-        if !logged_in?
-          redirect "/plans"
-        else
-          a = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
-          if !a.premium?
-            redirect "/plans?err=You+must+have+a+premium+subscription+to+unlock+that+feature."
-          end
-        end
-      end
-    end
-  end
-
-  # condition: api_key parameter is required too for the access points
-  set(:api_key) do |*roles|
-    condition do
-      @return_message = {}
-      
-      @return_message[:status] = 'success'
-
-      # validate: the pages using the :api_key condition must work as post only.
-      if request.request_method != 'POST'
-        @return_message[:status] = 'Pages with an `api_key` parameter are only available for POST requests.'
-        @return_message[:value] = ""
-        halt @return_message.to_json
-      end
-
-      @body = JSON.parse(request.body.read)
-
-      if !@body.has_key?('api_key')
-        # libero recursos
-        DB.disconnect 
-        GC.start
-        @return_message[:status] = "api_key is required on #{@body.to_s}"
-        @return_message[:value] = ""
-        halt @return_message.to_json
-      end
-
-      if !@body['api_key'].guid?
-        # libero recursos
-        DB.disconnect 
-        GC.start
-    
-        @return_message[:status] = "Invalid api_key (#{@body['api_key']}))"
-        @return_message[:value] = ""
-        halt @return_message.to_json      
-      end
-      
-      validation_api_key = @body['api_key'].to_guid.downcase
-
-      @account = BlackStack::MySaaS::Account.where(:api_key => validation_api_key).first
-      if @account.nil?
-        # libero recursos
-        DB.disconnect 
-        GC.start
-        #     
-        @return_message[:status] = 'Api_key not found'
-        @return_message[:value] = ""
-        halt @return_message.to_json        
-      end
-    end
   end
 
   def nav1(name1, beta=false)
@@ -323,10 +144,196 @@ begin
     name6 +
     "</p>"
   end
+  puts 'done'.green
+
+  # enable this line if you want to work with the live version of blackstack-core.
+  #require_relative '../blackstack-core/lib/blackstack-core' 
+
+  puts '
+
+  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\   
+  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \  
+  \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\ 
+    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/ 
+                                                                      
+  Welcome to MySaaS '+MYSAAS_VERSION.green+'.
+
+  ---> '+'https://github.com/leandrosardi/mysaas'.blue+' <---
+
+  Sandbox Environment: '+(BlackStack.sandbox? ? 'yes'.green : 'no'.red)+'.
+
+  '
+
+  #print "Saving PID... "
+  #File.open('./app.pid', 'w') { |f| f.write(Process.pid) }
+  #puts "done."
+
+  print 'Loading extensions configuration... '
+  # include the libraries of the extensions
+  # reference: https://github.com/leandrosardi/mysaas/issues/33
+  BlackStack::Extensions.extensions.each { |e|
+    require "extensions/#{e.name.downcase}/main"
+  }
+  puts 'done'.green
+
+  print 'Loading extensions models... '
+  # Load skeleton classes
+  BlackStack::Extensions.extensions.each { |e|
+    require "extensions/#{e.name.downcase}/lib/skeletons"
+  }
+  puts 'done'.green
+
+  print 'Setting up Sinatra... '
+  PORT = parser.value("port")
+
+  configure { set :server, :puma }
+  set :bind, '0.0.0.0'
+  set :port, PORT
+  enable :sessions
+  enable :static
+
+  configure do
+    enable :cross_origin
+  end  
+
+  before do
+    headers 'Access-Control-Allow-Origin' => '*', 
+            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']  
+  end
+
+  set :protection, false
+
+  # Setting the root of views and public folders in the `~/code` folder in order to have access to extensions.
+  # reference: https://stackoverflow.com/questions/69028408/change-sinatra-views-directory-location
+  set :root,  File.dirname(__FILE__)
+  set :views, Proc.new { File.join(root) }
+
+  # Setting the public directory of MySaaS, and the public directories of all the extensions.
+  # Public folder is where we store the files who are referenced from HTML (images, CSS, JS, fonts).
+  # reference: https://stackoverflow.com/questions/18966318/sinatra-multiple-public-directories
+  # reference: https://github.com/leandrosardi/mysaas/issues/33
+  use Rack::TryStatic, :root => 'public', :urls => %w[/]
+  BlackStack::Extensions.extensions.each { |e|
+    use Rack::TryStatic, :root => "extensions/#{e.name.downcase}/public", :urls => %w[/]
+  }
+
+  # page not found redirection
+  not_found do
+    if !logged_in?
+      redirect '/'
+    else
+      redirect '/404'
+    end
+    #redirect "/404?url=#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}#{CGI::escape(request.path_info)}"
+  end
+
+  # unhandled exception redirectiopn
+  error do
+    max_lenght = 8000
+    s = "message=#{CGI.escape(env['sinatra.error'].to_s)}&"
+    s += "backtrace_size=#{CGI.escape(env['sinatra.error'].backtrace.size.to_s)}&"
+    i = 0
+    env['sinatra.error'].backtrace.each { |a| 
+      a = "backtrace[#{i.to_s}]=#{CGI.escape(a.to_s)}&"
+      and_more = "backtrace[#{i.to_s}]=..." 
+      if (s+a).size > max_lenght - and_more.size
+        s += and_more
+        break
+      else
+        s += a
+      end
+      i += 1 
+    }
+    redirect "/500?#{s}"
+  end
+
+  # condition: if there is not authenticated user on the platform, then redirect to the signup page 
+  set(:auth) do |*roles|
+    condition do
+      if !logged_in?
+        # remember the internal page I have to return to after login or signup
+        session['redirect_on_success'] = "#{request.path_info.to_s}?#{request.query_string.to_s}"
+        redirect "/login"
+      elsif unavailable?
+        redirect "/unavailable"      
+      else
+        @login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+        @service = @login.user.preference('service', '', params[:service])
+      end
+    end
+  end
+
+  # condition: if there is not authenticated user on the platform
+  # it must either be a sysadmin or has a subecription (active or not);
+  # Otherwise, redirect to /offer
+  set(:premium) do |*roles|
+    condition do
+      if !logged_in?
+        redirect "/plans"
+      else
+        a = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
+        if !a.premium?
+          redirect "/plans?err=You+must+have+a+premium+subscription+to+unlock+that+feature."
+        end
+      end
+    end
+  end
+
+  # condition: api_key parameter is required too for the access points
+  set(:api_key) do |*roles|
+    condition do
+      @return_message = {}
+      
+      @return_message[:status] = 'success'
+
+      # validate: the pages using the :api_key condition must work as post only.
+      if request.request_method != 'POST'
+        @return_message[:status] = 'Pages with an `api_key` parameter are only available for POST requests.'
+        @return_message[:value] = ""
+        halt @return_message.to_json
+      end
+
+      @body = JSON.parse(request.body.read)
+
+      if !@body.has_key?('api_key')
+        # libero recursos
+        DB.disconnect 
+        GC.start
+        @return_message[:status] = "api_key is required on #{@body.to_s}"
+        @return_message[:value] = ""
+        halt @return_message.to_json
+      end
+
+      if !@body['api_key'].guid?
+        # libero recursos
+        DB.disconnect 
+        GC.start
+    
+        @return_message[:status] = "Invalid api_key (#{@body['api_key']}))"
+        @return_message[:value] = ""
+        halt @return_message.to_json      
+      end
+      
+      validation_api_key = @body['api_key'].to_guid.downcase
+
+      @account = BlackStack::MySaaS::Account.where(:api_key => validation_api_key).first
+      if @account.nil?
+        # libero recursos
+        DB.disconnect 
+        GC.start
+        #     
+        @return_message[:status] = 'Api_key not found'
+        @return_message[:value] = ""
+        halt @return_message.to_json        
+      end
+    end
+  end
+  puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
 
+  print 'Setting up entries of external pages... '
   # TODO: here where you have to develop notrial? feature
   get '/', :agent => /(.*)/ do
     # decide to which landing redirect, based on the extensions and configuration
@@ -391,17 +398,6 @@ begin
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # User dashboard
-
-  get '/', :auth => true do
-    #redirect '/dashboard'
-    redirect BlackStack::Funnel.url_after_login(@login, 'funnels.main')
-  end
-  get '/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/dashboard', :layout => :'/views/layouts/core'
-  end
-
-  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Funnel
 
   get '/offer', :agent => /(.*)/ do
@@ -410,6 +406,19 @@ begin
 
   get '/plans', :auth => true, :agent => /(.*)/ do
     erb :'views/plans', :layout => :'/views/layouts/public'
+  end
+  puts 'done'.green
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # User dashboard
+  print 'Setting up entries of internal pages... '
+
+  get '/', :auth => true do
+    #redirect '/dashboard'
+    redirect BlackStack::Funnel.url_after_login(@login, 'funnels.main')
+  end
+  get '/dashboard', :auth => true, :agent => /(.*)/ do
+    erb :'views/dashboard', :layout => :'/views/layouts/core'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -500,10 +509,11 @@ begin
   post '/settings/filter_users_set_account_owner', :auth => true do
     erb :'views/settings/filter_users_set_account_owner'
   end
+  puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # API access points
-
+  print 'Setting up entries of API access points... '
   # ping
   get '/api1.0/ping.json', :api_key => true do
     erb :'views/api1.0/ping'
@@ -526,18 +536,22 @@ begin
   post '/api1.0/notifications/click.json' do
     erb :'views/api1.0/notifications/click'
   end
+  puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Require the app.rb file of each one of the extensions.
   # reference: https://github.com/leandrosardi/mysaas/issues/33
+  print 'Setting up extensions entries... '
   BlackStack::Extensions.extensions.each { |e|
     require "extensions/#{e.name.downcase}/app.rb"
   }
-
+  puts 'done'.green
+  
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # adding storage sub-folders
   # PENDING TO DEVELOP
   #BlackStack::Extensions.add_storage_subfolders
+
 rescue => e
   puts e.message.red
   exit(1)
