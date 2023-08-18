@@ -6,34 +6,97 @@
 sections = BlackStack::Extensions::extensions.select { |e| e.show_in_dashboard == true && !e.services_section.nil? }.map { |e| e.services_section }.uniq.sort.reverse
 %>
 
-<section>
-    <%
-    BlackStack::Extensions::extensions.select { |e| e.show_in_dashboard == true }.each do |e|
-    %>
-    <section class='row-fluid box'>
-    <a href="/<%=e.name.downcase.encode_html%>?service=<%=e.name.downcase.encode_html%>">
-        <section class='span4' style='height:125px;'>
+<section class='row-fluid'>
+    <div class='span12 box'>
+        <%
+        # summary of all scopes
+        scope = 15000
+        # summary of all processed records
+        processed = 1750
+        # summary of all processed records
+        verified = 780
+        # progress
+        x = 27 #a.select { |s| s.stat_tier2_scope }.map { |s| s.progress }.sum.to_f
+        y = 87   #a.select { |s| s.stat_tier2_scope }.size.to_f
+        progress = x > 0 ? ((100.to_f*x) / y).round(2) : 0.to_f.round(2)
+        # processed rate
+        processed_rate = scope.to_f > 0 ? (processed.to_f / scope.to_f * 100.0).round(2) : 0.to_f.round(2)
+        # verifiead rate
+        verified_rate = processed.to_f > 0 ? (verified.to_f / processed.to_f * 100.0).round(2) : 0.to_f.round(2)
+        %>
+            <div class='row-fluid'>
+                <div class='span12'>
+                    <h2>Summary</h2>
+                    <p>Progress & Performance of All Searches that Started Running.</p>
+                </div>
+            </div>
+            <div class='row-fluid'>
                 <div class='span3'>
-                    <img src='/<%=e.name.downcase%>/images/logo.png' width='64px' />
+                    <button class='btn btn-black btn-block btn-large' id='dfyl-verify' type='button' disabled>
+                        <span style='font-size:32px;'>~<%=scope.to_label%></span>
+                        <br/>
+                        <b>All Searches Scope <span title='Summary of the estmated scope of all searches that started running.'><i class='icon-question-sign'></i></span></b><br/>
+                        <b>-</b>
+                    </button>
                 </div>
-                <div class='span9' style='position:relative;height:100%;font-size:18px;'>
-                    <%=e.large_name.encode_html%>
+                <div class='span3'>
+                    <button class='btn btn-blue btn-block btn-large' id='dfyl-verify' type='button' disabled>
+                        <span style='font-size:32px;'><%=progress.to_label%>%</span>
+                        <br/>
+                        <b>Batches Processed <span title='Average progress of all searches that started running.'><i class='icon-question-sign'></i></span></b><br/>
+                        <b>-</b>
+                    </button>
+                </div>
+                <div class='span3'>
+                    <button class='btn btn-green btn-block btn-large' id='dfyl-verify' type='button' disabled>
+                        <span style='font-size:32px;'><%=processed.to_label%></span>
+                        <br/>
+                        <b>Processed Records</b><br/>
+                        <b><%=processed_rate.to_label%>%</b>
+                    </button>
+                </div>
+                <div class='span3'>
+                    <button class='btn btn-red btn-block btn-large' id='dfyl-verify' type='button' disabled>
+                        <span style='font-size:32px;'><%=verified.to_label%></span>
+                        <br/>
+                        <b>Verified Results</b><br/>
+                        <b><%=verified_rate.to_label%>%</b>
+                    </button>
+                </div>
+            </div>
+    </div>
+</section>
+
+<section class='row-fluid'>
+    <div class='span4'>
+        <%
+        BlackStack::Extensions::extensions.select { |e| e.show_in_dashboard == true }.each do |e|
+        %>
+        <section class='row-fluid box'>
+        <a href="/<%=e.name.downcase.encode_html%>?service=<%=e.name.downcase.encode_html%>">
+            <section class='span4' style='height:125px;'>
+                    <div class='span3'>
+                        <img src='/<%=e.name.downcase%>/images/logo.png' width='64px' />
+                    </div>
+                    <div class='span9' style='position:relative;height:100%;font-size:18px;'>
+                        <%=e.large_name.encode_html%>
+                        <br/>
+                        <span style='font-size:14px;color:gray;'><b><%=e.name.encode_html%></b></span>
+                    </div>
+                </section>
+                <section class='span6' style='position:relative; height:125px;'>
+                    <span style='font-size:14px;color:gray;'><%=e.description%></span>
                     <br/>
-                    <span style='font-size:14px;color:gray;'><b><%=e.name.encode_html%></b></span>
-                </div>
+                    <div style='position:absolute;bottom:0px;right:0px;'>
+                        Go <i class='icon-chevron-right'></i>
+                    </div>
+                </section>
+                <section class='span2'>
+                </section>
             </section>
-            <section class='span6' style='position:relative; height:125px;'>
-                <span style='font-size:14px;color:gray;'><%=e.description%></span>
-                <br/>
-                <div style='position:absolute;bottom:0px;right:0px;'>
-                    Go <i class='icon-chevron-right'></i>
-                </div>
-            </section>
-            <section class='span2'>
-            </section>
-        </section>
-    </a>
-    <%
-    end # each
-    %>
+        </a>
+        <%
+        end # each
+        %>
+    </div>
 </section>
