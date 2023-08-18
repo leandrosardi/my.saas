@@ -36,7 +36,7 @@ end
 		<div class="container">
 			<table width='100%'>
 				<tr>
-					<td width='48px'><a class="logo" href="/dashboard" title='Home'><img alt="<%=CS_HOME_WEBSITE%>_logo" src="/core/images/logo/16x16-01.png" width='25px' height='25px'></a></td>
+					<td width='48px'><a class="logo" href="/dashboard" title='Home'><img alt="<%=CS_HOME_WEBSITE%>_logo" src="/core/images/logo.png" width='96px'></a></td>
 					
 					<td id='services'>
 						<span style='color: White;font-family: Arial;font-size: 12px;'>
@@ -97,34 +97,32 @@ end
 						}
 					end
 					%>
-
-					<td align='right' style='text-align: right;' width='auto'>
-					<%
-					# Badge: SysOwner
-					if !account.api_key.nil?
-						if account.sysowner?
-						%>
-						<span class='badge badge-pink' title='SYSOWNER: You Are Running the Webserver using this API-KEY for validating the API-CALLs.'><i class='icon-key'></i> SysOwner</span>
-						<%
-						end # if BlackStack::MySaaS::api_key.to_guid == account.api_key.to_guid
-					end # if !account.api_key.nil?
-
-					# Badge: Premium Account
-					if BlackStack::Extensions.exists?(:i2p)
-						if account.premium?
-							%>
-							<span class='badge badge-green' title='You paid for credits.'><i class='icon-star'></i> Premium</span>
-							<%
-						else
-							%>
-							<span class='badge badge-gray' title='Subscribe a Plan & Unlock Premium Features.'><a href='/plans' style='color:black;'><i class='icon-star'></i> Free Accoount</a></span>
-							<%
-						end
-					end
-					%>
-					</td>
-
+					
 					<td align='right' style='text-align: right;' width='auto' >
+						<%
+						# Badge: SysOwner
+						if !account.api_key.nil?
+							if account.sysowner?
+							%>
+							<span class='badge badge-pink' title='SYSOWNER: You Are Running the Webserver using this API-KEY for validating the API-CALLs.'><i class='icon-key'></i> SysOwner</span>
+							<%
+							end # if BlackStack::MySaaS::api_key.to_guid == account.api_key.to_guid
+						end # if !account.api_key.nil?
+
+						# Badge: Premium Account
+						if BlackStack::Extensions.exists?(:i2p)
+							if account.premium?
+								%>
+								<span class='badge badge-green' title='You paid for credits.'><i class='icon-star'></i> Premium</span>
+								<%
+							else
+								%>
+								<span class='badge badge-gray' title='Subscribe a Plan & Unlock Premium Features.'><a href='/plans' style='color:black;'><i class='icon-star'></i> Free Accoount</a></span>
+								<%
+							end
+						end
+						%>
+	
 						<a href="mailto:<%=HELPDESK_EMAIL%>?subject=I Need Help" style='color:white;'>
 							<span>
 								<span class='badge badge-blue'><i class="icon-question"></i> <span id='email_support'>Email Support</span></span>

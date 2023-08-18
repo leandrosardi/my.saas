@@ -8,6 +8,12 @@
 # ignore the .sandbox file.
 .sandbox
 
+# ignore .maintenance file used to turn the app unavailable
+.maintenance
+
+# ignore .notrial file used to switch between landing pages
+.notrial
+
 # ignore ngrok command
 ngrok
 
@@ -61,12 +67,6 @@ ca.key
 
 # ignore .project file created by IDE
 .project
-
-# ignore .maintenance file used to turn the app unavailable
-.maintenance
-
-# ignore .notrial file used to switch between landing pages
-.notrial
 
 # production configuration files
 config.rb
