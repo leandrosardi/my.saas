@@ -21,10 +21,21 @@ parser = BlackStack::SimpleCommandLineParser.new(
 )
 
 #
+print 'Loading configuration... '
 require parser.value('config')
+puts 'done'.green
+
+print 'Loading version information... '
 require 'version'
+puts 'done'.green
+
+print 'Connecting database... '
 DB = BlackStack::CRDB::connect
+puts 'done'.green
+
+print 'Loading models... '
 require 'lib/skeletons'
+puts 'done'.green
 
 # helper to redirect with the params
 # TODO: move this to a helper

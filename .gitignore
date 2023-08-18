@@ -1,6 +1,10 @@
 # ignore any output file
 *.out
 
+# ignore local cockroach database
+/cockroach-data
+/inflight_trace_dump
+
 # ignore .sh files into the cli folder, because such a scripts are stored in the backup of proivate files.
 #cli/*.sh
 #!/cli/install.sh

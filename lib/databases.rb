@@ -7,15 +7,25 @@ module BlackStack
         @@db_name = nil
         @@db_user = nil
         @@db_password = nil
+        @@db_sslmode = nil
 
         # return the connection string for a postgresql database
         def self.connection_string
-            "postgresql://#{@@db_user}:#{@@db_password}@#{@@db_url}:#{@@db_port}/#{@@db_cluster}.#{@@db_name}?sslmode=verify-full"
+            ret = nil
+            if @@db_cluster
+                ret = "postgresql://#{@@db_user}:#{@@db_password}@#{@@db_url}:#{@@db_port}/#{@@db_cluster}.#{@@db_name}?sslmode=#{@@db_sslmode}"
+            else
+                ret = "postgresql://#{@@db_user}:#{@@db_password}@#{@@db_url}:#{@@db_port}/#{@@db_name}?sslmode=#{@@db_sslmode}"
+            end
+            ret
         end # connection_string
 
         # return the connection string for a postgresql database
+        #
+        # DEPRECATED!
+        #
         def self.connection_string_2
-            "postgresql://#{@@db_user}:#{@@db_password}@#{@@db_url}:#{@@db_port}?sslmode=verify-full&options=--cluster%3D#{@@db_cluster}"
+            "postgresql://#{@@db_user}:#{@@db_password}@#{@@db_url}:#{@@db_port}?sslmode=#{@@db_sslmode}&options=--cluster%3D#{@@db_cluster}"
         end # connection_string
 
         # create database connection
@@ -41,6 +51,9 @@ module BlackStack
         end
         def self.db_password
             @@db_password
+        end
+        def self.db_sslmode
+            @@db_sslmode
         end
         def self.set_db_params(h)
             # validate: the parameter h is requred
@@ -86,6 +99,7 @@ module BlackStack
             @@db_name = h[:db_name]
             @@db_user = h[:db_user]
             @@db_password = h[:db_password]
+            @@db_sslmode = h[:db_sslmode] || 'verify-full' # default is verify-full
         end # set_db_params
 
         # return a postgresql uuid
