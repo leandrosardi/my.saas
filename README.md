@@ -103,7 +103,15 @@ BlackStack::CRDB::set_db_params({
 
 ### 02.4. Running Webserver
 
-After you have MySaaS connected to CRDB, with all the database migrations installedl running the webserver is so easy.
+After you have MySaaS configured to connect to CRDB, and all the database migrations installed, you can put your SaaS online.
+
+Before running the `app` command, you need to edit the environment variable `$RUBYLIB`.
+
+```bash
+export RUBYLIB=~/code/my.saas
+```
+
+Then, you are good to run your app.
 
 ```bash
 cd ~/code/my.saas/

@@ -1,9 +1,0 @@
-<%
-begin
-  selected_positions = params.values.join(',')
-  @login.user.preference('leads.wizard.job_positions', '', selected_positions)
-  redirect "/step2"
-rescue => e
-  redirect "/step1?err="+ CGI::escape(e.message)
-end
-%>

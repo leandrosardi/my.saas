@@ -212,27 +212,6 @@ set(:api_key) do |*roles|
   end
 end
 
-=begin
-
-# TODO: develop these methods on the models folder
-
-# si el cliente tiene configurada una cuenta reseller,
-# y un operador esta accediendo a esta cuenta,
-# entonces no muestro.
-#
-# No puede ser un metodo de la clase User, porque accede a las variables de sesion del webserver.
-def getEmailToShow(user)
-  if user.account.resellerSignature? && session['login.id_prisma_user'].to_s.size > 0
-    if user.account.contact == nil
-      return "****@****.***"
-    elsif user.account.contact.id != user.id
-      return "****@****.***"
-    end
-  end
-  user.email
-end
-=end
-
 def nav1(name1, beta=false)
   login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
   user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
@@ -330,91 +309,6 @@ def nav6(name1, url1, name2, url2, name3, url3, name4, url4, name5, url5, name6)
 end
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# FreeLeadsData Extension
-# TODO: move this as an extension
-=begin
-# define extensions path
-path = '/home/leandro/code'
-
-# name of the extension
-name = 'leads'
-
-# remove any from the project folder
-FileUtils.rm_rf("./views/#{name}")
-
-# copy leads extension to MySaaS folder
-# ruby copy folder with subfolders to a target location
-# reference: https://stackoverflow.com/questions/17469095/ruby-copy-folder-with-subfolders-to-a-target-location
-FileUtils.copy_entry "#{path}/#{name}/views", "./views/#{name}"
-
-#exit(0)
-
-# define screens
-get "/#{name}/exports", :auth => true do
-  erb :"/#{name}/exports", :layout => :"/#{name}/views/layout"
-end
-=end
-
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Developers Training Pages.
-# TODO: Move this to a dedicated extension
-
-# root page of the developers center
-get '/developers', :auth => true do
-  erb :"/views/developers/landing", :layout => :'/views/layouts/core'
-end
-
-# root page of the developers center
-get '/developers/myip' do
-  request.ip
-end
-
-get '/developers/mysaas', :auth => true do
-  erb :"/views/developers/mysaas/landing", :layout => :'/views/layouts/core'
-end
-
-# layouts
-get '/developers/mysaas/layouts', :auth => true do
-  erb :"/views/developers/mysaas/layouts/landing", :layout => :'/views/layouts/core'
-end
-
-get '/developers/mysaas/layouts/navbars', :auth => true, :agent => /(.*)/ do
-  erb :"/views/developers/mysaas/layouts/navbars", :layout => :'/views/layouts/core'
-end
-
-get '/developers/mysaas/layouts/panels', :auth => true, :agent => /(.*)/ do
-  erb :"/views/developers/mysaas/layouts/panels", :layout => :'/views/layouts/core'
-end
-
-# tables
-get '/developers/mysaas/tables', :auth => true do
-  erb :"/views/developers/mysaas/tables/landing", :layout => :'/views/layouts/core'
-end
-
-get '/developers/mysaas/tables/basics', :auth => true, :agent => /(.*)/ do
-  erb :"/views/developers/mysaas/tables/basics", :layout => :'/views/layouts/core'
-end
-
-get '/developers/dss', :auth => true, :agent => /(.*)/ do
-  erb :"/views/developers/dss/helper", :layout => :'/views/layouts/core'
-end
-
-get '/developers/dss/', :auth => true, :agent => /(.*)/ do
-  erb :"/views/developers/dss/helper", :layout => :'/views/layouts/core'
-end
-
-get '/developers/dss/helper', :auth => true, :agent => /(.*)/ do
-  erb :"/views/developers/dss/helper", :layout => :'/views/layouts/core'
-end
-
-post '/ajax/developers/dss/get_refresh_token.json' do
-  erb :'/views/ajax/developers/dss/get_refresh_token'
-end
-get '/ajax/developers/dss/get_refresh_token.json' do
-  erb :'/views/ajax/developers/dss/get_refresh_token'
-end
-
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # External pages: pages that don't require login
 
 # TODO: here where you have to develop notrial? feature
@@ -462,7 +356,6 @@ get '/logout' do
   erb :'views/filter_logout'
 end
 
-
 get '/recover', :agent => /(.*)/ do
   erb :'views/recover', :layout => :'/views/layouts/public'
 end
@@ -495,65 +388,12 @@ end
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Funnel
 
-get '/landing', :agent => /(.*)/ do
-  #erb :'views/landing', :layout => :'/views/layouts/public'
-  redirect '/signup'
-end
-
 get '/offer', :agent => /(.*)/ do
   erb :'views/offer', :layout => :'/views/layouts/public'
 end
 
 get '/plans', :auth => true, :agent => /(.*)/ do
   erb :'views/plans', :layout => :'/views/layouts/public'
-end
-
-get "/new", :auth => true, :agent => /(.*)/ do
-  erb :"views/new", :layout => :"/views/layouts/public"
-end
-
-get "/step1", :auth => true, :agent => /(.*)/ do
-  erb :"views/step1", :layout => :"/views/layouts/public"
-end
-
-get "/step2", :auth => true, :agent => /(.*)/ do
-  erb :"views/step2", :layout => :"/views/layouts/public"
-end
-
-get "/step3", :auth => true, :agent => /(.*)/ do
-  erb :"views/step3", :layout => :"/views/layouts/public"
-end
-
-get "/script", :auth => true, :agent => /(.*)/ do
-  erb :"views/step3", :layout => :"/views/layouts/public"
-end
-
-get "/done", :auth => true, :agent => /(.*)/ do
-  erb :"views/done", :layout => :"/views/layouts/public"
-end
-
-post "/filter_landing" do
-  erb :"views/filter_landing"
-end
-
-post "/filter_new", :auth => true do
-  erb :"views/filter_new"
-end
-
-post "/filter_step1", :auth => true do
-  erb :"views/filter_step1"
-end
-
-post "/filter_step2", :auth => true do
-  erb :"views/filter_step2"
-end
-
-post "/filter_step3", :auth => true do
-  erb :"views/filter_step3"
-end
-
-post "/filter_script", :auth => true do
-  erb :"views/filter_script"
 end
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -577,7 +417,10 @@ end
 post '/settings/filter_account', :auth => true do
   erb :'views/settings/filter_account'
 end
-
+=begin
+# 
+# UNDER CONSTRUCTION
+# 
 # white label configuration
 get '/settings/whitelabel', :auth => true, :agent => /(.*)/ do
   erb :'views/settings/whitelabel', :layout => :'/views/layouts/core'
@@ -585,7 +428,7 @@ end
 post '/settings/filter_whitelabel', :auth => true do
   erb :'views/settings/filter_whitelabel'
 end
-
+=end
 # change password
 get '/settings/password', :auth => true, :agent => /(.*)/ do
   erb :'views/settings/password', :layout => :'/views/layouts/core'
@@ -645,28 +488,12 @@ end
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # API access points
 
-get '/api1.0' do
-  redirect 'https://help.expandedventure.com/developers'
-end
-
-get '/api1.0/' do
-  redirect 'https://help.expandedventure.com/developers'
-end
-
 # ping
 get '/api1.0/ping.json', :api_key => true do
   erb :'views/api1.0/ping'
 end
 post '/api1.0/ping.json', :api_key => true do
   erb :'views/api1.0/ping'
-end
-
-# dropbox
-get "/api1.0/dropbox/get_access_token.json", :api_key => true do
-  erb :"views/api1.0/dropbox/get_access_token"
-end
-post "/api1.0/dropbox/get_access_token.json", :api_key => true do
-  erb :"views/api1.0/dropbox/get_access_token"
 end
 
 # notifications
