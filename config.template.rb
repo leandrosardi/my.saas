@@ -146,7 +146,7 @@ BlackStack::Emails.set(
 
 # parameters for end user notifications
 BlackStack::Notifications.set(  
-  :logo_url => CS_HOME_WEBSITE + '/core/images/logo/logo-128-01.png',
+  :logo_url => CS_HOME_WEBSITE + '/core/images/logo.png',
   :signature_picture_url => CS_HOME_WEBSITE + '/core/images/logo/owner.jpg',
   :signature_name => 'Leandro D. Sardi',
   :signature_position => 'Founder & CEO',
