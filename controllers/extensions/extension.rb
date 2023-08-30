@@ -164,14 +164,15 @@ module BlackStack
                         self.setting_screens << BlackStack::Extensions::SettingScreen.new(i)
                     end
                 end
-
+# DEPRECATED
+=begin
                 if h[:storage_folders].to_s.size>0
                     self.storage_folders.clear # i have to clean the array, in the user wants to update it
                     h[:storage_folders].each do |i|
                         self.storage_folders << BlackStack::Extensions::StorageFolder.new(i)
                     end
                 end
-
+=end
                 if h[:deployment_routines].to_s.size>0
                     self.deployment_routines.clear # i have to clean the array, in the user wants to update it
                     h[:deployment_routines].each do |i|
