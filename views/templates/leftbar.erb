@@ -1,6 +1,6 @@
 <%
 # get extension
-e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase }.first
+e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase }.first
 
 %>
 
