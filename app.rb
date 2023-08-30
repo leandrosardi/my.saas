@@ -158,7 +158,7 @@ begin
                                                                       
   Welcome to MySaaS '+MYSAAS_VERSION.green+'.
 
-  ---> '+'https://github.com/leandrosardi/mysaas'.blue+' <---
+  ---> '+'https://github.com/leandrosardi/my.saas'.blue+' <---
 
   Sandbox Environment: '+(BlackStack.sandbox? ? 'yes'.green : 'no'.red)+'.
 
