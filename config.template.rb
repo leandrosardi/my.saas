@@ -496,14 +496,14 @@ BlackStack::Workmesh.add_node({
     # workmesh parameters
     :workmesh_api_key => '118f3c32-c920-40c0-a938-22b7471f8d20', # keep this secret - don't push this to your repository.
     :workmesh_port => 3000, #BlackStack.sandbox? ? 3001 : 3000,  
-    :workmesh_service => :'micro.data',
+    :workmesh_service => :'freeleadsdata/micro.data',
     # git
     :git_user => 'ConnectionSphere',
     :git_branch => 'main',
     # name of the LAN interface
     :laninterface => 'eth0',
     # config.rb content - always using dev-environment here
-    :config_rb_content => File.read(BlackStack.sandbox? ? '/home/leandro/code/micro.data/config.rb' : '$HOME/code/micro.data/config.rb'),
+    :config_rb_content => File.read(BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata/micro.data/config.rb' : '$HOME/code/freeleadsdata/micro.data/config.rb'),
     # deployment routine for this node
     :deployment_routine => 'deploy-micro.dfyl.appending',
 })
