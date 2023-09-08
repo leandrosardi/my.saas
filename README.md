@@ -55,7 +55,7 @@ Many chapters are still pending of writing.
 
 I will be adding one new chapter week by week, so follow this project and get notified when new documentation is released.
 
-### Basic SaaS Development
+### Basic
 
 01. [Installation](/.docu/01.installation.md)
 02. [Sandbox](/.docu/02.sandbox.md)
@@ -66,7 +66,7 @@ I will be adding one new chapter week by week, so follow this project and get no
 07. System Owner
 08. Accounts Management
 
-### Advanced SaaS Development
+### Advanced
 
 09. User Storage
 10. Access Points Publishing
