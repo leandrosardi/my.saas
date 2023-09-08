@@ -49,7 +49,7 @@ Here is a full list of the MySaaS features:
 	- [Lists.js](https://github.com/leandrosardi/listsjs); and
 	- [Datas.js](https://github.com/leandrosardi/datasjs).
 
-## 02. Installation
+## 02. Getting Started
 
 ### 02.1. Setup Environment
 
@@ -132,7 +132,29 @@ BlackStack::CRDB::set_db_params({
 })
 ```
 
-### 02.4. Running Webserver
+### 02.4. Test Database Connection
+
+```bash
+export RUBYLIB=~/code/my.saas
+cd ~/code/mysaas/cli
+ruby conn.rb
+```
+
+### 02.5. Run Database Migrations
+
+The CLI command `deploy.rb` can run such installation, and any further database migration.
+
+```bash
+export RUBYLIB=~/code/my.saas
+cd ~/code/mysaas/cli
+ruby deploy.rb db=yes web=no
+```
+
+The parameter `web=no` means you don't want to pull the last version of MySaaS and run the web server on production.
+
+By default, both parameters, `db` and `web` are `yes`.
+
+### 02.6. Run the App
 
 After you have MySaaS configured to connect to CockroachDB, and all the database migrations installed, you can put your SaaS online.
 
@@ -160,15 +182,15 @@ Now, you go to [https://127.0.0.1:3000](https://127.0.0.1:3000) and access the p
 If you want to use another file different than `config.rb`, use the `config` parameter.
 
 ```bash
-cd ~/code/my.saas/cli
-ruby start.rb config=my_config
+cd ~/code/my.saas
+ruby app.rb config=my_config
 ```
 
 If you want to use another port different than `3000`, use the `port` parameter.
 
 ```bash
-cd ~/code/my.saas/cli
-ruby start.rb port=8080
+cd ~/code/my.saas
+ruby app.rb port=8080
 ```
 
 ## 03. Sandbox Mode
