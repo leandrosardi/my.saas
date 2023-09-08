@@ -105,7 +105,8 @@ cockroach start-single-node --insecure
 ```
 
 - For creating cloud and serverless database for production, refer to [this tutorial](./docu/01.Installing-crdb.md) for:
-	1. Creating your free-tier CRDB instance;
+
+	1. Creating your free-tier CockroachDB instance;
 	2. Setting up your connection on `config.rb`; and
 	3. Deploying all database migrations.
 
@@ -133,7 +134,7 @@ BlackStack::CRDB::set_db_params({
 
 ### 02.4. Running Webserver
 
-After you have MySaaS configured to connect to CRDB, and all the database migrations installed, you can put your SaaS online.
+After you have MySaaS configured to connect to CockroachDB, and all the database migrations installed, you can put your SaaS online.
 
 Before running the `app` command, you need to edit the environment variable `$RUBYLIB`.
 
@@ -172,14 +173,14 @@ ruby start.rb port=8080
 
 ## 03. Sandbox Mode
 
-Create a file `.sandbox` to set the constant `SANDBOX=true` when you start the webserver.
+Create a file `.sandbox` to set the function `BlackStack.sandbox?=true` when you start the webserver.
 
 ```bash
 cd ~/code/my.saas
 touch .sandbox
 ```
 
-The `SANDBOX` constant is used in the `config.rb` file mainly, to switch configuration between `development` or `production` environment.
+The `BlackStack.sandbox?` function is used in the `config.rb` file mainly, to switch configuration between `development` or `production` environment.
 
 E.g.: You may want to switch between `development` and `production` databases without have to move files or writing code. Just keep the `.sandbox` file in your local computer for development.
 
