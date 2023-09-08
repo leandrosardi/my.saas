@@ -57,7 +57,7 @@ I will be adding one new chapter week by week, so follow this project and get no
 
 ### Basic
 
-01. [Installation](./docu/01.installation.md)
+01. [Installation](./docu/01.Installation.md)
 02. [Sandbox](./docu/02.sandbox.md)
 03. [Secret Files Management](./docu/03.secret-files-management.md)
 04. Deployment
