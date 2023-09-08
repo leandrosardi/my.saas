@@ -6,9 +6,24 @@
 
 **MySaaS** is an open-source, extensible and scalable platform for develop your own SaaS, e-Commerce, Education Platform, Social Network, Forum or any kind of memberships based product.
 
-[**>>>> Find a Real-Life MySaaS Project Here <<<<**](https://ConnectionSphere.com/login)
+![Example of What Can You Create with My.SaaS](./docu/thumbnails/dashboard.png)
 
-[![Find a Real-Life MySaaS Project Here](./docu/thumbnails/dashboard.png)](https://ConnectionSphere.com/login)
+## Getting Started
+
+Create your own repository, using this one as a template.
+
+1. Access your GitHub account.
+
+2. Go [here](https://github.com/leandrosardi/my.saas/fork) to fork this repository.
+
+![How to Fork My.SaaS](./docu/thumbnails/fork.png)
+
+3. Clone the project in your computer.
+
+```bash
+mkdir ~/code
+git clone https://github.com/<your github user>/my.saas
+```
 
 ## 01. Features
 
@@ -69,8 +84,9 @@ bash install.sh
 
 ### 02.2. Database
 
-Then you need to create a database instance.
 MySaaS runs on CockroachDB. 
+
+Here are the instructions for installing the database in either: development or production environments:
 
 - For creating a database for development in your local computer, refer to this [tutorial](https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux), and run it as stand-alone with the command below:
 
