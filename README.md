@@ -76,25 +76,18 @@ I will be adding one new chapter week by week, so follow this project and get no
 14. Available Extensions
 15. Available UI Components
 
-## 16. Further Work
+## Further Work
 
-1. affiliates tracking, for managing resellers and pay commission;
-
-2. domain aliasing, for licencing your site to other companies;
-
-3. abuse preventing, by tracking user's network and browser fingertings;
-
-4. shadow profiling [[1](https://en.wikipedia.org/wiki/Shadow_profile)], for sales optimizations and client retention;
-
-5. Affiliates Tracking Extension
-
-6. White-Labeling Features
-
-7. Custom Alerts
-
-8. Screens As a Code
-
-9. Improve Funnel Configuration
+01. Complete documentation for all features as of today.
+02. affiliates tracking, for managing resellers and pay commission;
+03. domain aliasing, for licencing your site to other companies;
+04. abuse preventing, by tracking user's network and browser fingertings;
+05. shadow profiling [[1](https://en.wikipedia.org/wiki/Shadow_profile)], for sales optimizations and client retention;
+06. Affiliates Tracking Extension
+07. White-Labeling Features
+08. Custom Alerts
+09. Screens As a Code
+10. Improve Funnel Configuration
 	- add descriptor about the email marketing automation
 	- add descriptor about which transactional emails activate for this funnel
 	- add A/B testing of screens (landing, offer, plans, etc)
