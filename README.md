@@ -78,7 +78,7 @@ I will be adding one new chapter week by week, so follow this project and get no
 
 ## Further Work
 
-01. Complete documentation for all features as of today.
+01. Complete documentation for all features as of version 1.5.6.
 02. affiliates tracking, for managing resellers and pay commission;
 03. domain aliasing, for licencing your site to other companies;
 04. abuse preventing, by tracking user's network and browser fingertings;
