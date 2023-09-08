@@ -8,23 +8,6 @@
 
 ![Example of What Can You Create with My.SaaS](./docu/thumbnails/dashboard.png)
 
-## Getting Started
-
-Create your own repository, using this one as a template.
-
-1. Access your GitHub account.
-
-2. Go [here](https://github.com/leandrosardi/my.saas/fork) to fork this repository.
-
-![How to Fork My.SaaS](./docu/thumbnails/fork.png)
-
-3. Clone the project in your computer.
-
-```bash
-mkdir ~/code
-git clone https://github.com/<your github user>/my.saas
-```
-
 ## 01. Features
 
 Here is a full list of the MySaaS features:
@@ -68,7 +51,7 @@ Here is a full list of the MySaaS features:
 
 ## 02. Installation
 
-### 02.1. Environment
+### 02.1. Setup Environment
 
 MySaaS has been developed and tested on the following environment:
 - Ubuntu 20.04
@@ -82,13 +65,40 @@ wget https://raw.githubusercontent.com/leandrosardi/my.saas/main/cli/install.sh
 bash install.sh
 ```
 
-### 02.2. Database
+### 02.2. Fork MySaaS
+
+Create your own repository, using this one as a template.
+
+1. Access your GitHub account, and click on "Create fork".
+
+2. Go [here](https://github.com/leandrosardi/my.saas/fork) to fork this repository.
+
+![How to Fork My.SaaS](./docu/thumbnails/fork.png)
+
+3. Clone the project in your computer.
+
+```bash
+mkdir ~/code
+cd ~/code
+git clone https://github.com/<your github user>/my.saas
+```
+
+4. Install requrired gems
+
+```bash
+cd ~/code/my.saas
+bundler update
+```
+
+### 02.2. Database Installation
 
 MySaaS runs on CockroachDB. 
 
 Here are the instructions for installing the database in either: development or production environments:
 
-- For creating a database for development in your local computer, refer to this [tutorial](https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux), and run it as stand-alone with the command below:
+- For creating a database for development in your local computer, refer to this [tutorial](https://www.cockroachlabs.com/docs/stable/install-cockroachdb-linux) to install CockroachDB locally.
+
+Then run it as stand-alone with the command below:
 
 ```bash
 cockroach start-single-node --insecure
