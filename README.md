@@ -1,5 +1,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/leandrosardi/my.saas) ![GitHub](https://img.shields.io/github/license/leandrosardi/my.saas) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/leandrosardi/my.saas) ![GitHub last commit](https://img.shields.io/github/last-commit/leandrosardi/my.saas)
 
+**THIS PROJECT IS UNDER CONSTRUCTION**
+
 ![logo](./public/core/images/logo.png)
 
 # MySaaS - Open Source SaaS Platform - Extensible and Scalable.  
