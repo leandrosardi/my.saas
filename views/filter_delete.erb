@@ -1,0 +1,31 @@
+<%
+begin
+    # validate all the searches are belonging the same account
+    n = DB["
+            SELECT COUNT(*) AS n
+            FROM zi_search 
+            WHERE id IN ('#{params[:ids].split(/,/).join("', '")}')
+            AND id_account <> '#{@login.user.id_account}'
+        "].first[:n]
+    raise "One or more seeaches are not belonging to your account" if n > 0
+
+    ids = params[:ids].split(/,/) #.reject { |id| !id.to_s.guid? }
+    # start transaction
+    DB.execute("UPDATE zi_search SET status=false, delete_time='#{now()}', update_time='#{now()}' WHERE id IN ('#{ids.join("','")}')")
+    
+    # push the searches to micro.data
+    # reference: https://github.com/FreeLeadsData/app/issues/11
+    #BlackStack::MicroData::Zi::Search.where(:id=>params[:ids].split(/,/)).each { |s| s.push }
+
+    # reease resources
+    DB.disconnect
+    GC.start
+    # return 
+    # on a new search, return the paginatin to the page 1.
+    # don't show any success message in this case. Just the results of the search.
+    redirect "/dashboard?msg=#{CGI::escape('Searches deleted successfully')}" 
+rescue => e
+    # return errors
+    redirect "/dashboard?err=#{CGI::escape(e.to_console[0..1000])}"
+end
+%>

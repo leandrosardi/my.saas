@@ -1,0 +1,118 @@
+<%
+headcounts = BlackStack::MicroData::Zi::CompanyHeadcount.all.map { |c| c.value }
+# sort by the first number extracted from the string using regex
+headcounts = headcounts.sort { |a,b| a.gsub(/^\d+/).first.to_i <=> b.gsub(/^\d+/).first.to_i }
+selected_headcounts = @login.user.preference('step2.headcounts', headcounts.join(','), nil).split(/,/)
+%>
+
+<section class="step">
+	<br/>
+	<section class='row-fluid'>
+		<h1><b>STEP 2:</b> Choose Company Headcounts</h1>
+	</section>
+	<section class='row-fluid'>
+		<h2>Choose One Or More Of The Available Headcounts.</h2>
+	</section>
+	<br/>
+	<form method='post' action='/filter_step2'>
+		<section class='row-fluid'>
+			<%
+			n = 0
+			headcounts.each { |pos|
+				checked = selected_headcounts.include?(pos) ? 'checked' : ''
+				if n % 3 == 0
+					%>
+					</section>	
+					<section class='row-fluid'>
+					<%
+				end
+				%>
+				<div class='span4 checkboxes-row'>
+					<input class='checkbox' type='checkbox' value='<%=pos.to_s.encode_html%>' id='<%=pos.to_s.encode_html%>' name='<%=pos.to_s.encode_html%>' <%=checked%>>
+					<span><%=pos.to_s.encode_html%></span>
+				</div>
+				<%
+				n +=1
+			} # while
+			# select-all / unselect-all button
+			while (n+1) % 3 != 0
+				%>
+				<div class='span4 checkboxes-row align-left' style='align:left;margin-left:0px;padding-left:15px;padding-top:15px;'>
+				</div>
+				<%
+				n += 1
+			end
+			if n % 3 == 0
+				%>
+				</section>	
+				<section class='row-fluid'>
+				<%
+			end
+			%>
+			<div class='span4 checkboxes-row align-left' style='align:left;margin-left:0px;padding-left:65px;padding-top:15px;'>
+				<a id='select-all' name='select-all' class='btn btn-large btn-link'>Select All</a>
+			</div>
+		</section>
+
+		<br/>
+		
+		<section class='row-fluid text-right'>
+			<a class='btn btn-large btn-link' id='exit' href='/filter_step2'>Skip</a>&nbsp;&nbsp;
+			<a class='btn btn-large btn-gray' id='back' href='/step1'><i class="icon-long-arrow-left"></i> Back</a>&nbsp;&nbsp;
+			<button class="btn btn-primary btn-large" id="step2-next" disabled>Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
+			<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Need AI Scraping? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
+		</section>
+	</form>
+</section>
+
+<script type="text/javascript" charset="utf-8">
+
+	// return true if all .checkbox are chekcked.
+	// otherwise, return false.
+	function all_checked() {
+		return $('input[type="checkbox"]:checked').length == $('input[type="checkbox"]').length;
+	}
+
+	// if all_checked() is true, the turn content of the #select-all button to 'Unselect All'.
+	// otherwise, turn content of the #select-all button to 'Select All'. 
+	function toggle_select_all() {
+		if (all_checked() === true) {
+			$('#select-all').html('Unselect All');
+		} else {
+			$('#select-all').html('Select All');
+		}
+	} 
+
+	$(document).ready(function() {
+		toggle_select_all();
+		set_button_state();
+		$("input[type='checkbox']").on('change', function() {
+			toggle_select_all();
+			set_button_state();
+		});
+		$('#select-all').click(function(){
+			if (all_checked() === true) {
+				$('input[type="checkbox"]').prop('checked', false);
+			} else {
+				$('input[type="checkbox"]').prop('checked', true);
+			}
+			toggle_select_all();
+			set_button_state();
+		});
+	});
+
+	function validate_checkbox(){
+		return $('input[type="checkbox"]:checked').length > 0;
+	}
+
+	function set_button_state(){
+		if (validate_checkbox() === true)
+		{
+			$("#step2-next").removeAttr("disabled");
+		}
+		else
+		{
+			$("#step2-next").attr("disabled","disabled");
+		}
+	}
+</script>

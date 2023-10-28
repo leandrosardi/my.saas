@@ -1,434 +1,179 @@
-/* 
- * Scrolling animation
- * More info here: https://www.w3schools.com/howto/howto_css_smooth_scroll.asp
- * 
- */
- html {
-	scroll-behavior: smooth;
-}
-
 body {
-	padding-top: 0px;
-	padding-bottom: 40px;
-	padding-left: 0px;
-	padding-right: 0px;
-	width: 100%;
-	background-color: #fff;
-
-	border-left: 45px solid black;
-	border-right: 45px solid black;
+    padding-top: 50px;
+    padding-bottom: 40px;
+    padding-left: 45px;
+    padding-right: 45px;
+    width: 100%;
+    background-color: #fff;
 }
 
-
-/* 
- * Top stiky navbar 
- * More info here: https://www.w3schools.com/howto/howto_js_navbar_sticky.asp
- * 
- * The mysticky class is added to the navbar with JS when it reaches its scroll position.
- * 
- */
-
-section.menu_banner {
-	position: -webkit-sticky;
-	position: sticky;
-	top: 0;
-	left: 0;
-	width: 100%;
-	z-index: 20001;
-	height: 28px;
-	opacity: 1.0;
-	background-color: #fff;
+h1.offer {
+    font-weight: normal; font-weight: bold; text-shadow: 4px 4px 5px rgb(200,200,200); font-size: 64px; color: red; padding-bottom: 25px;
 }
 
-section.shadow { box-shadow: 0px 0px 15px 2px #000000; }
-
-section.divisor { border-bottom: 5px dashed gray; }
-
-div.top_banner {
-	background-image: url('/leads/images/guarda.png');
-	height: 16px;
-}
-
-div.toplogo {
-	top: 25px;
-	vertical-align: middle; 
-	width: 190px;
-	left: 10px;
-	z-index: 9999;
-}
-
-div.memberbutton {
-	top: 27px;
-	right: 75px;
-	border-radius: 5px 5px 5px 5px;
-	float:right;
-	height:32px;
-	width:100px;
-	color: rgb(77,109,243);
-	background-color: white;
-	border: 3px solid rgb(77,109,243);
-	font:Arial;
-	font-size:16px;
-	font-weight: bold;
-	text-align:center;
-	position:absolute;
-	vertical-align: middle; 
-}
-
-div.topbutton-1 {
-	top: 30px;
-	position:absolute;
-	vertical-align: middle; 
-	font:Arial;
-	font-size:16px;
-	font-weight: bold;
-	text-align:right;
-	width: 100px;
-	right: 20px;
-}
-
-div.topbutton-2 {
-	top: 30px;
-	position:absolute;
-	vertical-align: middle; 
-	font:Arial;
-	font-size:16px;
-	font-weight: bold;
-	text-align:right;
-	width: 150px;
-	right: 200px;
-}
-
-div.topbutton-3 {
-	top: 30px;
-	position:absolute;
-	vertical-align: middle; 
-	font:Arial;
-	font-size:16px;
-	font-weight: bold;
-	text-align:right;
-	width: 150px;
-	right: 350px;
-}
-
-div.topbutton-4 {
-	top: 30px;
-	position:absolute;
-	vertical-align: middle; 
-	font:Arial;
-	font-size:16px;
-	font-weight: bold;
-	text-align:right;
-	width: 150px;
-	right: 500px;
-}
-
-div.topbutton-5 {
-	top: 30px;
-	position:absolute;
-	vertical-align: middle; 
-	font:Arial;
-	font-size:16px;
-	font-weight: bold;
-	text-align:right;
-	width: 150px;
-	right: 650px;
-}
-
-/* 
- * GENERAL
- *
- */
-
-h2 {
-	color: #239FEC;
-	text-shadow: 4px 4px 5px #B4D0E2;
-	//padding-left: 15px;
-	font-size:36px; 
-	text-shadow: 4px 4px 5px rgb(200,200,200);
-	padding-bottom:10px;
-	padding-left: 10px;
-}
-
-h2 u {
-	color:rgb(200,0,0);
-	text-decoration: underline solid rgb(200,0,0);
-	text-decoration-thickness: 5px;
-}
-
-h3.black {
-	color:rgb(30,30,30); 
-	text-shadow: 4px 4px 5px rgb(200,200,200);
-	//padding-left: 45px;
-	font-size:28px; 
-	padding-bottom:10px;
-}
-
-h3 {
-	color: #239FEC;
-	text-shadow: 4px 4px 5px #B4D0E2;
-	//padding-left: 45px;
-	font-size:28px; 
-	padding-bottom:10px;
-}
-
-a.btn-xlarge {
-	font-size: 1.5em;
-	line-height: 1.3;
-	font-weight: bold;
-	padding: 10px 15px 15px 10px;
-}
-
-a.input-xlarge {
-	font-size: 1.5em;
-	line-height: 1.3;
-	font-weight: 300;
-	padding: 10px 15px 15px 10px;
+h3.offer {
+    font-weight: normal; font-weight: bold; text-shadow: 4px 4px 5px rgb(200,200,200); font-size: 36px;
 }
 
 section.container {
-	padding-top: 0px;
-	padding-bottom: 40px;
-	padding-left: 0px;
-	padding-right: 0px;
-	width: 100%;
-}
-
-section.container p.quote {
-	padding-left: 15px;
-	padding-bottom: 25px;
-	font-style: italic;
-	width: 100%;
-	color: gray;
-	font-size: 2.5em;
-	border-left: 2px solid gray;
+    padding-top: 0px;
+    padding-bottom: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 100%;
 }
 
 div.span12 {
-	padding-top: 0px;
-	padding-bottom: 40px;
-	padding-left: 0px;
-	padding-right: 0px;
-	width: 100%;
+    padding-top: 0px;
+    padding-bottom: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 100%;
 }
 
-/* 
- * FOOTER
- *
- */
-
-section.footer {
-	//text-align: center;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	//top: 48px;
-	height: 75px;
-	width: 100%;
-	position: -webkit-sticky;
-	position: sticky;
-	z-index: 1000;
-	background-color: #fff;
-	opacity: 1.0;
-	//padding-left: 25px;
-	//padding-right: 0px;
-	padding-top: 25px;
-	border-top: 1px solid gray;
+.menu_banner {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height: 0px;
 }
 
-section.footer h3 {
-	color:rgb(30,30,30); 
-	font-size:24px; 
-	text-shadow: 4px 4px 5px rgb(200,200,200);
-	padding-bottom:10px;
-	padding-left: 25px;
+.top_banner {
+    background-image: url('/core/images/top.png');
+    height: 16px;
 }
-
-section.footer h3 u {
-	color:rgb(200,0,0);
-	text-decoration: underline solid rgb(200,0,0);
-	text-decoration-thickness: 5px;
-}
-
-section.footer div.button {
-	text-align:right; 
-	vertical-align:middle; 
-	padding-right: 25px;
-}
-
-/* 
- * HEADER
- *
- */
 
 section.header {
-	text-align: center;
-	top: 0px;
-	width: 100%;
-	/*
-	position: sticky;
-	z-index: 1000;
-	background-color: #fff;
-	opacity: 0.9;
-	*/
+    width: 100%;
+    text-align: center;
 }
 
 section.header h1 {
-	//font-size: 4.5em;
-	line-height: 1.2;
-	font-weight: bold;
-	//color: #555;
-	//margin-top: 25px;
-	margin-left: 25px;
-	margin-right: 25px;
+    font-size: 4.5em;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #555;
+    margin-top: 25px;
+    margin-left: 25px;
+    margin-right: 25px;
 
-	color:rgb(200,0,0); 
-	font-size:52px; 
-	text-shadow: 4px 4px 5px rgb(200,200,200);
-	padding-bottom:10px;
-
-	position: absolute:
-	top: 0px;
-	left: 0px;
-	width: 100%;
 }
 
 section.header h2 {
-	font-size: 2.5em;
-	line-height: 1.2;
-	font-weight: bold;
-	color: #333;
-	//margin-top: 15px;
-	margin-left: 0px;
-	margin-right: 0px;
+    font-size: 2.5em;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #333;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
 }
-
-section.header div.button {
-	position:absolute; 
-	top:135px; 
-	right:75px;
-}
-
-section.header div.button a.btn-xlarge {
-	font-size: 1.5em;
-	line-height: 1.3;
-	font-weight: bold;
-	padding: 10px 15px 15px 10px;
-}
-
-section.header p {
-	font-size: 20px;
-	padding-bottom: 10px;
-}
-
-/*
- * Testimonial
- *
- */
-
-section.testimonial p {
-	font-size: 14px;
-	padding-bottom: 0px;
-	color: rgb(60,60,60);
-	font-family: 'Open Sans', sans-serif;
-	line-height: 1.5;
-}
-
-section.testimonial span.client-name {
-	font-weight: bold;
-	color: rgb(60,60,60);
-}
-
-section.testimonial a.company-name {
-	font-weight: bold;
-	//color: rgb(60,60,60);
-}
-
-section.testimonial div.client-social {
-	padding-top: 0px;
-}
-
-section.testimonial a.client-social {
-	margin-right: 15px;
-}
-
-/*
- * Case Study
- *
- */
-
-div.casestudy {
-	padding-top: 25px;
-	padding-left: 25px;
-	padding-botton: 25px;
-}
-
-div.casestudy p {
-	font-size: 24px;
-	padding-bottom: 0px;
-	color: rgb(60,60,60);
-	font-family: 'Open Sans', sans-serif;
-	line-height: 1.5;
-}
-
-div.casestudy span.client-name {
-	font-weight: bold;
-	color: rgb(60,60,60);
-}
-
-div.casestudy a.company-name {
-	font-weight: bold;
-	//color: rgb(60,60,60);
-}
-
-div.casestudy div.client-social {
-	padding-top: 0px;
-}
-
-div.casestudy a.client-social {
-	margin-right: 15px;
-	font-size: 24px;
-}
-
-
-/* 
- * FAQS
- *
- */
 
 div.faq {
-	font-family: 'Open Sans', sans-serif;
-	font-size:20px;
-	padding-top:25px;
-	padding-botton:25px;
-	padding-left:25px;
-	border-bottom: 1px solid #999;
+    font-family: 'Open Sans', sans-serif;
+    font-size:20px;
+    padding-top:25px;
+    padding-botton:25px;
+    padding-left:25px;
+    border-bottom: 1px solid #999;
 }
 
 div.faq p {
-	font-size: 20px;
-	padding-bottom:10px;
-	line-height: 1.5;
-	letter-spacing: 2px;
+    padding-bottom:10px;
+    line-height: 1.5;
+    letter-spacing: 2px;
 }
 
-/*
- * HOWITWORKS
- *
- */
-div.how-it-works {
-	padding-left: 75px;
-	padding-right: 75px;
+
+div.titles {
+    padding-top: 20px;
+    position: relative;
+    //top: 55px;
+    left: 0px;
+    width: 100%;
 }
 
-div.how-it-works section.step {
-	padding-top: 25px;
-	padding-bottom: 25px;
+div.titles div.logo {
+    position: relative;
+    text-align: left;
+    top: 4px;
+    left: 4px;
+    z-index: 9999;
 }
 
-div.how-it-works section.step p {
-	font-family: 'Open Sans', sans-serif;
-	font-size: 20px;
-	padding-bottom:10px;
-	line-height: 1.5;
+div.titles h1 {
+    max-width: 1280px;
+    color: red;
+    font-family: 'Courier', 'Courier		 New', 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    text-shadow: 4px 4px 5px #B4D0E2;
+    //padding-left: 15px;
+    font-size:48px; 
+    text-shadow: 4px 4px 5px rgb(200,200,200);
+    padding-bottom:10px;
+    padding-left: 10px;
 }
+
+div.titles h2 {
+    max-width: 1280px;
+    color: rgb(60,60,60);
+    font-family: 'Courier', 'Courier New', 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    text-shadow: 4px 4px 5px #B4D0E2;
+    //padding-left: 45px;
+    font-size:36px; 
+    padding-bottom:10px;
+}
+
+div.form {
+    padding-top: 20px;
+    position: relative;
+    left: 0px;
+    width: 100%;
+}
+
+div.form input.email {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 32px;
+    padding: 10px;
+    background-color: rgb(200,255,200);
+    border: 5px solid green;
+    border-radius: 15px;
+    width: 820px;
+    text-align: center;
+    caret-color: green;
+    caret-shape: block;
+}
+
+div.form input.submit {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 32px;
+    padding: 10px;
+    background-color: rgb(200,200,255);
+    border: 5px solid blue;
+    border-radius: 15px;
+    width: 820px;
+    text-align: center;
+}
+
+div.form span.error {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 32px;
+    color: red;
+    padding: 10px;
+    border: 5px dashed red;
+    width: 820px;
+    text-align: center;
+}
+
+div.form a {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    width: 820px;
+    text-align: center;
+    text-decoration: none;
+}	

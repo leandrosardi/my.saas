@@ -1,0 +1,9 @@
+<%
+begin
+  selected_positions = params.values.join(',')
+  @login.user.preference('step1.positions', '', selected_positions)
+  redirect "/step2"
+rescue => e
+  redirect "/step1?err="+ CGI::escape(e.message)
+end
+%>

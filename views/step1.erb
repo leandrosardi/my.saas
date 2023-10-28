@@ -1,0 +1,113 @@
+<%
+selected_positions = @login.user.preference('step1.positions', JOBPOSITIONS.join(','), nil).split(/,/)
+%>
+
+<section class="step">
+	<br/>
+	<section class='row-fluid'>
+		<h1><b>STEP 1:</b> Choose Job Positions</h1>
+	</section>
+	<section class='row-fluid'>
+		<h2>Choose One Or More Of The Available Job Positions.</h2>
+	</section>
+	<br/>
+	<form method='post' action='/filter_step1'>
+		<section class='row-fluid'>
+			<%
+			n = 0
+			JOBPOSITIONS.each { |pos|
+				checked = selected_positions.include?(pos) ? 'checked' : ''
+				if n % 3 == 0
+					%>
+					</section>	
+					<section class='row-fluid'>
+					<%
+				end
+				%>
+				<div class='span4 checkboxes-row'>
+					<input class='checkbox' type='checkbox' value='<%=pos.to_s.encode_html%>' id='<%=pos.to_s.encode_html%>' name='<%=pos.to_s.encode_html%>' <%=checked%>>
+					<span><%=pos.to_s.encode_html%></span>
+				</div>
+				<%
+				n +=1
+			} # while
+			# select-all / unselect-all button
+			while (n+1) % 3 != 0
+				%>
+				<div class='span4 checkboxes-row align-left' style='align:left;margin-left:0px;padding-left:15px;padding-top:15px;'>
+				</div>
+				<%
+				n += 1
+			end
+			# select-all / unselect-all button
+			if n % 3 == 0
+				%>
+				</section>	
+				<section class='row-fluid'>
+				<%
+			end
+			%>
+			<div class='span4 checkboxes-row align-left' style='align:left;margin-left:0px;padding-left:15px;padding-top:15px;'>
+				<a id='select-all' name='select-all' class='btn btn-large btn-link'>Select All</a>
+			</div>
+		</section>	
+		<br/>
+		<section class='row-fluid text-right'>
+			<a class='btn btn-large btn-link' id='exit' href='/filter_step1'>Skip</a>&nbsp;&nbsp;
+			<button class="btn btn-primary btn-large" id="step1-next" disabled>Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
+			<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Need Custom Job Positions? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
+		</section>
+	</form>
+</section>
+
+<script type="text/javascript" charset="utf-8">
+
+	// return true if all .checkbox are chekcked.
+	// otherwise, return false.
+	function all_checked() {
+		return $('input[type="checkbox"]:checked').length == $('input[type="checkbox"]').length;
+	}
+
+	// if all_checked() is true, the turn content of the #select-all button to 'Unselect All'.
+	// otherwise, turn content of the #select-all button to 'Select All'. 
+	function toggle_select_all() {
+		if (all_checked() === true) {
+			$('#select-all').html('Unselect All');
+		} else {
+			$('#select-all').html('Select All');
+		}
+	} 
+
+	$(document).ready(function() {
+		toggle_select_all();
+		set_button_state();
+		$("input[type='checkbox']").on('change', function() {
+			toggle_select_all();
+			set_button_state();
+		});
+		$('#select-all').click(function(){
+			if (all_checked() === true) {
+				$('input[type="checkbox"]').prop('checked', false);
+			} else {
+				$('input[type="checkbox"]').prop('checked', true);
+			}
+			toggle_select_all();
+			set_button_state();
+		});
+	});
+
+	function validate_checkbox(){
+		return $('input[type="checkbox"]:checked').length > 0;
+	}
+
+	function set_button_state(){
+		if (validate_checkbox() === true)
+		{
+			$("#step1-next").removeAttr("disabled");
+		}
+		else
+		{
+			$("#step1-next").attr("disabled","disabled");
+		}
+	}
+</script>

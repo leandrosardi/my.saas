@@ -1,0 +1,39 @@
+<%
+begin
+    # validate all the searches are belonging the same account
+    n = DB["
+            SELECT COUNT(*) AS n
+            FROM zi_search 
+            WHERE id IN ('#{params[:id]}')
+            AND id_account <> '#{@login.user.id_account}'
+        "].first[:n]
+    raise "One or more seeaches are not belonging to your account" if n > 0
+
+    s = BlackStack::MicroData::Zi::Search.where(:id=>params[:id]).first
+    h = s.to_hash(true)
+    i = h.dup
+    i['name'] += " (copy)"
+    o = BlackStack::MicroData::Zi::Search.new(i)
+    o.id = guid
+    o.create_time = now
+    o.id_account = @login.user.id_account
+    o.id_user = @login.id_real_user || @login.id_user
+    o.status = false # pause it, so the user can edit it before start it
+    o.badge_color = 'black'
+    o.badge_text = 'off'
+    o.save
+
+    # push the searches to micro.data
+    # reference: https://github.com/FreeLeadsData/app/issues/11
+    #o.push
+
+    # reease resources
+    DB.disconnect
+    GC.start
+    
+    redirect "/edit/#{o.id}?msg=#{CGI::escape('Searches copied successfully')}" 
+rescue => e
+    # return errors
+    redirect "/dashboard?err=#{CGI::escape(e.to_console[0..1000])}"
+end
+%>

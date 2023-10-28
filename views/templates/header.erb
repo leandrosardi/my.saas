@@ -88,7 +88,17 @@ end
 						<td align='left' style='text-align: left:' width='250px'>
 							<a href="/plans"> 
 								<span>
+									<%
+									if h[:mode] == BlackStack::I2P::MODE_CREDITS
+									%>
 									<span id='credits' class='label label-blue'><%=account.credits(h[:code]).to_i.to_label%></span> <span style='color:white;'><%=h[:unit_name].to_s%></span> 
+									<%
+									elsif h[:mode] == BlackStack::I2P::MODE_AMOUNT
+									%>
+									<span id='amount' class='label label-blue'>$<%=account.balance(h[:code]).to_f.round(2).to_label%></span> <span style='color:white;'></span> 
+									<%
+									end # if h[:mode] == BlackStack::I2P::MODE_AMOUNT
+									%>
 								</span>
 							</a>
 							<a href="/plans" class='btn btn-mini btn-green' style='margin-top:0;'><i class='icon-plus'></i></a>

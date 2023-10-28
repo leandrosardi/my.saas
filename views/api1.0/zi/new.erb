@@ -1,0 +1,24 @@
+<%
+return_message = {}
+begin
+    h = @body['search']
+    raise 'search is empty' if h.nil? || h.to_s.empty? 
+    o = BlackStack::MicroData::Zi::Search.new(h)
+    o.id = guid
+    o.create_time = now
+    o.id_account = @account.id
+    o.id_user = @account.users.first.id
+    o.save
+    # return
+    return_message['id'] = o.id
+    return_message['status'] = 'success'
+rescue => e
+    return_message['status'] = e.message
+end
+# release resources
+GC.start
+DB.disconnect
+
+# return
+return return_message.to_json
+%>

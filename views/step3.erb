@@ -1,0 +1,28 @@
+<%
+keywords = @login.user.preference('step3.keywords', '', nil)
+%>
+
+<section class="step">
+	<br/>
+	<section class='row-fluid'>
+		<h1><b>STEP 3:</b> Set Keywords</h1>
+	</section>
+	<section class='row-fluid'>
+		<h2>
+			Write COMPANY KEYWORDS to Find in Their Websites.<br/>
+			<small>Separate each keyword with a comma. <b>Example:</b> HVAC, Plumbing</small>
+		</h2>
+	</section>
+	<br/>
+	<form id='keywords_form' name='keywords_form' method='post' action='/filter_step3'>
+		<section class='row-fluid'>
+			<input class='text' type="text" name="keywords" id="keywords" placeholder="Write company keywords separated by comma." autocomplete="false" value="<%=keywords.to_s.encode_html%>" tabindex="6">
+		</section>
+		<div align="right">
+			<a class='btn btn-large btn-link' id='exit' href='/filter_step3'>Skip</a>&nbsp;&nbsp;
+			<a href="/step2" class="btn btn-large"><i class="icon-long-arrow-left"></i> Back</a>&nbsp;&nbsp;
+			<button id="step2-next" class="btn btn-primary btn-large">Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
+			<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Want to target by 7 different filters? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
+		</div>
+	</form>
+</section>

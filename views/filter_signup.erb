@@ -28,7 +28,7 @@ if BlackStack::Extensions.exists?('i2p')
 	a = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
 	# apply the free tiers
 	BlackStack::I2P::services_descriptor.select { |h| h[:free_tier] }.each { |h|
-	    a.bonus(h[:code], DateTime.new(2300,01,01), h[:free_tier][:credits], 'Free Tier')
+	    a.bonus(h[:code], DateTime.new(2300,01,01), h[:free_tier][:amount], h[:free_tier][:credits], 'Free Tier')
 	}
 	# update blance snapshot
 	a.update_balance_snapshot
