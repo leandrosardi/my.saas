@@ -1,16 +1,19 @@
-<footer id="main-footer">
-	
+<footer id="main-footer">	
 	<section class='row-fluid'>
-		<div class='span3'>
-			<img src='/core/images/logo.png' width='400px' title='<%=APP_NAME%>' style='opacity:0.25;' />
-			<br/>
+		<div class='span2'>
+			<div style='width:100%; text-align:left; margin-top:5px; margin-left:10px;'>
+				<img align='left' src='/core/images/logo.png' height='50px' title='<%=APP_NAME%>' style='opacity:0.25;' />
+			</div>
+			<!--
+			<br/><br/>
 			<div style='width:100%; text-align:left; margin-top:5px; margin-left:10px;'>
 				<a target='_window' style='text-decoration:none;font-size:18px;margin-right:5px;width:24px;' title='Follow Us on Facebook' href='https://www.facebook.com/groups/560001971837935'><i class='icon-facebook'></i></a>
 				<a target='_window' style='text-decoration:none;font-size:18px;margin-right:5px;width:24px;' title='Follow Us on GitHub' href='https://github.com/leandrosardi'><i class='icon-github'></i></a>
 			</div>
+			-->
 		</div>
 		
-		<div class='span3 text-left'>
+		<div class='span2 text-left'>
 			<b><i class='icon-question-sign'></i> Help</b><br/>
 			<a href='<%=TERMS_URL%>' target='_window'>Terms of Service</a><br/>
 			<a href='<%=PRIVACY_URL%>' target='_window'>Privacy Policy</a><br/>
@@ -18,7 +21,17 @@
 			<br/>
 		</div>
 
-		<div class='span3 text-left'>
+		<div class='span2 text-left'>
+			<b><i class='icon-heart'></i> Docs</b><br/>
+			<i>(Pending)</i>
+			<!--
+			<a href='https://help.expandedventure.com/developers/getting-your-api-key' target='_window'>Generating Your API-KEY</a><br/>
+			<a href='https://help.expandedventure.com/developers/connectionsphere-api-1-5' target='_window'>API Specifications</a><br/>
+			<a href='https://help.expandedventure.com/developers/zapier-integrations' target='_window'>Zapier Integrations</a><br/>
+			-->
+		</div>	
+
+		<div class='span2 text-left'>
 			<%
 			# getting full list of sections
 			sections = BlackStack::Extensions::extensions.select { |e| e.show_in_footer == true && !e.services_section.nil? }.map { |e| e.services_section }.uniq.sort
@@ -41,22 +54,13 @@
 			}
 			%>
 		</div>
-		<div class='span3 text-left'>
-			<b><i class='icon-heart'></i> Docs</b><br/>
-			<i>(Pending)</i>
-			<!--
-			<a href='https://help.expandedventure.com/developers/getting-your-api-key' target='_window'>Generating Your API-KEY</a><br/>
-			<a href='https://help.expandedventure.com/developers/connectionsphere-api-1-5' target='_window'>API Specifications</a><br/>
-			<a href='https://help.expandedventure.com/developers/zapier-integrations' target='_window'>Zapier Integrations</a><br/>
-			-->
-		</div>
 	</section>
 		
 	<br/>
 	<br/>
 	<br/>
 
-	<b><%=APP_NAME%></b>, version <a href='https://github.com/leandrosardi/mysaas' target='_window'><%=MYSAAS_VERSION.to_s%></a><br/>
+	<b><%=APP_NAME%></b>, version <a href='https://github.com/leandrosardi/my.saas' target='_window'><%=MYSAAS_VERSION.to_s%></a><br/>
 	Copyright &copy; <%=DateTime.now.year.to_s%> <a href="<%=COMPANY_URL %>" target='_window'><%=COMPANY_NAME.to_s%></a>, all rights reserved.<br/>
 	<!--
 	Powered by <a href='https://github.com/leandrosardi/blackstack' target='_window'>BlackStack</a>.
