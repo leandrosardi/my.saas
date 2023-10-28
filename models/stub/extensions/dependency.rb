@@ -1,4 +1,4 @@
-require 'blackstack-deployer'
+require 'my-ruby-deployer'
 
 module BlackStack
     module Extensions

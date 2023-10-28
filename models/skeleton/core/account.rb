@@ -94,7 +94,8 @@ module BlackStack
             a.name = companyname
             a.create_time = now
             a.id_timezone = t.id
-            a.storage_total_kb = BlackStack::Storage::storage_default_max_allowed_kilobytes
+            # DEPRECATED            
+            #a.storage_total_kb = BlackStack::Storage::storage_default_max_allowed_kilobytes
             a.save
             
             # crear el usuario

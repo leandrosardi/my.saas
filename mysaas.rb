@@ -1,20 +1,19 @@
 #require_relative '../blackstack-nodes/lib/blackstack-nodes.rb'
 
+require 'blackstack-db'
 require 'blackstack-core'
 require 'simple_command_line_parser'
 require 'simple_cloud_logging'
-require 'blackstack-deployer'
+require 'my-ruby-deployer'
 
 require 'pampa'
 #require_relative '../pampa/lib/pampa.rb'
 
 require 'workmesh'
-#require_relative '../workmesh/lib/workmesh.rb'
+#require_relative '../../workmesh/lib/workmesh.rb'
 
 require 'my-dropbox-api'
-require 'leadhypebot'
-require 'gmassbot'
-require 'openai-scraper'
+#require_relative '../../my-dropbox-api/lib/my-dropbox-api.rb'
 
 require 'colorize'
 require 'pg'
@@ -30,25 +29,26 @@ require 'fileutils'
 require 'rack/contrib/try_static' # this is to manage many public folders
 require 'postmark'
 
-require 'lib/controllers'
-require 'lib/databases'
-require 'lib/emails'
-require 'lib/extensions'
-require 'lib/notifications'
+require 'app/lib/controllers'
+require 'app/lib/emails'
+require 'app/lib/extensions'
+require 'app/lib/notifications'
 
 # Default login and signup screens.
 # 
 DEFAULT_LOGIN = '/login'
 DEFAULT_SIGNUP = '/leads/signup'
 
-# return a postgresql uuid
-def guid()
-    BlackStack::CRDB::guid
-end
-            
-# return current datetime with format `YYYY-MM-DD HH:MM:SS`
-def now()
-    BlackStack::CRDB::now
+# convert an integer to a string like 1.5K or 1.5M
+def short_label(i)
+    i = i.to_f
+    if i >= 1000000
+        return (i.to_f/1000000.to_f).round(2).to_label + 'M'
+    elsif i >= 1000
+        return (i.to_f/1000.to_f).round(2).to_label + 'K'
+    else
+        return i.to_label
+    end
 end
 
 # receive a datetime parameter `dt`
