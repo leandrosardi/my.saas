@@ -14,7 +14,7 @@ begin
     DB.execute("UPDATE zi_search SET status=FALSE, badge_color='black', badge_text='off', update_time='#{now()}' WHERE id IN ('#{ids.join("','")}')")
 
     # push the searches to micro.data
-    # reference: https://github.com/FreeLeadsData/app/issues/11
+    # reference: https://github.com/FreeLeadsData/my.saas/issues/11
     #BlackStack::MicroData::Zi::Search.where(:id=>params[:ids].split(/,/)).each { |s| s.push }
 
     # reease resources

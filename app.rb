@@ -1,8 +1,8 @@
 begin
   print 'Loading libraries... '
   require 'sinatra'
-  require 'app/mysaas'
-  require 'app/lib/stubs'
+  require 'my.saas/mysaas'
+  require 'my.saas/lib/stubs'
   puts 'done'.green
 
   # 
@@ -20,7 +20,7 @@ begin
       :mandatory=>false, 
       :description=>'Name of the configuration file.', 
       :type=>BlackStack::SimpleCommandLineParser::STRING,
-      :default => 'app/config',
+      :default => 'my.saas/config',
     }]
   )
   puts 'done'.green
@@ -31,7 +31,7 @@ begin
   puts 'done'.green
 
   print 'Loading version information... '
-  require 'app/version'
+  require 'my.saas/version'
   puts 'done'.green
 
   print 'Connecting database... '
@@ -39,7 +39,7 @@ begin
   puts 'done'.green
 
   print 'Loading models... '
-  require 'app/lib/skeletons'
+  require 'my.saas/lib/skeletons'
   puts 'done'.green
 
   print 'Loading helpers... '
@@ -172,21 +172,17 @@ begin
   # include the libraries of the extensions
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   BlackStack::Extensions.extensions.each { |e|
-    require "app/extensions/#{e.name.downcase}/main"
+    require "my.saas/extensions/#{e.name.downcase}/main"
   }
   puts 'done'.green
 
   print 'Loading extensions models... '
   # Load skeleton classes
   BlackStack::Extensions.extensions.each { |e|
-    require "app/extensions/#{e.name.downcase}/lib/skeletons"
+    require "my.saas/extensions/#{e.name.downcase}/lib/skeletons"
   }
   puts 'done'.green
-
-  print 'Loading account model... '
-  require 'model/account'
-  puts 'done'.green
-
+  
   print 'Setting up Sinatra... '
   PORT = parser.value("port")
 
@@ -645,7 +641,7 @@ begin
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   print 'Setting up extensions entries... '
   BlackStack::Extensions.extensions.each { |e|
-    require "app/extensions/#{e.name.downcase}/app.rb"
+    require "my.saas/extensions/#{e.name.downcase}/app.rb"
   }
   puts 'done'.green
   

@@ -4,9 +4,9 @@
 #
 
 # encoding: utf-8
-require 'app/mysaas'
-require 'app/lib/stubs'
-require 'app/config.rb'
+require 'my.saas/mysaas'
+require 'my.saas/lib/stubs'
+require 'my.saas/config.rb'
 require 'shellwords'
 
 puts

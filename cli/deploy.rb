@@ -1,12 +1,12 @@
 # encoding: utf-8
-require 'app/mysaas'
-require 'app/lib/stubs'
+require 'my.saas/mysaas'
+require 'my.saas/lib/stubs'
 #require_relative '/home/leandro/code/my-ruby-deployer/lib/my-ruby-deployer' # enable this line if you want to work with a live version of deployer
 #require_relative '/home/leandro/code/blackstack-nodes/lib/blackstack-nodes' # enable this line if you want to work with a live version of nodes
-require 'app/config'
-require 'app/version'
+require 'my.saas/config'
+require 'my.saas/version'
 
-require'app/deployment/install-webserver'
+require'my.saas/deployment/install-webserver'
 
 l = BlackStack::LocalLogger.new('./deploy.log')
 

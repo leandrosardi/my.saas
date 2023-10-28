@@ -1,8 +1,8 @@
-require 'app/controllers/extensions/leftbaricon'
-require 'app/controllers/extensions/dependency'
-require 'app/controllers/extensions/settingscreen'
-require 'app/controllers/extensions/storagefolder'
-require 'app/controllers/extensions/extension'
+require 'my.saas/controllers/extensions/leftbaricon'
+require 'my.saas/controllers/extensions/dependency'
+require 'my.saas/controllers/extensions/settingscreen'
+require 'my.saas/controllers/extensions/storagefolder'
+require 'my.saas/controllers/extensions/extension'
 
 module BlackStack
     module BackUp

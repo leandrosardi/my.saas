@@ -24,50 +24,50 @@ BlackStack::Deployer::add_routine({
       git reset --hard origin/%git_branch% >>~/freeleadsdata.app.output 2>&1
 
       # update extension i2p
-      cd ~/code/freeleadsdata/app/extensions >>~/freeleadsdata.app.output 2>&1
-      git clone https://github.com/leandrosardi/i2p ~/code/freeleadsdata/app/extensions/i2p >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions >>~/freeleadsdata.app.output 2>&1
+      git clone https://github.com/leandrosardi/i2p ~/code/freeleadsdata/my.saas/extensions/i2p >>~/freeleadsdata.app.output 2>&1
       git config --global credential.helper store >>~/freeleadsdata.app.output 2>&1
-      cd ~/code/freeleadsdata/app/extensions/i2p >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions/i2p >>~/freeleadsdata.app.output 2>&1
       git fetch --all >>~/freeleadsdata.app.output 2>&1
       git reset --hard origin/master >>~/freeleadsdata.app.output 2>&1
 
       # update extension monitoring
-      cd ~/code/freeleadsdata/app/extensions >>~/freeleadsdata.app.output 2>&1
-      git clone https://github.com/leandrosardi/monitoring ~/code/freeleadsdata/app/extensions/monitoring >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions >>~/freeleadsdata.app.output 2>&1
+      git clone https://github.com/leandrosardi/monitoring ~/code/freeleadsdata/my.saas/extensions/monitoring >>~/freeleadsdata.app.output 2>&1
       git config --global credential.helper store >>~/freeleadsdata.app.output 2>&1
-      cd ~/code/freeleadsdata/app/extensions/monitoring >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions/monitoring >>~/freeleadsdata.app.output 2>&1
       git fetch --all >>~/freeleadsdata.app.output 2>&1
       git reset --hard origin/main >>~/freeleadsdata.app.output 2>&1
 
       # update extension content
-      cd ~/code/freeleadsdata/app/extensions >>~/freeleadsdata.app.output 2>&1
-      git clone https://github.com/leandrosardi/content ~/code/freeleadsdata/app/extensions/content >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions >>~/freeleadsdata.app.output 2>&1
+      git clone https://github.com/leandrosardi/content ~/code/freeleadsdata/my.saas/extensions/content >>~/freeleadsdata.app.output 2>&1
       git config --global credential.helper store >>~/freeleadsdata.app.output 2>&1
-      cd ~/code/freeleadsdata/app/extensions/content >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions/content >>~/freeleadsdata.app.output 2>&1
       git fetch --all >>~/freeleadsdata.app.output 2>&1
       git reset --hard origin/main >>~/freeleadsdata.app.output 2>&1
 
       # update extension selectrowsjs
-      cd ~/code/freeleadsdata/app/extensions >>~/freeleadsdata.app.output 2>&1
-      git clone https://github.com/leandrosardi/selectrowsjs ~/code/freeleadsdata/app/extensions/selectrowsjs >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions >>~/freeleadsdata.app.output 2>&1
+      git clone https://github.com/leandrosardi/selectrowsjs ~/code/freeleadsdata/my.saas/extensions/selectrowsjs >>~/freeleadsdata.app.output 2>&1
       git config --global credential.helper store >>~/freeleadsdata.app.output 2>&1
-      cd ~/code/freeleadsdata/app/extensions/selectrowsjs >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions/selectrowsjs >>~/freeleadsdata.app.output 2>&1
       git fetch --all >>~/freeleadsdata.app.output 2>&1
       git reset --hard origin/main >>~/freeleadsdata.app.output 2>&1
 
       # update extension filtersjs
-      cd ~/code/freeleadsdata/app/extensions >>~/freeleadsdata.app.output 2>&1
-      git clone https://github.com/leandrosardi/filtersjs ~/code/freeleadsdata/app/extensions/filtersjs >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions >>~/freeleadsdata.app.output 2>&1
+      git clone https://github.com/leandrosardi/filtersjs ~/code/freeleadsdata/my.saas/extensions/filtersjs >>~/freeleadsdata.app.output 2>&1
       git config --global credential.helper store >>~/freeleadsdata.app.output 2>&1
-      cd ~/code/freeleadsdata/app/extensions/filtersjs >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions/filtersjs >>~/freeleadsdata.app.output 2>&1
       git fetch --all >>~/freeleadsdata.app.output 2>&1
       git reset --hard origin/main >>~/freeleadsdata.app.output 2>&1
 
       # update extension templatesjs
-      cd ~/code/freeleadsdata/app/extensions >>~/freeleadsdata.app.output 2>&1
-      git clone https://github.com/leandrosardi/templatesjs ~/code/freeleadsdata/app/extensions/templatesjs >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions >>~/freeleadsdata.app.output 2>&1
+      git clone https://github.com/leandrosardi/templatesjs ~/code/freeleadsdata/my.saas/extensions/templatesjs >>~/freeleadsdata.app.output 2>&1
       git config --global credential.helper store >>~/freeleadsdata.app.output 2>&1
-      cd ~/code/freeleadsdata/app/extensions/templatesjs >>~/freeleadsdata.app.output 2>&1
+      cd ~/code/freeleadsdata/my.saas/extensions/templatesjs >>~/freeleadsdata.app.output 2>&1
       git fetch --all >>~/freeleadsdata.app.output 2>&1
       git reset --hard origin/main >>~/freeleadsdata.app.output 2>&1
 
