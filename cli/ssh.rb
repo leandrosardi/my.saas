@@ -4,9 +4,9 @@
 #
 
 # encoding: utf-8
-require 'mysaas'
-require 'lib/stubs'
-require 'config.rb'
+require 'app/mysaas'
+require 'app/lib/stubs'
+require 'app/config.rb'
 require 'shellwords'
 
 puts
@@ -41,5 +41,5 @@ if node.ssh_private_key_file
 else
     s = "xterm -e 'sudo sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}'"
 end
-#binding.pry
+
 `#{s}`

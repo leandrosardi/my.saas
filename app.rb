@@ -1,8 +1,8 @@
 begin
   print 'Loading libraries... '
   require 'sinatra'
-  require 'mysaas'
-  require 'lib/stubs'
+  require 'app/mysaas'
+  require 'app/lib/stubs'
   puts 'done'.green
 
   # 
@@ -20,7 +20,7 @@ begin
       :mandatory=>false, 
       :description=>'Name of the configuration file.', 
       :type=>BlackStack::SimpleCommandLineParser::STRING,
-      :default => 'config',
+      :default => 'app/config',
     }]
   )
   puts 'done'.green
@@ -31,7 +31,7 @@ begin
   puts 'done'.green
 
   print 'Loading version information... '
-  require 'version'
+  require 'app/version'
   puts 'done'.green
 
   print 'Connecting database... '
@@ -39,7 +39,7 @@ begin
   puts 'done'.green
 
   print 'Loading models... '
-  require 'lib/skeletons'
+  require 'app/lib/skeletons'
   puts 'done'.green
 
   print 'Loading helpers... '
@@ -172,15 +172,19 @@ begin
   # include the libraries of the extensions
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   BlackStack::Extensions.extensions.each { |e|
-    require "extensions/#{e.name.downcase}/main"
+    require "app/extensions/#{e.name.downcase}/main"
   }
   puts 'done'.green
 
   print 'Loading extensions models... '
   # Load skeleton classes
   BlackStack::Extensions.extensions.each { |e|
-    require "extensions/#{e.name.downcase}/lib/skeletons"
+    require "app/extensions/#{e.name.downcase}/lib/skeletons"
   }
+  puts 'done'.green
+
+  print 'Loading account model... '
+  require 'model/account'
   puts 'done'.green
 
   print 'Setting up Sinatra... '
@@ -339,7 +343,7 @@ begin
     # decide to which landing redirect, based on the extensions and configuration
     # reference: https://github.com/leandrosardi/i2p/issues/3
     #redirect '/landing'
-    redirect '/signup'
+    redirect '/free'
   end
 
   get '/404', :agent => /(.*)/ do
@@ -399,8 +403,57 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Funnel
+  # 
+  get '/' do
+    erb :'views/free', :layout => :'/views/layouts/public'
+  end
 
-  get '/offer', :agent => /(.*)/ do
+  get '/free' do
+    erb :'views/free', :layout => :'/views/layouts/public'
+  end
+
+  get '/wizard', :auth => true do
+    erb :'views/step1', :layout => :'/views/layouts/public'
+  end
+
+  get '/wizard/', :auth => true do
+    erb :'views/step1', :layout => :'/views/layouts/public'
+  end
+
+  get '/step1', :auth => true do # job positions
+    erb :'views/step1', :layout => :'/views/layouts/public'
+  end
+
+  get '/step2', :auth => true do # headcount
+    erb :'views/step2', :layout => :'/views/layouts/public'
+  end
+
+  get '/step3', :auth => true do # industry
+    erb :'views/step3', :layout => :'/views/layouts/public'
+  end
+
+  get '/filter_step1', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_step1'
+  end
+  post '/filter_step1', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_step1'
+  end
+
+  get '/filter_step2', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_step2'
+  end
+  post '/filter_step2', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_step2'
+  end
+
+  get '/filter_step3', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_step3'
+  end
+  post '/filter_step3', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_step3'
+  end
+
+  get '/offer', :auth => true, :agent => /(.*)/ do
     erb :'views/offer', :layout => :'/views/layouts/public'
   end
 
@@ -413,12 +466,47 @@ begin
   # User dashboard
   print 'Setting up entries of internal pages... '
 
-  get '/', :auth => true do
-    #redirect '/dashboard'
-    redirect BlackStack::Funnel.url_after_login(@login, 'funnels.main')
-  end
   get '/dashboard', :auth => true, :agent => /(.*)/ do
     erb :'views/dashboard', :layout => :'/views/layouts/core'
+  end
+  get '/ajax/dashboard', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/dashboard'
+  end
+
+  get '/new', :auth => true, :agent => /(.*)/ do
+    erb :'views/search', :layout => :'/views/layouts/core'
+  end
+
+  get '/edit/:sid', :auth => true, :agent => /(.*)/ do
+    erb :'views/search', :layout => :'/views/layouts/core'
+  end
+
+  get '/delete/:sid', :auth => true, :agent => /(.*)/ do
+    erb :'views/delete'
+  end
+
+  post '/filter_edit', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_edit'
+  end
+
+  post '/filter_new', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_new'
+  end
+
+  get '/filter_copy', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_copy'
+  end
+
+  get '/filter_delete', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_delete'
+  end
+
+  get '/filter_pause', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_pause'
+  end
+
+  get '/filter_play', :auth => true, :agent => /(.*)/ do
+    erb :'views/filter_play'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -536,6 +624,20 @@ begin
   post '/api1.0/notifications/click.json' do
     erb :'views/api1.0/notifications/click'
   end
+
+  # micro.data
+  post '/api1.0/zi/pull.json', :api_key => true, :agent => /(.*)/ do
+    erb :'views/api1.0/zi/pull'
+  end  
+
+  post '/api1.0/zi/new.json', :api_key => true, :agent => /(.*)/ do
+    erb :'views/api1.0/zi/new'
+  end  
+
+  post '/api1.0/zi/get.json', :api_key => true, :agent => /(.*)/ do
+    erb :'views/api1.0/zi/get'
+  end  
+  
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -543,16 +645,16 @@ begin
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   print 'Setting up extensions entries... '
   BlackStack::Extensions.extensions.each { |e|
-    require "extensions/#{e.name.downcase}/app.rb"
+    require "app/extensions/#{e.name.downcase}/app.rb"
   }
   puts 'done'.green
   
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # adding storage sub-folders
-  # PENDING TO DEVELOP
+  # DEPRECATED
   #BlackStack::Extensions.add_storage_subfolders
 
 rescue => e
-  puts e.message.red
+  puts e.to_console.red
   exit(1)
 end

@@ -3,9 +3,9 @@
 # ruby tailx.rb name=sinatra1 n=50 filename=/home/ubuntu/code/mysaas/nginx.secure.access.log
 
 # encoding: utf-8
-require 'mysaas'
-require 'lib/stubs'
-require 'config.rb'
+require 'app/mysaas'
+require 'app/lib/stubs'
+require 'app/config.rb'
 
 puts
 puts 'This command is to get the latest n lines of any log in a node..'

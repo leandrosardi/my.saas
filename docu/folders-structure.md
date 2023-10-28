@@ -19,11 +19,11 @@ Except the classes who inherit from `BlackStack::Notification`, who are placed i
 
 ## a02.3. Deplying Folders
 
-6. `deployment-routines`: Here are all the has descriptors for running [**BlackStack-Deployer**](https://github.com/leandrosardi/blackstack-deployer).
+6. `deployment-routines`: Here are all the has descriptors for running [**my-ruby-deployer**](https://github.com/leandrosardi/my-ruby-deployer) (DEPRECATED).
 
-7. `sql`: Here are all the database updates to be executed by [**BlackStack-Deployer**](https://github.com/leandrosardi/blackstack-deployer).
+7. `sql`: Here are all the database updates to be executed by [**my-ruby-deployer**](https://github.com/leandrosardi/my-ruby-deployer).
 
-8. `gems`: Here are some private gems that are not published, so you need them in your repository in order to install them on servers. **MySaaS** has a [**BlackStack-Deployer**](https://github.com/leandrosardi/blackstack-deployer)'s routine for installing all the gemfiles in this folder. 
+8. `gems`: Here are some private gems that are not published, so you need them in your repository in order to install them on servers. **MySaaS** has a [**my-ruby-deployer**](https://github.com/leandrosardi/my-ruby-deployer)'s routine for installing all the gemfiles in this folder. 
 
 ## a02.4. Front-end Folders
 

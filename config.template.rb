@@ -201,38 +201,52 @@ BlackStack::Deployer::add_nodes([{
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
-    :connectionsphere_api_key => BlackStack::API.api_key,
+    :connectionsphere_api_key => '......',
     :dropbox_refresh_token => 'h6wR************-*********************',
 })
 
-# DEPRECATED in Favor of BlackStack::Dropbox (
-# Refrence: 
-# * https://github.com/leandrosardi/my-dropbox-api
-# * https://github.com/leandrosardi/cs/issues/17
+# Manage backup of secret files
+# Reference: https://github.com/leandrosardi/my.saas/blob/main/docu/03.secret-files-management.md
 BlackStack::BackUp.set({
-    # leandro@connectionsphere.com
-    :dropbox_refresh_token => 'h6wRt9et40UAAAAAAAAAAWXu0mmyRrB-1GkmVwYKBFKbAD7czd2naa9GtixNBgDj',
     # different cloud folders to upload differt local folders 
-    :destinations => [{
+    :bucket => [{
       # configuration file.
-      :folder => BlackStack.sandbox? ? 'dev.config' : 'prod.config',
-      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/config.rb' : '$HOME/code/my.saas/config.rb',
+      :name => 'mysaas-configuration',
+      # drop box folder where to store this backup
+      :folder => 'freeleadsdata.app',
+      # must be absolute paths
+      :path => "#{CODE_PATH}/app",
+      # pattern of files to find in the :path_origin
+      :files => ['config.rb'],
     }, {
       # certification file for connecting serverless CockroackDB.
-      :folder => BlackStack.sandbox? ? 'dev.postgresql' : 'prod.postgresql',
-      :source => BlackStack.sandbox? ? '/home/leandro/.postgresql/*' : '$HOME/.postgresql/*',
+      :name => 'postgres-certificate',
+      :folder => 'freeleadsdata.app',
+      :path => "~/.postgresql",
+      :files => ['root.crt'],
     }, {
       # certificate to connect AWS instances.
-      :folder => BlackStack.sandbox? ? 'dev.cli.pem' : 'prod.cli.pem',
-      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/*.pem' : '$HOME/code/mysaascli/*.pem',
+      :name => 'aws-certificate',
+      :folder => 'freeleadsdata.app',
+      :path => "#{CODE_PATH}/app/cli",
+      :files => ['fld.pem'],
     }, {
-      # database deploying .lock files.
-      :folder => BlackStack.sandbox? ? 'dev.cli.lock' : 'prod.cli.lock',
-      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/*.lock' : '$HOME/code/my.saas/cli/*.lock',
+      # database deploying .lock files for SQL migrations
+      :name => 'deploying-lockfiles',
+      :folder => 'freeleadsdata.app',
+      :path => "#{CODE_PATH}/app/cli",
+      :files => [
+        'my-ruby-deployer.lock', 
+        'my-ruby-deployer.i2p.lock', 
+        'my-ruby-deployer.monitoring.lock',
+        'my-ruby-deployer.content.lock',
+      ],
     }, {
       # SSL certificaties.
-      :folder => BlackStack.sandbox? ? 'dev.ssl' : 'prod.ssl',
-      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/ssl/*' : '$HOME/code/my.saas/ssl/*',
+      :name => 'ssl-Certificates',
+      :folder => 'freeleadsdata.app',
+      :path => "#{CODE_PATH}/app/ssl",
+      :files => ['prod.crt', 'prod.key'],
     }]
 })
 
@@ -347,7 +361,7 @@ BlackStack::Workmesh.add_service({
           i['prompt2'] = BlackStack::Scraper::Insight.transform(i['prompt2']) if i['prompt2']
         end
         # call access point
-        url = "http://#{node.net_remote_ip}:#{node.workmesh_port}/api/1.0/orders/push.json"
+        url = "http://#{node.net_remote_ip}:#{node.workmesh_port}/api1.0/orders/zi/push.json"
         begin
             params = {
                 'api_key' => node.workmesh_api_key,

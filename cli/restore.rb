@@ -4,46 +4,47 @@
 # Author: Leandro D. Sardi (https://github.com/leandrosardi).
 #
 
-require 'mysaas'
-require 'lib/stubs'
-require 'config'
+require 'app/mysaas'
+require 'app/lib/stubs'
+require 'app/config'
 
 # 
 parser = BlackStack::SimpleCommandLineParser.new(
   :description => 'This command download secret files from DropBox.', 
   :configuration => [{
     :name=>'t', 
-    :mandatory=>true, 
-    :description=>'The timestamps of the backup you want to restore. E.g.: 20221120183545UTC.', 
-    :type=>BlackStack::SimpleCommandLineParser::STRING,
-  }, {
-  # web server installation
-    :name=>'folders', 
     :mandatory=>false, 
-    :description=>'Regular expresion to filter the folders to process. Default: .*', 
+    :description=>'The timestamps of the backup you want to restore. E.g.: 20221120183545UTC. Default: nil', 
+    :type=>BlackStack::SimpleCommandLineParser::STRING,
+    :default => '-',
+  }, {
+    # web server installation
+    :name=>'buckets', 
+    :mandatory=>false, 
+    :description=>'Regular expresion to filter the buckets to process. Default: .*', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
     :default => '.*',
+=begin
+  }, {
+  # DropBox
+    :name=>'cs-api-key', 
+    :mandatory=>false, 
+    :description=>'API key to connect ConnectionSphere and process the DropBox refresh token. Default: Use the value in config.rb', 
+    :type=>BlackStack::SimpleCommandLineParser::STRING,
+    :default => '-',
+  }, {
+    :name=>'db-refresh-token', 
+    :mandatory=>false, 
+    :description=>'DropBox refresh token. Default: Use the value in config.rb', 
+    :type=>BlackStack::SimpleCommandLineParser::STRING,
+    :default => '-',
+=end
   }]
 )
 
-log = BlackStack::LocalLogger.new('./restore.log')
+l = BlackStack::LocalLogger.new('./restore.log')
 
-timestamp = parser.value('t')
-BlackStack::BackUp.destinations.select { |d| d[:folder]=~/#{parser.value('folders')}/ }.each { |d|
-    # parameters
-    foldername = d[:folder] # how to name this backup in dropbox 
-    source = d[:source] # source folder to backup
-    destination = source.gsub(/#{Regexp.escape(source.split('/').last)}/, '')
+t = parser.value('t')
+t = nil if t=='-'
 
-    log.logs "Restoring #{foldername}... "
-    BlackStack::BackUp.restore(
-        "#{timestamp}.#{foldername}",
-        log,
-        'tempy.zip',
-        true,
-        destination,
-        true
-    )
-    log.done
-}
-
+BlackStack::BackUp.restore(t, l)

@@ -1,8 +1,8 @@
-require 'controllers/extensions/leftbaricon'
-require 'controllers/extensions/dependency'
-require 'controllers/extensions/settingscreen'
-require 'controllers/extensions/storagefolder'
-require 'controllers/extensions/extension'
+require 'app/controllers/extensions/leftbaricon'
+require 'app/controllers/extensions/dependency'
+require 'app/controllers/extensions/settingscreen'
+require 'app/controllers/extensions/storagefolder'
+require 'app/controllers/extensions/extension'
 
 module BlackStack
     module Extensions
@@ -29,9 +29,9 @@ module BlackStack
             # validate: name must be a symbol
             raise "name must be a symbol" if !ext_name.is_a?(Symbol)
             # require the extension definition. it is usually added in the `config.rb` file.
-            require "extensions/#{ext_name.to_s}/extension"            
+            require "app/extensions/#{ext_name.to_s}/extension"            
             # require the object, because sometimes they are needed in the `config.rb` file.
-            require "extensions/#{ext_name.to_s}/main"
+            require "app/extensions/#{ext_name.to_s}/main"
             # add updates
             BlackStack::Extensions.extensions.select { |o| o.name.upcase == ext_name.to_s.upcase }.first.update(custom_config)
         end # require
@@ -45,6 +45,8 @@ module BlackStack
         end # exists?
 
         # adding storage sub-folders
+        # DEPRECATED
+=begin
         def self.add_storage_subfolders    
             @@extensions.each do |e|
                 e.storage_folders.each do |f|
@@ -52,5 +54,6 @@ module BlackStack
                 end
             end
         end
+=end
     end # module Extensions
 end # module BlackStack

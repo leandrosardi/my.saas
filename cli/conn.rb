@@ -5,9 +5,9 @@
 #
 # Use this command to see the raw connection string to the database, and test it.
 # 
-require 'mysaas'
-require 'lib/stubs'
-require 'config'
+require 'app/mysaas'
+require 'app/lib/stubs'
+require 'app/config'
 l = BlackStack::BaseLogger.new(nil)
 BlackStack::CRDB.test(l)
 exit(0)
