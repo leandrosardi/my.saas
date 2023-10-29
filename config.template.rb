@@ -265,20 +265,18 @@ BlackStack::BackUp.set({
     }]
 })
 
-=begin
 # add required extensions
-BlackStack::Extensions.append :i2p
-BlackStack::Extensions.append :content, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :monitoring, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+#BlackStack::Extensions.append :i2p
+#BlackStack::Extensions.append :content, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+#BlackStack::Extensions.append :monitoring, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
 
 # developer extensions
-BlackStack::Extensions.append :selectrowsjs, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :filtersjs, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :progressjs, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :templatesjs, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :listsjs, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :datasjs, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-=end
+BlackStack::Extensions.append :selectrowsjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+BlackStack::Extensions.append :filtersjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+BlackStack::Extensions.append :progressjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+BlackStack::Extensions.append :templatesjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+BlackStack::Extensions.append :listsjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+BlackStack::Extensions.append :datasjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
 
 =begin
 #
