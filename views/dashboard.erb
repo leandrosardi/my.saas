@@ -1,3 +1,45 @@
+<%
+amount = 1250.54
+ppr = 0.0001
+dq = 1000
+
+# dataset
+a = BlackStack::MySaaS::Timezone
+
+# filter
+# TODO: create re-utilizable functions for this.
+filter = @login.user.preference("dashboard.q", '', params[:q].nil? ? nil : params[:q].to_s)
+a = a.where(Sequel.lit("
+    large_description ILIKE '%#{filter.to_sql}%'
+    or
+    short_description ILIKE '%#{filter.to_sql}%'
+")) if !filter.to_s.empty?
+
+# pagination
+# `LIMIT #{page_size.to_s} OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}`
+# TODO: create re-utilizable functions for this.
+page_size = 10
+total_rows = a.count
+if total_rows>0
+  total_pages = (total_rows.to_f/page_size.to_f).ceil
+  # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
+  # then, get user preferences regarding the page number on this screen
+  page_number = @login.user.preference("dashboard.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  # pagination correction to prevent glitches
+  page_number = 1 if page_number < 1
+  page_number = total_pages if page_number > total_pages
+  # calculate info for showing at the bottom of the table
+  from_row = (page_number.to_i-1) * page_size.to_i + 1
+  to_row = [page_number*page_size, total_rows].min
+else
+  total_pages = 1
+  page_number = 1
+  from_row = 0
+  to_row = 0
+end
+a = a.order(:large_description).limit(page_size, (page_number.to_i - 1) * page_size.to_i).all
+%>
+
 <!--
 <section class='container'>
 -->
@@ -5,11 +47,11 @@
     <div class="mynavbar mysticky">
         <div class="row-fluid">	
             <div class="span3">
-                <%=nav1("Searches")%>
+                <%=nav1("Timezones")%>
             </div>
             <div class="span9" style='text-align:right;'>
                 <form action='/dashboard' method='get' id='search-form' name='search-form'>
-                    <a href='/new' class='btn btn-blue'><i class="icon-plus"></i></a>
+                    <a href='#' class='btn btn-blue'><i class="icon-plus"></i></a>
                     <button class='btn btn-blue' id='delete' name='delete' data-rows-group-id='searches'><i class="icon-trash"></i></button>
                     <button class='btn btn-green' id='play' name='play' data-rows-group-id='searches'><i class="icon-play"></i></button>
                     <button class='btn btn-black' id='pause' name='pause' data-rows-group-id='searches'><i class="icon-pause"></i></button>
@@ -49,15 +91,9 @@
                             <th width='8px' style='width:8px;text-align:center;'>
                                 <input type='checkbox' class='checkbox select-all-rows' data-input-id='ids' data-rows-group-id='searches' />
                             </th>
-                            <th width='auto'>Search</th>
-                            <th width='24px' style='text-align:center;'>Status</th>
-                            <th width='48px' style='text-align:right;'>Scope</th>
-                            <th width='48px' style='text-align:right;'>Progress</th>
-                            <th width='48px' style='text-align:right;'>Processed</th>
-                            <th width='48px' style='text-align:right;'>LookUps</th>
-                            <th width='8px' style='text-align:center;'><!-- download --></th>
-                            <th width='48px' style='text-align:right;'>Forecast</th>
-                            <th width='48px' style='text-align:right;'><!-- play / pause --></th>
+                            <th width='auto'>Large Description</th>
+                            <th width='24px' style='text-align:left;'>Short Description</th>
+                            <th width='48px' style='text-align:right;'>Offset</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,22 +101,43 @@
                         i = 0
                         a.each { |s|
                             i += 1
-                            h = s.to_hash(true)
                             %>
                             <tr>
                                 <td>
                                     <input type='checkbox' class="checkbox select-row" data-rows-group-id='searches' id='<%=s.id%>' data-id='<%=s.id%>' />
                                 </td>
                                 <td>
-                                    <a target='_window' href='/edit/<%=h['id']%>'>
+                                    <a target='_window' href='/edit/<%=s.id%>'>
                                         <%
                                         if filter.to_s.empty?
                                         %>
-                                        <%=s.name.encode_html%>
+                                        <%=s.large_description.encode_html%>
                                         <%
                                         # TODO: create re-utilizable functions for this highlighting.
                                         else #if filter.to_s.empty?
-                                            x = s.name.encode_html
+                                            x = s.large_description.encode_html
+                                            a = x.scan(/#{filter}/i)
+                                            a.each { |m|
+                                                x = x.gsub(m, "<span style='background-color:yellow;'>#{m}</span>")
+                                            }
+                                        %>
+                                        <%=x%>
+                                        <%
+                                        end #if filter.to_s.empty?
+                                        %>
+                                    </a>
+                                </td>
+                                
+                                <td>
+                                    <a target='_window' href='/edit/<%=s.id%>'>
+                                        <%
+                                        if filter.to_s.empty?
+                                        %>
+                                        <%=s.short_description.encode_html%>
+                                        <%
+                                        # TODO: create re-utilizable functions for this highlighting.
+                                        else #if filter.to_s.empty?
+                                            x = s.short_description.encode_html
                                             a = x.scan(/#{filter}/i)
                                             a.each { |m|
                                                 x = x.gsub(m, "<span style='background-color:yellow;'>#{m}</span>")
@@ -93,78 +150,7 @@
                                     </a>
                                 </td>
 
-                                <td>
-                                    <span class='badge badge-<%=h['report']['badge_color']%>'><%=h['report']['badge_text']%></span>
-                                </td>
-                                
-                                <td style='text-align:right;'><%=h['report']['scope']%></td>
-
-                                <td style='text-align:right;'>
-                                    <%=h['report']['progress']%><br/>
-                                    <span style='color:gray;font-size:10px;'>-</span> 
-                                </td>
-                                
-                                <td style='text-align:right;'>
-                                    <%=h['report']['processed']%><br/>
-                                    <span style='color:gray;font-size:10px;'><%=h['report']['processed_rate']%></span> 
-                                </td>
-                                
-                                <td style='text-align:right;'>
-                                    <%=h['report']['verified']%><br/>
-                                    <span style='color:gray;font-size:10px;'><%=h['report']['verified_rate']%></span> 
-                                </td>
-
-                                <td style='text-align:center;'>
-                                    <%
-                                    if !h['export']['export_download_url'].to_s.empty?
-                                    %>
-                                    <a target='_window' href='<%=h['export']['export_download_url']%>'><i class='icon-cloud-download'></i></a>
-                                    <%
-                                    end
-                                    %>
-                                </td>
-                                
-                                <td style='text-align:right;'>
-                                    <%=h['report']['forecast_text']%><br/>
-                                    <span style='color:gray;font-size:10px;'>records</span> 
-                                </td>
-
-                                <td style='text-align:right;'>
-                                    <div class="btn-group">
-                                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-	                                        Actions
-	                                        <span class="caret"></span>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href='/edit/<%=s.id%>'>Edit <i class='icon-pencil'></i></a>
-                                            </li>
-
-                                            <li>
-                                                <a href='/filter_copy?id=<%=s.id%>'>Copy <i class='icon-copy'></i></a>
-                                            </li>
-
-                                            <li>
-                                                <a href='/filter_delete?ids=<%=s.id%>'>Delete <i class='icon-trash'></i></a>
-                                            </li>
-
-                                            <li>
-                                                <%
-                                                if s.off?
-                                                %>
-                                                <a href='/filter_play?ids=<%=s.id%>'>Play <i class='icon-play'></i></a>
-                                                <%
-                                                else # if s.on?
-                                                %>
-                                                <a href='/filter_pause?ids=<%=s.id%>'>Pause <i class='icon-pause'></i></a>
-                                                <%
-                                                end # if s.on?
-                                                %>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                
+                                <td style='text-align:right;'><%=s.offset.to_i.to_label%></td>                                
                             </tr>
                             <%
                         }
@@ -224,25 +210,6 @@
                         <center><h4>Daily Quota</h4></center>
                         <center><h3 style='color:green;'><%=dq.to_label%></h3></center>
                         <center><span style='color:gray;font-size:16px;'>lookups / day</span></center>
-                    </div>
-                </section>
-
-                <section class='row-fluid'>
-                    <div class='span12 box'>
-                        <center><h4>Today Usage</h4></center>
-                        <%
-                        rate = dq.to_f == 0.to_f ? 0.to_f.round(2) : (100.to_f*(tq.to_f/dq.to_f)).round(2)
-                        if tq < dq 
-                        %>
-                        <center><h3 style='color:green;'><%=rate.to_label%>%</h3></center>
-                        <%
-                        else # if amount.to_f > 0
-                        %>
-                        <center><h3 style='color:red;'><%=rate.to_label%>%</h3></center>
-                        <%
-                        end # if amount.to_f > 0
-                        %>
-                        <center><span style='color:gray;font-size:16px;'><%=tq.to_label%> / <%=dq.to_label%> lookups</span></center>
                     </div>
                 </section>
             </div>
@@ -306,7 +273,7 @@
             // get the value of #ids input
             var ids = $('#ids').val();
             // redirect to /filter_delete?ids=...
-            window.location.href = '/filter_delete?ids=' + ids;
+            #window.location.href = '/filter_delete?ids=' + ids;
         });
 
         // click on #play button
@@ -314,7 +281,7 @@
             // get the value of #ids input
             var ids = $('#ids').val();
             // redirect to /filter_play?ids=...
-            window.location.href = '/filter_play?ids=' + ids;
+            #window.location.href = '/filter_play?ids=' + ids;
         });
 
         // click on #pause button
@@ -322,7 +289,7 @@
             // get the value of #ids input
             var ids = $('#ids').val();
             // redirect to /filter_pause?ids=...
-            window.location.href = '/filter_pause?ids=' + ids;
+            #window.location.href = '/filter_pause?ids=' + ids;
         });
 
         // submit #search-form when press ENTER on #q input
