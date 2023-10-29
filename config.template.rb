@@ -10,6 +10,21 @@
 # files into a cloud storage specified by you.
 #
 
+# CODE_PATH may be different in production and development environments.
+CODE_PATH = BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata' : '/home/ubuntu/code/freeleadsdata'
+CS_API_KEY = '118f3c32-****-****-****-************'
+DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
+
+BlackStack::Funnel.set({
+    # Goolge Analytics
+    #
+    # Find your Google Analytics UTM tracking 
+    # code by following the steps in this tutorial:
+    # https://www.monsterinsights.com/docs/where-to-find-utm-tracking-code-results-data-in-google-analytics
+    # 
+    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-L6ZL9C2LRH',
+})
+
 # Funnel Configuration
 BlackStack::Funnel.add({
     :name => 'funnels.main',
@@ -201,8 +216,8 @@ BlackStack::Deployer::add_nodes([{
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
-    :connectionsphere_api_key => '......',
-    :dropbox_refresh_token => 'h6wR************-*********************',
+  :connectionsphere_api_key => CS_API_KEY,
+  :dropbox_refresh_token => DB_REFRESH_TOKEN,
 })
 
 # Manage backup of secret files
@@ -215,26 +230,26 @@ BlackStack::BackUp.set({
       # drop box folder where to store this backup
       :folder => 'freeleadsdata.app',
       # must be absolute paths
-      :path => "#{CODE_PATH}/app",
+      :path => CODE_PATH + '/app',
       # pattern of files to find in the :path_origin
       :files => ['config.rb'],
     }, {
       # certification file for connecting serverless CockroackDB.
       :name => 'postgres-certificate',
       :folder => 'freeleadsdata.app',
-      :path => "~/.postgresql",
+      :path => '~/.postgresql',
       :files => ['root.crt'],
     }, {
       # certificate to connect AWS instances.
       :name => 'aws-certificate',
       :folder => 'freeleadsdata.app',
-      :path => "#{CODE_PATH}/my.saas/cli",
+      :path => CODE_PATH + '/my.saas/cli',
       :files => ['fld.pem'],
     }, {
       # database deploying .lock files for SQL migrations
       :name => 'deploying-lockfiles',
       :folder => 'freeleadsdata.app',
-      :path => "#{CODE_PATH}/my.saas/cli",
+      :path => CODE_PATH + '/my.saas/cli',
       :files => [
         'my-ruby-deployer.lock', 
         'my-ruby-deployer.i2p.lock', 
@@ -245,7 +260,7 @@ BlackStack::BackUp.set({
       # SSL certificaties.
       :name => 'ssl-Certificates',
       :folder => 'freeleadsdata.app',
-      :path => "#{CODE_PATH}/my.saas/ssl",
+      :path => CODE_PATH + '/my.saas/ssl',
       :files => ['prod.crt', 'prod.key'],
     }]
 })
@@ -361,7 +376,7 @@ BlackStack::Workmesh.add_service({
           i['prompt2'] = BlackStack::Scraper::Insight.transform(i['prompt2']) if i['prompt2']
         end
         # call access point
-        url = "http://#{node.net_remote_ip}:#{node.workmesh_port}/api1.0/orders/zi/push.json"
+        url = 'http://'+node.net_remote_ip+':'+node.workmesh_port}/api1.0/orders/zi/push.json'
         begin
             params = {
                 'api_key' => node.workmesh_api_key,
@@ -371,9 +386,9 @@ BlackStack::Workmesh.add_service({
             parsed = JSON.parse(res.body)
             raise parsed['status'] if parsed['status']!='success'
         rescue Errno::ECONNREFUSED => e
-            raise "Errno::ECONNREFUSED:" + e.message.red
+            raise 'Errno::ECONNREFUSED:' + e.message.red
         rescue => e2
-            raise "Exception:" + e2.message.red
+            raise 'Exception:' + e2.message.red
         end
       end, # push_function
       :entity_field_push_time => :'micro_emails_delivery_push_time',
