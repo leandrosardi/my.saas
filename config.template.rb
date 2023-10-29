@@ -22,7 +22,7 @@ BlackStack::Funnel.set({
     # code by following the steps in this tutorial:
     # https://www.monsterinsights.com/docs/where-to-find-utm-tracking-code-results-data-in-google-analytics
     # 
-    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-L6ZL9C2LRH',
+    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-XXXXXXXXXX',
 })
 
 # Funnel Configuration
