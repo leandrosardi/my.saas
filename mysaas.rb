@@ -1,6 +1,8 @@
 #require_relative '../blackstack-nodes/lib/blackstack-nodes.rb'
 
 require 'blackstack-db'
+#require_relative '../blackstack-db/lib/blackstack-db.rb'
+
 require 'blackstack-core'
 require 'simple_command_line_parser'
 require 'simple_cloud_logging'
