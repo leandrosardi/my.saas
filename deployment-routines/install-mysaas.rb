@@ -23,7 +23,7 @@ BlackStack::Deployer::add_routine({
         :sudo => false,
     }, { 
         :command => '
-            cd ~/code/mysaas;
+            cd ~/code/my.saas;
             git fetch --all;
         ',
         :matches => [/\-> origin\//, /^Fetching origin$/],
@@ -31,7 +31,7 @@ BlackStack::Deployer::add_routine({
         :sudo => false,
     }, { 
         :command => '
-            cd ~/code/mysaas;
+            cd ~/code/my.saas;
             git reset --hard origin/%git_branch%;
         ',
         :matches => /HEAD is now at/,
@@ -41,7 +41,7 @@ BlackStack::Deployer::add_routine({
         :command => '
             source ~/.profile;
             source /usr/local/rvm/scripts/rvm;
-            cd ~/code/mysaas; rvm install 3.1.2;
+            cd ~/code/my.saas; rvm install 3.1.2;
             rvm --default use 3.1.2;
             bundler update;
         ',

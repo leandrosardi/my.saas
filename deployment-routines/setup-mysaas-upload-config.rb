@@ -6,7 +6,7 @@ BlackStack::Deployer::add_routine({
         # back up old configuration file
         # upload configuration file from local working directory to remote server
         :command => "
-            cd ~/code/mysaas; 
+            cd ~/code/my.saas; 
             mv ./config.rb ./config.%timestamp%.rb;
             echo \"%config_rb_content%\" > ./config.rb;
         ",

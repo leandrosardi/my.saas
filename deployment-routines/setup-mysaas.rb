@@ -6,7 +6,7 @@ BlackStack::Deployer::add_routine({
         # back up old configuration file
         # setup new configuration file
         :command => "
-            cd ~/code/mysaas; 
+            cd ~/code/my.saas; 
             mv ./config.rb ./config.%timestamp%.rb;
             cp ./config.template.rb ./config.rb;
             sed -i \"s/@db_url@/%crdb_hostname%/g\" ./config.rb;
