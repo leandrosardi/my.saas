@@ -55,7 +55,7 @@ BlackStack::Deployer::add_routine({
 =end
     }, {
         # 
-        :command => 'export RUBYLIB=~/code/mysaas;',
+        :command => 'export RUBYLIB=~/code;',
         :nomatches => [ 
             { :nomatch => /.+/i, :error_description => 'No output expected' },
         ],

@@ -76,7 +76,7 @@ bundler update
 
 # setup RUBYLIB environment variable
 echo "setup RUBYLIB environment variable"
-export RUBYLIB=~/code/my.saas
+export RUBYLIB=~/code
 
 # copy .postgresql file 
 # --> DEPRECATED (leandrosardi/cs#64)
