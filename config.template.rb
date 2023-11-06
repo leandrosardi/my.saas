@@ -31,7 +31,7 @@ BlackStack::Funnel.add({
     # decide if go to one-time-offer screen, or 
     # to the plans screen. Return the URL to go.    
     :url_plans => Proc.new do |login, *args|
-        '/plans?service=dfy-leads'
+        '/plans'
     end,
     # return the url to go after signup
     :url_after_signup => Proc.new do |login, *args|
