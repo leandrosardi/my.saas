@@ -14,6 +14,9 @@ require 'my.saas/models/skeleton/core/notificationopen'
 require 'my.saas/models/skeleton/core/notificationlink'
 require 'my.saas/models/skeleton/core/notificationclick'
 
+require 'my.saas/models/skeleton/core/country'
+require 'my.saas/models/skeleton/core/state'
+
 require 'my.saas/notifications/welcome'
 require 'my.saas/notifications/confirm'
 require 'my.saas/notifications/reset'

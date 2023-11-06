@@ -2733,6 +2733,125 @@ INSERT INTO country (id, code, name) VALUES ('ea043f5d-86df-4c99-a991-fe9151d667
 INSERT INTO country (id, code, name) VALUES ('17c7d44b-c806-44b5-9d33-feeb9b85ff6e', 'kr', 'Korea') ON CONFLICT DO NOTHING;
 INSERT INTO country (id, code, name) VALUES ('69b02441-0b37-4355-9661-ff84c853eb00', 'sn', 'Senegal') ON CONFLICT DO NOTHING;
 
+TRUNCATE TABLE "state";
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('02ab435b-a2e9-49ef-91c0-994f6cf9a90d','VT','Vermont','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('02e54919-6ad6-4b98-a17e-c6b6efd4e9d2','UT','Utah','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('04463f0c-fdc8-4e23-baee-fb93c8dd1388','na.us.ms','Mississippi','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('09de1e9b-5f5e-498e-8d9d-d654250c6c47','KY','Kentucky','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('10186246-2da9-4250-9757-223f77a0828d','IN','Indiana','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('156df211-cce2-4d75-93fc-e608061bdbe4','ID','Idaho','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('17180fa0-7f65-4db4-844c-35aec02fa0f8','CT','Connecticut','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('19cfb760-1e97-4422-b052-694444c9a0d8','na.us.me','Maine','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('1a894707-8d3a-43c7-854a-96a84ecc163a','na.us.ne','Nebraska','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('1aa0d0a7-a35f-440e-8198-4d1a15ee17eb','MT','Montana','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('1b507ead-26d9-4275-b006-1e40780d7f55','na.us.tx','Texas','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('2349ba16-b2ff-4d24-b5eb-ecfb1167eb3e','na.us.ct','Connecticut','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('257bfe16-acb1-4f40-ae07-265956ddee06','na.us.ri','Rhode Island','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('29f5fed4-aa1d-4e47-abcb-77486b7deaa7','na.us.ks','Kansas','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('2cb9d44a-14db-4587-a9c6-e534d0c9916e','na.us.co','Colorado','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('2e895f23-625e-438a-b30e-a941551877ee','na.us.fl','Florida','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('31074387-264b-45a8-bed9-7afe815a6bf1','IL','Illinois','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('32c8c401-b846-4c8a-b75b-870c1e09d60c','TN','Tennessee','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('3553de55-92a7-49ab-802c-c3c8241cad35','na.us.nj','New Jersey','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('35a61132-ae66-43fd-b0fe-755fe6038275','na.us.ma','Massachusetts','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('362e743b-6df4-41fa-9796-c314347c3d54','WA','Washington','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('3b4ff4a9-e4d1-4908-907d-0a1ca182f0e3','NJ','New Jersey','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('3bd4b132-bfd1-4374-8972-a13a5281b5c3','GA','Georgia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('3d0b6722-5ad2-490a-98ee-dfb1211eb87f','na.us.sc','South Carolina','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('421682ec-d998-4e68-88ff-189d33d08d40','DC','District of Columbia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('4966e7ce-602f-45c3-9e29-b581f9d1101b','NC','North Carolina','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('4a9611cf-8a62-4255-8a79-f8ba676859c0','na.us.ok','Oklahoma','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('4c1233a2-7e2f-47b7-ad17-45e30757d358','VA','Virginia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('4db6c08e-9fe0-4176-8526-00c234da6949','na.us.ak','Alaska','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('4e20f031-bde3-45af-aa86-7a70210b74b2','CO','Colorado','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('50f51c1d-8adc-414d-a550-0a22fa82a5e7','na.us.wi','Wisconsin','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('54fb3365-349e-4574-994a-d7bacd3c1544','na.us.ny','New York','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('57946981-edd3-4000-be6c-e476009cea9e','na.us.va','Virginia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('582d156c-b91e-485e-b0ad-c449fc79aac5','KS','Kansas','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('601490dd-a2f0-438f-9fb9-7a29482dcf4e','MO','Missouri','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('60de9d27-a91a-4db7-a711-102032468011','DE','Delaware','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('628ba951-934f-479e-8857-ee8871f12f3b','na.us.nd','North Dakota','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('65fdd922-e624-42a3-932f-8886dc1d8a0c','OR','Oregon','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('69afcc19-24bd-4406-9a32-b20c1aab9689','na.us.az','Arizona','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('6a060eed-021c-450f-b262-5853a349cf7f','na.us.dc','District of Columbia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('6d18cc06-0f8c-45ee-b5ee-367c39d9f136','na.us.oh','Ohio','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('6e661151-dbb0-4a3b-bb01-b04ec0e6693a','TX','Texas','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('70c2c1ee-c64e-41cf-9c3b-a751dbf8d742','na.us.la','Louisiana','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('722d75c4-62af-4e61-8e24-bf483c1ebbfc','na.us.mn','Minnesota','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('7245f10f-fe3e-4998-9a3c-283122f8cf66','OH','Ohio','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('72d9a09a-b3d8-434d-8f68-71575c32306a','na.us.id','Idaho','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('738eafac-857c-4966-8f48-37d633d3b54f','NH','New Hampshire','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('76040825-fcbf-4327-adac-f8c01b333802','na.us.nv','Nevada','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('77732521-1c0c-41d7-bb26-c1235ea95546','WY','Wyoming','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('7ab15106-da03-4998-ae0c-27de4913c88f','ME','Maine','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('7cf69500-8e02-4908-ab9a-653466936a18','na.us.il','Illinois','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('7dbfc28b-ff3c-405a-a510-8e9402c9db77','NV','Nevada','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('828ee0b2-b6cc-4320-8e1a-b315b60c0e5b','OK','Oklahoma','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('847e378b-6653-4e39-a8c7-71de076838c7','na.us.ca','California','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('852b2ba6-4ba1-4edd-a6b4-c8fddba6edcb','na.us.pr','Puerto Rico','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('86b5a18c-ee5b-46e3-9fa1-ae6a3162c373','na.us.mi','Michigan','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('87964353-dfc3-4cbc-8e15-506cd6b7b86e','IA','Iowa','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('8a34dee7-1056-4315-9b1a-351e15db0b9a','WI','Wisconsin','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('9023d7fe-e369-4702-acce-4b82a33c999c','na.us.hi','Hawaii','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('90e5ad54-eafb-43af-8b48-20fb4546b838','AL','Alabama','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('92e33e50-ec51-4ccb-8178-35d517513f68','PA','Pennsylvania','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('9665c280-1c24-4528-b5bb-89976a474724','NM','New Mexico','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('99086e8b-680e-457c-af3c-89c83451a824','RI','Rhode Island','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('997c8ce2-a262-4aa3-8029-f396938e2a8c','na.us.ga','Georgia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('99baabe5-5b3d-40bb-9d5b-78db7003d4e2','na.us.de','Delaware','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('9b506049-902f-49ab-822d-1d2d7c35a9f7','na.us.wy','Wyoming','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('9cf0ccd6-0171-4ffd-92ee-0ce0735b90f8','ND','North Dakota','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('9e82a4a8-59d6-42a2-a276-d0bf457bad33','na.us.in','Indiana','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('a37cf0c8-c402-4bfc-b6f0-059c5d15a97e','AZ','Arizona','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('a438b1d4-51c9-4e8f-9817-d4e64cb19eb2','SD','South Dakota','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('aa0b7238-b33a-4817-980a-21b5f752db49','na.us.mo','Missouri','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('afda4d1d-84e1-4f08-9f33-13922d226128','na.us.gu','Guam','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('b275602f-9599-4b41-a69a-c9293e11acb6','na.us.ut','Utah','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('b5a2cec6-62cd-46bd-a4e8-b2f52d37e586','MD','Maryland','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('b66ebdb2-bd71-4cb0-b9cb-3223470934fa','GU','Guam','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('b8e39490-4861-42dc-98ce-b88349388180','na.us.sd','South Dakota','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('b95fdc9d-14e6-422e-8370-5dfc3af72e6a','AR','Arkansas','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('ba24c7b7-d3d8-4b21-b43a-52531cadefa8','HI','Hawaii','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('ba902cc5-4c20-4f33-9bf4-595bbba2c80d','MA','Massachusetts','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('bba7c11d-1264-4c20-a26d-67d630444c2d','na.us.ar','Arkansas','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('bc71f940-9d94-405b-963f-0572dc6a42b8','na.us.wv','West Virginia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('c00fe535-16bb-413d-ba83-9671ee5ab04f','PR','Puerto Rico','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('c0bccefe-ca91-436e-8b56-94bac204cf46','na.us.ky','Kentucky','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('c1a06826-e5c1-4311-beac-099d7a4d62e9','MS','Mississippi','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('c1d5da2f-eb39-4da3-acf1-022920ef8d1c','na.us.al','Alabama','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('c56fe7a3-94f6-43d6-9594-1885469e9fbe','SC','South Carolina','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('c6c843a4-14e9-4b11-8889-3f345362fac2','na.us.vt','Vermont','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('ca616352-0140-4c70-b847-31148a35865b','MN','Minnesota','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('cf38de4f-e96b-406e-9860-a88895b112c2','na.us.mt','Montana','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d3e8ffa4-4032-4aea-a593-0c3202fb4b51','na.us.wa','Washington','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('d46a844d-77fb-4623-8adc-879e72b6cbac','MI','Michigan','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d5cda38e-bc59-4c39-b7b9-0e6be3f5c899','na.us.md','Maryland','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d5eb365d-af44-43a7-8bb2-04737f944197','WV','West Virginia','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d6b8ef9b-185a-488f-abe4-6093145ef527','na.us.pa','Pennsylvania','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d7d017b0-eabf-497b-8cef-cdf3bb22c4c9','CA','California','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d8ad3f8f-e070-475d-b92c-7f39f45c8b96','na.us.nh','New Hampshire','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('d94bffd5-2cfd-4285-908f-2b90b28460f2','NY','New York','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('db4e03be-712f-46b1-b45e-77490bf65940','na.us.nm','New Mexico','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('dbdfd904-4ac2-42d3-a2d1-9381f0f681fc','FL','Florida','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('dfcb7be6-d990-4f70-b375-76558d2d8331','LA','Louisiana','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+INSERT INTO state (id,code,"name",id_country) VALUES
+	 ('e0ba1ea1-2380-4b39-8799-5545a200a350','na.us.tn','Tennessee','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('e0c65980-847f-4fc8-a517-659d6e0d9f73','na.us.ia','Iowa','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('f0cdf1cc-bfb4-4e23-aa68-2a84dac7b9d0','NE','Nebraska','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('f3e04b00-4342-486f-9211-0dafc2ca6182','na.us.nc','North Carolina','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('f5e101b9-9836-4922-813c-41a4fe58f2ed','AK','Alaska','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd'),
+	 ('fd5e5c7e-1098-4826-8fe2-c0e7ef928267','na.us.or','Oregon','a115a5aa-7b08-4117-aaa1-eeb7cc325ccd');
+
 TRUNCATE TABLE minutely;
 INSERT INTO minutely (minute) VALUES (CAST(0 AS Numeric(18, 0)));
 INSERT INTO minutely (minute) VALUES (CAST(1 AS Numeric(18, 0)));
