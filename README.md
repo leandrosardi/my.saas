@@ -1,5 +1,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/leandrosardi/my.saas) ![GitHub](https://img.shields.io/github/license/leandrosardi/my.saas) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/leandrosardi/my.saas) ![GitHub last commit](https://img.shields.io/github/last-commit/leandrosardi/my.saas)
 
+**THIS PROJECT IS UNDER CONSTRUCTION**
+
 ![logo](./public/core/images/logo.png)
 
 # MySaaS - Open Source SaaS Platform - Extensible and Scalable.  
@@ -60,11 +62,12 @@ I will be adding one new chapter week by week, so follow this project and get no
 01. [Installation](./docu/01.Installation.md)
 02. [Sandbox](./docu/02.sandbox.md)
 03. [Secret Files Management](./docu/03.secret-files-management.md)
-04. Deployment
-05. Screens Development
-06. Invoicing and Payments Processing
-07. System Owner
-08. Accounts Management
+04. [Deployment](./docu/04.deployment.md) 
+05. [Transactional Emails](./docu/05.transactional-emails.md) 
+06. Screens Development
+07. Invoicing and Payments Processing
+08. System Owner
+09. Accounts Management
 
 ### Advanced
 

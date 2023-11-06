@@ -108,6 +108,7 @@ module BlackStack
             u.phone = phone
             u.password = BCrypt::Password.create(password) # reference: https://github.com/bcrypt-ruby/bcrypt-ruby#how-to-use-bcrypt-ruby-in-general
             u.create_time = now
+            u.notification_confirm_email_requested = true
             u.save
             
             # user owner
@@ -121,15 +122,7 @@ module BlackStack
             l.create_time = now
             l.save
           end # transaction
-
-          # notificar al usuario, if the notif flag is true
-          # TODO: https://github.com/leandrosardi/mysaas/issues/27
-=begin
-          if notif
-            BlackStack::MySaaS::NotificationWelcome.new(u).do
-            BlackStack::MySaaS::NotificationConfirm.new(u).do
-          end
-=end
+          
           # libero recursos
           DB.disconnect
           GC.start
@@ -188,6 +181,9 @@ module BlackStack
           u.name = h[:name]
           u.phone = h[:phone]
           u.password = BCrypt::Password.create(guid) # generate a random password
+          # send notification to the new user
+          u.notification_you_have_been_added = true
+          # insert the new user
           u.save
 
           # return

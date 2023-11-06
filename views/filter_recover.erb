@@ -16,8 +16,9 @@ if user.nil?
 	redirect "/recover?err=#{CGI::escape("User Not Found.")}"
 end
 
-# envio el correo electronico de bienvenida
-n = BlackStack::MySaaS::NotificationReset.new(user).do
+# raise flag for password recovery
+user.notification_reset_password_requested = true
+user.save
 
 # redirecciono
 redirect "/recover?msg=#{CGI::escape("We Sent You an Email to Reset Your Password.<br/>If you don't find it, <b>please check your Spam Folder</b>.")}"
