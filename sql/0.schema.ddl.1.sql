@@ -13,6 +13,15 @@ CREATE TABLE IF NOT EXISTS public.country (
 	CONSTRAINT "primary" PRIMARY KEY (id ASC)
 );
 
+CREATE TABLE public.state (
+	id uuid NOT NULL,
+	code varchar(500) NOT NULL,
+	"name" varchar(500) NOT NULL,
+	id_country uuid NOT NULL REFERENCES public.country(id),
+	CONSTRAINT state_code_id_country_key UNIQUE (code ASC, id_country ASC),
+	CONSTRAINT state_pkey PRIMARY KEY (id ASC)
+);
+
 CREATE TABLE IF NOT EXISTS public.timeoffset (
 	id uuid NOT NULL,
 	"region" varchar(500) NOT NULL,
