@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.country (
 	CONSTRAINT "primary" PRIMARY KEY (id ASC)
 );
 
-CREATE TABLE public.state (
+CREATE TABLE IF NOT EXISTS public.state (
 	id uuid NOT NULL,
 	code varchar(500) NOT NULL,
 	"name" varchar(500) NOT NULL,
