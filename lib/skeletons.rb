@@ -16,27 +16,3 @@ require 'my.saas/models/skeleton/core/notificationclick'
 
 require 'my.saas/models/skeleton/core/country'
 require 'my.saas/models/skeleton/core/state'
-
-# FreeLeadsData - Modules
-require 'model/scraping/insight'
-
-# FreeLeadsData - ZI
-require 'model/zi/zi_seniority'
-require 'model/zi/zi_department'
-require 'model/zi/zi_state'
-require 'model/zi/zi_industry'
-require 'model/zi/zi_sic'
-require 'model/zi/zi_company_revenue'
-require 'model/zi/zi_company_headcount'
-require 'model/zi/zi_search_keyword'
-require 'model/zi/zi_search_company_name'
-require 'model/zi/zi_search_company_domain'
-require 'model/zi/zi_search_job_title'
-require 'model/zi/zi_search_seniority'
-require 'model/zi/zi_search_department'
-require 'model/zi/zi_search_state'
-require 'model/zi/zi_search_industry'
-require 'model/zi/zi_search_sic'
-require 'model/zi/zi_search_company_revenue'
-require 'model/zi/zi_search_company_headcount'
-require 'model/zi/zi_search'
