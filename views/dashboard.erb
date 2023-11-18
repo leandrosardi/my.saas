@@ -2,6 +2,7 @@
 export_button_color = 'gray'
 export_button_text = 'lists'
 acc = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
+id_export = @login.user.preference('dashboard.id_export', '', params[:id_export].to_s.empty? ? nil : params[:id_export].to_s)
 
 leads = DB["
     select count(*) as n
@@ -17,9 +18,22 @@ campaigns = DB["
     where g.delete_time is null
 "].first[:n]
 
-rows = DB["
+q = "
     select l.id, l.name, l.picture_url
     from fl_lead l
+"
+
+unless id_export.to_s.empty?
+    q += "
+        join fl_export_lead el on (
+          el.id_lead=l.id and 
+          el.id_export='#{id_export}' and
+          el.delete_time is null
+        )
+    "
+end
+
+q += "
     join \"user\" u on (u.id=l.id_user and u.id_account='#{acc.id}')
     join fl_reminder r on (
         r.id_lead=l.id and 
@@ -32,7 +46,9 @@ rows = DB["
     where l.delete_time is null
     group by l.id, l.name, l.picture_url
     order by min(r.expiration_time) asc
-"].all
+"
+rows = DB[q].all
+
 reminders = rows.size
 %>
 
@@ -46,8 +62,7 @@ reminders = rows.size
                 <%=nav1("Dashboard")%>
             </div>
             <div class="span9" style='text-align:right;'>
-                <a href='/leads/new' class='btn btn-blue' alt='New Lead'><i class="icon-heart-empty"></i></a>
-                <a href='/emails/campaigns/new' class='btn btn-blue' alt='New Campaign'><i class="icon-bullhorn"></i></a>
+              <!-- no buttons -->
             </div>
         </div>
     </div>
@@ -71,6 +86,14 @@ reminders = rows.size
                         <center><h3 style='color:green;'><%=reminders.to_i.to_label%></h3></center>
                         <center>-</center>
                     </div>
+
+                    <div class='span3'>
+                      <br/>
+                      <a class='btn btn-blue btn-large btn-block' href='/leads/new'><i class='icon-heart-empty'></i> New Lead</a>
+                      <br/>
+                      <a class='btn btn-blue btn-large btn-block' href='/emails/campaigns/new'><i class='icon-bullhorn'></i> New Campaign</a>
+                    </div>
+
         </div>
     </div>
     
@@ -122,17 +145,43 @@ reminders = rows.size
 -->
 
     <div class='row-fluid box'>
+
+    <div class='row-fluid' style='height:55px;'>
+      <form class='form-horizontal' action='/dashboard' method='get'>
+        <label class="control-label" for="id_export"><b>List:</b></label>
+        <div class="controls">
+          <select class='input' id='id_export' name='id_export'>
+            <option value='' <%= id_export.to_s.empty? ? 'selected' : ''%>>all</option>
+            <%
+            acc.exports.each { |e|
+            %>
+              <option value='<%=e.id%>' <%= id_export.to_s.to_guid == e.id.to_guid ? 'selected' : ''%>><%=e.filename.to_s.encode_html%></option>
+            <%
+            }
+            %>
+          </select>
+          <button class='btn btn-blue' type='submit'>Filter</button>
+
+          <%
+          e = acc.exports.select { |e| e.id==id_export.to_s.to_guid }.first
+          unless id_export.to_s.empty?
+            %>
+            <span class='badge badge-blue'>List: <%=e.filename.encode_html%> <a href='/dashboard?id_export='><i class='icon-remove'></i></a></span>
+            <%
+          end
+          %>
+        </div>
+      </form>
+    </div>
+
+    <br/>
+
     <%
     rows.each { |row|
         acronym = row[:name].to_s[0..1].capitalize
         picture_url = row[:picture_url]
         i = acronym.chr.ord.to_i % 10
     %>
-    <div class='row-fluid' style='height:55px;'>
-      <b>Filters:</b>
-    </div>
-
-
     <div class='row-fluid lead-card' id='sample<%=i%>'>
       <%
       if picture_url
