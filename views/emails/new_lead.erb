@@ -1,0 +1,194 @@
+<%
+user = @login.user
+account = BlackStack::Leads::Account.where(:id=>user.id_account).first
+
+name = @login.user.preference('emails.leads.new.name', '', nil)
+company = @login.user.preference('emails.leads.new.company', '', nil)
+url = @login.user.preference('emails.leads.new.url', '', nil)
+position = @login.user.preference('emails.leads.new.position', '', nil)
+
+email = @login.user.preference('emails.leads.new.email', '', nil)
+phone = @login.user.preference('emails.leads.new.phone', '', nil)
+
+facebook = @login.user.preference('emails.leads.new.facebook', '', nil)
+linkedin = @login.user.preference('emails.leads.new.linkedin', '', nil)
+
+id_export = @login.user.preference('emails.leads.new.id_export', '', nil)
+reminder_date = @login.user.preference('emails.leads.new.reminder_date', '', nil)
+reminder_note = @login.user.preference('emails.leads.new.reminder_note', '', nil)
+%>
+
+<div class='mynavbar mysticky'>
+<section class="row-fluid">	
+	<section class='span6'>
+		<%=nav2("Leads", "/leads", "New")%>
+	</section>
+</section>
+</div>
+
+<section class="container box">
+	<div class='span6'>
+		<form class="form-horizontal" action='/emails/filter_new_lead' method='post'>
+			<div class="control-group span12">
+				<label class="control-label" for="name"><b>Name *</b></label>
+				<div class="controls">
+					<input tabindex=1 type="text" class="input-xlarge validator" data-validator-id='new-lead' data-validator-required='yes' name="name" id="name" placeholder="Write the name of your lead." value="<%=name.to_s.encode_html%>">
+				</div>
+				<br/>
+				<label class="control-label" for="company">Company Name</label>
+				<div class="controls">
+					<input tabindex=2 type="text" class="input-xlarge validator" data-validator-id='new-lead' name="company" id="company" placeholder="Write the company name." value="<%=company.to_s.encode_html%>">
+				</div>
+				<br/>
+				<label class="control-label" for="url">Company URL</label>
+				<div class="controls">
+					<input tabindex=3 type="text" class="input-xlarge validator" data-validator-id='new-lead' data-validator-regexp='^<%=BlackStack::Strings::MATCH_DOMAIN.source%>$' name="url" id="url" placeholder="Write the company url." value="<%=url.to_s.encode_html%>">
+					<br/>
+					<span style='color:gray;'>URL must have a format like xxxxxx.xxx</span>
+				</div>
+				<br/>
+				<label class="control-label" for="position">Position</label>
+				<div class="controls">
+					<input tabindex=4 type="text" class="input-xlarge validator" data-validator-id='new-lead' name="position" id="position" placeholder="Write the job title of your lead." value="<%=position.to_s.encode_html%>">
+				</div>
+				<br/>
+
+				<h4>Contact Information</h4>
+				<label class="control-label" for="email">Email Address</label>
+				<div class="controls">
+					<input tabindex=5 type="text" class="input-xlarge validator" data-validator-id='new-lead' data-validator-regexp='^<%=BlackStack::Strings::MATCH_EMAIL.source%>$' name="email" id="email" placeholder="Write the email address of your lead." value="<%=email.to_s.encode_html%>">
+					<br/>
+					<span style='color:gray;'>Email must have a format like xxxxxxx@xxxxxx.xxx</span>
+				</div>
+				<br/>
+				<label class="control-label" for="phone">Phone Number</label>
+				<div class="controls">
+					<input tabindex=6 type="text" class="input-xlarge validator" data-validator-id='new-lead' name="phone" id="phone" placeholder="Write the phone number of your lead." value="<%=phone.to_s.encode_html%>">
+				</div>
+				<br/>
+
+				<h4>Social Networks</h4>
+				<label class="control-label" for="facebook">Facebook</label>
+				<div class="controls">
+					<input tabindex=7 type='text' class="input-xlarge validator" data-validator-id='new-lead' data-validator-regexp='^<%=BlackStack::Leads::Data::MATCH_FACEBOOK_USER_URL.source%>$' name="facebook" id="facebook" placeholder="Write the Facebook URL of your lead." value="<%=facebook.to_s.encode_html%>">
+					<br/>
+					<span style='color:gray;'>Facebook must have a format like https://www.facebook.com/xxxxxxx</span>
+				</div>
+				<br/>
+				<label class="control-label" for="linkedin">LinkedIn</label>
+				<div class="controls">
+					<input tabindex=8 type="text" class="input-xlarge validator" data-validator-id='new-lead' data-validator-regexp='^<%=BlackStack::Leads::Data::MATCH_LINKEDIN_USER_URL.source%>$' name="linkedin" id="linkedin" placeholder="Write the LinkedIn URL of your lead." value="<%=linkedin.to_s.encode_html%>">
+					<br/>
+					<span style='color:gray;'>LinkedIn must have a format like https://www.linkedin.com/xxxxxxx</span>
+				</div>
+				<br/>
+
+				<h4>Follow-Up</h4>
+				<label class="control-label" for="whitelabel_email">Export List</label>
+				<div class="controls">
+					<select tabindex=9 name="id_export" id="id_export" class='input input-xlarge validator' data-validator-id='new-lead'>
+						<%
+						selected = id_export.to_s.empty? ? 'selected' : ''
+						%>
+						<option value="" <%=selected%>></option>
+						<%
+						account.exports.each { |e|
+							selected = id_export.to_s == e.id.to_s ? 'selected' : ''
+							%>
+							<option value="<%=e.id.to_s%>" <%=selected%>><%=e.filename.to_s.encode_html%></option>
+							<%
+						}
+						%>
+					</select>
+					<br/>
+					<span style='color:gray;'>Add the lead to a list in order to run an automated email series.</span>	
+				</div>
+				<br/>
+				<label class="control-label" for="reminder_date">Reminder Date</label>
+				<div class="controls">
+					<input tabindex=10 type="date" class="input-xlarge validator" data-validator-id='new-lead' name="reminder_date" id="reminder_date" placeholder="Add a date for following up this lead manually." value="<%=reminder_date.to_s.encode_html%>">
+				</div>
+				<br/>
+				<label class="control-label" for="reminder_note">Reminder Text</label>
+				<div class="controls">
+					<textarea tabindex=11 rows=5 class="input-xlarge validator" data-validator-id='new-lead' name="reminder_note" id="reminder_note" placeholder="Add a note for following up this lead manually."><%=reminder_note.to_s.encode_html%></textarea>
+				</div>
+				<br/>
+
+				<br/>
+				<div class="controls">
+					<button tabindex=10 type="submit" id="update" class="btn btn-blue validator-button" data-validator-id='new-lead'>Update</button>
+					<a id="cancel" class="btn btn-default" href='/leads'>Cancel</a>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class='span6'>
+		<div class='alert alert-warning'>
+			<h4>Hints</h4>
+			<br/>
+			<ul>
+				<li><b>You don't need the mouse:</b> Use the <b>TAB</b> key to jump from one text field to the next one. Press <b>ENTER</b> when you have done completing the form.</li>
+				<br/>
+				<li><b>Merging rules:</b> If there is already a lead with the same email or the same Linkedin URL or the same Facebook URL, such a lead will be updated with the information in your form, and no new lead will be created.</li>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<script>
+	function markInputNormal(o) {
+		o.css('border', '3px solid #999999');
+	}
+
+	function markInputError(o) {
+		o.css('border', '3px solid #ff9999');
+	}
+
+	function markInputSuccess(o) {
+		o.css('border', '3px solid #99ff99');
+	}
+
+	function validate(id) {
+		res = true;
+		// mark all inputs as normal
+		$(".validator[data-validator-id='"+id+"']").each(function() { markInputNormal($(this)); });
+		// validator: mandatory fields
+		$(".validator[data-validator-id='"+id+"']").each(function() { 
+			if ( $(this).attr('data-validator-required') !== undefined) {
+				if ($(this).val() == '') {
+					markInputError($(this)); 
+				} else {
+					markInputSuccess($(this)); 
+				}
+			}
+		});
+		/*
+		if ($('#url').val() != '') {
+			// it must match with the regular expression s
+			let s = '^<%=BlackStack::Strings::MATCH_DOMAIN.source%>$'
+			if ( s.test($('#url').val()) == false ) { markInputError($('#url')); res = false; }
+		} 
+		*/
+		
+		// if res == false, disable the #update button
+		if (res == false) { $('#update').attr('disabled', 'disabled'); }
+		// if res == true, enable the #update button
+		if (res == true) { $('#update').removeAttr('disabled'); }
+		// return res
+		return res;
+	}
+
+	$(document).ready(function() {
+		$("#name").focus();
+		// validator default values
+		validate('new-lead');
+		// when write on #name, validator
+		$("#name").keyup(function() { validator(); });
+		// when write on #url, validator
+		$("#url").keyup(function() { validator(); });
+		// when write on #email, validator
+		$("#email").keyup(function() { validator(); });
+	});
+</script>

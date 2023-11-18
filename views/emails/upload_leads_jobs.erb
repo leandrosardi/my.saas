@@ -1,0 +1,129 @@
+<%
+all = "
+	SELECT 
+    j.id,    
+    j.create_time,
+    e.id as id_export,
+    e.filename as filename,
+    j.ingest_success as ingested, -- null: pending, false: failed, true: success
+    j.stat_total_rows,
+    j.stat_imported_rows, 
+    --j.stat_skipped_rows,
+    j.stat_error_rows --,
+    --j.stat_verified_rows
+	FROM eml_upload_leads_job j
+  JOIN fl_export e ON j.id_export = e.id
+  JOIN \"user\" u ON ( j.id_user = u.id AND u.id_account = '#{@login.user.id_account.to_guid}' )
+  WHERE 1=1
+"
+
+filter_search = @login.user.preference('emails.leads.uploads.filter.name', "", params[:name])
+
+all += "
+  AND UPPER(e.filename) LIKE '%#{filter_search.to_s.upcase.to_sql}%'
+" if filter_search.to_s.length > 0
+
+all += "
+  ORDER BY j.create_time DESC
+" 
+
+page_size = 25
+total_rows = DB[all].count
+if total_rows>0
+  total_pages = (total_rows.to_f/page_size.to_f).ceil
+  # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
+  # then, get user preferences regarding the page number on this screen
+  page_number = @login.user.preference("emails.leads.uploads.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  # pagination correction to prevent glitches
+  page_number = 1 if page_number < 1
+  page_number = total_pages if page_number > total_pages
+  # calculate info for showing at the bottom of the table
+  from_row = (page_number.to_i-1) * page_size.to_i + 1
+  to_row = [page_number*page_size, total_rows].min
+else
+  total_pages = 1
+  page_number = 1
+  from_row = 0
+  to_row = 0
+end
+
+q = "
+"+all+"
+  LIMIT #{page_size.to_s}
+  OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}
+"
+%>
+
+<section class="row-fluid">
+  <section class='span6'>
+		<%=nav2("Leads", "/leads", "Uploads")%>
+  </section>
+  <section class='span6'>
+    <form action="/leads/uploads" method="get">
+      <a class="btn btn-blue btn-medium pull-right" href='/leads/uploads/new'>
+        <i class='icon-cloud-upload'></i> Upload
+      </a>  
+      <div class="pull-right">
+        <div class="span8">
+          <input type='text' class='input-block-level select-all-on-focus' id='name' name='name' value='<%=filter_search%>'/>
+        </div>
+        <button class="btn btn-blue btn-medium btn-submit" style="margin-left: 2px;" type="submit" onclick="">
+          <i class='icon-search'></i> Search
+        </button>
+      </div>
+    </form>
+  </section>
+</section>
+
+<section class="container">
+  <section class="row-fluid box">
+    <p><b>Records:</b> <%=from_row.to_label%> to <%=to_row.to_label%> <b>of</b> <%=total_rows.to_label%></p>
+    <table class="table table-condensed">
+      <thead>
+        <th style='width:75px;'>Creation</th>
+        <th style='width:auto;'>Export</th>
+        <!--
+        <th style='width:75px;'>Ingestion</th>
+        -->
+        <th style='width:75px; text-align:right;'>Total<br/>Leads</th>
+        <th style='width:75px; text-align:right;''>Imported<br/>Leads</th>
+        <th style='width:75px; text-align:right;'>Failed<br/>Leads</th>
+        <th style='width:75px; text-align:right;'>Progress<br/>%</th>
+      </thead>
+      <tbody>
+        <%
+        if DB[q].first.nil?
+          %>
+          <tr>
+            <td colspan='8' style='text-align:center;height:65px;vertical-align:middle;'>No results found</td>
+          </tr>
+          <%
+        end
+        %>
+
+        <%
+        DB[q].all do |row|
+          progress = row[:stat_total_rows].to_i == 0 ? 0 : ( (row[:stat_imported_rows].to_i + row[:stat_error_rows].to_i).to_f * 100.to_f / row[:stat_total_rows].to_f ).to_i
+          %>
+          <tr>
+            <td class='fix'><%=row[:create_time].to_s[0..9].encode_html%></td>
+            <td class='fix'><a href='/leads?id_export=<%=row[:id_export].to_guid%>'><%=row[:filename].to_s.encode_html%></td>
+            <!--
+            <td class='fix'><%=row[:ingest_success].nil? ? "<span class='badge badge-gray' title='It is pending to ingested the rows into the database.'>pending</span>" : ( row[:ingest_success] ? "<span class='badge badge-green' title='Imported'>done</span>" : "<span class='badge badge-red' title='Import Failed'>error</span>" )%></td>
+            -->
+            <td class='fix' style='text-align:right;'><%=row[:ingest_success] && !row[:stat_total_rows].nil? ? row[:stat_total_rows].to_i.to_label : '-'%></td>
+            <td class='fix' style='text-align:right;'><%=row[:ingest_success] && !row[:stat_imported_rows].nil? ? row[:stat_imported_rows].to_i.to_label : '-'%></td>
+            <td class='fix' style='text-align:right;'><%=row[:ingest_success] && !row[:stat_error_rows].nil? ? row[:stat_error_rows].to_i.to_label : '-'%></td>
+            <td class='fix' style='text-align:right;'><%=progress%>%</td>
+          </tr>
+          <%
+        end
+        %>
+      </tbody>
+    </table>
+    <div class="pagination"></div>
+    <script>
+        drawPagination($(".pagination"), <%=page_number%>, <%=total_pages%>);
+    </script>
+  </section>
+</section>

@@ -1,0 +1,27 @@
+<%
+return_message = {}
+begin
+    id_lead = params['id_lead']
+
+    # TODO: check if the user is allowed to see this lead.
+
+    # load the object
+    o = BlackStack::Leads::Lead.where(:id=>id_lead).first
+
+    # decide the color of the button
+    return_message['button_color'] = 'green' 
+    return_message['button_color'] = 'gray' if o.id_user
+    return_message['button_color'] = 'blue' if o.exported_by?(@login.user.account)
+
+    return_message['button_text'] = 'Export' 
+    return_message['button_text'] = 'Owned' if o.id_user
+    return_message['button_text'] = 'Exported' if o.exported_by?(@login.user.account)
+
+    # return
+    return_message[:datas] = o.fl_datas.select { |d| d.type==BlackStack::Leads::Data::TYPE_EMAIL || d.type==BlackStack::Leads::Data::TYPE_PHONE }.map { |d| d.to_hash }
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

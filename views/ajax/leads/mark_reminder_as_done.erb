@@ -1,0 +1,12 @@
+<%
+return_message = {}
+begin
+    id_reminder = params['id_reminder']
+    DB.execute("UPDATE fl_reminder SET done=true WHERE id='#{id_reminder}'")
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

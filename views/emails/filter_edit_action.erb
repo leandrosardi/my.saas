@@ -1,0 +1,41 @@
+<%
+err = []
+begin
+    # load preferences
+    name = params[:name]
+    trigger_type = params[:trigger_type].to_i
+    action_type = params[:action_type].to_i
+    apply_to_previous_events = params[:apply_to_previous_events] == 'on'
+    delay_minutes = params[:delay_minutes].to_i
+    id_export = params[:id_export]
+    id_campaign = params[:id_campaign]
+    id_followup = params[:id_followup]
+    #id_link = params[:id_link] # --> not developed yet
+    
+    # validate: name is mandatory
+    #err << 'Name is mandatory' if name.to_s.size == 0
+
+    # if any error happened, return to the edition screen
+    #raise err.join("\n") if err.size > 0
+
+    # update the action
+    o = BlackStack::Emails::Action.where(:id=>params[:aid]).first
+    o.name = name
+    o.status = false
+    o.trigger_type = trigger_type
+    o.action_type = action_type
+    o.apply_to_previous_events = apply_to_previous_events
+    o.delay_minutes = delay_minutes
+    o.id_export = id_export.to_s.empty? ? nil : id_export
+    o.id_campaign = id_campaign.to_s.empty? ? nil : id_campaign
+    o.id_followup = id_followup.to_s.empty? ? nil : id_followup
+    #o.id_link = id_link # --> not developed yet
+    o.save
+
+    # return
+    redirect "/emails/actions/#{o.id}/edit?msg="+ CGI::escape('Action updated.')
+rescue => e
+    # return errors
+    redirect "/emails/actions/#{o.id}/edit?err="+ CGI::escape(e.message)
+end
+%>

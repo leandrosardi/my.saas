@@ -1,0 +1,97 @@
+<%
+begin
+    # mapping params
+    account = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
+    export = nil
+
+    name = @login.user.preference('emails.leads.new.name', '', params[:name])
+    company = @login.user.preference('emails.leads.new.company', '', params[:company])
+    url = @login.user.preference('emails.leads.new.url', '', params[:url])
+    position = @login.user.preference('emails.leads.new.position', '', params[:position])
+    email = @login.user.preference('emails.leads.new.email', '', params[:email])
+    phone = @login.user.preference('emails.leads.new.phone', '', params[:phone])
+    facebook = @login.user.preference('emails.leads.new.facebook', '', params[:facebook])
+    linkedin = @login.user.preference('emails.leads.new.linkedin', '', params[:linkedin])    
+    id_export = @login.user.preference('emails.leads.new.id_export', '', params[:id_export])
+    reminder_date = @login.user.preference('emails.leads.new.reminder_date', '', params[:reminder_date])
+    reminder_note = @login.user.preference('emails.leads.new.reminder_note', '', params[:reminder_note])
+
+    # get the export from the account attribute
+    if !id_export.to_s.empty?
+        export = account.exports.select { |e| e.id.to_s == id_export.to_s }.first
+        raise 'Export not found' if export.nil?
+    end
+
+    # creating hash descriptor
+    h = {}
+    h['id_user'] = @login.user.id
+    h['name'] = name
+    h['position'] = position
+    h['company'] = {  
+        'name' => company,
+        'url' => url.to_s.empty? ? nil : url,
+    } if !company.to_s.empty?
+    h['datas'] = []
+    h['datas'] << {
+        'type' => BlackStack::Leads::Data::TYPE_EMAIL,
+        'value' => email,
+    } if !email.to_s.empty?
+    h['datas'] << {
+        'type' => BlackStack::Leads::Data::TYPE_PHONE,
+        'value' => phone,
+    } if !phone.to_s.empty?
+    h["datas"] << {
+        'type' => BlackStack::Leads::Data::TYPE_FACEBOOK,
+        'value' => facebook,
+    } if !facebook.to_s.empty?
+    h['datas'] << {
+        'type' => BlackStack::Leads::Data::TYPE_LINKEDIN,
+        'value' => linkedin,
+    } if !linkedin.to_s.empty?
+
+    # check if the lead already exists in the database
+    exists = BlackStack::Leads::Lead.exists?(h)
+
+    # merging lead into the database
+    # if the lead is new, track the user has been created manually, when and by which user.
+    o = BlackStack::Leads::Lead.merge(h)
+    o.id_user_creator = @login.id_user if !exists # track the creator if the user didn't exist before
+    o.save
+
+    # TODO: track the user update
+
+    # add the lead to the export
+    export.add(o) if !export.nil?
+    
+    # create a reminder for the user
+    if !reminder_date.to_s.empty?
+        r = BlackStack::Leads::Reminder.new
+        r.id = guid
+        r.create_time = now
+        r.id_user = @login.user.id
+        r.id_lead = o.id
+        r.description = !reminder_note.to_s.empty? ? reminder_note : 'First reminder created when the lead has been added manually.'
+        r.expiration_time = reminder_date
+        r.done = false
+        r.save
+    end
+    
+    # delete preferences (except id_export) to avoid prefilling the form
+    @login.user.preference('emails.leads.new.name', '', '')
+    @login.user.preference('emails.leads.new.company', '', '')
+    @login.user.preference('emails.leads.new.url', '', '')
+    @login.user.preference('emails.leads.new.position', '', '')
+    @login.user.preference('emails.leads.new.email', '', '')
+    @login.user.preference('emails.leads.new.phone', '', '')
+    @login.user.preference('emails.leads.new.facebook', '', '')
+    @login.user.preference('emails.leads.new.linkedin', '', '')
+    @login.user.preference('emails.leads.new.reminder_date', '', '')
+    @login.user.preference('emails.leads.new.reminder_note', '', '')
+
+    # redirect to settings page
+    s = exists ? 'Lead Updated' : 'Lead Added'
+    redirect "/leads/new?msg=#{CGI::escape("#{s}. Do you want to add another one?")}"
+rescue => e
+    redirect "/leads/new?err=#{CGI::escape(e.message)}"
+end
+%>

@@ -5,17 +5,17 @@ new_password_2 = params[:new_password_2]
 
 # validar que los parametros no esten vacios
 if nid.to_s.size==0
-	redirect "/reset/#{nid}?err=#{CGI::escape("Notification ID is Required.")}"
+	redirect "/recover?err=#{CGI::escape("Notification ID is Required.")}"
 end
 
 # TODO: Validar que nid tenga el formato de un GUID
 
 # load objects
-notification = BlackStack::MySaaS::Notification.where(:id=>nid).first
+notification = BlackStack::MySaaS::NotificationConfirm.where(:id=>nid).first
 
 # verifico que la notificacion no es anterior a NotificationReset::LINK_TIMEOUT
-if notification.oldness > BlackStack::MySaaS::Notification::LINK_TIMEOUT
-	redirect "/reset/#{nid}?err=#{CGI::escape("Link Expired.")}"
+if notification.oldness > BlackStack::MySaaS::NotificationReset::LINK_TIMEOUT
+	redirect "/recover?err=#{CGI::escape("Link Expired.")}"
 end
 
 # load objects
@@ -23,13 +23,13 @@ user = BlackStack::MySaaS::User.where(:id=>notification.id_user).first
 
 # verifico que el usuario exista
 if user.nil?
-	redirect "/reset/#{nid}?err=#{CGI::escape("User Not Found.")}"
+	redirect "/recover?err=#{CGI::escape("User Not Found.")}"
 end
 
 begin
 	user.change_password(BCrypt::Password.new(user.password), new_password_1, new_password_2)
 rescue => e
-	redirect "/reset/#{nid}?err=#{CGI::escape(e.message)}"
+	redirect "/recover?err=#{CGI::escape(e.message)}"
 end
 
 # redirecciono a la pagina de login

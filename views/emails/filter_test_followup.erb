@@ -1,0 +1,39 @@
+<%
+err = []
+fid = params[:fid]
+f = BlackStack::Emails::Followup.where(:id=>fid).first
+test_email = @login.user.preference('emails.followup.edit.test_email', '', params[:test_email])
+begin
+    # map parameters
+    acc = BlackStack::Emails::Account.where(:id=>@login.user.id_account).first
+    lead = nil
+
+    # choose a random lead from this campaign
+    el = f.campaign.export.fl_export_leads.sample
+    lead = el.fl_lead if el
+
+    # choose a random lead from anywhere
+    data = BlackStack::Leads::Data.where(:verified=>true, :type=>BlackStack::Leads::Data::TYPE_EMAIL).first
+    lead = data.fl_lead if data
+
+    # validate I found a lead
+    raise "No leads to send test email." if lead.nil?
+
+    # choose a random address
+    # first choice: own addresses
+    # second choice: shared addresses
+    address = f.get_addresses(1).first
+    raise "No available address to send test email." if address.nil?
+    
+    # TODO: register test emails
+
+    # send a test email to the logged in user
+    address.send_test(f, lead, test_email)
+
+    # return
+    redirect "/emails/campaigns/#{f.campaign.id.to_guid}/followups/#{f.id}/edit?msg="+ CGI::escape("Test email sent to #{test_email}.")
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{f.campaign.id.to_guid}/followups/#{f.id}/edit?err="+ CGI::escape(e.message)
+end
+%>

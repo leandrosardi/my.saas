@@ -1,0 +1,400 @@
+<%
+search_keyword = @login.user.preference('emails.addresses.search_keyword', '', params[:search_keyword])
+
+edit_shared = @login.user.preference('emails.addresses.edit_shared', false, nil)
+edit_enabled = @login.user.preference('emails.addresses.edit_enabled', false, nil)
+edit_max_deliveries_per_day = @login.user.preference('emails.addresses.edit_max_deliveries_per_day', false, nil)
+edit_delivery_interval_min_minutes = @login.user.preference('emails.addresses.edit_delivery_interval_min_minutes', false, nil)
+edit_delivery_interval_max_minutes = @login.user.preference('emails.addresses.edit_delivery_interval_max_minutes', false, nil)
+edit_tags = @login.user.preference('emails.addresses.edit_tags', false, nil)
+edit_tracking_domain = @login.user.preference('emails.addresses.edit_tracking_domain', false, nil)
+
+shared = @login.user.preference('emails.addresses.shared', false, nil)
+enabled = @login.user.preference('emails.addresses.enabled', false, nil)
+max_deliveries_per_day = @login.user.preference('emails.addresses.max_deliveries_per_day', 10, nil)
+delivery_interval_min_minutes = @login.user.preference('emails.addresses.delivery_interval_min_minutes', 5, nil)
+delivery_interval_max_minutes = @login.user.preference('emails.addresses.delivery_interval_max_minutes', 15, nil)
+tracking_domain = @login.user.preference('emails.addresses.tracking_domain', '', nil)
+
+selected_ids = '' #@login.user.preference('emails.addresses.selected_ids', '', nil)
+tags_selected = @login.user.preference('emails.addresses.tags_selected', '', nil)
+
+ids = selected_ids.split(',')
+tags = tags_selected.split(',')
+
+# existing tags 
+account_tags = BlackStack::Emails::Account.where(:id=>@login.user.id_account).first.tags
+
+all = "
+    select 
+        a.id, 
+        a.first_name,
+        a.last_name,
+        a.address, 
+        a.shared,
+        a.enabled,
+        a.create_time,
+        a.max_deliveries_per_day,
+        a.delivery_interval_min_minutes,
+        a.delivery_interval_max_minutes,
+        a.tracking_domain,
+        a.stat_tags,
+        a.check_success, 
+        a.check_error_description, 
+        a.born_time,
+        a.password
+    from eml_address a
+    left join eml_address_tag at on at.id_address = a.id
+    join \"user\" u on ( u.id_account='#{@login.user.id_account}' and u.id=a.id_user )
+    where a.delete_time is null
+"
+
+all += " 
+    and (
+        lower(a.address) like '%#{search_keyword.downcase}%' or
+        lower(a.first_name) like '%#{search_keyword.downcase}%' or
+        lower(a.last_name) like '%#{search_keyword.downcase}%' or
+        lower(a.stat_tags) like '%#{search_keyword.downcase}%' 
+    )
+" unless search_keyword.empty?
+
+all += "
+    group by
+        a.id, 
+        a.address, 
+        a.shared,
+        a.enabled,
+        a.create_time,
+        a.max_deliveries_per_day,
+        a.delivery_interval_min_minutes,
+        a.delivery_interval_max_minutes
+    order by a.create_time desc
+"
+
+# TODO: use re-utilizable function here.
+page_size = 25
+total_rows = DB[all].count
+if total_rows>0
+  total_pages = (total_rows.to_f/page_size.to_f).ceil
+  # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
+  # then, get user preferences regarding the page number on this screen
+  page_number = @login.user.preference("emails.addresses.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  # pagination correction to prevent glitches
+  page_number = 1 if page_number < 1
+  page_number = total_pages if page_number > total_pages
+  # calculate info for showing at the bottom of the table
+  from_row = (page_number.to_i-1) * page_size.to_i + 1
+  to_row = [page_number*page_size, total_rows].min
+else
+  total_pages = 1
+  page_number = 1
+  from_row = 0
+  to_row = 0
+end
+
+q = "
+"+all+"
+  LIMIT #{page_size.to_s}
+  OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav1("Addresses")%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+            <form action="/emails/addresses" method="get">
+                <div class="pull-right">
+                    <div class="span8">
+                        <input type='text' class='input-block-level select-all-on-focus' id='search_keyword' name='search_keyword' value='<%=search_keyword.encode_html%>' />
+                    </div>
+                    <button class="btn btn-blue btn-medium btn-submit" style="margin-left: 2px;" type="submit" onclick="">
+                        <i class='icon-search'></i> Search
+                    </button>
+                </div>    
+
+                <a class='btn btn-blue' href='/emails/addresses/new'><i class='icon-plus'></i> Add</a>
+                <button type="button" class="btn btn-blue" data-toggle="modal" id='open_edit_addresses_modal' data-target=".edit_addresses" title='Edit Selected Addresses'><i class='icon-pencil'></i> Edit</button>
+            </form>
+        </div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+        <p><b>Records:</b> <%=from_row.to_label%> to <%=to_row.to_label%> <b>of</b> <%=total_rows.to_label%></p>
+        <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+            <thead>
+                <th style="width:24px;"><input type='checkbox' class='select-all-rows'></th>
+                <th style="width:50px;">First<br/>Name</th>
+                <th style="width:50px;">Last<br/>Name</th>
+                <th style="width:auto;">Address</th>
+                <th style="width:60px;">Creation</th>
+                <th style="width:40px;">Shared</th>
+                <th style="width:40px;">Enabled</th>
+                <th style="width:50px;text-align:right;">Tags</th>
+                <th style="width:50px;text-align:right;">Daily<br/>Quota</th>
+                <th style="width:50px;text-align:right;">Min.<br/>Minutes</th>
+                <th style="width:50px;text-align:right;">Max.<br/>Minutes</th>
+                <th style="width:150px;">Tracking<br/>Domain</th>
+                <!--
+                <th style="width:40px;">Check</th>
+                <th style="width:60px;">Age</th>
+                -->
+                <th style="width:14px;"><!-- app password --></th>
+                <th style="width:14px;"><!-- edit --></th>
+                <th style="width:14px;"><!-- delete --></th>
+            </thead>
+            <tbody>
+                <%
+                i = 0
+                DB[q].all do |row|
+                    i += 1
+                    value_shared = row[:shared] ? "Yes" : "No"
+                    color = row[:shared] ? "blue" : "gray"
+                    value_enabled = row[:enabled] ? "Yes" : "No"
+                    color2 = row[:enabled] ? "green" : "gray"                    
+                %>
+                <tr>
+                    <th><input type='checkbox' class='select-row' data-id='<%=row[:id].to_guid%>' <%=ids.include?(row[:id].to_guid) ? 'checked' : ''%> /></th>
+                    <td class="fix" title="<%=row[:first_name].to_s.encode_html%>"><a href='/emails/addresses/<%=row[:id].to_guid%>/edit'><%=row[:first_name].to_s.encode_html%></a></td>
+                    <td class="fix" title="<%=row[:last_name].to_s.encode_html%>"><a href='/emails/addresses/<%=row[:id].to_guid%>/edit'><%=row[:last_name].to_s.encode_html%></a></td>
+                    <td class="fix" title="<%=row[:address].to_s.encode_html%>"><a href='/emails/addresses/<%=row[:id].to_guid%>/edit'><%=row[:address].to_s.encode_html%></a></td>
+                    <td class="fix" title="<%=row[:create_time].to_s.encode_html%>"><%=row[:create_time].to_s[0..9]%></td>
+                    <td class="fix" title="<%=value_shared%>"><span class='badge badge-<%=color%>'><%=value_shared%></span></td>
+                    <td class="fix" title="<%=value_enabled%>"><span class='badge badge-<%=color2%>'><%=value_enabled%></span></td>
+                    <td class="no-fix" style="text-align:right;">
+                        <%
+                        row[:stat_tags].to_s.split(",").each do |tag|
+                            %>
+                            <span class='badge badge-<%=BlackStack::Emails::Tag.color(tag)%>'><%=tag.encode_html%></span>
+                            <%
+                        end
+                        %>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:max_deliveries_per_day].to_i.to_label%>"><%=row[:max_deliveries_per_day].to_i.to_label%></td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:delivery_interval_min_minutes].to_i.to_label%>"><%=row[:delivery_interval_min_minutes].to_i.to_label%></td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:delivery_interval_max_minutes].to_i.to_label%>"><%=row[:delivery_interval_max_minutes].to_i.to_label%></td>
+                    <td class="fix" title="<%=row[:tracking_domain].to_s.encode_html%>"><a href='<%="#{BlackStack::Emails.tracking_domain_protocol}://#{row[:tracking_domain].to_s}:#{BlackStack::Emails.tracking_domain_port}".encode_html%>' target='_window'><%=row[:tracking_domain].to_s.encode_html%></a></td>
+                    <!--
+                    <td class="fix">
+                        <%
+                        if row[:check_success].nil?
+                            %>
+                            <i class='icon-time' title="Pending to check this address"></i>
+                            <%
+                        elsif row[:check_success]
+                            %>
+                            <span class='badge badge-green'><i class='icon-ok' title="Address Connection is OK"></i></span>
+                            <%
+                        else
+                            %>
+                            <span class='badge badge-red'><i class='icon-remove' title="<%=row[:check_error_description].to_s.encode_html%>"></i></span>
+                            <%
+                        end
+                        %>
+                    </td>
+                    <td class="fix" title="<%=row[:born_time].to_s.encode_html%>"><%=row[:born_time].to_s[0..6].encode_html%></td>
+                    -->
+                    <td class="fix" style="text-align:right;"><a title='Click to copy the App Password to your clipboard' href='#' class='password' data-password='<%=row[:password].to_s%>'><i class='icon-key'></i></a></td>
+                    <td class="fix" style="text-align:right;"><a title='Edit' href='/emails/addresses/<%=row[:id].to_guid%>/edit'><i class='icon-pencil'></i></a></td>
+                    <td class="fix" style="text-align:right;"><a title='Delete' href='/emails/filter_delete_address?aid=<%=row[:id].to_guid%>'><i class='icon-trash'></i></a></td>
+                </tr>
+                <%
+                end
+
+                if i==0
+                %>
+                <tr>
+                    <td colspan="8" class="fix" align='center' style='text-align:center;'>
+                        No addresses found.</br>
+                        <a href='/emails/addresses/new'>Register a new address here.</a>
+                    </td>
+                <tr>
+                <%
+                end
+                %>
+            </tbody>
+        </table>
+        <div class="pagination"></div>
+    </div>
+</section>
+
+<!-- Modal Exports Leads-->
+<div class="modal fade edit_addresses" >
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Edit Addresses</h3>
+    </div>
+
+    <div class="modal-body">
+        <p><i class='icon-info-sign'></i> Check the Parameters you Want to Edit.</p>
+
+        <div>
+            <form action="/emails/filter_edit_addresses" method="post" id='edit_addresses_form' name='edit_addresses_form'>
+                <input type="hidden" id="selected_ids" name='selected_ids' class='selected-ids' value='<%=selected_ids.to_s%>'>
+                <input type="hidden" id="tags_selected" name='tags_selected' value='<%=tags_selected.to_s%>'>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='shared-input' data-input='shared' id="edit_shared" name="edit_shared" <%=edit_shared ? 'checked' : ''%>> 
+                        Shared
+                        <input type="checkbox" id="shared" name="shared" <%=shared ? 'checked' : ''%> />
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='enable-input' data-input='enabled' id="edit_enabled" name="edit_enabled" <%=edit_enabled ? 'checked' : ''%>> 
+                        Enabled
+                        <input type="checkbox" id="enabled" name="enabled" <%=enabled ? 'checked' : ''%> />
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='enable-input' data-input='max_deliveries_per_day' id="edit_max_deliveries_per_day" name="edit_max_deliveries_per_day" <%=edit_max_deliveries_per_day ? 'checked' : ''%>> 
+                        Max. Deliveries Per Day 
+                        <input type="number" class='select-all-on-focus' id="max_deliveries_per_day" name="max_deliveries_per_day" placeholder="Write a number here." value='<%=max_deliveries_per_day.to_i.to_s%>' />
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='enable-input' data-input='delivery_interval_min_minutes' id="edit_delivery_interval_min_minutes" name="edit_delivery_interval_min_minutes" <%=edit_delivery_interval_min_minutes ? 'checked' : ''%>> 
+                        Min. Minutes Between Deliveries
+                        <input type="number" class='select-all-on-focus' id="delivery_interval_min_minutes" name="delivery_interval_min_minutes" placeholder="Write a number here." value='<%=delivery_interval_min_minutes.to_i.to_s%>' />
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='enable-input' data-input='delivery_interval_max_minutes'  id="edit_delivery_interval_max_minutes" name="edit_delivery_interval_max_minutes" <%=edit_delivery_interval_max_minutes ? 'checked' : ''%>> 
+                        Max. Minutes Between Deliveries 
+                        <input type="number" class='select-all-on-focus' id="delivery_interval_max_minutes" name="delivery_interval_max_minutes" placeholder="Write a number here." value='<%=delivery_interval_max_minutes.to_i.to_s%>' />
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='enable-input' data-input='keyword'  id="edit_tags" name="edit_tags" <%=edit_tags ? 'checked' : ''%>> 
+                        Tags - <i class='icon-warning-sign'></i> Current tags will be removed from selected addresses <div id='tags_container'></div>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="checkbox" class='enable-input' data-input='tracking_domain' id="edit_tracking_domain" name="edit_tracking_domain" <%=edit_tracking_domain ? 'checked' : ''%>> 
+                        Tracking Domain 
+                        <input type="text" class='select-all-on-focus' id="tracking_domain" name="tracking_domain" placeholder="Write a domain here." value='<%=tracking_domain.to_s%>' />
+                    </label>
+                </div>
+            </form>
+        </div>    
+    </div>
+    <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn btn-close">Close</a>
+        <button type="submit" id="edit_addresses_button" name="edit_addresses_button" class="btn btn-blue">Save</button>
+    </div>
+</div>
+
+<script>
+    drawPagination($(".pagination"), <%=page_number%>, <%=total_pages%>);
+
+    var tags_container = document.getElementById('tags_container');
+
+    // for a checkbox .enable-input, enable or disable the inbout with the id in its field data-input, if such a checkbox is checked or unchecked.
+    function enableInput(chk, focus=false) {
+        if ($(chk).is(':checked')) {
+            $('#' + $(chk).data('input')).removeAttr('disabled');
+            if (focus==true) {
+                $('#' + $(chk).data('input')).focus();
+            }
+        } else {
+            $('#' + $(chk).data('input')).attr('disabled', 'disabled');
+        }
+    }
+
+    // for each checkbox .enable-input, enable or disable the inbout with the id in its field data-input, if such a checkbox is checked or unchecked.
+    function enableInputs() {
+        $('.enable-input').each(function() {
+            enableInput(this);
+        });
+    }
+
+    // update the hidden field with id tags_selected with the list of tags in the input filterJs tags_container
+    function update_hidden_fields() {
+        let i = 0; 
+        let s = '';
+        filtersJs.getPositiveValues(tags_container).forEach(function(value) {
+            if (i>0) { s += ','; }
+            s += value.trim();
+            i++;
+        });
+        $('#tags_selected').val(s);      
+    }
+
+    $(document).ready(function() {
+        enableSelectRows({
+            afterCallback: function() {
+                // do nothing
+            },
+        });
+
+        $('.password').click(function() {
+            navigator.clipboard.writeText($(this).data('password'));
+            // get the icon inside this button
+            var icon = $(this).find('i');
+            // change the icon to a checkmark
+            icon.removeClass('icon-key');
+            icon.addClass('icon-ok');
+            // wait 1 second to rollback the icon to icon-copy
+            setTimeout(function() {
+                icon.removeClass('icon-ok');
+                icon.addClass('icon-key');
+            }, 1000);
+        });
+
+        // enable or disable inputs when checkboxes are checked or unchecked
+        $('.enable-input').change(function() {
+            enableInput(this, true);
+        });
+
+        // use filtersjs to draw a filter of tags in element with id tags
+        filtersJs.draw(tags_container, {
+            label: '',
+            allowed_positive_keywords: true, // default value: true
+            allowed_negative_keywords: false, // default value: false
+            allowed_values: [], // default value: []
+            // catch event: update hidden textfield when filter is changed    
+            on_add_value: function (value) {
+              update_hidden_fields();
+            },
+            // catch event: update hidden textfield when filter is changed    
+            on_remove_value: function (value) {
+              update_hidden_fields();
+            },
+        });
+      
+        // add tags to the filter
+        <%
+        tags_selected.split(",").each { |tag|
+        %>
+            filtersJs.addValue(tags_container, '<%=tag%>', true)
+        <%
+        }
+        %>
+
+        // submit form #edit_addresses_form when button #edit_addresses_button is clicked
+        $('#edit_addresses_button').click(function() {
+            $('#edit_addresses_form').submit();
+        });
+
+        // enable or disable inputs
+        enableInputs();
+
+        // update the hidden fields of the form.
+        update_hidden_fields();
+
+        // hide modals when show the page
+        // use the .hide() method, in order to don't get the modal blocking other elements behind them.
+        $('.edit_addresses').hide();
+    });
+</script>

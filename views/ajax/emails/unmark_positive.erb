@@ -1,0 +1,27 @@
+<%
+return_message = {}
+return_message[:deliveries] = []
+begin
+    did = params[:did] # conversation id
+
+    # validate did is mandatory
+    if did.nil? || did.empty?
+        return_message[:status] = 'did is mandatory'
+        return return_message.to_json
+    end
+
+    DB.execute("
+        UPDATE eml_delivery SET is_positive=false, positive_time='#{now}' WHERE id='#{did}'
+    ")
+
+    # request to push delivery to micro.emails.timeline
+    d = BlackStack::Emails::Delivery.where(:id=>did).sort { |d| d.create_time }.first
+    d.reset_push_to_micro_emails_timeline
+
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

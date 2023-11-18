@@ -1,0 +1,110 @@
+<%
+# load preferences
+gid = params[:gid]
+g = BlackStack::Emails::Campaign.where(:id=>gid).first
+name = @login.user.preference("emails.campaign.#{gid}.schedules.name", '', nil)
+timezone = @login.user.account.timezone
+
+daynames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+day = []
+hour = []
+7.times { |i| day[i] = @login.user.preference("emails.campaign.#{gid}.schedules.day_#{i}", false, nil) }
+24.times { |i| hour[i] = @login.user.preference("emails.campaign.#{gid}.schedules.hour_#{i}", false, nil) }
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+            <%=nav4("Campaigns", "/emails/campaigns", g.name, "/emails/campaigns/#{g.id.to_guid}/edit", "Schedules", "/emails/campaigns/#{g.id.to_guid}/schedules", "New")%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=gid.to_guid%>/schedules'><i class='icon-calendar'></i> Schedules</a>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=gid.to_guid%>/followups'><i class='icon-envelope'></i> FollowUps</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_new_schedule' class="form-horizontal">
+            <input type='hidden' id='gid' name='gid' value='<%=gid%>'/>
+
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <div class="controls">
+                    <input type="text" id="name" name='name' placeholder="Name" value='<%=name.to_s.encode_html%>' />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="name">Days</label>
+                <div class="controls">
+                    <table>
+                    <%
+                    7.times { |i|
+                        %>
+                        <tr>
+                            <td>
+                                <div class="control-group">
+                                    <label class="control-label" for="day_<%=i%>"><%=daynames[i]%></label>
+                                    <div class="controls">            
+                                        <input type="checkbox" id="day_<%=i%>" name='day_<%=i%>' <%=day[i] ? 'checked' : ''%> /><br/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <%
+                    }
+                    %>
+                    </table>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="name">
+                    Hours<br/> 
+                    <b>GMT <%=timezone.offset%></b><br/>
+                    (<%=timezone.short_description%>)<br/>
+                    <a class='btn-mini' href='/settings/account'>Change your timezone here</a>
+                </label>
+                <div class="controls">
+                    <table>
+                    <%
+                    6.times { |i|
+                        %>
+                        <tr>
+                        <%
+                        4.times { |j|
+                            k = i*4+j
+                            %>
+                            <td>
+                                <div class="control-group">
+                                    <label class="control-label" for="hour_<%=k.to_s%>"><%=k.to_s%> Hs.</label>
+                                    <div class="controls">
+                                        <input type="checkbox" id="hour_<%=k.to_s%>" name='hour_<%=k.to_s%>' <%=hour[i+j] ? 'checked' : ''%> /><br/>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style='width:20px;'></td>
+                            <%
+                        }
+                        %>
+                        </tr>
+                        <%
+                    }
+                    %>
+                    </table>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,113 @@
+<%
+begin
+    # getting the search filters
+    positive_positions = params[:positive_positions]
+    positive_industries = params[:positive_industries]
+    positive_locations = params[:positive_locations]
+    positive_revenues = params[:positive_revenues]
+    positive_headcounts = params[:positive_headcounts]
+    positive_naicss = params[:positive_naicss]
+    positive_sics = params[:positive_sics]
+
+    negative_positions = params[:negative_positions]
+    negative_industries = params[:negative_industries]
+    negative_locations = params[:negative_locations]
+    negative_revenues = params[:negative_revenues]
+    negative_headcounts = params[:negative_headcounts]
+    negative_naicss = params[:negative_naicss]
+    negative_sics = params[:negative_sics]
+
+    company_only = params[:company_only]
+    phone_only = params[:phone_only]  
+    email_only = params[:email_only]
+  
+    id_export = params[:id_export]
+    lead_name = params[:lead_name]
+    verified_only = params[:verified_only]
+    private_only = params[:private_only]
+
+    # writing the hash descriptor for the new search
+    h = {
+        'name' => "shadow.#{now}",
+        'description' => 'Ghost search for user profiling.',
+        'id_user' => @login.id_user,
+        'saved' => false,
+        'no_of_results' => -1, # unknown - no matters
+        'no_of_companies' => -1, # unknown - no matters
+
+        'id_export' => id_export.to_s.empty? ? nil : id_export,
+        'lead_name' => lead_name.to_s.empty? ? nil : lead_name,
+        'verified_only' => verified_only == 'yes',
+        'private_only' => private_only == 'yes',
+
+        'positions' => [],
+        'locations' => [],
+        'industries' => [],
+        'revenues' => [],
+        'headcounts' => [],
+        'naicss' => [],
+        'sics' => [],
+        'company_only' => company_only == 'yes',
+        'email_only' => email_only == 'yes',
+        'phone_only' => phone_only == 'yes',
+    }
+
+    # adding the positive job positions to the hash
+    h['positions'] += positive_positions.split(/;/).map { |p| { 'value' => p.strip, 'positive' => true } } if positive_positions.strip.length > 0
+
+    # adding the negative job positions to the hash
+    h['positions'] += negative_positions.split(/;/).map { |p| { 'value' => p.strip, 'positive' => false } } if negative_positions.strip.length > 0
+
+    # adding the positive industries to the hash
+    h['industries'] += positive_industries.split(/;/).map { |i| { 'name' => i.strip, 'positive' => true } } if positive_industries.strip.length > 0
+
+    # adding the negative industries to the hash
+    h['industries'] += negative_industries.split(/;/).map { |i| { 'name' => i.strip, 'positive' => false } } if negative_industries.strip.length > 0
+
+    # adding hte positive locations to the hash
+    h['locations'] += positive_locations.split(/;/).map { |l| { 'value' => l.strip, 'positive' => true } } if positive_locations.strip.length > 0
+
+    # adding the negative locations to the hash
+    h['locations'] += negative_locations.split(/;/).map { |l| { 'value' => l.strip, 'positive' => false } } if negative_locations.strip.length > 0
+
+    # adding the positive revenues to the hash
+    h['revenues'] += positive_revenues.split(/;/).map { |r| { 'name' => r.strip, 'positive' => true } } if positive_revenues.strip.length > 0
+
+    # adding the negative revenues to the hash
+    h['revenues'] += negative_revenues.split(/;/).map { |r| { 'name' => r.strip, 'positive' => false } } if negative_revenues.strip.length > 0
+
+    # adding the positive headcounts to the hash
+    h['headcounts'] += positive_headcounts.split(/;/).map { |h| { 'name' => h.strip, 'positive' => true } } if positive_headcounts.strip.length > 0
+
+    # adding the negative headcounts to the hash
+    h['headcounts'] += negative_headcounts.split(/;/).map { |h| { 'name' => h.strip, 'positive' => false } } if negative_headcounts.strip.length > 0
+
+    # adding the positive naicss to the hash
+    h['naicss'] += positive_naicss.split(/;/).map { |n| { 'code' => n.strip, 'positive' => true } } if positive_naicss.strip.length > 0
+
+    # adding the negative naicss to the hash
+    h['naicss'] += negative_naicss.split(/;/).map { |n| { 'code' => n.strip, 'positive' => false } } if negative_naicss.strip.length > 0
+
+    # adding the positive sics to the hash
+    h['sics'] += positive_sics.split(/;/).map { |s| { 'code' => s.strip, 'positive' => true } } if positive_sics.strip.length > 0
+
+    # adding the negative sics to the hash
+    h['sics'] += negative_sics.split(/;/).map { |s| { 'code' => s.strip, 'positive' => false } } if negative_sics.strip.length > 0
+
+    # register the search performed by the user, even it the user didn't request to save the search.
+    # we do this in order to profile each user, to know his/her preferences, and offer more data later.
+    s = BlackStack::Leads::Search.new(h)
+    #s.no_of_results = s.count
+    #s.no_of_companies = s.count_companies
+    s.save
+
+    # return 
+    # on a new search, return the paginatin to the page 1.
+    # don't show any success message in this case. Just the results of the search.
+    redirect "/leads/results/#{s.id.to_guid}?number=1" 
+
+rescue => e
+    # return errors
+    redirect "/leads?err=#{CGI::escape(e.message)}"
+end
+%>

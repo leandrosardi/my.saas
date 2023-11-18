@@ -1,0 +1,26 @@
+<%
+return_message = {}
+begin
+    id_lead = params['id_lead']
+    description = params['description']
+    date = params['date'] # example: '2018-12-31'
+    period_number = params['period_number'] # example: 2
+    period_unit = params['period_unit'] # example: 'days'
+    
+    o = BlackStack::Leads::Reminder.new
+    o.id = guid
+    o.create_time = now
+    o.id_user = @login.id_user
+    o.id_lead = id_lead
+    o.description = description
+    o.done = false
+    o.expiration_time = !date.nil? ? date : DB["SELECT CAST('#{now}' AS TIMESTAMP)+INTERVAL '#{period_number.to_s} #{period_unit.to_s}' AS t"].first[:t]
+    o.save
+    
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

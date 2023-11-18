@@ -1,0 +1,15 @@
+<%
+return_message = {}
+begin
+    id_data = params['id_data']
+
+    #
+    DB.execute("UPDATE fl_data SET delete_time = '#{now}' WHERE id = '#{id_data}'")
+
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

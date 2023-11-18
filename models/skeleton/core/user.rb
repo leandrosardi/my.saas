@@ -163,6 +163,9 @@ module BlackStack
                 # add the user to the account
                 u = self.account.add_user(h)
                 
+                # send notification to the new user
+                BlackStack::MySaaS::NotificationYouAdded.new(u, self).do if notif
+    
                 # return
                 u
             end
@@ -172,8 +175,7 @@ module BlackStack
                 u = self.account.update_users(h)
 
                 # send notification to the new user
-                u.notification_you_have_been_added = true
-                u.save
+                BlackStack::MySaaS::NotificationYouAdded.new(u, self).do if notif
             end
 
             # signup a new user to the same account of this user.
@@ -291,8 +293,7 @@ module BlackStack
                 end
 
                 # perform the operation
-                user.notification_confirm_email_requested = true
-                user.save
+                BlackStack::MySaaS::NotificationConfirm.new(user).do
             end
 
             # return true if this user is the owner of its account.

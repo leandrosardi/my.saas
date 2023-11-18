@@ -1,0 +1,22 @@
+<%
+return_message = {}
+begin
+    id_lead = params['id_lead']
+    value = params['value']
+    type = params['type']
+
+    o = BlackStack::Leads::Data.new({
+        'type' => type.to_i,
+        'value' => value
+    })
+    o.id_lead = id_lead
+    o.id_user = @login.id_user
+    o.save
+    
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

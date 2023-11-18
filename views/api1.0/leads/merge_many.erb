@@ -1,0 +1,10 @@
+<%
+return_message = {}
+begin
+    BlackStack::Leads::Lead.merge_many(@body).each { |lead| lead.save }
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

@@ -1,0 +1,32 @@
+<%
+return_message = {}
+return_message[:deliveries] = []
+begin
+    vid = params[:vid] # conversation id
+
+    # validate vid is mandatory
+    if vid.nil? || vid.empty?
+        return_message[:status] = 'vid is mandatory'
+        return return_message.to_json
+    end
+
+    DB.execute("
+        DELETE FROM eml_unsubscribe 
+        WHERE id_delivery IN (
+            SELECT id 
+            FROM eml_delivery 
+            WHERE id_conversation = '#{vid}'
+        );
+    ")
+
+    # request to push delivery to micro.emails.timeline
+    d = BlackStack::Emails::Delivery.where(:id_conversation=>vid).sort_by { |d| d.create_time }.first
+    d.reset_push_to_micro_emails_timeline
+
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

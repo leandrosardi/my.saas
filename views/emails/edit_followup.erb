@@ -1,0 +1,203 @@
+<%
+# load preferences
+gid = params[:gid]
+fid = params[:fid]
+g = BlackStack::Emails::Campaign.where(:id=>gid).first
+f = BlackStack::Emails::Followup.where(:id=>fid).first
+test_email = @login.user.preference('emails.followup.edit.test_email', '', nil)
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span9">
+    		<%=nav5("Campaigns", "/emails/campaigns", g.name, "/emails/campaigns/#{g.id.to_guid}/edit", "FollowUps", "/emails/campaigns/#{g.id.to_guid}/followups", f.name, "/emails/campaigns/#{g.id.to_guid}/followups/#{f.id.to_guid}", 'Edit')%>
+		</div>
+		<div class="span3" style='text-align:right;'>
+            <%
+            if f.can_play?
+                %>
+                <a class="btn btn-green" href='/emails/filter_play_followup?fid=<%=fid%>'><i class='icon-play'></i> Play</a>
+                <%
+            elsif f.can_pause?
+                %>
+                <a class="btn btn-gray" href='/emails/filter_pause_followup?fid=<%=fid%>'><i class='icon-pause'></i> Pause</a>
+                <%
+            end
+            %>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=g.id.to_guid%>/followups/new'><i class='icon-plus'></i> New</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_edit_followup' class="form-horizontal">
+            <input type='hidden' id='gid' name='gid' value='<%=gid%>'/>
+            <input type='hidden' id='fid' name='fid' value='<%=fid%>'/>
+            <!-- textfield for name -->
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <div class="controls">
+                    <input type="text" id="name" name='name' placeholder="Name" value='<%=f.name.to_s.encode_html%>' />
+                </div>
+            </div>
+            <div class="control-group">
+                <%
+                if !f.can_edit?
+                %>
+                <p><i class='icon-info-sign'></i> Most parameters are not allowed for edition, because campaign is no longer a draft.</p>
+                <%
+                end # if !f.can_edit?
+                %>
+            </div>
+            <!-- dropdown list for type -->
+            <div class="control-group">
+                <label class="control-label" for="type">Type</label>
+                <div class="controls">
+                    <select id="type" name='type'>
+                        <%
+                        BlackStack::Emails::Followup.types.each do |t|
+                            %>
+                            <option value='<%=t%>'<%=(t==f.type ? ' selected="selected"' : '')%>><%=BlackStack::Emails::Followup.type_name(t)%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+            <!-- enable/disable tracking -->
+            <div class="control-group">
+                <label class="control-label" for="exclude">Track Opens</label>
+                <div class="controls">
+                    <input type="checkbox" id="track_opens_enabled" name='track_opens_enabled' <%=f.track_opens_enabled ? 'checked' : ''%> />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="exclude">Track Clicks</label>
+                <div class="controls">
+                    <input type="checkbox" id="track_clicks_enabled" name='track_clicks_enabled' <%=f.track_clicks_enabled ? 'checked' : ''%> />
+                </div>
+            </div>
+            <!-- dropdown list for sequence number -->
+            <div class="control-group">
+                <label class="control-label" for="sequence_number">Sequence Number</label>
+                <div class="controls">
+                    <input type="number" id="sequence_number" name='sequence_number' placeholder="Sequence Number" value='<%=f.sequence_number.to_s.encode_html%>' <%=f.can_edit? ? '' : 'disabled'%> />
+                    <%
+                    if !f.can_edit?
+                    %>
+                    <p><i class='icon-info-sign'></i> You can't change the sequence number becuase this followup started running.</p>
+                    <%
+                    end # if !f.can_edit?
+                    %>
+                </div>
+            </div>
+            <!-- dropdown list for delay days -->
+            <div class="control-group">
+                <label class="control-label" for="delay_days">Delay Days</label>
+                <div class="controls">
+                    <input type="number" id="delay_days" name='delay_days' placeholder="Delay Days" value='<%=f.delay_days.to_s.encode_html%>' />
+                    <br/>
+                    <div class='alert alert-warning'>
+                      <b>Hint:</b><br/>
+                      <b>Delay days:</b> Number of days after the lead was added to the list, or after the previous followup has been delivered.<br/> 
+                    </div>
+                </div>
+            </div>
+            <!-- textfield for subject -->
+            <div class="control-group">
+                <label class="control-label" for="subject">Subject</label>
+                <div class="controls">
+                    <input class='input input-block-level' type="text" id="subject" name='subject' placeholder="subject" value='<%=f.subject.to_s.encode_html%>' />
+                </div>
+            </div>
+            <!-- textarea for body -->
+            <div class="control-group">
+                <label class="control-label" for="divbody">Body</label>
+                <div class="controls">
+                    <textarea id="body" name='body' placeholder="Body" rows=5 style='width:100%;' maxlength=4000>
+                        <%=f.body%>
+                    </textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Save</button>                    
+                </div>
+            </div>
+        </form>
+        <form method='get' action='/emails/filter_test_followup' style='display:inline-block;'>
+            <input type='hidden' id='fid' name='fid' value='<%=fid%>' />
+            <input type='email' id='test_email' name='test_email' placeholder='Your email address' value='<%=test_email%>' />
+            <button type='submit' class='btn btn-gray'><i class='icon-envelope'></i> Send Test</button>
+        </form>
+
+	</div>
+</section>
+
+<script> 
+    function enableTrackingCheckBoxes() {
+        var track_opens_enabled = document.getElementById('track_opens_enabled');
+        var track_clicks_enabled = document.getElementById('track_clicks_enabled');
+        // if type is HTML, enable checkboxes
+        if (document.getElementById('type').value == '<%=BlackStack::Emails::Followup::TYPE_HTML.to_s%>') {
+            track_opens_enabled.disabled = false;
+            track_clicks_enabled.disabled = false;
+        } else {
+            track_opens_enabled.disabled = true;
+            track_clicks_enabled.disabled = true;            
+        }
+    }
+
+    $(document).ready(function() {
+        // enable/disable tracking checkboxes when changing type
+        document.getElementById('type').onchange = enableTrackingCheckBoxes;
+        // enable/disable tracking checkboxes on page load
+        enableTrackingCheckBoxes();
+        // draw the editor
+        tinymce.init({
+            selector: '#body',
+            plugins: "emoticons hr image link lists table", 
+            toolbar: "undo redo | bold italic image emoticons | formatgroup paragraphgroup insertgroup | <%=BlackStack::Emails::mergetags.map { |tag| tag.gsub('{','').gsub('}','') }.join(' ')%>",
+            autosave_restore_when_empty: false,
+            toolbar_groups: {
+                formatgroup: {
+                    icon: 'format',
+                    tooltip: 'Formatting',
+                    items: 'bold italic underline strikethrough | forecolor backcolor | superscript subscript | removeformat'
+                },
+                paragraphgroup: {
+                    icon: 'paragraph',
+                    tooltip: 'Paragraph format',
+                    items: 'h1 h2 h3 | bullist numlist | alignleft aligncenter alignright | indent outdent'
+                },
+                insertgroup: {
+                    icon: 'plus',
+                    tooltip: 'Insert',
+                    items: 'link image emoticons hr'
+                }
+            },
+            skin: 'outside',
+            toolbar_location: 'bottom',
+            menubar: false,
+            statusbar: false,
+            readonly: false,
+            setup: function (editor) {
+                <%
+                BlackStack::Emails::mergetags.map { |tag| tag.gsub('{','').gsub('}','') }.each { |tag|
+                    %>
+                    editor.ui.registry.addButton('<%=tag%>', {
+                        text: '{<%=tag%>}',
+                        onAction: function (_) {
+                            editor.insertContent('{<%=tag%>}');
+                        }
+                    });
+                    <%
+                }
+                %>
+            },
+        });
+    });
+</script>

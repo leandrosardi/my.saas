@@ -1,0 +1,71 @@
+<%
+# load preferences
+aid = params[:aid]
+o = BlackStack::Emails::Address.where(:id=>aid).first
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span12">
+		    <%=nav2("Addresses", "/emails/addresses", o.address)%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_edit_address' class="form-horizontal">
+            <input type='hidden' id='aid' name='aid' value='<%=aid%>'/>
+
+            <div class="control-group">
+                <label class="control-label" for="status"><b>Address</b></label>
+                <div class="controls">
+                    <input type='text' id='address' name='address' class='input input-block-level select-all' value='<%=o.address%>' disabled />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="status">Shared</label>
+                <div class="controls">
+                    <select id='shared' name='shared' class='input input-small'>
+                        <option value='0' <%=o.shared ? '' : 'selected'%>>No</option>
+                        <option value='1' <%=o.shared ? 'selected' : ''%>>Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="status">Enabled</label>
+                <div class="controls">
+                    <select id='enabled' name='enabled' class='input input-small'>
+                        <option value='0' <%=o.enabled ? '' : 'selected'%>>No</option>
+                        <option value='1' <%=o.enabled ? 'selected' : ''%>>Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="status">Deliveries<br/>Per Day</label>
+                <div class="controls">
+                    <select id='max_deliveries_per_day' name='max_deliveries_per_day' class='input input-small'>
+                        <%
+                        [5,10,15,20,35,50,75,100,150,200,500].each do |i|
+                            %>
+                            <option value='<%=i%>' <%=o.max_deliveries_per_day == i ? 'selected' : ''%>><%=i.to_label%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+	</div>
+</section>

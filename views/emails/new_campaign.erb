@@ -1,0 +1,63 @@
+<%
+# load preferences
+name = @login.user.preference('emails.campaign.new.name', '', nil)
+id_export = @login.user.preference('emails.campaign.new.id_export', '', nil)
+%>
+
+<%
+q = "
+    select 
+        e.id as id,
+        e.filename as filename
+    from fl_export e
+    join \"user\" u on (u.id=e.id_user and u.id_account='#{@login.user.id_account}')
+    where e.delete_time is null
+    order by e.filename
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		<%=nav2("Campaigns", "/emails/campaigns", "New")%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_new_campaign' class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <div class="controls">
+                    <input type="text" id="name" name='name' placeholder="Name" value='<%=name.to_s.encode_html%>' />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="export">Export List</label>
+                <div class="controls">
+                    <select type="text" id="id_export" name='id_export' placeholder="Export List">
+                        <option value=''></option>
+                        <%
+                        DB[q].each { |row|
+                            selected = id_export.to_s == row[:id].to_s ? "selected" : ""
+                            %>
+                            <option value='<%=row[:id].to_s.to_guid%>' <%=selected%>><%=row[:filename].to_s.encode_html%></option>
+                            <%
+                            GC.start
+                            DB.disconnect
+                        }
+                        %>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Create</button>
+                </div>
+            </div>
+        </form>
+	</div>
+</section>

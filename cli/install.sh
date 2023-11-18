@@ -80,7 +80,7 @@ export RUBYLIB=~/code
 
 # copy .postgresql file 
 # --> DEPRECATED (leandrosardi/cs#64)
-#cp -p ~/code/my.saas/.postgresql/root.crt ~/.postgresql
+#cp -p ~/code/app/.postgresql/root.crt ~/.postgresql
 
 # allow non-root user to run nginx and write the log files - error.log is written here
 # --> DEPRECATED (leandrosardi/cs#64)
@@ -109,7 +109,7 @@ export RUBYLIB=~/code
 #sudo setcap 'cap_net_bind_service=+ep' `which nginx`
 # run nginx if you want to enable HTTPS
 # --> DEPRECATED (leandrosardi/cs#64)
-#nginx -c ~/code/my.saas/nginx/desa.conf > /dev/null 2>&1 &
+#nginx -c ~/code/app/nginx/desa.conf > /dev/null 2>&1 &
 # run sinatra webserver listening port 3000
 # --> DEPRECATED (leandrosardi/cs#64)
 #ruby app.rb port=3000 config=config.template env=desamv

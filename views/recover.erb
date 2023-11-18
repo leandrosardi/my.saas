@@ -3,14 +3,6 @@ err = params[:err]
 msg = params[:msg]
 %>
 
-<%
-if BlackStack::Funnel.recaptcha2_site_key
-%>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<%
-end # if BlackStack::Funnel.recaptcha2_site_key
-%>
-
 <div style='position:absolute;left:50px;top:15px;height:50px;'>
 	<a href='/'><img src="/core/images/logo.png" height="50px" title="ConnectionSphere Logo" /></a>
 </div>
@@ -50,15 +42,8 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 				<input type="text" class='input-xlarge' name="email" placeholder="Email" id="id_email" tabindex="1" onfocus="$(this).select();" />
 			</div>
 				
-			<%
-			if BlackStack::Funnel.recaptcha2_site_key
-			%>
-			<div class="g-recaptcha" data-sitekey="<%=BlackStack::Funnel.recaptcha2_site_key%>" data-callback='recaptcha_callback'></div>
-			<%
-			end # if BlackStack::Funnel.recaptcha2_site_key
-			%>
-
-			<button type="submit" id='submit' name='submit' class="btn btn-primary" tabindex="4" <%=BlackStack::Funnel.recaptcha2_site_key ? 'disabled' : ''%>>Recover</button>		</fieldset>
+			<button type="submit" class="btn btn-primary" tabindex="4">Recover</button>
+		</fieldset>
 	</form>
 
 	<div>
@@ -74,11 +59,6 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 <br/>
 
 <script type="text/javascript">
-	function recaptcha_callback(){
-		//alert("callback working");
-		$('#submit').prop("disabled", false);
-	}
-
 	$(document).ready(function() {
 		$('input, textarea').placeholder();
 		document.getElementById("id_email").focus();

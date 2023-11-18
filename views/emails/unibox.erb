@@ -1,0 +1,1286 @@
+<style>
+  div.leadpic-mid {
+    width:48px;
+    //height:48px;
+    //border-radius: 50%;
+    //overflow: hidden;
+  }
+
+  div.leadpic-mid img {
+    width: 48px;
+    //height: 48px;
+    //border-radius: 50%;
+    //overflow: hidden;
+  }
+
+  div.leadpic-small {
+    //width:16px;
+    //height:16px;
+    //border-radius: 50%;
+    //overflow: hidden;
+  }
+
+  div.leadpic-small img {
+    //width: 16px;
+    //height: 16px;
+    //border-radius: 50%;
+    //overflow: hidden;
+  }
+</style>
+
+<%
+# activate this flag to enable features for sys-owner
+admin = (request.path_info == '/monitoring/unibox') #@login.user.account.sysowner?
+
+id=params[:id].to_s
+filter_keyword = !id.to_s.empty? ? nil : @login.user.preference('emails.unibox.filter.keyword', "", params[:keyword])
+filter_no_bounces = !id.to_s.empty? ? nil : @login.user.preference('emails.unibox.filter.no_bounces', true, params[:no_bounces])
+filter_campaigns_only = !id.to_s.empty? ? nil : @login.user.preference('emails.unibox.filter.campaigns_only', false, params[:campaigns_only])
+
+q = "
+    select 
+        a.id as id_account,
+        a.name as account_name,
+
+        u.id as id_user,
+        u.name as user_name,
+
+        d.id as id_delivery,
+        d.create_time,
+        d.id_conversation, 
+        d.is_positive,
+
+        c.id as id_campaign,
+        c.name as campaign_name,
+
+        l.id as id_lead, 
+        l.name as lead_name,
+        l.position as lead_position,
+        l.stat_company_name as lead_company,
+
+        l.picture_url,
+        l.linkedin_picture_url
+                
+    from eml_delivery@{NO_ZIGZAG_JOIN} d
+    left join eml_followup f on f.id = d.id_followup
+    left join eml_campaign c on c.id=f.id_campaign
+"
+
+if admin
+    q += "
+    join \"user\" u on (d.id_user=u.id)
+    "    
+else
+    q += "
+    join \"user\" u on (d.id_user=u.id and u.id_account='#{@login.user.id_account}')
+    "
+end
+
+q += "
+    join account a on (u.id_account=a.id)
+"
+
+if filter_keyword.to_s.empty?
+    q += "
+    join fl_lead@{NO_ZIGZAG_JOIN} l on (d.id_lead = l.id)
+    "
+else
+    q += "
+    join fl_lead@{NO_ZIGZAG_JOIN} l on (d.id_lead = l.id and l.name like '#{filter_keyword.to_s.to_sql}%')
+    "
+end
+
+if id.to_s.empty?
+    q += "
+    where d.is_response = true
+    and d.is_bounce = false
+    "
+else
+    q += "
+    where d.id='#{id.to_s.to_sql}'
+    "
+end
+
+q += "
+    and d.id_followup is not null
+"
+
+if !@login.user.account.sysowner?
+    q += "
+and (a.id='#{@login.user.id_account}' or a.id_account_owner='#{@login.user.id_account}')
+"
+end
+
+
+q += "
+    order by d.create_time desc
+    limit 100
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav1("unibox")%>
+		</div>
+		<div class="span6">
+            <div class="pull-right">
+                <form action="/emails/unibox" method="get">
+                    <div class="span8">
+                        <input type='text' class='input-block-level select-all-on-focus' id='keyword' name='keyword' value='<%=filter_keyword.to_s.encode_html%>' placeholder='Lead Name' />
+                    </div>
+
+                    <button class="btn btn-blue btn-medium btn-submit" style="margin-left: 2px;" type="submit" onclick="">
+                        <i class='icon-search'></i> Search
+                    </button>
+                </form>
+            </div>
+
+            <%
+            if !id.to_s.empty?
+            %>
+            <div class='btn-group'>
+                <a href='<%=request.path_info%>' class="btn btn-link" id='show_all' name='show_all' title='Back to All Users'><i class='icon-arrow-left'></i> See All Messages</a>
+            </div>
+            <%
+            end # if !id.to_s.empty?
+            %>
+		</div>
+	</section>
+</div>
+
+<style>
+.list-name {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+div.ticket-selected {
+    background-color: rgb(235,235,255);
+}
+
+div.inbox-contaier {
+    position: relative;
+    right: 0px;
+    top: 0px;
+    //bottom: 0px;
+    height: 80vh;
+    max-height:75%;
+    overflow-y: scroll;
+}
+
+div.inbox-contaier div.inboxes {
+    position: absolute;  
+}
+
+div.chats-contaier {
+    position: relative;
+    right: 0px;
+    top: 0px;
+    //bottom: 0px;
+    height: 50vh;
+    max-height:75%;
+    overflow-y: scroll;
+}
+
+div.chats-contaier div.chats {
+    position: absolute;  
+}
+
+div.reply-contaier {
+    position: relative;
+    right: 0px;
+    top: 0px;
+    height: 30vh;
+    bottom: 0px;
+    overflow-y: scroll;
+}
+</style>
+
+<!-- Single Panel -->
+<section class="row-fluid box">
+	<div class="span4 widget-support-tickets inbox-contaier">
+        <div class='inboxes'>
+            <%
+            i = 0
+            DB[q].all { |row|
+            #[].each { |row|
+                i += 1
+                picture_url = row[:picture_url] || '/emails/images/avatar.png'
+                %>
+                <div class='ticket' data-id-conversation='<%=row[:id_conversation].to_s%>'>
+                    <span class="label label-green">reply</span>
+                    <a href="#" title="<%=row[:lead_name].to_s.encode_html%>" class='load-conversation' data-id-conversation='<%=row[:id_conversation].to_s%>' data-id='<%=row[:id_delivery].to_s%>'>
+
+                        <div class='leadpic-small'>
+                            <img src='<%=picture_url.to_s.encode_html%>' title='<%=row[:lead_name].to_s.encode_html%>' />
+                        </div>
+              
+                        <span style='color:rgb(60,60,60);'>
+                            <b><%=row[:lead_name].to_s.encode_html%></b>
+                            <%
+                            if row[:is_positive]
+                            %>
+                            <span class='conversation-with-positive-reply badge badge-green' style='color:white;'>positive</span>
+                            <%
+                            else
+                            %>
+                            <span class='conversation-with-positive-reply'></span>
+                            <%
+                            end
+                            %>
+                            <%
+                            if row[:id_account].to_guid != @login.user.id_account.to_guid
+                                %>
+                                <span class="label label-pink" style='color:white;' style='color:white;'><i class='icon-key'></i></span>
+                                <%
+                            end                            
+                            %>        
+                            <br/>
+                            <!--
+                            <%=row[:lead_position].to_s.encode_html%><br/>
+                            -->
+                            <%=row[:lead_company].to_s.encode_html%>
+                        </span>
+                    </a>
+                    <span class="opened-by">
+                        <%
+                        if admin
+                        %>
+                        <b>Account:</b> <span><%=row[:account_name].to_s.encode_html%></span> <br>
+                        <%
+                        end #if admin
+                        %>
+                        
+                        <%
+                        if !row[:id_campaign].nil?
+                        %> 
+                        <b>Campaign:</b> <a href="/emails/campaigns/<%=row[:id_campaign]%>/edit" title="Open Campaign"><%=row[:campaign_name].to_s.encode_html%></a> <br>
+                        <%
+                        end # if row[:campaign_id].nil?
+                        %>                         
+                        <b>Time:</b> <%=row[:create_time].to_s[0..18]%>
+                    </span>
+                </div>
+                <%
+            }
+
+            if i == 0
+                %>
+                <div>
+                    <i>No conversations found.</i>
+                </div>
+                <%
+            end # if i == 0
+            %>
+        </div>
+    </div>
+
+	<div class="span5">
+        <div class='widget-chat chats-contaier'>
+            <div class='chats' data-id-conversation=''>
+                Click a Message to load the conversation.
+            </div>
+        </div>
+
+        <div class='alert alert-warning'>
+            <span>
+                <i class='icon-warning-sign'></i> <b>Important:</b><br/>
+                Messages will be sent in behalf of our Sales Assistant.
+            </span>
+        </div>
+
+        <div class='reply'>
+            <textarea id="body" name='body' placeholder="Body" rows=2 style='width:100%;' maxlength=4000></textarea>
+        </div>
+    </div>
+
+	<div class="span3">
+        <div class='widget-data data-contaier'>
+            <span id='nodata'>
+                No data available.<br/>
+                <br/>
+                Click a Message to load the lead's data.
+            </span>
+            <span id='share'>
+                <span>
+                    <button id="copy-button" href='#' class="btn btn-link" title='Copy the Direct Link to This Conversation.' onclick="" data-id=''><i id='copy-icon' class='icon-link'></i></button>
+                </span>
+                <span>
+                    <button id="report-button" href='#' class="btn btn-link" title='Copy the Report about This Conversation.' onclick="" data-id=''><i id='report-icon' class='icon-copy'></i></button>
+                </span>
+                <br/>
+                <span id='copy-button-label' style='color:green'></span>
+                <br/>
+                <b>Name: </b> <span id='lead-name' name='lead-name'></span><br/>
+                <b>Title: </b> <span id='lead-position' name='lead-position'></span><br/>
+                <!--
+                <b>Location: </b> <span id='lead-location' name='lead-location'></span><br/>
+                <br/>
+                -->
+                <b>Company: </b> <span id='company-name' name='company-name'></span><br/>
+                <!--
+                <b>Industry: </b> <span id='lead-industry' name='lead-industry'></span><br/>
+                -->
+            </span>
+
+            <span id='list'>
+                <!--
+                <b>List: </b> <span class='list-name'>-</span>
+                -->
+                <div style='position:relative'>
+                    <div style='position:absolute;top:0'>
+                        <button class='btn btn-red btn-small' id='unsubscribe' data-id-conversation=''>Unsubscribe</button><br/>
+                    </div>
+                    <div style='position:absolute;top:0'>
+                        <button class='btn btn-green btn-small' id='resubscribe' data-id-conversation=''>Re-Subscribe</button><br/>
+                    </div>
+                </div>
+            </span>
+            <br/>
+            <br/>
+            <span id='all_list'>
+                <div class="span5" id='exports'>
+                </div>
+            </span>
+            <br/>
+            <br/>
+            <span id='transfer'>
+                <div style='position:relative'>
+                    <b>Positive Reply?</b>
+                    <div style='position:absolute;top:-3px;left:105px;'>
+                        <button class='btn btn-gray btn-small' id='mark-positive' data-id=''><i class='icon-thumbs-up'></i></button>
+                    </div>
+                    <div style='position:absolute;top:-3px;left:105px;'>
+                        <button class='btn btn-green btn-small' id='unmark-positive' data-id=''><i class='icon-thumbs-up'></i></button>
+                    </div>
+                </div>
+            </span>
+            <br/>
+            <span id='data'>
+                <div id='databuttons' style='width:100%;'> </div>
+                <div id='dataitems' style='width:100%;'> </div>
+            </span>
+            <br/>
+            <span id='reminder'>
+                <div id='reminderbuttons' style='width:100%;'> </div>
+                <div id='reminderitems' style='width:100%;'> </div>
+            </span>
+        </div>
+    </div>
+</section>
+
+<script> 
+    var vid = '';
+    // setup listsjs component to manage export lists
+	var exports = document.getElementById('exports');	  
+    // setup datasjs component to manage lead contact information
+    var dataitems = document.getElementById('dataitems');	
+    var databuttons = document.getElementById('databuttons');	
+    // setup datasjs component to manage lead reminders
+    var reminderitems = document.getElementById('reminderitems');	
+    var reminderbuttons = document.getElementById('reminderbuttons');	
+
+    // add a deliver to the .chats div.
+    // draw different if it is a message sent or a message received.
+    function draw_delivery(d) {
+        if ( d.is_response == false ) {
+            // draw message sent
+            //<div class="message left">
+            //    <img src="/emails/images/avatar.png" alt="">
+            //    <div>
+            //        <a href="#" title="">Sarah Connor</a> says:
+            //        <span class="pull-right">2 minutes ago</span>
+            //        <div>
+            //            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.
+            //            <button class="btn btn-mini btn-link">expand</button>
+            //        </div>
+            //    </div>
+            //</div>
+            div = $('<div class="message left"></div>');
+            divi = $('<div class="leadpic-mid"></div>');
+            img = $('<img src="/emails/images/avatar.png" alt="">');
+            divi.append(img);
+            div.append(divi);
+            div2 = $('<div></div>');
+            a = $('<b>'+d.address.first_name+' '+d.address.last_name+'</b> <span class="badge badge-blue" style="color:white;">Sales Assistant</span>');
+            div2.append(a);
+            div2.append(' says: ');
+            span = $('<span class="pull-right">'+d.create_time+'</span>');
+            div2.append(span);
+            div2.append('<br>');
+            div2.append(d.body);
+            div.append(div2);
+            $('.chats').append(div);
+        } else {
+            // draw message received
+            //<div class="message right">
+            //    <img src="/emails/images/avatar.png" alt="">
+            //    <div>
+            //        <a href="#" title="">Second User</a> says:
+            //        <span class="pull-right">2 minutes ago</span>
+            //        <div>
+            //            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.
+            //        </div>
+            //    </div>
+            //</div>
+
+            let picurl = d.lead.picture_url || '/emails/images/avatar.png';
+
+            div = $('<div class="message right"></div>');
+            divi = $('<div class="leadpic-mid"></div>');
+            img = $('<img src="'+picurl+'" alt="">');
+            divi.append(img);
+            div.append(divi);
+            div2 = $('<div></div>');
+            a = $('<a href="<%=request.path_info%>?keyword='+d.name+'" title="">'+d.name+'</a> <span class="badge badge-green" style="color:white;">Lead</span>');
+            div2.append(a);
+            div2.append(' says: ');
+            span = $('<span class="pull-right">'+d.create_time+'</span>');
+            div2.append(span);
+            div2.append('<br>');
+            div2.append(d.simplified_body);
+            div.append(div2);
+            $('.chats').append(div);
+        }
+    } // function draw_delivery
+
+    // draw a 'sending...' legend in the bottom of the .chats div.
+    function draw_sending() {
+        div = $('<div class="message right sending"></div>');
+        div.append('Sending...');
+        $('.chats').append(div);
+    }
+
+    // remove the 'sending...' legend in the bottom of the .chats div.
+    function remove_sending() {
+        $('.chats .sending').remove();
+    }
+
+    // create a new delivery by calling the access point /ajax/emails/create_delivery.json
+    // draw the new delivery in the .chats div
+    function create_delivery(body) {
+        // show loading legend
+        draw_sending();
+        // post ajax call to /ajax/emails/create_delivery.json
+        $.ajax({
+            url: '/ajax/emails/create_delivery.json',
+            type: 'POST',
+            data: {
+                vid: vid,
+                body: body,
+            },
+            success: function(data) {
+                res = JSON.parse(data);
+                if (res.status == 'success') {
+                    // hide the sending legend
+                    remove_sending();
+                    // draw the new delivery
+                    draw_delivery(res.delivery);
+                    // set focus on textarea.body - TODO: this is not working!
+                    //$('#body').focus();
+                } else {
+                    $('.chats').html('Error sending message ('+res.status+').');
+                }
+            },
+            error: function(data) {
+                $('.chats').html('Error sending.');
+            }
+        });
+    }
+
+    function load_conversation(id) {
+        // get the tag with data-id
+        o = $('.load-conversation[data-id="'+id+'"]');
+        // get conversation id
+        vid = $(o).data('id-conversation');
+        // clear the current conversation id in the .chats div 
+        // refe rence: https://github.com/ConnectionSphere/emails/issues/130
+        $('.chats').attr('data-id-conversation', '');
+        // show loading legend
+        $('.chats').html('Loading...');
+        // show #nodata, and write "Loading..." in it
+        $('#nodata').show();
+        $('#nodata').html('Loading...');
+        // hide buttons in the right-bar
+        $('#share').hide();
+        $('#list').hide();
+        $('#transfer').hide();
+        $('#data').hide();
+        $('#reminder').hide();
+        $('#exports').hide();
+        $('#table').hide();
+        $('#unsubscribe').hide();
+        $('#resubscribe').hide();
+        $('#unmark-positive').hide();
+        $('#mark-positive').hide();
+        // post ajax call to /ajax/emails/load_deliveries.json
+        $.ajax({
+            url: '/ajax/emails/load_deliveries.json',
+            type: 'POST',
+            data: {
+                vid: vid,
+            },
+            success: function(data) {
+                res = JSON.parse(data);
+                if (res.status == 'success') {
+                    let unsubscribed = false;
+                    // empty the chats
+                    $('.chats').html('');
+                    // show the .reply div
+                    $('.reply').show();
+                    // set the data-id-conversation attribute
+                    $('.chats').attr('data-id-conversation', vid);
+                    // remove the .ticket-selected class from all the div.ticket
+                    $('.ticket').removeClass('ticket-selected');
+                    // add the .ticket-selected class to the div.ticket with the same data-id-conversation
+                    $('.ticket[data-id-conversation="' + vid + '"]').addClass('ticket-selected');
+                    // iterate the exports
+                    listsJs.remove_all(exports);
+                    listsJs.set_id(exports, res.lead.id);
+                    for (let i = 0; i<res.lead.exports.length; i++) {
+                        listsJs.add_item(exports, {
+                            id: res.lead.exports[i].id,
+                            name: res.lead.exports[i].filename,
+                            checked: res.lead.exports[i].belonging,
+                            deleted: res.lead.exports[i].deleted,
+                        });
+                    }
+                    // iterate the datas
+                    datasJs.remove_all(dataitems);
+                    datasJs.set_id(databuttons, dataitems, res.lead.id);
+                    for (let i = 0; i<res.lead.datas.length; i++) {
+                        if (
+                            res.lead.datas[i].type.toString() == '<%=BlackStack::Leads::Data::TYPE_EMAIL%>' ||
+                            res.lead.datas[i].type.toString() == '<%=BlackStack::Leads::Data::TYPE_PHONE%>' ||
+                            res.lead.datas[i].type.toString() == '<%=BlackStack::Leads::Data::TYPE_LINKEDIN%>' ||
+                            res.lead.datas[i].type.toString() == '<%=BlackStack::Leads::Data::TYPE_FACEBOOK%>' ||
+                            res.lead.datas[i].type.toString() == '<%=BlackStack::Leads::Data::TYPE_TWITTER%>'
+                        ) {
+console.log ('res.lead.datas[i].type.toString() = ' + res.lead.datas[i].type.toString());
+console.log ('res.lead.datas[i].value.toString() = ' + res.lead.datas[i].value.toString());
+                            if (res.lead.datas[i].deleted == false) {
+                                datasJs.add_item(dataitems, {
+                                    id: res.lead.datas[i].id,
+                                    button_code: res.lead.datas[i].type.toString(),
+                                    value: res.lead.datas[i].value
+                                })
+                            } // if
+                        }
+                    }
+                    // iterate the reminders
+                    datasJs.remove_all(reminderitems);
+                    datasJs.set_id(reminderbuttons, reminderitems, res.lead.id);
+                    for (let i = 0; i<res.lead.reminders.length; i++) {
+                        if (res.lead.reminders[i].deleted == false) {
+                            // add reminder item
+                            datasJs.add_item(reminderitems, {
+                                id: res.lead.reminders[i].id,
+                                button_code: 'reminder',
+                                value: '<b>' + res.lead.reminders[i].expiration_time.toString().slice(0,10) + ':</b> ' + res.lead.reminders[i].description,
+                            });
+                            // update reminder status
+                            datasJs.set_strikethrough(reminderitems, res.lead.reminders[i].id, res.lead.reminders[i].done);
+                        }
+                    }
+                    // iterate the conversations
+                    for (let i = 0; i<res.deliveries.length; i++) { 
+                        // get the delivery
+                        draw_delivery(res.deliveries[i]);
+                        // set the unsubscribed flag
+                        if (res.deliveries[i].unsubscribed) {
+                            unsubscribed = true;
+                        }
+                    }
+                    // hide tag #nodata
+                    $('#nodata').hide();
+                    // show #list
+                    $('#share').show();
+                    $('#list').show();
+                    $('#transfer').show();
+                    $('#data').show();
+                    $('#reminder').show();
+                    $('#exports').show();
+                    $('#table').show();            
+                    // update .list-name
+                    $('.list-name').html(res.deliveries[0].export_filename);
+                    $('.list-name').attr('title', res.deliveries[0].export_filename);
+                    // update the name of the lead
+                    $('#lead-name').html(res.deliveries[0].lead.name);
+                    if (res.deliveries[0].lead.company != null) {
+                        $('#company-name').html(res.deliveries[0].lead.company.name);
+                    }
+                    $('#lead-position').html(res.deliveries[0].lead.position);
+                    //$('#lead-industry').html(res.deliveries[0].lead.industry);
+                    //$('#lead-location').html(res.deliveries[0].lead.location);
+                    // update data-id attribute of share link
+                    $('#share').find('#copy-button').attr('data-id', id);
+                    $('#share').find('#report-button').attr('data-id', id);
+                    // hide label in the left side of the copy button
+                    $('#copy-button-label').hide();
+                    // show either #unsubscribe or #resubscribe buttons
+                    if (unsubscribed) {
+                        $('#unsubscribe').hide();
+                        $('#resubscribe').show();
+                    } else {
+                        $('#unsubscribe').show();
+                        $('#resubscribe').hide();
+                    }
+                    // update data-id-conversation of both #unsubscribe or #resubscribe buttons
+                    $('#unsubscribe').attr('data-id-conversation', vid);
+                    $('#resubscribe').attr('data-id-conversation', vid);
+                    // show #unmark-positive or #mark-positive buttons, if the delivery is positive or not
+                    if (res.deliveries.find(d => d.id == id).is_positive == true) {
+                        $('#unmark-positive').show();
+                        $('#mark-positive').hide();
+                    } else {
+                        $('#unmark-positive').hide();
+                        $('#mark-positive').show();    
+                    }
+                    // update data-id of both #unmark-positive or #mark-positive buttons
+                    $('#unmark-positive').attr('data-id', id);
+                    $('#mark-positive').attr('data-id', id);
+                    // set focus on textarea.body - TODO: this is not working!
+                    //$('#body').focus();
+                } else {
+                    $('.chats').html('Error loading conversation ('+res.status+').');
+                }
+            },
+            error: function(data) {
+                $('.chats').html('Error loading conversation.');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // hide the .reply div
+        $('.reply').hide();
+
+        // hide buttons in the right-bar
+        $('#nodata').show();
+        $('#share').hide();
+        $('#list').hide();
+        $('#transfer').hide();
+        $('#data').hide();
+        $('#reminder').hide();
+        $('#exports').hide();
+        $('#table').hide();
+        $('#unsubscribe').hide();
+        $('#resubscribe').hide();
+        $('#unmark-positive').hide();
+        $('#mark-positive').hide();
+
+        // design the edit like a chat box.
+        // reference: https://www.tiny.cloud/blog/build-a-chat-app-with-our-wysiwyg-editor/
+        tinymce.init({
+            height: 100,
+            selector: '#body',
+            plugins: "emoticons hr image link lists table autoresize", 
+            //toolbar: "bold italic link image emoticons | formatgroup paragraphgroup insertgroup | mySendButton",
+            toolbar: "bold italic link image emoticons formatgroup paragraphgroup insertgroup mySendButton",
+            autosave_restore_when_empty: false,
+            toolbar_groups: {
+                formatgroup: {
+                    icon: 'format',
+                    tooltip: 'Formatting',
+                    items: 'bold italic underline strikethrough | forecolor backcolor | superscript subscript | removeformat'
+                },
+                paragraphgroup: {
+                    icon: 'paragraph',
+                    tooltip: 'Paragraph format',
+                    items: 'h1 h2 h3 | bullist numlist | alignleft aligncenter alignright | indent outdent'
+                },
+                insertgroup: {
+                    icon: 'plus',
+                    tooltip: 'Insert',
+                    items: 'undo redo link image emoticons hr'
+                }
+            },
+            skin: 'outside',
+            toolbar_location: 'top',
+            menubar: false,
+            statusbar: false,
+            placeholder: 'Type your message here',
+            setup: function (editor) {
+                editor.ui.registry.addButton("mySendButton", {
+                    tooltip: "Send Message",
+                    text: "Send",
+                    onAction: function () {
+                        create_delivery(editor.getContent());
+                        editor.resetContent();
+                    },
+                });
+                /*
+                 * leandrosardi/cs#77
+                 * 
+                editor.ui.registry.addMenuButton('mySendButton', {
+                    text: 'Send',
+                    fetch: function (callback) {
+                        var items = [
+                            {
+                                type: 'menuitem',
+                                text: 'Simple Send',
+                                onAction: function () {
+                                    // Send the email, with no-CC, and with no-notification to the user.
+                                }
+                            }, {
+                                type: 'menuitem',
+                                text: 'Send & Transfer',
+                                onAction: function () {
+                                    // Send the email, with CC to the assigned users, and with notification to them.
+                                }
+                            },
+                        ];
+                        callback(items);
+                    }
+                });
+                */
+            },
+        });
+
+        // load conversation
+        $('.load-conversation').click(function(e) {
+            load_conversation($(this).attr('data-id'));
+        });
+
+        // unsubscribe button
+        $('#unsubscribe').click(function(e) {
+            // post ajax call to /ajax/emails/load_deliveries.json
+            $.ajax({
+                url: '/ajax/emails/unsubscribe.json',
+                type: 'POST',
+                data: {
+                    vid: vid,
+                },
+                success: function(data) {
+                    res = JSON.parse(data);
+                    if (res.status == 'success') {
+                        // hide #unsubscribe
+                        $('#unsubscribe').hide();
+                        // show #resubscribe
+                        $('#resubscribe').show();
+                    } else {
+                        $('.chats').html('Error unsubscribing ('+res.status+').');
+                    }
+                },
+                error: function(data) {
+                    $('.chats').html('Error unsubscribing.');
+                }
+            });
+        });
+
+        // resubscribe button
+        $('#resubscribe').click(function(e) {
+            // post ajax call to /ajax/emails/load_deliveries.json
+            $.ajax({
+                url: '/ajax/emails/resubscribe.json',
+                type: 'POST',
+                data: {
+                    vid: vid,
+                },
+                success: function(data) {
+                    res = JSON.parse(data);
+                    if (res.status == 'success') {
+                        // hide #unsubscribe
+                        $('#unsubscribe').show();
+                        // show #resubscribe
+                        $('#resubscribe').hide();
+                    } else {
+                        $('.chats').html('Error resubscribing ('+res.status+').');
+                    }
+                },
+                error: function(data) {
+                    $('.chats').html('Error resubscribing.');
+                }
+            });
+        });
+
+        // on copy the share button
+        $('#share').find('#copy-button').click(function() {
+            let id = $(this).attr('data-id');
+            let url = '<%=CS_HOME_WEBSITE%><%=request.path_info%>?id='+id;
+            navigator.clipboard.writeText(url);
+            //$('#copy-icon').removeClass('icon-link');
+            //$('#copy-icon').addClass('icon-ok');
+            //$('#copy-button').removeClass('btn-link');
+            //$('#copy-button').removeAttr('href');
+            $('#copy-button-label').show();
+            $('#copy-button-label').html('Copied to Clipboard.');
+            setTimeout(function() {
+                $('#copy-button-label').hide('slow');
+            }, 1000);
+            applyToolTips();
+        });
+        
+        // on report the share button
+        $('#share').find('#report-button').click(function() {
+            let id = $(this).attr('data-id');
+            let url = '<%=CS_HOME_WEBSITE%><%=request.path_info%>?id='+id;
+            let lead_name = $('#lead-name').text();
+            let lead_position = $('#lead-position').text(); 
+            let company_name = $('#company-name').text();
+            let txt = ''
+            
+            txt += 'LEAD ALERT:\n'+lead_name+' ('+lead_position+') at '+company_name+'.\n'
+            txt += 'View the full conversation here: '+url+'\n'
+
+            // iterate the array datasJs.components['dataitems']['items']
+            txt += '\n';
+            txt += 'Contact Details:\n';
+            a = datasJs.components.dataitems.items;
+            for (var i = 0; i < a.length; i++) {
+                h = a[i];
+                if (h.button_code.toString() == '<%=BlackStack::Leads::Data::TYPE_EMAIL%>') {
+                    txt += 'Email: '+h.value+'\n';
+                }
+                if (h.button_code.toString() == '<%=BlackStack::Leads::Data::TYPE_PHONE%>') {
+                    txt += 'Phone: '+h.value+'\n';
+                } 
+                if (h.button_code.toString() == '<%=BlackStack::Leads::Data::TYPE_LINKEDIN%>') {
+                    txt += 'LinkedIn: '+h.value+'\n';
+                } 
+                if (h.button_code.toString() == '<%=BlackStack::Leads::Data::TYPE_TWITTER%>') {
+                    txt += 'Twitter: '+h.value+'\n';
+                } 
+                if (h.button_code.toString() == '<%=BlackStack::Leads::Data::TYPE_FACEBOOK%>') {
+                    txt += 'Facebook: '+h.value+'\n';
+                } 
+            }
+
+            // get the last div.message
+            txt += '\n';
+            txt += 'Last Message sent to '+lead_name+':\n';
+            txt += $('div.message.left').last().find('p').text()+'\n';
+            navigator.clipboard.writeText(txt);
+            $('#copy-button-label').show();
+            $('#copy-button-label').html('Copied to Clipboard.');
+            setTimeout(function() {
+                $('#copy-button-label').hide('slow');
+            }, 1000);
+            applyToolTips();
+        });
+        
+        // on click the mark-positive button
+        $('#mark-positive').click(function(e) {
+            let did = $(this).attr('data-id');
+            // disable the button
+            $('#mark-positive').attr('disabled', true);
+            // show ... loading
+            $('#mark-positive').html('Loading...');
+            // post ajax call to /ajax/emails/mark_positive.json
+            $.ajax({
+                url: '/ajax/emails/mark_positive.json',
+                type: 'POST',
+                data: {
+                    did: did,
+                },
+                success: function(data) {
+                    res = JSON.parse(data);
+                    if (res.status == 'success') {
+                        // hide #unsubscribe
+                        $('#unmark-positive').show();
+                        // show #resubscribe
+                        $('#mark-positive').hide();
+                        $('#mark-positive').attr('disabled', false);
+                        $('#mark-positive').html("<i class='icon-thumbs-up'>");
+                        // add badge to the conversation
+                        // find .conversation-with-positive-reply inside .load-conversation[data-id=did]
+                        // add class badge badge-green
+                        // add text 'positive'
+                        span = $('.load-conversation[data-id='+did+']').find('.conversation-with-positive-reply')
+                        span.html('positive');
+                        span.addClass('badge badge-green');
+                    } else {
+                        $('.chats').html('Error marking reply as positive ('+res.status+').');
+                    }
+                },
+                error: function(data) {
+                    $('.chats').html('Error marking reply as positive.');
+                }
+            });
+        });
+
+        // on click the mark-positive button
+        $('#unmark-positive').click(function(e) {
+            let did = $(this).attr('data-id');
+            // disable the button
+            $('#unmark-positive').attr('disabled', true);
+            // show ... loading
+            $('#unmark-positive').html('Loading...');
+            // post ajax call to /ajax/emails/unmark_positive.json
+            $.ajax({
+                url: '/ajax/emails/unmark_positive.json',
+                type: 'POST',
+                data: {
+                    did: did,
+                },
+                success: function(data) {
+                    res = JSON.parse(data);
+                    if (res.status == 'success') {
+                        // hide #unsubscribe
+                        $('#mark-positive').show();
+                        // show #resubscribe
+                        $('#unmark-positive').hide();
+                        $('#unmark-positive').attr('disabled', false);
+                        $('#unmark-positive').html("<i class='icon-thumbs-up'>");
+                        // add badge to the conversation
+                        // find .conversation-with-positive-reply inside .load-conversation[data-id=did]
+                        // add class badge badge-green
+                        // add text 'positive'
+                        span = $('.load-conversation[data-id='+did+']').find('.conversation-with-positive-reply')
+                        span.html('');
+                        span.removeClass('badge');
+                        span.removeClass('badge-green');
+                    } else {
+                        $('.chats').html('Error unmarking reply as positive ('+res.status+').');
+                    }
+                },
+                error: function(data) {
+                    $('.chats').html('Error unmarking reply as positive.');
+                }
+            });
+        });
+        
+		listsJs.draw(exports, {
+			id: 'exports', // this value is updated with the ID of the lead
+			caption: 'All Lists',
+			color: 'blue',
+			lists: [],
+            on_check_item: function(h) {
+                // id of the list = id od the lead
+                let id_lead = listsJs.get_id(exports);
+                // id of the list = h.id
+                let id_export = h.id;
+                // set opacity 0.5
+                listsJs.set_item_opacity(exports, id_export, '0.5');
+                // post ajax call to /ajax/leads/add_lead_to_export_list.json
+                $.ajax({
+                    url: '/ajax/leads/add_lead_to_export_list.json',
+                    type: 'POST',
+                    data: {
+                        id_lead: id_lead,
+                        id_export: id_export
+                    },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        // if the response is ok, update the icon
+                        if (response.status == 'success') {
+                            // march item as checked
+                            listsJs.check_item(exports, h.id);
+                            // set opacity 1.0
+                            listsJs.set_item_opacity(exports, id_export, '1.0');
+                        } else {
+                            if ( response.status =~ /No Credits/ ) {
+                                window.location.replace('/plans');
+                            } else {
+                                alert('An error occured while updating the list:' + h.filename + '. Error: ' + response.status);
+                            }
+                        }
+                    },
+                    error: function(data) {
+                        alert('Unknown error occured while updating the list:' + h.filename + '.');
+                    }
+                })
+            },
+            on_uncheck_item: function(h) {
+                // id of the list = id od the lead
+                let id_lead = listsJs.get_id(exports);
+                // id of the list = h.id
+                let id_export = h.id;
+                // set opacity 0.5
+                listsJs.set_item_opacity(exports, id_export, '0.5');
+                // post ajax call to /ajax/leads/remove_lead_from_export_list.json
+                $.ajax({
+                    url: '/ajax/leads/remove_lead_from_export_list.json',
+                    type: 'POST',
+                    data: {
+                        id_lead: id_lead,
+                        id_export: id_export
+                    },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        // if the response is ok, update the icon
+                        if (response.status == 'success') {
+                            // march item as checked
+                            listsJs.uncheck_item(exports, h.id);
+                            // set opacity 1.0
+                            listsJs.set_item_opacity(exports, id_export, '1.0');
+                        } else {
+                            if ( response.status =~ /No Credits/ ) {
+                                window.location.replace('/plans');
+                            } else {
+                                alert('An error occured while updating the list:' + h.filename + '. Error: ' + response.status);
+                            }
+                        }
+                    },
+                    error: function(data) {
+                        alert('Unknown error occured while updating the list:' + h.filename + '.');
+                    }
+                })
+            },
+            on_add_item: function(h) {
+                // id of the list = id od the lead
+                let id_lead = listsJs.get_id(exports);
+                // id of the list = h.id
+                let name = h.name;
+                // disable add button
+                listsJs.disable_add_button(exports);
+                // /ajax/leads/create_export_list_and_add_lead.json
+                $.ajax({
+                    url: '/ajax/leads/create_export_list_and_add_lead.json',
+                    type: 'POST',
+                    data: { id_lead: id_lead, name: name },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        if (response.status == 'success') {
+                            // add the new list to this the export list dropdown
+                            listsJs.add_item(exports, {
+                                id: response.id_export,
+                                name: name,
+                                checked: true,
+                                deleted: false,
+                            });                                
+                            // enable add button
+                            listsJs.enable_add_button(exports);
+                        } else {
+                            alert('An error occured while creating the new list:' + name + '. Error: ' + response.status);
+                        }
+                    },
+                    error: function(data) {
+                    alert('Unknown error occured while creating the new list:' + name);
+                    }
+                });
+            },            
+		});
+
+        datasJs.draw(databuttons, dataitems, {
+            id: 'lead-data', // this value is updated with the ID of the lead
+            caption: 'Lead Data',
+            trash_enabled: true,
+            copy_enabled: true,
+            strikethrough_enabled: false,
+            buttons: [{
+                code: '<%=BlackStack::Leads::Data::TYPE_EMAIL.to_s%>',
+                name: 'email',
+                icon: 'envelope',
+                link: 'mailto', // default: null
+                title: 'Add an Email Address',
+                placeholder: 'Write an email address here...'
+            }, { 
+                code: '<%=BlackStack::Leads::Data::TYPE_PHONE.to_s%>',
+                name: 'phone',
+                icon: 'phone',
+                link: 'tel',
+                title: 'Add a Phone Number',
+                placeholder: 'Write a phone number here...'
+            }, { 
+                code: '<%=BlackStack::Leads::Data::TYPE_LINKEDIN.to_s%>',
+                name: 'linkedin',
+                icon: 'linkedin',
+                link: 'https',
+                title: 'Add a LinkedIn Profile',
+                placeholder: 'Write a LinkedIn URL...'
+            }, { 
+                code: '<%=BlackStack::Leads::Data::TYPE_FACEBOOK.to_s%>',
+                name: 'facebook',
+                icon: 'facebook',
+                link: 'https',
+                title: 'Add a Facebook Profile',
+                placeholder: 'Write a Facebook URL...'
+            }, { 
+                code: '<%=BlackStack::Leads::Data::TYPE_TWITTER.to_s%>',
+                name: 'twitter',
+                icon: 'twitter',
+                link: 'https',
+                title: 'Add a Twitter Profile',
+                placeholder: 'Write a Twitter URL...'
+            }],
+            items: [
+                // items are loaded by ajax, when the conversation is loaded
+            ], 
+            on_add_item: function(type, value) {
+                let id_lead = datasJs.get_id(databuttons);
+                // disable add button
+                datasJs.disable_add_button(databuttons);
+                // call ajax before the a new data item is added to the list.
+                $.ajax({
+                    url: '/ajax/leads/add_data.json',
+                    type: 'POST',
+                    data: { id_lead: id_lead, value: value, type: type },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        if (response.status == 'success') {
+                            // add data item
+                            datasJs.add_item(dataitems, {
+                                id: id_lead,
+                                button_code: type,
+                                value: value
+                            });
+                            // enable add button
+                            datasJs.enable_add_button(databuttons);
+                        } else {
+                            alert('An error occured trying to add data to the lead. Error: ' + response.status);
+                            // enable add button
+                            datasJs.enable_add_button(databuttons);
+                        }
+                    }, error: function(data) {
+                        alert('Unknown error occured trying to add data to the lead.');
+                        // enable add button
+                        datasJs.enable_add_button(databuttons);
+                    }
+                });          
+            },
+            on_remove_item: function(id_data) {
+                // set opacity
+                datasJs.set_item_opacity(dataitems, id_data, 0.5);
+                // call ajax before the a data item is remobved from the list.
+                $.ajax({
+                    url: '/ajax/leads/remove_data.json',
+                    type: 'POST',
+                    data: { id_data: id_data },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        if (response.status == 'success') {
+                            // add data item
+                            datasJs.remove_item(dataitems, id_data);
+                        } else {
+                            alert('An error occured trying to remove data from the lead. Error: ' + response.status);
+                        }
+                    }, error: function(data) {
+                        alert('Unknown error occured trying to remove data from the lead.');
+                    }
+                });          
+            },	
+        });
+        
+        datasJs.draw(reminderbuttons, reminderitems, {
+            id: 'lead-reminders', // this value is updated with the ID of the lead
+            caption: 'Reminders',
+            trash_enabled: true,
+            copy_enabled: false,
+            strikethrough_enabled: true,
+            textarea: true,
+            calendar: true,
+            buttons: [{
+                code: 'reminder',
+                name: 'reminder',
+                icon: 'calendar',
+                link: null, // default: null
+                title: 'Add a Reminder',
+                placeholder: 'Write a note...'
+            }],
+            items: [
+                // items are loaded by ajax, when the conversation is loaded
+            ], 
+            on_add_item: function(type, value) {
+                let id_lead = datasJs.get_id(reminderbuttons);
+                let date = datasJs.get_date(reminderbuttons);
+                // disable add button
+                datasJs.disable_add_button(reminderbuttons);
+                // call ajax before the a new data item is added to the list.
+                $.ajax({
+                    url: '/ajax/leads/add_reminder.json',
+                    type: 'POST',
+                    data: { id_lead: id_lead, description: value, date: date },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        if (response.status == 'success') {
+                            // add data item
+                            datasJs.add_item(reminderitems, {
+                                id: id_lead,
+                                button_code: type,
+                                value: '<b>' + date.toString().slice(0,10) + ':</b> ' + value
+                            });
+                            // enable add button
+                            datasJs.enable_add_button(reminderbuttons);
+                            // hide form
+                            datasJs.hide_form(reminderbuttons);
+                        } else {
+                            alert('An error occured trying to add reminder to the lead. Error: ' + response.status);
+                            // enable add button
+                            datasJs.enable_add_button(reminderbuttons);
+                            // hide form
+                            datasJs.hide_form(reminderbuttons);
+                        }
+                    }, error: function(data) {
+                        alert('Unknown error occured trying to add reminder to the lead.');
+                        // enable add button
+                        datasJs.enable_add_button(reminderbuttons);
+                        // hide form
+                        datasJs.hide_form(reminderbuttons);
+                }
+                });          
+            },
+            on_remove_item: function(id_reminder) {
+                // set opacity
+                datasJs.set_item_opacity(reminderitems, id_reminder, 0.5);
+                // call ajax before the a data item is remobved from the list.
+                $.ajax({
+                    url: '/ajax/leads/remove_reminder.json',
+                    type: 'POST',
+                    data: { id_reminder: id_reminder },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        if (response.status == 'success') {
+                            // remove reminder
+                            datasJs.remove_item(reminderitems, id_reminder);
+                        } else {
+                            alert('An error occured trying to remove reminder from the lead. Error: ' + response.status);
+                        }
+                    }, error: function(data) {
+                        alert('Unknown error occured trying to remove reminder from the lead.');
+                    }
+                });          
+            },	
+            on_strikethrough_item: function(id_reminder) {
+                // get current status
+                b = datasJs.is_strikethrough(reminderitems, id_reminder);
+                access_point = b ? 'mark_reminder_as_pending' : 'mark_reminder_as_done';
+                // set opacity
+                datasJs.set_item_opacity(reminderitems, id_reminder, 0.5);
+                // call ajax before the a data item is remobved from the list.
+                $.ajax({
+                    url: '/ajax/leads/'+access_point+'.json',
+                    type: 'POST',
+                    data: { id_reminder: id_reminder },
+                    success: function(data) {
+                        // get the json response
+                        let response = JSON.parse(data);
+                        if (response.status == 'success') {
+                            // update reminder status
+                            datasJs.set_strikethrough(reminderitems, id_reminder, !b);
+                            // set opacity
+                            datasJs.set_item_opacity(reminderitems, id_reminder, 1);
+                        } else {
+                            alert('An error occured while updating reminder status. Error: ' + response.status);
+                            // set opacity
+                            datasJs.set_item_opacity(reminderitems, id_reminder, 1);
+                        }
+                    }, error: function(data) {
+                        alert('Unknown error occured while updating reminder status .');
+                        // set opacity
+                        datasJs.set_item_opacity(reminderitems, id_reminder, 1);
+                    }
+                });          
+            },	
+        });
+        
+        // if !id.empty, click on such a delivery
+        <%
+        if !id.to_s.empty?
+        %>
+        load_conversation('<%=id%>');
+        <%
+        end
+        %>
+    });
+</script>

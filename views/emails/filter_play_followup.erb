@@ -1,0 +1,23 @@
+<%
+err = []
+begin
+    # map parameters
+    fid = params[:fid]
+
+    # load campaign
+    o = BlackStack::Emails::Followup.where(:id=>fid).first
+
+    # edit
+    o.status = BlackStack::Emails::Followup::STATUS_ON
+    o.planning_end_time = nil # Run planner for just activated fullowups, because users want to get their campaigns running immediatelly
+
+    # save
+    o.save
+
+    # return
+    redirect "/emails/campaigns/#{o.id_campaign.to_guid}/followups/#{o.id.to_guid}/edit?msg="+ CGI::escape('FollowUp is ON.')
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{o.id_campaign.to_guid}/followups/#{o.id.to_guid}/edit?err="+ CGI::escape(e.message)
+end
+%>

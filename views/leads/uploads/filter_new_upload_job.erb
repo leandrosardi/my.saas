@@ -1,0 +1,83 @@
+<%
+# parameters
+login = BlackStack::MySaaS::Login.where(:id=>params[:id_login]).first
+id_export = login.user.preference('emails.leads.upload.id_export', '', params[:id_export])
+filename = login.user.preference('emails.leads.upload.filename', '', params[:filename])
+csv_content = params[:csv_content].to_s #login.user.preference('emails.leads.upload.csv_content', '', params[:csv_content])
+columns = login.user.preference('emails.leads.upload.columns', '', params[:columns])
+# parameters
+i = 0
+fields = []
+custom_field_names = []
+while i<columns.to_i
+    fields[i] = login.user.preference("emails.leads.upload.field.#{i.to_s}", '', params[:"field_#{i.to_s}"])
+    custom_field_names[i] = login.user.preference("emails.leads.upload.custom_field_name.#{i.to_s}", '', params[:"custom_field_name_#{i.to_s}"])
+    i+=1
+end
+
+# 
+err = []
+begin
+    # validate custom fields are not using reserved words for standard fields
+    i = 0
+    fields.each { |field| 
+        if field.to_i == BlackStack::Leads::Data::TYPE_CUSTOM && BlackStack::Leads::Data::MERGETAGS.include?(custom_field_names[i])
+            err << "Custom field name '#{custom_field_names[i]}' is a reserved word for standard fields."
+        end
+        i+=1
+    }
+
+    # raise exception if any error happened
+    raise err.join(' ') unless err.empty?
+
+    # create/load the export
+    export = nil
+    if !id_export.to_s.empty?
+        export = BlackStack::Leads::Export.where(:id=>id_export.to_s).first
+    else
+        export = BlackStack::Leads::Export.new
+        export.id = guid
+        export.id_user = login.id_user
+        export.id_search = nil
+        export.create_time = now
+        export.filename = filename
+        export.save
+    end
+
+    # create job
+    o = BlackStack::Leads::UploadLeadsJob.new
+    o.id = guid
+    o.id_user = login.id_user
+    o.create_time = now
+    o.id_export = export.id
+    o.skip_existing_emails = false # TODO: add this to the form
+    o.separator_char = "\t" # TODO: add this to the form
+    o.enclosure_char = '' # TODO: add this to the form
+    # upload CSV file to the account's storage folder.
+    o.csv_content = csv_content
+    o.save
+    
+    # create mappings
+    i = 0
+    fields.each { |field|
+        m = BlackStack::Leads::UploadLeadsMapping.new
+        m.id = guid
+        m.id_upload_leads_job = o.id
+        m.create_time = now
+        m.column = i
+        m.data_type = field.to_i
+        m.custom_field_name = custom_field_names[i]
+        m.save 
+        # increase column counter
+        i+=1
+        # release resources
+        GC.start
+        DB.disconnect
+    }
+
+    redirect "#{CS_HOME_WEBSITE}/leads/uploads?msg="+ CGI::escape("New Leads-Upload Job Created.")
+rescue => e
+    # return errors
+    redirect "#{CS_HOME_WEBSITE}/leads/uploads?err="+ CGI::escape(e.message)
+end
+%>

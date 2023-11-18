@@ -1,0 +1,123 @@
+<%
+gid = params[:gid]
+g = BlackStack::Emails::Campaign.where(:id=>gid).first
+timezone = @login.user.account.timezone
+daychars = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+daynames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+q = "
+    select 
+        s.id, 
+        s.name, 
+        s.create_time,
+        s.schedule_hour_0,
+        s.schedule_hour_1,
+        s.schedule_hour_2,
+        s.schedule_hour_3,
+        s.schedule_hour_4,
+        s.schedule_hour_5,
+        s.schedule_hour_6,
+        s.schedule_hour_7,
+        s.schedule_hour_8,
+        s.schedule_hour_9,
+        s.schedule_hour_10,
+        s.schedule_hour_11,
+        s.schedule_hour_12,
+        s.schedule_hour_13,
+        s.schedule_hour_14,
+        s.schedule_hour_15,
+        s.schedule_hour_16,
+        s.schedule_hour_17,
+        s.schedule_hour_18,
+        s.schedule_hour_19,
+        s.schedule_hour_20,
+        s.schedule_hour_21,
+        s.schedule_hour_22,
+        s.schedule_hour_23,
+        s.schedule_day_0,
+        s.schedule_day_1,
+        s.schedule_day_2,
+        s.schedule_day_3,
+        s.schedule_day_4,
+        s.schedule_day_5,
+        s.schedule_day_6
+    from eml_schedule s
+    where s.id_campaign='#{gid}'
+    and s.delete_time is null
+    order by s.create_time desc
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav3("Campaigns", "/emails/campaigns", g.name, "/emails/campaigns/#{g.id.to_guid}/edit", "Schedules")%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=gid%>/schedules/new'><i class='icon-plus'></i> New</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+        <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+            <thead>
+                <th style="width:auto;">Name</th>
+                <th style="width:175px;">Days</th>
+                <th style="width:350px;">Hours <a class='btn-mini' href='/settings/account'>GMT <%=timezone.offset%></a></th>
+                <th style="width:14px;"><!-- delete icon --></th>
+            </thead>
+            <tbody>
+                <%
+                i = 0
+                DB[q].all do |row|
+                    i += 1
+                %>
+                <tr>
+                    <td class="fix" title="<%=row[:name].to_s.encode_html%>"><%=row[:name].to_s.encode_html%></td>
+                    <td class="fix">
+                        <%
+                        7.times do |i|
+                            %>
+                            <span class="label label-<%=row["schedule_day_#{i}".to_sym] ? 'blue' : 'gray'%>" title='<%=daynames[i]%>'><%=daychars[i]%></span>
+                            <%
+                        end
+                        %>
+                    </td>
+                    <td class="fix">
+                        <%
+                        24.times do |i|
+                            %>
+                            <span class="label label-<%=row["schedule_hour_#{i}".to_sym] ? 'blue' : 'gray'%>" style='width:12px;text-align:center;'><%=i.to_s%></span>
+                            <%
+                            if i == 11
+                                %>
+                                <br/>
+                                <%
+                            end
+                        end
+                        %>
+                    </td>
+                    <td class="fix" style="text-align:right;"><a title='Delete' href='/emails/filter_delete_schedule?sid=<%=row[:id].to_guid%>'><i class='icon-trash'></i></a></td>
+                </tr>
+                <%
+                end
+
+                if i==0
+                %>
+                <tr>
+                    <td colspan="11" class="fix" align='center' style='text-align:center;'>
+                        No campaigns found.</br>
+                        <a href='/emails/campaigns/<%=gid%>/schedules/new'>Create a new schedule here.</a>
+                    </td>
+                <tr>
+                <%
+                end
+                %>
+            </tbody>
+        </table>
+    </div>
+</section>

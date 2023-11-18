@@ -1,0 +1,46 @@
+<%
+err = []
+begin
+    # map parameters
+    name = params[:name]
+    id_export = params[:id_export]
+
+    # load preferences
+    @login.user.preference('emails.campaign.new.name', '', name)
+    @login.user.preference('emails.campaign.new.id_export', '', id_export)
+
+    # validate: the name is not empty
+    err << "Name is required." if name.empty?
+
+    # validate: the id_export is not empty
+    err << "Export is required." if id_export.empty?
+
+    # if any error happened, return to the edition screen
+    raise err.join("\n") if err.size > 0
+
+    # create the campaign
+    o = BlackStack::Emails::Campaign.new
+    o.id = guid
+    o.id_user = @login.user.id
+    o.create_time = now
+    o.name = name
+    o.id_export = id_export
+    # stats
+    o.stat_replies = 0
+    o.stat_positive_replies = 0
+    o.stat_sents = 0
+    o.stat_opens = 0
+    o.stat_clicks = 0
+    o.stat_bounces = 0
+    o.stat_unsubscribes = 0
+    o.stat_complaints = 0
+    # save
+    o.save
+
+    # return
+    redirect "/emails/campaigns/#{o.id.to_guid}/edit?msg="+ CGI::escape('Campaign created.')
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/new?err="+ CGI::escape(e.message)
+end
+%>

@@ -1,0 +1,16 @@
+<%
+  begin
+    search_id = params[:id]
+    search = BlackStack::Leads::Search.where(:id => search_id.to_guid).first
+    search.delete_time = now
+    search.save
+  rescue => e
+    # libero recursos
+    DB.disconnect
+    GC.start
+    # redirect
+    redirect "/leads/saved_searches?err="+CGI::escape(e.message)
+  end
+
+  redirect "/leads/saved_searches?msg=#{CGI::escape("Search deleted successfully.")}"
+%>

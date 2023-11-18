@@ -4,9 +4,9 @@
 # Author: Leandro D. Sardi (https://github.com/leandrosardi).
 #
 
-require 'my.saas/mysaas'
-require 'my.saas/lib/stubs'
-require 'my.saas/config'
+require 'app/mysaas'
+require 'app/lib/stubs'
+require 'app/config'
 
 # 
 parser = BlackStack::SimpleCommandLineParser.new(

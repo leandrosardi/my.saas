@@ -1,0 +1,148 @@
+<%
+q = "
+    select 
+        c.id, 
+        c.name, 
+        -- sourcing export list
+        e.id as id_export,
+        e.filename as export_filename,
+        -- campaign data
+        u.id as id_user, 
+        u.name as user_name, 
+        c.create_time,
+        c.stat_left,
+        c.stat_replies,
+        c.stat_positive_replies,
+        c.stat_sents,
+        c.stat_bounces,
+        c.stat_opens,
+        c.stat_clicks,
+        c.stat_unsubscribes
+    from eml_campaign c
+    join fl_export e on e.id=c.id_export
+
+    left join fl_search s on s.id=e.id_search
+ 
+    join \"user\" u on (u.id=c.id_user and u.id_account='#{@login.user.id_account}')
+    where c.delete_time is null
+    order by c.name
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav1("Campaigns")%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+		    <a class='btn btn-blue' href='/emails/campaigns/new'><i class='icon-plus'></i> New</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+        <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+            <thead>
+                <th style="width:36px;"><!-- status --></th>
+                <th style="width:auto;">Name</th>
+                <th style="width:90px;">Created By</th>
+                <th style="width:75px;">Creation</th>
+                <th style="width:45px;text-align:right;">Left</th>
+                <th style="width:45px;text-align:right;">Sent</th>
+                <!--
+                <th style="width:45px;text-align:right;">Bounces</th>
+                -->
+                <th style="width:45px;text-align:right;">Opens</th>
+                <th style="width:45px;text-align:right;">Clicks</th>
+                <th style="width:45px;text-align:right;">Unsubs</th>
+                <!--
+                <th style="width:45px;text-align:right;">Replies</th>
+                <th style="width:45px;text-align:right;">Hits</th>
+                -->
+                <th style="width:24px;"><!-- edit --></th>
+                <th style="width:24px;"><!-- delete --></th>
+            </thead>
+            <tbody>
+                <%
+                i = 0
+                DB[q].all do |row|
+                    i += 1
+                    o = BlackStack::Emails::Campaign.where(:id=>row[:id]).first
+                %>
+                <tr>
+                    <td class="fix"><span class='badge badge-<%=o.status_color%>'><%=o.status_name%></span></td>
+                    <td class="fix" title="<%=row[:name].to_s.encode_html%>">
+                        <a href='/emails/campaigns/<%=o.id.to_guid%>/edit'><%=row[:name].to_s.encode_html%></a><br/>
+                        <span style='color:gray;font-weight:bold;'>List:</span> <a href='/leads?id_export=<%=o.id_export.to_guid%>'><%=row[:export_filename].to_s.encode_html%></a>
+                    </td>
+                    <!--
+                    <td class="fix" title="<%=row[:export_filename].to_s.encode_html%>"><a href='/leads?id_export=<%=o.id_export.to_guid%>'><%=row[:export_filename].to_s.encode_html%></a></td>
+                    -->
+                    <td class="fix" title="<%=row[:user_name].to_s.encode_html%>"><%=row[:user_name].to_s.encode_html%></td>
+                    <td class="fix" title="<%=row[:create_time].to_s[0..9].encode_html%>"><%=row[:create_time].to_s[0..9].encode_html%></td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_left].to_i.to_label%>">
+                        <%=row[:stat_left].to_i.to_label%>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_sents].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=row[:id].to_guid%>/report/sent'><%=row[:stat_sents].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=o.sent_ratio.to_i.to_label%>%</span>
+                    </td>
+                    <!--
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_bounces].to_i.to_label%>">
+                        <span><%=row[:stat_bounces].to_i.to_label%></span>
+                        <br/>
+                        <span style='color:gray;'><%=o.bounces_ratio.round(2).to_s%>%</span>
+                    </td>
+                    -->
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_opens].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=row[:id].to_guid%>/report/opens'><%=row[:stat_opens].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=o.opens_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_clicks].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=row[:id].to_guid%>/report/clicks'><%=row[:stat_clicks].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=o.clicks_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_unsubscribes].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=row[:id].to_guid%>/report/unsubscribes'><%=row[:stat_unsubscribes].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=o.unsubscribes_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <!--
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_replies].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=row[:id].to_guid%>/report/replies'><%=row[:stat_replies].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=o.replies_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_positive_replies].to_i.to_label%>">
+                        <span><%=row[:stat_positive_replies].to_i.to_label%></span>
+                        <br/>
+                        <span style='color:gray;'><%=o.positive_replies_ratio.round(2).to_s%>%</span>
+                    </td>
+                    -->
+                    <td class="fix" style="text-align:right;"><a title='Edit' href='/emails/campaigns/<%=row[:id].to_guid%>/edit'><i class='icon-pencil'></i></a></td>
+                    <td class="fix" style="text-align:right;"><a title='Delete' href='/emails/filter_delete_campaign?cid=<%=row[:id].to_guid%>'><i class='icon-trash'></i></a></td>
+                </tr>
+                <%
+                end
+
+                if i==0
+                %>
+                <tr>
+                    <td colspan="11" class="fix" align='center' style='text-align:center;'>
+                        No campaigns found.</br>
+                        <a href='/emails/campaigns/new'>Create a new campaign here.</a>
+                    </td>
+                <tr>
+                <%
+                end
+                %>
+            </tbody>
+        </table>
+    </div>
+</section>

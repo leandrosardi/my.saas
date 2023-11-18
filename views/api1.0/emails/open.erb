@@ -1,0 +1,19 @@
+<%
+# map parameters
+did = params[:did]
+# get the delivery
+d = BlackStack::Emails::Delivery.where(:id => did).first
+# if d is valid
+if !d.nil?
+    # create the object BlackStack::MySaaS::NotificationOpen and save it
+    o = BlackStack::Emails::Open.new
+    o.id = guid
+    o.id_delivery = d.id
+    o.create_time = now
+    o.save
+else
+    %>
+    <p><%="No delivery found for id #{did}"%></p>
+    <%
+end
+%>

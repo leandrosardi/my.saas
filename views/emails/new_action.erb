@@ -1,0 +1,173 @@
+<%
+# load preferences
+name = @login.user.preference('emails.action.new.name', '', nil)
+trigger_type = @login.user.preference('emails.action.new.trigger_type', 0, nil)
+action_type = @login.user.preference('emails.action.new.action_type', 0, nil)
+apply_to_previous_events = @login.user.preference('emails.action.new.apply_to_previous_events', false, nil)
+delay_minutes = @login.user.preference('emails.action.new.delay_minutes', 0, nil)
+id_export = @login.user.preference('emails.action.new.id_export', '', nil)
+id_campaign = @login.user.preference('emails.action.new.id_campaign', '', nil)
+id_followup = @login.user.preference('emails.action.new.id_followup', '', nil)
+#id_link = @login.user.preference('emails.action.new.id_link', '', nil) # --> not developed yet
+
+# load account with Email methods
+account = BlackStack::Emails::Account.where(:id=>@login.user.id_account).first
+
+# load account with Leads methods
+b = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav2("Actions", "/emails/actions", 'New')%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_new_action' class="form-horizontal">
+            <!-- textfield for name -->
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <div class="controls">
+                    <input type="text" id="name" name='name' placeholder="Name" value='<%=name.to_s.encode_html%>' />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><h4>Trigger Settings</h4></label>
+            </div>
+
+            <!-- dropdown list for triggers -->
+            <div class="control-group">
+                <label class="control-label" for="trigger">Trigger</label>
+                <div class="controls">
+                    <select id="trigger" name='trigger'>
+                        <%
+                        BlackStack::Emails::Action.triggers.each do |t|
+                            %>
+                            <option value='<%=t%>'<%=(t.to_s==trigger_type.to_s ? ' selected="selected"' : '')%>><%=BlackStack::Emails::Action.trigger_name(t)%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+
+            <!-- dropdown list for campaigns -->
+            <div class="control-group">
+                <label class="control-label" for="id_campaign">Apply to Campaign</label>
+                <div class="controls">
+                    <select id="id_campaign" name='id_campaign'>
+                        <option value='' <%=id_campaign.to_s.empty? ? '' : 'selected'%>></option>
+                        <%
+                        account.campaigns.sort_by { |o| o.name }.each do |o|
+                            %>
+                            <option value='<%=o.id.to_guid%>'<%=(o.id.to_guid.to_s==id_campaign.to_s ? ' selected="selected"' : '')%>><%=o.name.encode_html%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+
+            <!-- dropdown list for followup -->
+            <div class="control-group">
+                <label class="control-label" for="id_followup">Apply to Followup</label>
+                <div class="controls">
+                    <select id="id_followup" name='id_followup'>
+                        <option value='' <%=id_followup.to_s.empty? ? '' : 'selected'%>></option>
+                        <%
+                        account.campaigns.sort_by { |o| o.name }.each do |o|
+                            o.followups.sort_by { |o| o.name }.each do |f|
+                                %>
+                                <option value='<%=f.id.to_guid%>'<%=(f.id.to_guid.to_s==id_followup.to_s ? ' selected="selected"' : '')%>><b><%=o.name.encode_html%></b> / <%=f.name.encode_html%></option>
+                                <%
+                            end
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label"><h4>Action Settings</h4></label>
+            </div>
+
+            <!-- dropdown list for actions -->
+            <div class="control-group">
+                <label class="control-label" for="action">Action</label>
+                <div class="controls">
+                    <select id="action" name='action'>
+                        <%
+                        BlackStack::Emails::Action.actions.each do |t|
+                            %>
+                            <option value='<%=t%>'<%=(t.to_s==action_type.to_s ? ' selected="selected"' : '')%>><%=BlackStack::Emails::Action.action_name(t)%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+
+            <!-- dropdown list for exports -->
+            <div class="control-group">
+                <label class="control-label" for="id_export">Apply to List</label>
+                <div class="controls">
+                    <select id="id_export" name='id_export'>
+                        <option value='' <%=id_export.to_s.empty? ? '' : 'selected'%>></option>
+                        <%
+                        b.exports.sort_by { |o| o.filename }.each do |o|
+                            %>
+                            <option value='<%=o.id.to_guid%>'<%=(o.id.to_guid.to_s==id_export.to_s ? ' selected="selected"' : '')%>><%=o.filename.encode_html%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><h4>Advanced Settings</h4></label>
+            </div>
+
+            <!-- enable/disable apply_to_previous_events -->
+            <div class="control-group">
+                <label class="control-label" for="apply_to_previous_events">Apply to Previous Events</label>
+                <div class="controls">
+                    <input type="checkbox" id="apply_to_previous_events" name='apply_to_previous_events' <%=apply_to_previous_events ? 'checked' : ''%> />
+                    <br/>
+                    <div class='alert alert-warning'>
+                      <b>Hint:</b><br/>
+                      Unckeck this to apply this rule only to new events after the creation of this action.<br/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- dropdown list for delay_minutes -->
+            <div class="control-group">
+                <label class="control-label" for="delay_minutes">Delay Minutes</label>
+                <div class="controls">
+                    <input type="number" id="delay_minutes" name='delay_minutes' placeholder="Delay Hours" value='<%=delay_minutes.to_s.encode_html%>' />
+                    <br/>
+                    <div class='alert alert-warning'>
+                      <b>Hint:</b><br/>
+                      <b>Delay minutes</b> to wait before execute this action for an event.<br/> 
+                    </div>
+                </div>
+            </div>
+
+            <!-- submit button -->
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Create</button>
+                </div>
+            </div>
+
+        </form>
+	</div>
+</section>

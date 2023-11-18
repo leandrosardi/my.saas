@@ -1,0 +1,104 @@
+<%
+begin
+  allow_many_contacts_per_company = params.has_key?("allow_many_contacts_per_company") && params["allow_many_contacts_per_company"] == "on" ? true : false
+  export_only_first = params.has_key?("export_only_first") && params["export_only_first"] == "on" ? true : false
+  number_of_records = export_only_first && params.has_key?("number_of_records") ? params["number_of_records"].to_i : nil
+  filename = params.has_key?("filename") ? params["filename"].to_s : nil
+  positive_positions = params["positive_positions"]
+  positive_industries = params["positive_industries"]
+  positive_locations = params["positive_locations"]
+  negative_positions = params["negative_positions"]
+  negative_industries = params["negative_industries"]
+  negative_locations = params["negative_locations"]
+  company_only = params["company_only"]
+  phone_only = params["phone_only"]  
+  email_only = params['email_only']
+  
+  id_export = params['id_export']
+  lead_name = params['lead_name']
+  verified_only = params['verified_only']
+  private_only = params['private_only']
+
+  # user preferences
+  @login.user.preference('leads.exports.allow_many_contacts_per_company', true, allow_many_contacts_per_company)
+  @login.user.preference('leads.exports.export_only_first', false, export_only_first)
+  @login.user.preference('leads.exports.number_of_records', 10, number_of_records)
+  
+  # validation: number_of_records must be an integer higher than 0 or nil
+  raise "If you choose 'Export Only First', the number of records must be an integer higher than 0" if !number_of_records.nil? && number_of_records == 0
+
+  # validation: filename must be a valid filename
+  raise "Filename must be a valid filename (only letters, numbers, underscores and dots are allowed)" if filename !~ /^[0-9a-zA-Z\_\.]+$/
+
+  # validate: this account has not any other export with this filename
+  raise "Filename already exists" if BlackStack::Leads::Account.where(:id=>@login.user.id_account).first.exports.select { |e| e.filename.upcase == filename.upcase }.size > 0
+
+  # create the export
+  DB.transaction do
+    # creating the export
+    e = BlackStack::Leads::Export.new()
+    e.id = guid
+    e.id_user = @login.id_user
+    e.create_time = now
+    e.allow_multiple_contacts_per_company = allow_many_contacts_per_company
+    e.number_of_records = number_of_records
+    e.filename = filename
+    e.save
+
+    # writing the hash descriptor for the new search
+    h = {
+      'name' => "Export #{e.id.to_guid}",
+      'description' => "Export #{e.id.to_guid}",
+      'id_user' => @login.id_user,
+      'saved' => false,
+      'no_of_results' => -1, # unknown - no matters, 
+      'no_of_companies' => -1, # unknown - no matters
+
+      'id_export' => id_export.to_s.empty? ? nil : id_export,
+      'lead_name' => lead_name.to_s.empty? ? nil : lead_name,
+      'verified_only' => verified_only == 'yes',
+      'private_only' => private_only == 'yes',
+
+      'positions' => [],
+      'locations' => [],
+      'industries' => [],
+      'company_only' => company_only == 'yes',
+      'email_only' => email_only == 'yes',
+      'phone_only' => phone_only == 'yes',
+    }
+
+    # adding the positive job positions to the hash
+    h['positions'] += positive_positions.split(/;/).map { |p| { 'value' => p.strip, 'positive' => true } } if positive_positions.strip.length > 0
+
+    # adding the negative job positions to the hash
+    h['positions'] += negative_positions.split(/;/).map { |p| { 'value' => p.strip, 'positive' => false } } if negative_positions.strip.length > 0
+
+    # adding the positive industries to the hash
+    h['industries'] += positive_industries.split(/;/).map { |i| { 'name' => i.strip, 'positive' => true } } if positive_industries.strip.length > 0
+
+    # adding the negative industries to the hash
+    h['industries'] += negative_industries.split(/;/).map { |i| { 'name' => i.strip, 'positive' => false } } if negative_industries.strip.length > 0
+
+    # adding hte positive locations to the hash
+    h['locations'] += positive_locations.split(/;/).map { |l| { 'value' => l.strip, 'positive' => true } } if positive_locations.strip.length > 0
+
+    # adding the negative locations to the hash
+    h['locations'] += negative_locations.split(/;/).map { |l| { 'value' => l.strip, 'positive' => false } } if negative_locations.strip.length > 0
+
+    # sace search
+    s = BlackStack::Leads::Search.new(h)
+    s.save
+
+    # creating the export
+    e.id_search = s.id
+    e.save
+  end
+
+  # return errors
+  redirect "/leads?msg="+ CGI::escape('Export List Created Successfully.')
+
+rescue => e
+  # return errors
+  redirect "/leads?err="+ CGI::escape(e.message)
+end
+%>

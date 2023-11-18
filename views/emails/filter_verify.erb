@@ -1,0 +1,44 @@
+<%
+err = []
+begin
+    # map parameters
+    email = params[:email]
+    id_user = params[:id_user]
+
+    # validate parameters
+    if email.nil? || email.empty?
+        err << "Email address is required."
+    end
+
+    # raise exception if any validation failed
+    raise err.join("\n") if !err.empty?
+        
+    # verify email address
+    res = BlackStack::Emails.verify(email)
+
+    # raise exception if email address is invalid
+    raise "#{email} is not valid." if !res
+
+    # register the verification
+    DB.execute("
+        INSERT INTO eml_verification 
+        (id, create_time, request_ip, id_user, email, verify_success, verify_error_description)
+        VALUES
+        ('#{guid}', '#{now}', '#{params[:ip]}', #{!id_user.to_s.guid? ? "NULL" : "'#{id_user.to_guid}'"}, '#{email}', #{res.to_s}, NULL)
+    ")
+
+    # return
+    redirect "/emails/verify/#{email}?msg="+ CGI::escape("#{email} is valid.")
+rescue => e
+    # register the verification
+    DB.execute("
+        INSERT INTO eml_verification 
+        (id, create_time, request_ip, id_user, email, verify_success, verify_error_description)
+        VALUES
+        ('#{guid}', '#{now}', '#{params[:ip]}', #{!id_user.to_s.guid? ? "NULL" : "'#{id_user.to_guid}'"}, '#{email}', false, '#{e.message.to_sql}')
+    ")
+
+    # return errors
+    redirect "/emails/verify/#{email}?err="+ CGI::escape(e.message)
+end
+%>

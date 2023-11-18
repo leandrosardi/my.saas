@@ -1,0 +1,1602 @@
+<%
+account = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
+leads_account = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
+
+# creating a dummy search, in case that user has not any preference yet.
+# such a dummy search won't never be saved in the database.
+s = BlackStack::Leads::Search.new ({
+    'name' => 'dummy',
+    'description' => 'This search should never be saved in the database.',
+    'id_user' => @login.id_user,
+    
+    'id_export' => nil,
+    'lead_name' => nil,
+    'verified_only' => false,
+    'min_trust_rate' => -1,
+    'private_only' => false,
+
+    'saved' => false,
+    'no_of_results' => -1, # unknown - no matters
+    'no_of_companies' => -1, # unknown - no matters
+    'positions' => [],
+    'locations' => [],
+    'industries' => [],
+    'revenues' => [],
+    'headcounts' => [],
+    'naicss' => [],
+    'sics' => [],
+})
+
+# credits
+credits = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first.credits('leads')
+
+# getting the search preference
+sid = @login.user.preference("leads.results.sid", '', params[:sid])
+
+# export modal preferences
+allow_many_contacts_per_company = @login.user.preference('leads.exports.allow_many_contacts_per_company', true, nil)
+export_only_first = @login.user.preference('leads.exports.export_only_first', false, nil)
+number_of_records = @login.user.preference('leads.exports.number_of_records', 10, nil)
+
+# if the user has preference for any past search, then I use such a search
+# if the user has not preference for any past search, then I keep the dummy search defined above.
+if sid.to_s.guid?
+  s2 = BlackStack::Leads::Search.where(:id=>sid).first 
+  s = s2 if s2
+end
+
+# new filters
+id_export = s.id_export
+lead_name = s.lead_name
+verified_only = s.verified_only
+private_only = s.private_only
+
+# defining positive filters, to show in the hidden fields
+positive_positions = s.positions.select { |p| p.positive }.map { |p| p.value }.join(';') 
+positive_industries = s.industries.select { |p| p.positive }.map { |i| i.fl_industry.name }.join(';') 
+positive_locations = s.locations.select { |p| p.positive }.map { |l| l.value }.join(';') 
+positive_revenues = '' #s.revenues.select { |p| p.positive }.map { |r| r.fl_revenue.name }.join(';')
+positive_headcounts = '' #s.headcounts.select { |p| p.positive }.map { |h| h.fl_headcount.name }.join(';')
+positive_naicss = '' #s.naicss.select { |p| p.positive }.map { |n| n.fl_naics.code }.join(';')
+positive_sics = '' #s.sics.select { |p| p.positive }.map { |s| s.fl_sic.code }.join(';')
+
+# defining negative filters, to show in the hidden fields
+negative_positions = s.positions.select { |p| !p.positive }.map { |p| p.value }.join(';') 
+negative_industries = s.industries.select { |p| !p.positive }.map { |i| i.fl_industry.name }.join(';') 
+negative_locations = s.locations.select { |p| !p.positive }.map { |l| l.value }.join(';') 
+negative_revenues = '' #s.revenues.select { |p| !p.positive }.map { |r| r.fl_revenue.name }.join(';')
+negative_headcounts = '' #s.headcounts.select { |p| !p.positive }.map { |h| h.fl_headcount.name }.join(';')
+negative_naicss = '' #s.naicss.select { |p| !p.positive }.map { |n| n.fl_naics.code }.join(';')
+negative_sics = '' #s.sics.select { |p| !p.positive }.map { |s| s.fl_sic.code }.join(';')
+
+# other filters
+company_only = s.company_only
+phone_only = s.phone_only
+email_only = s.email_only
+
+# getting the page number
+page_number = @login.user.preference("leads.results.filter.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+
+# define the pagination setting
+i = {
+  'page' => page_number,
+  'pagesize' => 25,
+  'sortcolumn' => 'id',
+  'sortorder' => 'asc',
+  'id_account' => @login.user.id_account, # additional parameter requried by BlackStack::Leads::Search to build the query
+}
+
+# getting rows
+rows = s.rows(i)
+
+# getting pagination status
+status = s.status(i)
+%>
+
+<div class="mynavbar mysticky">
+  <section class="row-fluid">
+    
+    <div class="span4">
+      <!-- emails extension addon -->
+      <%=nav1("Leads")%>
+    </div>
+
+    <div class="span8" align="right" style="text-align: right;alignment-adjust: right; margin-left: 0;">
+        <a type="button" href='/leads/uploads/new' class="btn btn-blue" data-toggle="modal" id='upload' title='Upload Your Leads'><i class='icon-cloud-upload'></i> Upload Leads</i></a>
+
+        <a type="button" href='/leads/new' class="btn btn-blue" id='add' title='Add Lead'><i class='icon-plus'></i> Add Lead</i></a>
+
+        <a class="btn btn-green" id='add_credits' href='/plans' title='Get Credits to Unlock Records'>Buy Credits!</a>
+
+        <button type="button" class="btn btn-gray" data-toggle="modal" id='open_save_modal' data-target=".save_modal" title='Save Search'><i class='icon-save'></i> Save</button>
+
+        <button type="button" class="btn btn-gray" data-toggle="modal" id='open_export_leads_modal' data-target=".export_leads" title='Export Leads to a List'>
+          <i class='icon-cloud-download'></i> Export
+        </button>
+    </div>
+  </section>
+</div>
+
+<section class="row-fluid">
+  <section class='span4 box'>
+
+    <!-- filter: lead_name -->
+    <div>
+      <p>Lead Name</p>
+      <input type='text' id='lead_name_input' name='lead_name_input' value='<%=lead_name%>' />
+    </div>
+
+    <div id='positions'></div>
+    <div id='industries'></div>
+    <div id='locations'></div>
+    <!--
+    <div id='revenues'></div>
+    <div id='headcounts'></div>
+    <div id='naicss'></div>
+    <div id='sics'></div>
+    -->
+    <br/>
+    <div id='has_company'>
+      <div class='checkbox'>
+        <label>
+          <input type='checkbox' id='has_company_checkbox' <%=company_only ? 'checked' : ''%>><span class='checkbox-label'><b><i class='icon-briefcase'></i> Only Leads With Company</b></span>
+          <br/>
+          <span class='checkbox-indicator'></span>
+          <span class='checkbox-description'>
+            Check if you want to only leads with a company name appended.
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <br/>
+    <div id='has_email_address'>
+      <div class='checkbox'>
+        <label>
+          <input type='checkbox' id='has_email_address_checkbox' <%=email_only ? 'checked' : ''%>><span class='checkbox-label'><b><i class='icon-envelope'></i> Only Leads With Email Address</b></span>
+          <br/>
+          <span class='checkbox-indicator'></span>
+          <span class='checkbox-description'>
+            Check if you want to only leads with an email address appended.
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <br/>
+    <div id='has_phone_number'>
+      <div class='checkbox'>
+        <label>
+          <input type='checkbox' id='has_phone_number_checkbox' <%=phone_only ? 'checked' : ''%>><span class='checkbox-label'><b><i class='icon-phone'></i> Only Leads With Phone Number</b></span>
+          <br/>
+          <span class='checkbox-indicator'></span>
+          <span class='checkbox-description'>
+            Check if you want to only leads with a phone number appended.
+          </span>
+        </label>
+      </div>
+    </div>
+    <br/>
+    <!-- filter: id_export -->
+    <div>
+      <p>Export List</p>
+      <select id='id_export_select' name='id_export_select'>
+        <option value='' <%=s.id_export.to_s.empty? ? 'selected' : ''%>></option>
+        <%
+        leads_account.exports.select { |e| e.delete_time.nil? }.sort_by { |e| e.filename }.each { |e|
+          %>
+          <option value='<%=e.id%>' <%=s.id_export.to_s==e.id ? 'selected' : ''%>><%=e.filename.encode_html%></option>
+          <%
+        }
+        # release resources
+        DB.disconnect
+        GC.start
+        %>
+      </select>
+    </div>
+    <br/>
+    <!-- filter: verified_only -->
+    <div>
+      <div class='checkbox'>
+        <label>
+          <input type='checkbox' id='verified_only_checkbox' <%=verified_only ? 'checked' : ''%>><span class='checkbox-label'><b><i class='icon-ok'></i> Only Leads With Verified Email</b></span>
+          <br/>
+          <span class='checkbox-indicator'></span>
+          <span class='checkbox-description'>
+            Check if you want to only leads with a verified email address.
+          </span>
+        </label>
+      </div>
+    </div>
+    <br/>
+    <!-- filter: private_only -->
+    <div>
+      <div class='checkbox'>
+        <label>
+          <input type='checkbox' id='private_only_checkbox' <%=private_only ? 'checked' : ''%>><span class='checkbox-label'><b><i class='icon-lock'></i> My Leads Only</b></span>
+          <br/>
+          <span class='checkbox-indicator'></span>
+          <span class='checkbox-description'>
+            Check if you want to ignore leads uploaded by other users from our marketplace.
+          </span>
+        </label>
+      </div>
+    </div>
+    <br/>
+
+    <div style='width:100%;'>
+        <button class='btn btn-blue btn-xlarge input-block-level' onclick="$('#search').click();"><i class='icon-search'></i> Search</button>
+    </div>
+  </section>
+
+  <section class='span8 box'>
+    <p><b>Records:</b> <%=status['row_from'].to_label%> to <%=status['row_to'].to_label%> <b>of</b> <%=status['total_rows'].to_label%></p>
+    <br/>
+
+    <%
+    rows.each do |row|
+      acronym = row[:name].to_s[0..1].capitalize
+      picture_url = row[:picture_url]
+      i = acronym.chr.ord.to_i % 10
+
+      export_button_color = 'gray'
+      #export_button_color = 'blue' if row[:exported]
+      
+      export_button_text = 'Export'
+      #export_button_text = 'Exported' if row[:exported]
+    %>
+    <div class='span12 lead-card' id='sample<%=i%>'>
+      <%
+      if picture_url
+      %>
+        <div class='leadpic'>
+          <img src='<%=picture_url.to_s.encode_html%>' title='<%=row[:name].to_s.encode_html%>' />
+        </div>
+      <%
+      else #if picture_url
+      %>
+        <div class='acronym acronym-color-<%=i%>'>
+          <span><%=acronym.to_s.encode_html%></span>
+        </div>
+      <%
+      end #if picture_url
+      %>
+
+      <div class='insights'>
+          <span class='name'><%=row[:name].to_s.encode_html%> </span>
+
+          <%
+          if !row[:linkedin_url].nil?
+          %>
+          <a href='<%=row[:linkedin_url].to_s.encode_html%>' target='_window'><i class='icon-linkedin'></i></a>
+          <%
+          end
+          %>
+
+          <%
+          if !row[:facebook_url].nil?
+          %>
+          <a href='<%=row[:facebook_url].to_s.encode_html%>' target='_window'><i class='icon-facebook'></i></a>
+          <%
+          end
+          %>
+
+          <br/>
+          <span class='headline li-headline'><%=row[:position].to_s.encode_html%></span>
+          <br/>
+          <span class='headline'><b>location:</b> <span class='li-location'><%=row[:stat_location_name].to_s.encode_html%></span></span>
+          <br/>
+          <span class='headline'><b>industry:</b> <span class='li-industry'><%=row[:stat_industry_name].to_s.encode_html%></span></span>
+          <br/>
+          <span class='headline'><b>owner:</b> <span class='li-industry'><%=row[:user_name].to_s.encode_html%></span></span>
+          <br/>
+          <%
+          if row[:stat_verified]
+          %>
+          <span class='badge badge-green'><i class='icon-ok'></i> Verified</span>
+          <%
+          elsif row[:stat_trust_rate]
+          %>
+          <span class='badge badge-blue'>Trust: <%=row[:stat_trust_rate]%>%</span>
+          <%
+          end # if row[:id_user].nil?
+          %>
+
+          <br/>
+
+          <div class='reminders' data-id-lead='<%=row[:id].to_guid%>'>
+          </div>
+      </div>
+
+      <div class='buttons'>
+        <div class="btn-group">
+          <button class="btn btn-<%=export_button_color%> dropdown-toggle btn-export-lists" data-id-lead='<%=row[:id].to_guid%>' data-toggle="dropdown"><span class='caption'><%=export_button_text.to_s.encode_html%></span> <span class="caret"></span></button>
+          <ul class="dropdown-menu ul-export-lists" data-id-lead='<%=row[:id].to_guid%>'>
+            <div class='div-export-lists' data-id-lead='<%=row[:id].to_guid%>'>
+              <!-- fill the div by AJAX when the user clicks on the export button -->
+            </div>
+            <li class="divider"></li>
+            <li>
+              <p>Create New List</p>
+              <input class='input input-medium input-export-lists' data-id-lead='<%=row[:id].to_guid%>' /><br/> 
+              <button class='btn btn-link btn-create-export-list' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-plus'></i> Add</button>
+            </li>
+          </ul>
+        </div>      
+      </div>
+
+      <div class='data'>
+          <%
+          if row[:stat_company_name].to_s.size > 0
+          %>
+          <span class='headline' title='<%=row[:stat_company_name].to_s.encode_html%>'><i class='icon-briefcase'></i> <span class='li-company'><%=row[:stat_company_name].to_s.encode_html%></span></span>
+          <br/>
+          <%
+          end
+          %>
+
+          <div class='contact-info' data-id-lead='<%=row[:id].to_guid%>'>
+            <%
+            if row[:stat_has_email]
+            %>
+            <span class='headline'><i class='icon-envelope'></i> <span class='email'>***@****.com</span></span>
+            <br/>
+            <%
+            end
+            %>
+
+            <%
+            if row[:stat_has_phone]
+            %>
+            <span class='headline'><i class='icon-phone'></i> <span class='phone'>***@****.com</span></span>
+            <br/>
+            <%
+            end
+            %>
+          </div>
+
+          <div class='contact-commands'>
+            <span>Add Data: </span>
+            <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_EMAIL.to_s%>'><i class='icon-envelope' title='Add Email Address'></i></button>
+            <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_PHONE.to_s%>'><i class='icon-phone' title='Add Phone Number'></i></button>
+            <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_LINKEDIN.to_s%>'><i class='icon-linkedin' title='Add LinkedIn URL'></i></button>
+            <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_FACEBOOK.to_s%>'><i class='icon-facebook' title='Add Facebook URL'></i></button>
+
+            <!-- form to add data -->
+            <div class='add-data-div' data-id-lead='<%=row[:id].to_guid%>'>
+              <input type="hidden" class="input-block-level add-data-type" data-id-lead='<%=row[:id].to_guid%>' value="" />
+              <input type="text" class="input-block-level add-data-value" data-id-lead='<%=row[:id].to_guid%>' placeholder="Write data here." value="" />
+              <br/>
+              <button class='btn btn-link add-data-submit' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-ok'></i></button>
+              <button class='btn btn-link add-data-cancel' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-remove'></i></button>
+            </div>
+          </div>
+          
+          <div class='contact-commands'>
+            <span>Add Reminder: </span>
+            <button class='btn btn-link add-reminder' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-calendar' title='Add Reminder About This Lead'></i></button>
+            <!-- form to add data -->
+            <div class='add-reminder-div' data-id-lead='<%=row[:id].to_guid%>'>
+              <textarea rows=2 class="input-block-level add-reminder-description" data-id-lead='<%=row[:id].to_guid%>' placeholder="Write a note here."></textarea>
+              <button class='btn btn-link add-reminder-submit' data-period-number='1' data-period-unit='day' data-id-lead='<%=row[:id].to_guid%>'>1D</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='2' data-period-unit='day' data-id-lead='<%=row[:id].to_guid%>'>2D</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='3' data-period-unit='day' data-id-lead='<%=row[:id].to_guid%>'>3D</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='1' data-period-unit='week' data-id-lead='<%=row[:id].to_guid%>'>1W</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='2' data-period-unit='week' data-id-lead='<%=row[:id].to_guid%>'>2W</button>
+              <button class='btn btn-link add-reminder-cancel' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-remove'></i></button>
+            </div>
+          </div>
+      </div>
+    </div>
+    <%
+    end
+    %>
+    <div class="pagination"></div>
+    <script>
+      drawPagination($(".pagination"), <%=page_number%>, <%=status['total_pages']%>);
+    </script>
+    <br>
+  </section>
+</section>
+
+<!-- Modal Exports Leads-->
+<div class="modal fade export_leads" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Exports Contacts</h3>
+  </div>
+  <form action="/leads/filter_export_contacts" method="post">
+    <div class="modal-body">
+      <div class="row-fluid">Contacts per Company</div>
+      <div class="radio">
+        <label><input type="checkbox" name="allow_many_contacts_per_company" <%=allow_many_contacts_per_company ? 'checked' : ''%>> Allow Many Contacts per Company <i>(Recommended)</i></label>
+      </div>
+      <div style="margin-top: 5px;">Total Contacts </div>
+      <div>
+        <div class="radio">
+          <label>
+            <input type="checkbox" id="export_only_first" name="export_only_first" <%=export_only_first ? 'checked' : ''%>> Export only first <input type="text" id="number_of_records" name="number_of_records" placeholder="Write a number here." value='<%=export_only_first && number_of_records.to_i > 0 ? number_of_records.to_i.to_s : ''%>'> contacts</label>
+        </div>
+      </div>
+      <div class="row-fluid">Name your file
+        <input type="text" id="filename" name="filename" placeholder="sample">
+        .csv
+      </div>
+
+      <input type="hidden" id="id_export" class="id_export" name="id_export" value="<%= id_export.to_s.encode_html%>" />
+      <input type="hidden" id="lead_name" class="lead_name" name="lead_name" value="<%= lead_name.to_s.encode_html%>" />
+      <input type="hidden" class="verified_only" name="verified_only" id='verified_only' value="<%=verified_only ? 'yes' : 'no'%>" />
+      <input type="hidden" class="private_only" name="private_only" id='company_only' value="<%=private_only ? 'yes' : 'no'%>" />
+  
+      <input type="hidden" class="positive_positions" name="positive_positions" id='positive_positions' value="<%= positive_positions.to_s.encode_html%>" />
+      <input type="hidden" class="positive_industries" name="positive_industries" id='positive_industries' value="<%= positive_industries.to_s.encode_html%>" />
+      <input type="hidden" class="positive_locations" name="positive_locations" id='positive_locations' value="<%=positive_locations.to_s.encode_html%>" />
+      <input type="hidden" class="positive_revenues" name="positive_revenues" id='positive_revenues' values="<%=positive_revenues.to_s.encode_html%>" />
+      <input type="hidden" class="positive_headcounts" name="positive_headcounts" id='positive_headcounts' values="<%=positive_headcounts.to_s.encode_html%>" />
+      <input type="hidden" class="positive_naicss" name="positive_naicss" id='positive_naicss' values="<%=positive_naicss.to_s.encode_html%>" />
+      <input type="hidden" class="positive_sics" name="positive_sics" id='positive_sics' values="<%=positive_sics.to_s.encode_html%>" />
+
+      <input type="hidden" class="negative_positions" name="negative_positions" id='negative_positions' value="<%= negative_positions.to_s.encode_html%>" />
+      <input type="hidden" class="negative_industries" name="negative_industries" id='negative_industries' value="<%= negative_industries.to_s.encode_html%>" />
+      <input type="hidden" class="negative_locations" name="negative_locations" id='negative_locations' value="<%=negative_locations.to_s.encode_html%>" />
+      <input type="hidden" class="negative_revenues" name="negative_revenues" id='negative_revenues' values="<%=negative_revenues.to_s.encode_html%>" />
+      <input type="hidden" class="negative_headcounts" name="negative_headcounts" id='negative_headcounts' values="<%=negative_headcounts.to_s.encode_html%>" />
+      <input type="hidden" class="negative_naicss" name="negative_naicss" id='negative_naicss' values="<%=negative_naicss.to_s.encode_html%>" />
+      <input type="hidden" class="negative_sics" name="negative_sics" id='negative_sics' values="<%=negative_sics.to_s.encode_html%>" />
+
+      <input type="hidden" class="company_only" name="company_only" id='company_only' value="<%=company_only ? 'yes' : 'no'%>" />
+      <input type="hidden" class="email_only" name="email_only" id='email_only' value="<%=email_only ? 'yes' : 'no'%>" />
+      <input type="hidden" class="phone_only" name="phone_only" id='phone_only' value="<%=phone_only ? 'yes' : 'no'%>" />
+    </div>
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="btn btn-close">Close</a>
+      <button type="submit" id="save-export" disabled class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</div>
+
+<!-- hidden form with fitlers to submit -->
+<section class='row-fluid' style='visibility:hidden;width=0;height=0;'>
+  <form id="filters-form" action="/leads/filter_results" method="post">
+    <input type="hidden" id="id_export" class="id_export" name="id_export" value="<%= id_export.to_s.encode_html%>" />
+    <input type="hidden" id="lead_name" class="lead_name" name="lead_name" value="<%= lead_name.to_s.encode_html%>" />
+    <input type="hidden" class="verified_only" name="verified_only" id='verified_only' value="<%=verified_only ? 'yes' : 'no'%>" />
+    <input type="hidden" class="private_only" name="private_only" id='company_only' value="<%=private_only ? 'yes' : 'no'%>" />
+
+    <input type="hidden" id="positive_positions" class="positive_positions" name="positive_positions" value="<%= positive_positions.to_s.encode_html%>" />
+    <input type="hidden" id="positive_industries" class="positive_industries" name="positive_industries" value="<%= positive_industries.to_s.encode_html%>" />
+    <input type="hidden" id="positive_locations" class="positive_locations" name="positive_locations" value="<%=positive_locations.to_s.encode_html%>" />
+    <input type="hidden" id="positive_revenues" class="positive_revenues" name='positive_revenues' values="<%=positive_revenues.to_s.encode_html%>" />
+    <input type="hidden" id="positive_headcounts" class="positive_headcounts" name='positive_headcounts' values="<%=positive_headcounts.to_s.encode_html%>" />
+    <input type="hidden" id="positive_naicss" class="positive_naicss" name='positive_naicss' values="<%=positive_naicss.to_s.encode_html%>" />
+    <input type="hidden" id="positive_sics" class="positive_sics" name='positive_sics' values="<%=positive_sics.to_s.encode_html%>" />
+
+    <input type="hidden" id="negative_positions" class="negative_positions" name="negative_positions" value="<%= negative_positions.to_s.encode_html%>" />
+    <input type="hidden" id="negative_industries" class="negative_industries" name="negative_industries" value="<%= negative_industries.to_s.encode_html%>" />
+    <input type="hidden" id="negative_locations" class="negative_locations" name="negative_locations" value="<%=negative_locations.to_s.encode_html%>" />
+    <input type="hidden" id="negative_revenues" class="negative_revenues" name='negative_revenues' values="<%=negative_revenues.to_s.encode_html%>" />
+    <input type="hidden" id="negative_headcounts" class="negative_headcounts" name='negative_headcounts' values="<%=negative_headcounts.to_s.encode_html%>" />
+    <input type="hidden" id="negative_naicss" class="negative_naicss" name='negative_naicss' values="<%=negative_naicss.to_s.encode_html%>" />
+    <input type="hidden" id="negative_sics" class="negative_sics" name='negative_sics' values="<%=negative_sics.to_s.encode_html%>" />
+
+    <input type="hidden" class="company_only" name="company_only" id='company_only' value="<%=company_only ? 'yes' : 'no'%>" />
+    <input type="hidden" class="email_only" name="email_only" id='email_only' value="<%=email_only ? 'yes' : 'no'%>" />
+    <input type="hidden" class="phone_only" name="phone_only" id='phone_only' value="<%=phone_only ? 'yes' : 'no'%>" />
+    <button type="submit" class="btn btn-link" id='search' name='search'>Search</button>
+  </form>
+</section>
+
+<!-- Modal Save Search -->
+<div class="modal fade save_modal" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Save this search</h3>
+  </div>
+  <form action="/leads/filter_save_search" id="search-form" method="post" class="form-horizontal">
+    <div class="modal-body">
+      <label for="inputName">Name <i>(required)</i></label>
+      <input type="text" style="width: 97%" id="inputName" maxlength="255" name="search_name" placeholder="Name">
+      <br/><br/>
+      <label for="inputDescription">Description</label>
+      <textarea name="search_description" style="width: 97%" placeholder="Description" maxlength="2000" id="inputPassword" cols="30" rows="10"></textarea>
+
+      <input type="hidden" id="id_export" class="id_export" name="id_export" value="<%= id_export.to_s.encode_html%>" />
+
+      <input type="hidden" id="lead_name" class="lead_name" name="lead_name" value="<%= lead_name.to_s.encode_html%>" />
+
+      <input type="hidden" class="verified_only" name="verified_only" id='verified_only' value="<%=verified_only ? 'yes' : 'no'%>" />
+      <input type="hidden" class="private_only" name="private_only" id='company_only' value="<%=private_only ? 'yes' : 'no'%>" />
+  
+      <input type="hidden" class="positive_positions" name="positive_positions" id='positive_positions' value="<%= positive_positions.to_s.encode_html%>" />
+      <input type="hidden" class="positive_industries" name="positive_industries" id='positive_industries' value="<%= positive_industries.to_s.encode_html%>" />
+      <input type="hidden" class="positive_locations" name="positive_locations" id='positive_locations' value="<%=positive_locations.to_s.encode_html%>" />
+      <input type="hidden" class="positive_revenues" name="positive_revenues" id='positive_revenues' values="<%=positive_revenues.to_s.encode_html%>" />
+      <input type="hidden" class="positive_headcounts" name="positive_headcounts" id='positive_headcounts' values="<%=positive_headcounts.to_s.encode_html%>" />
+      <input type="hidden" class="positive_naicss" name="positive_naicss" id='positive_naicss' values="<%=positive_naicss.to_s.encode_html%>" />
+      <input type="hidden" class="positive_sics" name="positive_sics" id='positive_sics' values="<%=positive_sics.to_s.encode_html%>" />
+
+      <input type="hidden" class="negative_positions" name="negative_positions" id='negative_positions' value="<%= negative_positions.to_s.encode_html%>" />
+      <input type="hidden" class="negative_industries" name="negative_industries" id='negative_industries' value="<%= negative_industries.to_s.encode_html%>" />
+      <input type="hidden" class="negative_locations" name="negative_locations" id='negative_locations' value="<%=negative_locations.to_s.encode_html%>" />
+      <input type="hidden" class="negative_revenues" name="negative_revenues" id='negative_revenues' values="<%=negative_revenues.to_s.encode_html%>" />
+      <input type="hidden" class="negative_headcounts" name="negative_headcounts" id='negative_headcounts' values="<%=negative_headcounts.to_s.encode_html%>" />
+      <input type="hidden" class="negative_naicss" name="negative_naicss" id='negative_naicss' values="<%=negative_naicss.to_s.encode_html%>" />
+      <input type="hidden" class="negative_sics" name="negative_sics" id='negative_sics' values="<%=negative_sics.to_s.encode_html%>" />
+
+      <input type="hidden" class="company_only" name="company_only" id='company_only' value="<%=company_only ? 'yes' : 'no'%>" />
+      <input type="hidden" class="email_only" name="email_only" id='email_only' value="<%=email_only ? 'yes' : 'no'%>" />
+      <input type="hidden" class="phone_only" name="phone_only" id='phone_only' value="<%=phone_only ? 'yes' : 'no'%>" />  
+    </div>
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="btn btn-close">Close</a>
+      <button type="submit" id="save-search" disabled class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    
+  // filters
+  var positions = document.getElementById('positions');
+  var industries = document.getElementById('industries');
+  var locations = document.getElementById('locations');
+  var revenues = document.getElementById('revenues');
+  var headcounts = document.getElementById('headcounts');
+  var naicss = document.getElementById('naicss');
+  var sics = document.getElementById('sics');
+
+  // update the hidden textfields with the values of the filters
+  function update_hidden_fields() {
+    // positive positions
+    let i = 0;
+    let s = '';
+    $('.id_export').val($('#id_export_select').val());
+    $('.lead_name').val($('#lead_name_input').val());
+
+    $('.verified_only').val($('#verified_only_checkbox')[0].checked ? 'yes' : 'no');
+    $('.private_only').val($('#private_only_checkbox')[0].checked ? 'yes' : 'no');
+
+    if ( $('#has_company_checkbox')[0].checked ) {
+      $('.company_only').val('yes'); 
+    } else {
+      $('.company_only').val('no'); 
+    }
+
+    if ( $('#has_email_address_checkbox')[0].checked ) {
+      $('.email_only').val('yes'); 
+    } else {
+      $('.email_only').val('no'); 
+    }
+
+    if ( $('#has_phone_number_checkbox')[0].checked ) {
+      $('.phone_only').val('yes'); 
+    } else {
+      $('.phone_only').val('no'); 
+    }
+
+    filtersJs.getPositiveValues(positions).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.positive_positions').val(s);
+
+    // negative positions
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(positions).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.negative_positions').val(s);
+
+    // positive industries
+    i = 0;
+    s = '';
+    filtersJs.getPositiveValues(industries).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.positive_industries').val(s);
+
+    // negative industries
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(industries).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.negative_industries').val(s);
+
+    // positive locations
+    i = 0;
+    s = '';
+    filtersJs.getPositiveValues(locations).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.positive_locations').val(s);
+
+    // negative locations
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(locations).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.negative_locations').val(s);
+
+
+    // positive revenues
+    i = 0;
+    s = '';
+    filtersJs.getPositiveValues(revenues).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.positive_revenues').val(s);
+
+    // negative revenues
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(revenues).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.negative_revenues').val(s);
+
+    // positive headcounts
+    i = 0;
+    s = '';
+    filtersJs.getPositiveValues(headcounts).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.positive_headcounts').val(s);
+
+    // negative headcounts
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(headcounts).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      s += value.trim();
+      i++;
+    });
+    $('.negative_headcounts').val(s);
+
+    // positive naicss
+    i = 0;
+    s = '';
+    filtersJs.getPositiveValues(naicss).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      let v = value.trim();
+      // get the code before the ' - '
+      v = v.substring(0, v.indexOf(' - '));
+      // add the code to the list of filters
+      s += v;
+      i++;
+    });
+    $('.positive_naicss').val(s);
+
+    // negative naicss
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(naicss).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      let v = value.trim();
+      // get the code before the ' - '
+      v = v.substring(0, v.indexOf(' - '));
+      // add the code to the list of filters
+      s += v;
+      i++;
+    });
+    $('.negative_naicss').val(s);
+
+    // positive sics
+    i = 0;
+    s = '';
+    filtersJs.getPositiveValues(sics).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      let v = value.trim();
+      // get the code before the ' - '
+      v = v.substring(0, v.indexOf(' - '));
+      // add the code to the list of filters
+      s += v;
+      i++;
+    });
+    $('.positive_sics').val(s);
+
+    // negative sics
+    i = 0;
+    s = '';
+    filtersJs.getNegativeValues(sics).forEach(function(value) {
+      if (i>0) { s += ';'; }
+      let v = value.trim();
+      // get the code before the ' - '
+      v = v.substring(0, v.indexOf(' - '));
+      // add the code to the list of filters
+      s += v;
+      i++;
+    });
+    $('.negative_sics').val(s);
+  }
+
+  // enable/disable the add button depending on the value of the textfield
+  function enable_add_button(id_lead) {
+    // find the ul with this data-id-lead='id_lead'
+    let ul = document.querySelector('ul.ul-export-lists[data-id-lead="'+id_lead+'"]');
+    // find the button inside the ul
+    let button = ul.querySelector('button.btn-create-export-list');
+    // find the textfield inside the ul
+    let textfield = ul.querySelector('input.input-export-lists');
+    // if the textfield is empty, disable the button
+    if (textfield.value.trim() == '') {
+      // disable the button
+      button.disabled = true;
+      // remove any span just below the textfield
+      let span = ul.querySelector('span');
+      if (span) {
+        // remove span
+        span.remove();
+      }
+    } else {
+      // if the name already exists in the list, disabe the button
+      if (ul.querySelector('li[data-name="'+textfield.value.trim()+'"]')) {
+        // disable the button
+        button.disabled = true;
+        // show a red text 'Name already exists' just below the textfield
+        textfield.parentNode.insertBefore(document.createElement('span'), textfield.nextSibling).innerHTML = 'Name already exists';
+      } else {
+        // enable the button
+        button.disabled = false;
+        // remove any span just below the textfield
+        let span = ul.querySelector('span');
+        if (span) {
+          // remove span
+          span.remove();
+        }
+      }
+    }
+  }
+
+  // remove an export list
+  function remove_export_list(id_lead, id_export) {
+    // find the il with this data-id-lead='id_lead' and data-id-export='id_export'
+    let li = document.querySelector('li[data-id-lead="'+id_lead+'"][data-id-export-list="'+id_export+'"]');
+    // delete the element
+    li.remove();
+  }
+
+  // receive a hash descriptor of the export related with the lead { id:, filename:, belonging: }
+  function add_export_list(id_lead, h, opacity='1.0') {
+    // find the div
+    let div = document.querySelector('div.div-export-lists[data-id-lead="'+id_lead+'"]');
+    // remove '<i>' element with innert text 'No export lists found' from the div content
+    $('i:contains("No export lists found")').remove();
+    // create the li element, with hand cursor
+    let li = document.createElement('li');
+    li.setAttribute('data-id-export-list', h.id);
+    li.setAttribute('data-id-lead', id_lead);
+    li.setAttribute('data-name', h.filename);
+    li.setAttribute('data-belonging', h.belonging.toString());
+    li.style.cursor = 'pointer';
+    li.style.opacity = opacity;
+    // create an icon-ok element, with style green text color
+    let icon = document.createElement('i');
+    icon.setAttribute('data-id-export-list', h.id);
+    icon.setAttribute('data-id-lead', id_lead);
+    if ( h.belonging ) { 
+      icon.setAttribute('style', 'color: green');
+      icon.setAttribute('class', 'icon-check');
+    } else {
+      icon.setAttribute('style', 'color: gray');
+      icon.setAttribute('class', 'icon-check-empty');
+    }
+    // add the icon and the name of the list to the anchor
+    li.appendChild(icon);
+    li.appendChild(document.createTextNode(' '));
+    li.appendChild(document.createTextNode(h.filename));
+    // if the export is deleted, then add a "deleted" label
+    if (h.deleted === true) {
+      li.appendChild(document.createTextNode(' (deleted)'));
+    }
+    // add the li to the ul
+    $(div).append(li);
+    // on click on the li, call ajax to add/remove the lead from/to the export list
+    li.addEventListener('click', function(e) {
+      // decide the access point to call
+      if ($(li).attr('data-belonging') == 'true') {
+        // remove from the list
+        access_point = 'remove_lead_from_export_list';
+      } else {
+        // add to the list
+        access_point = 'add_lead_to_export_list';
+      }
+      // set the li with 50% opacity, to show that it is being processed
+      li.style.opacity = '0.5';
+      // call the ajax
+      $.ajax({
+        url: '/ajax/leads/'+access_point+'.json',
+        type: 'POST',
+        data: {
+          id_lead: id_lead,
+          id_export: h.id
+        },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          // if the response is ok, update the icon
+          if (response.status == 'success') {
+            // the titlt is updated immedaitelly after the ajax call. don't wait for response because of an ux matter. 
+            // update the li opacity, to show that is has been processed successfully
+            li.style.opacity = '1.0';
+            // update the credits in the header
+            i2p_update_header('leads');
+          } else {
+            if ( response.status =~ /No Credits/ ) {
+              window.location.replace('/plans');
+            } else {
+              alert('An error occured while updating the list:' + h.filename + '. Error: ' + response.status);
+            }
+          }
+        },
+        error: function(data) {
+          alert('Unknown error occured while updating the list:' + h.filename + '.');
+        },
+      });
+      // better user experience: unlock data immediatelly. don't wait until the ajax success
+      // unlock contact information
+      unlock_data(id_lead);
+      // find the icon about this export list and this lead
+      let icon = document.querySelector('i[data-id-export-list="'+h.id+'"][data-id-lead="'+id_lead+'"]');
+      // if the icon is green, change it to gray
+      if ($(li).attr('data-belonging') == 'true') {
+        icon.setAttribute('style', 'color: gray');
+        icon.setAttribute('class', 'icon-check-empty');
+        li.setAttribute('data-belonging', 'false');
+      } else {
+        icon.setAttribute('style', 'color: green');
+        icon.setAttribute('class', 'icon-check');
+        li.setAttribute('data-belonging', 'true');
+      }
+      // JavaScript, stop additional event listeners
+      // reference: https://www.w3schools.com/jsref/event_stopimmediatepropagation.asp
+      e.stopImmediatePropagation();
+    });
+  }
+
+  function setup_remove_data() {
+    $('.btn-remove-data').click(function() {
+      // get the id_lead
+      let id_data = $(this).attr('data-id-data');
+      let span = document.querySelector('span.contact-info-item[data-id-data="'+id_data+'"]');
+      // show adding legend
+      span.innerHTML = 'removing data...<br/>';      
+      // ajax call
+      $.ajax({
+        url: '/ajax/leads/remove_data.json',
+        type: 'POST',
+        data: { id_data: id_data },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          if (response.status == 'success') {
+            span.remove();
+          } else {
+            alert(response.status);
+            alert('An error occured trying to remove data to the lead. Error: ' + response.status);
+          }
+        }, error: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          alert('Unknown error occured trying to remove data to the lead.');
+        }
+      });      
+    });
+  }
+
+  function setup_remove_reminder() {
+    $('.btn-remove-reminder').click(function() {
+      // get the id_lead
+      let id_reminder = $(this).attr('data-id-reminder');
+      let span = document.querySelector('span.reminders-item[data-id-reminder="'+id_reminder+'"]');
+      // show adding legend
+      span.innerHTML = 'removing reminder...<br/>';      
+      // ajax call
+      $.ajax({
+        url: '/ajax/leads/remove_reminder.json',
+        type: 'POST',
+        data: { id_reminder: id_reminder },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          if (response.status == 'success') {
+            span.remove();
+          } else {
+            alert(response.status);
+            alert('An error occured trying to remove reminder from the lead. Error: ' + response.status);
+          }
+        }, error: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          alert('Unknown error occured trying to remove reminder from the lead.');
+        }
+      });      
+    });
+  }
+
+  function setup_done_reminder() {
+    $('.btn-done-reminder').click(function() {
+      // get the id_lead
+      let id_reminder = $(this).attr('data-id-reminder');
+      let span = this;
+      // show adding legend
+      span.style.color = 'gray';   
+      span.setAttribute('class', '');
+      if ( span.style.textDecoration != 'line-through' ) {
+        $.ajax({
+          url: '/ajax/leads/mark_reminder_as_done.json',
+          type: 'POST',
+          data: { id_reminder: id_reminder },
+          success: function(data) {
+            // get the json response
+            let response = JSON.parse(data);
+            if (response.status == 'success') {
+              span.style.color = 'black';      
+              span.style.textDecoration = 'line-through';
+            } else {
+              alert(response.status);
+              alert('An error occured trying to mark reminder as done. Error: ' + response.status);
+            }
+          }, error: function(data) {
+            // get the json response
+            let response = JSON.parse(data);
+            alert('Unknown error occured trying to mark reminder as done.');
+          }
+        });
+      } else {
+        $.ajax({
+          url: '/ajax/leads/mark_reminder_as_pending.json',
+          type: 'POST',
+          data: { id_reminder: id_reminder },
+          success: function(data) {
+            // get the json response
+            let response = JSON.parse(data);
+            if (response.status == 'success') {
+              span.style.color = 'black';      
+              span.style.textDecoration = 'none';
+            } else {
+              alert(response.status);
+              alert('An error occured trying to mark reminder as pending. Error: ' + response.status);
+            }
+          }, error: function(data) {
+            // get the json response
+            let response = JSON.parse(data);
+            alert('Unknown error occured trying to mark reminder as pending.');
+          }
+        });
+      }
+    });
+  }
+
+  function unlock_data(id_lead) {
+    // find the div
+    let div = document.querySelector('div.contact-info[data-id-lead="'+id_lead+'"]');
+    let div_reminders = $('div.reminders[data-id-lead="'+id_lead+'"]');
+    // remove everything inside the div
+    div.innerHTML = '';
+    div_reminders.html('');
+    // add loading legend
+    i = document.createElement('i');
+    i.innerHTML = 'Loading data...';
+    div.appendChild(i);
+    // call the ajax
+    $.ajax({
+      url: '/ajax/leads/get_lead_data.json',
+      type: 'POST',
+      data: {
+        id_lead: id_lead
+      },
+      success: function(data) {
+        // get the json response
+        let response = JSON.parse(data);
+        // if the response is ok, update the div
+        if (response.status == 'success') {
+          // change export button .btn-export-lists color and text
+          // remove class btn-green
+          // remove class btn-blue
+          // remove class btn-gray
+          // add class btn-blue or btn-gray
+          // set 'Exported' as inner text in the span with class .caption inside such a buttton
+          let button = document.querySelector('button.btn-export-lists[data-id-lead="'+id_lead+'"]');
+          button.classList.remove('btn-green');
+          button.classList.remove('btn-blue');
+          button.classList.remove('btn-gray');
+          button.classList.add('btn-'+response.button_color);
+          button.querySelector('span.caption').innerHTML = response.button_text;
+          // remove the loading legend
+          div.innerHTML = '';
+          // draw the reminders
+          response.reminders.forEach(function(h) {
+            // create the child span
+            let span = document.createElement('span');
+            span.setAttribute('data-id-reminder', h.id);
+            // set remove button
+            let remove = document.createElement('button');
+            remove.setAttribute('class', 'btn btn-link btn-remove-reminder');
+            remove.setAttribute('data-id-lead', id_lead);
+            remove.setAttribute('data-id-reminder', h.id);
+            $(remove).html('<i class="icon-trash"></i>');
+            // set done or undone icon
+            let done = document.createElement('button');
+            let done_class = '';
+            // set icon
+            let icon = document.createElement('i');
+            let a = document.createElement('a');
+            icon.setAttribute('class', 'icon-calendar');
+            icon.setAttribute('title', 'Reminder');
+            // build the span with the reminder
+            span.setAttribute('class', 'reminders-item');
+            span.appendChild(remove);
+            span.appendChild(icon);
+            span2 = document.createElement('span');
+            span2.innerText = ' ' + h.expiration_time.toString().slice(0, 10) + ' ';
+            span2.style.fontWeight = 'bold';
+            span.appendChild(span2);
+            span3 = document.createElement('span');
+            span3.setAttribute('class', 'btn-done-reminder')
+            span3.setAttribute('data-id-reminder', h.id);
+            span3.style.cursor='pointer';
+            span3.innerHTML = h.description + '<br/>';
+            if (h.done == true) {
+              span3.style.textDecoration = 'line-through';
+            }
+            span.appendChild(span3);
+            div_reminders.append(span);
+          });
+          // draw the datas
+          response.datas.forEach(function(h) {
+            // create the child span
+            let span = document.createElement('span');
+            span.setAttribute('data-id-data', h.id);
+            // set remove button
+            let remove = document.createElement('button');
+            remove.setAttribute('class', 'btn btn-link btn-remove-data');
+            remove.setAttribute('data-id-lead', id_lead);
+            remove.setAttribute('data-id-data', h.id);
+            $(remove).html('<i class="icon-trash"></i>');
+            // create icon with icon-envelope or icon-phone, depending on the type
+            // create span with class email or phone, depending on the type
+            // create anchor with href mailto or tel, depending on the type
+            let icon = document.createElement('i');
+            let a = document.createElement('a');
+            if ( h.type == <%=BlackStack::Leads::Data::TYPE_EMAIL.to_s%> ) {
+              icon.setAttribute('class', 'icon-envelope');
+              span.setAttribute('class', 'contact-info-item email');
+              a.setAttribute('href', 'mailto:'+h.value);
+            } else if ( h.type == <%=BlackStack::Leads::Data::TYPE_PHONE.to_s%> ) {
+              icon.setAttribute('class', 'icon-phone');
+              span.setAttribute('class', 'contact-info-item phone');
+              a.setAttribute('href', 'tel:'+h.value);
+            } else if ( h.type == <%=BlackStack::Leads::Data::TYPE_LINKEDIN.to_s%> ) {
+              icon.setAttribute('class', 'icon-linkedin');
+              span.setAttribute('class', 'contact-info-item linkedin');
+              a.setAttribute('href', h.value);
+              a.setAttribute('target', '_window');
+            } else if ( h.type == <%=BlackStack::Leads::Data::TYPE_FACEBOOK.to_s%> ) {
+              icon.setAttribute('class', 'icon-facebook');
+              span.setAttribute('class', 'contact-info-item facebook');
+              a.setAttribute('href', h.value);
+              a.setAttribute('target', '_window');
+            }
+            // set title
+            div.title = h.value;
+            // set overflow hidden for the div
+            div.style.overflow = 'hidden';
+            a.style.overflow = 'hidden';
+            span.style.overflow = 'hidden';
+            // set text-overflow hidden for the div
+            div.style.textOverflow = 'ellipsis';
+            a.style.textOverflow = 'ellipsis';
+            span.style.textOverflow = 'ellipsis';
+            // draw
+            a.appendChild(document.createTextNode(h.value));
+            span.appendChild(remove);
+            span.appendChild(icon);
+            span.appendChild(document.createTextNode(' '));
+            span.appendChild(a);
+            span.appendChild(document.createElement('br'));
+            div.appendChild(span);
+            // setup all .btn-remove-data to remove data
+            setup_remove_data();
+            // setup all .btn-remove-reminder to remove reminder
+            setup_remove_reminder();
+            setup_done_reminder();
+          });
+        } else {
+          alert('An error occured while unlocking lead data. Error: ' + response.status);
+        }
+      },
+      error: function(data) {
+        alert('Unknown error occured while unlocking lead data.');
+      },
+    });
+  }
+
+  // 
+  $(document).ready(function () {
+
+    // hide .add-data-div
+    $('.add-data-div').hide();
+
+    // hide .add-reminder-div
+    $('.add-reminder-div').hide();
+
+    // show .add-data-div when .add-data is clicked
+    $('.add-data').click(function() {
+      let id_lead = $(this).attr('data-id-lead');
+      let input_type = document.querySelector('input.add-data-type[data-id-lead="'+id_lead+'"]');
+      let div = document.querySelector('div.add-data-div[data-id-lead="'+id_lead+'"]');
+      input_type.value = $(this).attr('data-type'); 
+      $(div).show();
+      $(div).find('input').focus();
+    });
+
+    // show .add-reminder-div when .add-reminder is clicked
+    $('.add-reminder').click(function() {
+      let id_lead = $(this).attr('data-id-lead');
+      let div = document.querySelector('div.add-reminder-div[data-id-lead="'+id_lead+'"]');
+      $(div).show();
+      $(div).find('textarea').focus();
+    });
+
+
+    // hide .add-data-div when .add-data-cancel is clicked
+    $('.add-data-cancel').click(function() {
+      let id_lead = $(this).attr('data-id-lead');
+      let div = document.querySelector('div.add-data-div[data-id-lead="'+id_lead+'"]');
+      $(div).hide();
+    });
+
+    // ajax call to /leads/ajax/add_data.json when the user clicks on .add-data-submit
+    $('.add-data-submit').click(function () {
+      let id_lead = $(this).attr('data-id-lead');
+      let input_value = document.querySelector('input.add-data-value[data-id-lead="'+id_lead+'"]'); 
+      let input_type = document.querySelector('input.add-data-type[data-id-lead="'+id_lead+'"]'); 
+      let div = document.querySelector('div.add-data-div[data-id-lead="'+id_lead+'"]');
+      let div_data = document.querySelector('div.contact-info[data-id-lead="'+id_lead+'"]');
+      // hide form
+      $(div).hide();
+      // show adding legend
+      div_data.innerHTML = 'adding data...';      
+      // ajax call
+      $.ajax({
+        url: '/ajax/leads/add_data.json',
+        type: 'POST',
+        data: { id_lead: id_lead, value: input_value.value, type: input_type.value },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          if (response.status == 'success') {
+            unlock_data(id_lead);
+          } else {
+            alert(response.status);
+            alert('An error occured trying to add data to the lead. Error: ' + response.status);
+          }
+        }, error: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          alert('Unknown error occured trying to add data to the lead.');
+        }
+      });      
+    });
+
+    // fire .add-data-cancel when :esc is pressed on .add-data-value
+    // fire .add-data-submit when :enter is pressed on .add-data-value
+    $('.add-data-value').keyup(function(e) {
+      let id_lead = $(this).attr('data-id-lead');      
+      if (e.keyCode == 27) {
+        let btn = document.querySelector('button.add-data-cancel[data-id-lead="'+id_lead+'"]');
+        btn.click();
+      }
+      if (e.keyCode == 13) {
+        let btn = document.querySelector('button.add-data-submit[data-id-lead="'+id_lead+'"]');
+        btn.click();
+      }
+    });
+
+
+    // hide .add-data-div when .add-data-cancel is clicked
+    $('.add-reminder-cancel').click(function() {
+      let id_lead = $(this).attr('data-id-lead');
+      let div = document.querySelector('div.add-reminder-div[data-id-lead="'+id_lead+'"]');
+      $(div).hide();
+    });
+
+    // ajax call to /leads/ajax/add_data.json when the user clicks on .add-data-submit
+    $('.add-reminder-submit').click(function () {
+      let id_lead = $(this).attr('data-id-lead');
+      let period_number = $(this).attr('data-period-number');
+      let period_unit = $(this).attr('data-period-unit');
+      let input_description = document.querySelector('textarea.add-reminder-description[data-id-lead="'+id_lead+'"]'); 
+      let div = document.querySelector('div.add-reminder-div[data-id-lead="'+id_lead+'"]');
+      let div_data = document.querySelector('div.contact-info[data-id-lead="'+id_lead+'"]');
+      // hide form
+      $(div).hide();
+      // show adding legend
+      div_data.innerHTML = 'adding reminder...';      
+      // ajax call
+      $.ajax({
+        url: '/ajax/leads/add_reminder.json',
+        type: 'POST',
+        data: { id_lead: id_lead, description: input_description.value, period_number: period_number, period_unit: period_unit },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          if (response.status == 'success') {
+            unlock_data(id_lead);
+          } else {
+            alert(response.status);
+            alert('An error occured trying to add data to the lead. Error: ' + response.status);
+          }
+        }, error: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          alert('Unknown error occured trying to add data to the lead.');
+        }
+      });      
+    });
+
+    // fire .add-data-cancel when :esc is pressed on .add-data-value
+    // fire .add-data-submit when :enter is pressed on .add-data-value
+    $('.add-reminder-description').keyup(function(e) {
+      let id_lead = $(this).attr('data-id-lead');      
+      if (e.keyCode == 27) {
+        let btn = document.querySelector('button.add-reminder-cancel[data-id-lead="'+id_lead+'"]');
+        btn.click();
+      }
+      if (e.keyCode == 13) {
+        let btn = document.querySelector('button.add-reminder-submit[data-id-lead="'+id_lead+'"]');
+        btn.click();
+      }
+    });
+
+
+    $('#id_export_select').change(function() {
+      update_hidden_fields();
+    });
+
+    $('#id_export_select').keyup(function() {
+      update_hidden_fields();
+    });
+
+    $('#id_order_select').change(function() {
+      update_hidden_fields();
+    });
+
+    $('#id_order_select').keyup(function() {
+      update_hidden_fields();
+    });
+
+    $('#lead_name_input').change(function() {
+      update_hidden_fields();
+    });
+
+    $('#lead_name_input').keyup(function() {
+      update_hidden_fields();
+    });
+
+    $('#verified_only_checkbox').click(function() {
+      update_hidden_fields();
+    });
+
+    $('#private_only_checkbox').click(function() {
+      update_hidden_fields();
+    });
+
+    $('#has_company_checkbox').click(function() {
+      update_hidden_fields();
+    });
+
+    $('#has_email_address_checkbox').click(function() {
+      update_hidden_fields();
+    });
+
+    $('#has_phone_number_checkbox').click(function() {
+      update_hidden_fields();
+    });
+
+    // load data of already exported leads
+    <%
+    rows.each do |row|
+      %>
+        unlock_data('<%=row[:id].to_guid%>');
+      <%
+    end # rows.each
+    %>
+
+    // en endit any textfield inside a ul,
+    // enable/disable the add button depending on the value of the textfield
+    // by calling function enable_add_button(id_lead)
+    $('ul.ul-export-lists').on('keyup', 'input.input-export-lists', function() {
+      enable_add_button($(this).closest('ul').data('id-lead'));
+    });
+
+    // better user experience: when click on any export button, 
+    // 1. disable the textfield
+    // 2. disable the add button
+    // 3. set '<center><i>Loading...</i></center>' as innerhtml of the div
+    // 4. call ajax to bring the full list of export lists, and wich are linked to this lead
+    // 5. add the export lists to the div.div-export-lists
+    // 6. enable the textfield 
+    // 7. call function to enable/disable the add button depending on the value of the textfield
+    // 8. set focus on the textfield
+    $('button.btn-export-lists').click(function() {
+      let id_lead = $(this).data('id-lead');
+      let div = document.querySelector('div.div-export-lists[data-id-lead="'+id_lead+'"]');
+      // 1. disable the textfield
+      $('ul.ul-export-lists[data-id-lead="'+id_lead+'"] input.input-export-lists').prop('disabled', true);
+      // 2. disable the add button
+      $('ul.ul-export-lists[data-id-lead="'+id_lead+'"] button.btn-create-export-list').prop('disabled', true);
+      // 3. set '<center><i>Loading...</i></center>' as innerhtml of the div
+      div.innerHTML = '<center><i>Loading...</i></center>';
+      // 4. call ajax to bring the full list of export lists, and wich are linked to this lead
+      $.ajax({
+        url: '/ajax/leads/get_lists_linked_to_lead.json',
+        type: 'POST',
+        data: { id_lead: id_lead, name: name },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          if (response.status == 'success') {
+            // 5. add the export lists to the div.div-export-lists          
+            // remove all the lists
+            div.innerHTML = '';
+            response.exports.forEach(function(h) { 
+              add_export_list(id_lead, h);
+            });
+            // if there are no exports to show, show a message
+            if (response.exports.length == 0) {
+              // find the div
+              let div = document.querySelector('div.div-export-lists[data-id-lead="'+id_lead+'"]');
+              // create the li element, with hand cursor
+              let li = document.createElement('li');
+              let center = document.createElement('center');
+              let i = document.createElement('i');
+              i.innerHTML = 'No export lists found';
+              center.appendChild(i);
+              li.appendChild(center);
+              // add the li to the ul
+              $(div).append(li);          
+            }
+            // 6. enable the textfield 
+            $('ul.ul-export-lists[data-id-lead="'+id_lead+'"] input.input-export-lists').prop('disabled', false);
+            // 7. call function to enable/disable the add button depending on the value of the textfield
+            enable_add_button(id_lead);
+            // 8. set focus on the textfield
+            // becuase of any other javascript conflic, I have to  add a delay of 100ms before focus the inputbox.
+            setTimeout(function() {
+              $('ul.ul-export-lists[data-id-lead="'+id_lead+'"] li input.input-export-lists').focus();
+            }, 100);      
+          } else {
+            alert(response.status);
+            alert('An error occured trying to load the export lists. Error: ' + response.status);
+          }
+        }, error: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          alert('Unknown error occured when loading the export lists.');
+        }
+      });
+    });  
+
+    // better user experience: when click on the '+ add' button, 
+    // 1. call AJAX to create the new list
+    // 2. add the new list to all the export list dropdown
+    // 3. delete the content of the input box
+    $('button.btn-create-export-list').click(function(e) {
+      // variables
+      let name = $(this).parent().find('input.input-export-lists').val();
+      let id_lead = $(this).data('id-lead');
+      // 1. call AJAX to create the new list
+      $.ajax({
+        url: '/ajax/leads/create_export_list_and_add_lead.json',
+        type: 'POST',
+        data: { id_lead: id_lead, name: name },
+        success: function(data) {
+          // get the json response
+          let response = JSON.parse(data);
+          if (response.status == 'success') {
+            // remove the dummy li now that I received the ID of the new export list.
+            remove_export_list(id_lead, '123');
+            // 2. add the new list to this the export list dropdown
+            add_export_list(id_lead, {id: response.id_export, filename: name, belonging: true});
+            // update the credits in the header
+            i2p_update_header('leads');
+          } else {
+            if ( response.status =~ /No Credits/ ) {
+              window.location.replace('/plans');
+            } else {
+              alert('An error occured while creating the new list:' + name + '. Error: ' + response.status);
+            }
+          }
+        },
+        error: function(data) {
+          alert('Unknown error occured while creating the new list:' + name);
+        }
+      });
+      // better user experience: unlock data immedaitelly after the ajax call. don't wait for response because of an ux matter. 
+      // unlock contact info
+      unlock_data(id_lead);
+      // better user experience: the new list is added immedaitelly after the ajax call. don't wait for response because of an ux matter. 
+      // so I add a dummy li until I receive the ID of the new export list.
+      add_export_list(id_lead, {id: '123', filename: name, belonging: true}, '0.5');
+      // 3. delete the content of the input box belinging the parent ul element
+      $('input.input-export-lists[data-id-lead="'+id_lead+'"]').val('');
+      // JavaScript, stop additional event listeners
+      // reference: https://www.w3schools.com/jsref/event_stopimmediatepropagation.asp
+      e.stopImmediatePropagation();
+    });
+
+    // avoid to close the ul when click on the input box
+    $('input.input-export-lists').click(function(e) {
+      // JavaScript, stop additional event listeners
+      // reference: https://www.w3schools.com/jsref/event_stopimmediatepropagation.asp
+      e.stopImmediatePropagation();
+    });
+
+    // better user experience: when press ENTER on any .input-export-lists, for click on the add button with same data-id-lead.
+    $('input.input-export-lists').keypress(function(e) {
+      if (e.which == 13) {
+        // find button .btn-create-export-list with same data-id-lead value
+        let id_lead = $(this).attr('data-id-lead');
+        let button = $('button.btn-create-export-list[data-id-lead="'+id_lead+'"]');
+        // if button is enabled
+        if ( button.prop('disabled') == false ) {
+          // click the button
+          button.click();
+        }
+      }
+    });
+
+    // draw filters
+    filtersJs.draw(positions, {
+      label: 'Positions',
+      allowed_positive_keywords: true, // default value: true
+      allowed_negative_keywords: true, // default value: false
+      // catch event: update hidden textfield when filter is changed    
+      on_add_value: function (value) {
+        update_hidden_fields();
+      },
+      // catch event: update hidden textfield when filter is changed    
+      on_remove_value: function (value) {
+        update_hidden_fields();
+      },
+    });
+
+    filtersJs.draw(industries, {
+      label: 'Industries',
+      allowed_positive_keywords: true, // default value: true
+      allowed_negative_keywords: true, // default value: false
+      allowed_values: ['<%=BlackStack::Leads::Industry.order(:name).all.map { |o| o.name.encode_html }.join("', '")%>'],      
+      // catch event: update hidden textfield when filter is changed    
+      on_add_value: function (value) {
+        update_hidden_fields();
+      },
+      // catch event: update hidden textfield when filter is changed    
+      on_remove_value: function (value) {
+        update_hidden_fields();
+      },
+    });
+
+    filtersJs.draw(locations, {
+      label: 'Locations',
+      allowed_positive_keywords: true, // default value: true
+      allowed_negative_keywords: true, // default value: false
+      allowed_values: [
+        '<%=BlackStack::MySaaS::Country.order(:name).all.map { |o| o.name.encode_html }.join("', '")%>',
+        '<%=BlackStack::MySaaS::State.order(:name).all.map { |o| o.name.encode_html }.join("', '")%>'
+      ],
+      // catch event: update hidden textfield when filter is changed    
+      on_add_value: function (value) {
+        update_hidden_fields();
+      },
+      // catch event: update hidden textfield when filter is changed    
+      on_remove_value: function (value) {
+        update_hidden_fields();
+      },
+    });
+
+    // add filters
+    <%
+    s.positions.each { |p| 
+      %>
+      filtersJs.addValue(positions, '<%=p.value%>', <%=p.positive ? 'true' : 'false' %>)
+      <%
+    }
+
+    s.industries.each { |i|
+      %>
+      filtersJs.addValue(industries, '<%=i.fl_industry.name%>', <%=i.positive ? 'true' : 'false' %>)
+      <%
+    }
+
+    s.locations.each { |l|
+      %>
+      filtersJs.addValue(locations, '<%=l.value%>', <%=l.positive ? 'true' : 'false' %>)
+      <%
+    }
+    %>
+
+    // save search modal
+    $('#inputName').on('input', function() {
+      if($(this).val() !== '') {
+        $('#f_positive_positions').val($('#positive_positions').val())
+        $('#f_positive_locations').val($('#positive_locations').val())
+        $('#f_positive_industries').val($('#positive_industries').val())
+        //$('#f_positive_revenues').val($('#positive_revenues').val())
+        //$('#f_positive_headcounts').val($('#positive_headcounts').val())
+        //$('#f_positive_naicss').val($('#positive_naicss').val())
+        //$('#f_positive_sics').val($('#positive_sics').val())
+
+        $('#f_negative_positions').val($('#negative_positions').val())
+        $('#f_negative_locations').val($('#negative_locations').val())
+        $('#f_negative_industries').val($('#negative_industries').val())
+        //$('#f_negative_revenues').val($('#negative_revenues').val())
+        //$('#f_negative_headcounts').val($('#negative_headcounts').val())
+        //$('#f_negative_naicss').val($('#negative_naicss').val())
+        //$('#f_negative_sics').val($('#negative_sics').val())
+
+        $('#save-search').removeAttr('disabled');
+      } else {
+        $('#save-search').attr('disabled', 'disabled');
+      }
+    });
+
+    // export leads modal
+    $('#filename').on('input', function(){
+      if(validate_export_modal()){
+        $('#save-export').removeAttr('disabled');
+      }
+      else{
+        $('#save-export').attr('disabled', 'disabled');
+      }
+    });
+
+    $('#number_of_records').on('input', function(){
+      if ($('#number_of_records').val() == '') {
+        $('#export_only_first').prop('checked', false);
+      } else {
+        $('#export_only_first').prop('checked', true);
+      }
+      validate_export_modal();
+    });
+
+    function validate_export_modal(){
+      if ($('#filename').val() == '') {
+        return false;
+      }
+      return true;
+    };  
+    
+    // hide modals when show the page
+    // use the .hide() method, in order to don't get the modal blocking other elements behind them.
+    $('.save_modal').hide();
+    $('.export_leads').hide();
+    
+    // update hidden fields with the filters
+    update_hidden_fields();
+  }); // $(document).ready
+
+  $('#reset-filters').on('click', function () {
+    window.location.reload();
+  });
+</script>

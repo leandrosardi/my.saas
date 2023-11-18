@@ -1,0 +1,57 @@
+<%
+err = []
+begin
+    # getting account 
+    account = BlackStack::Emails::Account.where(:id=>@login.user.id_account).first
+
+    # map parameters
+    gid = params[:gid]
+    o = BlackStack::Emails::Campaign.where(:id=>gid).first
+    name = params[:name]
+    id_export = o.can_edit? ? params[:id_export] : o.id_export
+    exclude = params[:exclude].to_s == 'on' 
+    stop = params[:stop].to_s == 'on' ? true : false
+    shared = params[:shared].to_s == 'on'
+    privat = params[:privat].to_s == 'on'
+    tags = params[:tags].to_s.split(',').map { |t| t.to_s.strip.downcase }.uniq
+
+    # validate: the name is not empty
+    err << "Name is required." if name.empty?
+
+    # validate: the id_export is not empty
+    err << "Export is required." if id_export && id_export.empty?
+
+    # if any error happened, return to the edition screen
+    raise err.join("\n") if err.size > 0
+
+    # delete all the outreaches of the campaign
+    DB.execute("DELETE FROM eml_outreach WHERE id_campaign = '#{gid.to_guid}'")
+    
+    # load, edit and save the campaign
+    o = BlackStack::Emails::Campaign.where(:id=>gid).first
+    o.name = name
+    o.id_export = id_export
+    o.exclude_leads_reached_by_another_campaign = exclude
+    o.stop_followups_if_lead_replied = stop
+    o.use_public_addresses = shared
+    o.use_private_addresses = privat
+    o.save
+
+    # create the outreaches
+    tags.each { |tag|
+        t = BlackStack::Emails::Outreach.new
+        t.id = guid
+        t.id_user = @login.user.id
+        t.create_time = now
+        t.id_campaign = o.id
+        t.id_tag = account.tags.select { |g| g.name.downcase == tag.downcase }.first.id
+        t.save
+    }
+
+    # return
+    redirect "/emails/campaigns/#{o.id.to_guid}/edit?msg="+ CGI::escape('Campaign updated.')
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{params[:gid].to_guid}/edit?err="+ CGI::escape(e.message)
+end
+%>

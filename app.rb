@@ -1,8 +1,8 @@
 begin
   print 'Loading libraries... '
   require 'sinatra'
-  require 'my.saas/mysaas'
-  require 'my.saas/lib/stubs'
+  require 'app/mysaas'
+  require 'app/lib/stubs'
   puts 'done'.green
 
   # 
@@ -20,7 +20,7 @@ begin
       :mandatory=>false, 
       :description=>'Name of the configuration file.', 
       :type=>BlackStack::SimpleCommandLineParser::STRING,
-      :default => 'my.saas/config',
+      :default => 'app/config',
     }]
   )
   puts 'done'.green
@@ -31,7 +31,7 @@ begin
   puts 'done'.green
 
   print 'Loading version information... '
-  require 'my.saas/version'
+  require 'app/version'
   puts 'done'.green
 
   print 'Connecting database... '
@@ -39,7 +39,7 @@ begin
   puts 'done'.green
 
   print 'Loading models... '
-  require 'my.saas/lib/skeletons'
+  require 'app/lib/skeletons'
   puts 'done'.green
 
   print 'Loading helpers... '
@@ -172,14 +172,14 @@ begin
   # include the libraries of the extensions
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   BlackStack::Extensions.extensions.each { |e|
-    require "my.saas/extensions/#{e.name.downcase}/main"
+    require "app/extensions/#{e.name.downcase}/main"
   }
   puts 'done'.green
 
   print 'Loading extensions models... '
   # Load skeleton classes
   BlackStack::Extensions.extensions.each { |e|
-    require "my.saas/extensions/#{e.name.downcase}/lib/skeletons"
+    require "app/extensions/#{e.name.downcase}/lib/skeletons"
   }
   puts 'done'.green
   
@@ -459,54 +459,8 @@ begin
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # User dashboard
-  print 'Setting up entries of internal pages... '
-
-  get '/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/dashboard', :layout => :'/views/layouts/core'
-  end
-  get '/ajax/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/ajax/dashboard'
-  end
-
-  get '/new', :auth => true, :agent => /(.*)/ do
-    erb :'views/search', :layout => :'/views/layouts/core'
-  end
-
-  get '/edit/:sid', :auth => true, :agent => /(.*)/ do
-    erb :'views/search', :layout => :'/views/layouts/core'
-  end
-
-  get '/delete/:sid', :auth => true, :agent => /(.*)/ do
-    erb :'views/delete'
-  end
-
-  post '/filter_edit', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_edit'
-  end
-
-  post '/filter_new', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_new'
-  end
-
-  get '/filter_copy', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_copy'
-  end
-
-  get '/filter_delete', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_delete'
-  end
-
-  get '/filter_pause', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_pause'
-  end
-
-  get '/filter_play', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_play'
-  end
-
-  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Configuration screens
+  print 'Setting up entries of settings... '
 
   # main configuration screen
   get '/settings', :auth => true do
@@ -621,27 +575,418 @@ begin
     erb :'views/api1.0/notifications/click'
   end
 
-  # micro.data
-  post '/api1.0/zi/pull.json', :api_key => true, :agent => /(.*)/ do
-    erb :'views/api1.0/zi/pull'
-  end  
-
-  post '/api1.0/zi/new.json', :api_key => true, :agent => /(.*)/ do
-    erb :'views/api1.0/zi/new'
-  end  
-
-  post '/api1.0/zi/get.json', :api_key => true, :agent => /(.*)/ do
-    erb :'views/api1.0/zi/get'
-  end  
-  
   puts 'done'.green
+
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # User dashboard
+  print 'Setting up entries of internal pages... '
+
+  get '/dashboard', :auth => true, :agent => /(.*)/ do
+    erb :'views/dashboard', :layout => :'/views/layouts/core'
+  end
+
+  # leads/results
+  get '/leads', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/results', :layout => :'/views/layouts/core'
+  end
+
+  get '/leads/results/:sid', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/results', :layout => :'/views/layouts/core'
+  end
+
+  post '/leads/filter_results', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/filter_results'
+  end
+
+=begin
+  get '/leads/filter_delete', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/filter_delete'
+  end
+=end
+
+  # leads/results ajax
+  get "/ajax/leads/get_lists_linked_to_lead.json", :auth => true do
+    erb :"views/ajax/leads/get_lists_linked_to_lead"
+  end
+  post "/ajax/leads/get_lists_linked_to_lead.json", :auth => true do
+    erb :"views/ajax/leads/get_lists_linked_to_lead"
+  end
+
+  post "/ajax/leads/create_export_list_and_add_lead.json", :auth => true do
+    erb :"views/ajax/leads/create_export_list_and_add_lead"
+  end
+
+  get "/ajax/leads/add_lead_to_export_list.json", :auth => true do
+    erb :"views/ajax/leads/add_lead_to_export_list"
+  end
+  post "/ajax/leads/add_lead_to_export_list.json", :auth => true do
+    erb :"views/ajax/leads/add_lead_to_export_list"
+  end
+
+  get "/ajax/leads/add_lead_to_export_list.json", :auth => true do
+    erb :"views/ajax/leads/add_lead_to_export_list"
+  end
+  post "/ajax/leads/remove_lead_from_export_list.json", :auth => true do
+    erb :"views/ajax/leads/remove_lead_from_export_list"
+  end
+
+  get "/ajax/leads/get_lead_data.json", :auth => true do
+    erb :"views/ajax/leads/get_lead_data"
+  end
+  post "/ajax/leads/get_lead_data.json", :auth => true do
+    erb :"views/ajax/leads/get_lead_data"
+  end
+
+  get "/ajax/leads/get_lead_reminders.json", :auth => true do
+    erb :"views/ajax/leads/get_lead_reminders"
+  end
+  post "/ajax/leads/get_lead_reminders.json", :auth => true do
+    erb :"views/ajax/leads/get_lead_reminders"
+  end
+
+  get "/ajax/leads/add_data.json", :auth => true do
+    erb :"views/ajax/leads/add_data"
+  end
+  post "/ajax/leads/add_data.json", :auth => true do
+    erb :"views/ajax/leads/add_data"
+  end
+
+  get "/ajax/leads/remove_data.json", :auth => true do
+    erb :"views/ajax/leads/remove_data"
+  end
+  post "/ajax/leads/remove_data.json", :auth => true do
+    erb :"views/ajax/leads/remove_data"
+  end
+
+  get "/ajax/leads/add_reminder.json", :auth => true do
+    erb :"views/ajax/leads/add_reminder"
+  end
+  post "/ajax/leads/add_reminder.json", :auth => true do
+    erb :"views/ajax/leads/add_reminder"
+  end
+
+  get "/ajax/leads/remove_reminder.json", :auth => true do
+    erb :"views/ajax/leads/remove_reminder"
+  end
+  post "/ajax/leads/remove_reminder.json", :auth => true do
+    erb :"views/ajax/leads/remove_reminder"
+  end
+
+  get "/ajax/leads/mark_reminder_as_done.json", :auth => true do
+    erb :"views/ajax/leads/mark_reminder_as_done"
+  end
+  post "/ajax/leads/mark_reminder_as_done.json", :auth => true do
+    erb :"views/ajax/leads/mark_reminder_as_done"
+  end
+
+  get "/ajax/leads/mark_reminder_as_pending.json", :auth => true do
+    erb :"views/ajax/leads/mark_reminder_as_pending"
+  end
+  post "/ajax/leads/mark_reminder_as_pending.json", :auth => true do
+    erb :"views/ajax/leads/mark_reminder_as_pending"
+  end
+
+  # leads/new
+  get '/leads/new', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/new', :layout => :'/views/layouts/core'
+  end
+
+  post '/leads/filter_new', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/filter_new'
+  end
+
+  # leads/upload
+  get '/leads/uploads', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/uploads/jobs', :layout => :'/views/layouts/core'
+  end
+
+  get '/leads/uploads/new', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/uploads/new', :layout => :'/views/layouts/core'
+  end
+
+  post '/leads/uploads/mapping', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/uploads/mapping', :layout => :'/views/layouts/core'
+  end
+
+  post '/leads/uploads/filter_new_upload_job', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/uploads/filter_new_upload_job'
+  end
+
+  # leads/exports
+  get '/leads/exports', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/exports', :layout => :'/views/layouts/core'
+  end
+
+  get '/leads/filter_view_export_results', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/filter_view_export_results'
+  end
+
+  post '/leads/filter_export_contacts', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/filter_export_contacts'
+  end
+
+  # leads/searches
+  get '/leads/searches', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/searches', :layout => :'/views/layouts/core'
+  end
+
+  post '/leads/filter_save_search', :auth => true, :agent => /(.*)/ do
+    erb :'views/leads/filter_save_search'
+  end
+
+  # emails/addresses
+  get "/emails/addresses", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/addresses", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/addresses/new", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_address", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/addresses/new/gmail", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_gmail_address", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/addresses/new/custom", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_custom_address", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/addresses/:aid/edit", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/edit_address", :layout => :"/views/layouts/core"
+  end
+=begin
+  get "/emails/addresses/uploads/new", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_upload_addresses", :layout => :"/views/layouts/core"
+  end
+
+  post "/emails/addresses/uploads/mapping", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/mapping_upload_addresses", :layout => :"/views/layouts/core"
+  end
+
+  post "/emails/filter_new_upload_addresses_job", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_new_upload_addresses_job"
+  end
+
+  get "/emails/addresses/uploads", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/upload_addresses_jobs", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/addresses/uploads/:id", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/upload_addresses_job", :layout => :"/views/layouts/core"
+  end
+=end
+  # internal app screens - campaigns
+  get "/emails/campaigns", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/campaigns", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/campaigns/new", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_campaign", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/campaigns/:gid/edit", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/edit_campaign", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/campaigns/:gid/report/:report", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/report", :layout => :"/views/layouts/core"
+  end
+
+  # schedules
+  get "/emails/campaigns/:gid/schedules", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/schedules", :layout => :"/views/layouts/core"
+  end
+  get "/emails/campaigns/:gid/schedules/new", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_schedule", :layout => :"/views/layouts/core"
+  end
+  post "/emails/filter_new_schedule", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_new_schedule"
+  end
+  get "/emails/filter_delete_schedule", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_delete_schedule"
+  end
+
+  # followups
+  get "/emails/campaigns/:gid/followups", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/followups", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/campaigns/:gid/followups/new", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_followup", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/campaigns/:gid/followups/:fid/edit", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/edit_followup", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/campaigns/:gid/followups/:fid/report/:report", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/report", :layout => :"/views/layouts/core"
+  end
+
+  post "/emails/filter_new_followup", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_new_followup"
+  end
+  get "/emails/filter_delete_followup", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_delete_followup"
+  end
+  post "/emails/filter_edit_followup", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_edit_followup"
+  end
+
+  # activities
+  get "/emails/activity", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/report", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/activity/", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/report", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/activity/:report", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/report", :layout => :"/views/layouts/core"
+  end
+
+  # actions / rules / automations
+  get "/emails/actions", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/actions", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/actions/new", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/new_action", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/actions/:aid/edit", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/edit_action", :layout => :"/views/layouts/core"
+  end
+
+  get "/emails/actions/:aid/view", :auth => true, :agent => /(.*)/ do # log
+    erb :"views/emails/view_action", :layout => :"/views/layouts/core"
+  end
+
+  post "/emails/filter_new_action", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_new_action"
+  end
+  get "/emails/filter_delete_action", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_delete_action"
+  end
+  get "/emails/filter_play_action", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_play_action"
+  end
+  get "/emails/filter_pause_action", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_pause_action"
+  end
+  post "/emails/filter_edit_action", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_edit_action"
+  end
+
+  # filters
+  post "/emails/filter_new_campaign", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_new_campaign"
+  end
+
+  post "/emails/filter_edit_campaign", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_edit_campaign"
+  end
+
+  get "/emails/filter_delete_campaign", :auth => true, :agent => /(.*)/ do
+    erb :"views/emails/filter_delete_campaign"
+  end
+
+  post "/emails/filter_test_followup", :auth => true do
+    erb :"views/emails/filter_test_followup"
+  end
+  get "/emails/filter_test_followup", :auth => true do
+    erb :"views/emails/filter_test_followup"
+  end
+
+  post "/emails/filter_play_followup", :auth => true do
+    erb :"views/emails/filter_play_followup"
+  end
+  get "/emails/filter_play_followup", :auth => true do
+    erb :"views/emails/filter_play_followup"
+  end
+
+  post "/emails/filter_pause_followup", :auth => true do
+    erb :"views/emails/filter_pause_followup"
+  end
+  get "/emails/filter_pause_followup", :auth => true do
+    erb :"views/emails/filter_pause_followup"
+  end
+
+  post "/emails/filter_new_address", :auth => true do
+    erb :"views/emails/filter_new_address"
+  end
+
+  post "/emails/filter_edit_address", :auth => true do
+    erb :"views/emails/filter_edit_address"
+  end
+  get "/emails/filter_edit_address", :auth => true do
+    erb :"views/emails/filter_edit_address"
+  end
+
+  post "/emails/filter_edit_addresses", :auth => true do
+    erb :"views/emails/filter_edit_addresses"
+  end
+  get "/emails/filter_edit_addresses", :auth => true do
+    erb :"views/emails/filter_edit_addresses"
+  end
+
+  get "/emails/filter_delete_address", :auth => true do
+    erb :"views/emails/filter_delete_address"
+  end
+
+  # AJAX 
+  post "/ajax/emails/upload_picture.json", :auth => true do
+    erb :"views/ajax/emails/upload_picture"
+  end
+
+  post "/ajax/emails/load_deliveries.json", :auth => true do
+    erb :"views/ajax/emails/load_deliveries"
+  end
+
+  post "/ajax/emails/unsubscribe.json", :auth => true do
+    erb :"views/ajax/emails/unsubscribe"
+  end
+
+  post "/ajax/emails/resubscribe.json", :auth => true do
+    erb :"views/ajax/emails/resubscribe"
+  end
+
+  post "/ajax/emails/mark_positive.json", :auth => true do
+    erb :"views/ajax/emails/mark_positive"
+  end
+
+  post "/ajax/emails/unmark_positive.json", :auth => true do
+    erb :"views/ajax/emails/unmark_positive"
+  end
+
+  post "/ajax/emails/create_delivery.json", :auth => true do
+    erb :"views/ajax/emails/create_delivery"
+  end
+
+  # API
+  get "/api1.0/emails/open.json" do
+    erb :"views/api1.0/emails/open"
+  end
+
+  get "/api1.0/emails/click.json" do
+    erb :"views/api1.0/emails/click"
+  end
+
+  get "/api1.0/emails/unsubscribe.json" do
+    erb :"views/api1.0/emails/unsubscribe"
+  end
+
+  puts 'done'.green
+
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Require the app.rb file of each one of the extensions.
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   print 'Setting up extensions entries... '
   BlackStack::Extensions.extensions.each { |e|
-    require "my.saas/extensions/#{e.name.downcase}/app.rb"
+    require "app/extensions/#{e.name.downcase}/app.rb"
   }
   puts 'done'.green
   

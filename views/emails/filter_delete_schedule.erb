@@ -1,0 +1,24 @@
+<%
+err = []
+begin
+    # map parameters
+    sid = params[:sid]
+
+    # load campaign
+    s = BlackStack::Emails::Schedule.where(:id=>sid).first
+    gid = s.id_campaign
+    
+    # edit
+    if s.delete_time.nil?
+        s.delete_time = now
+        # save
+        s.save
+    end
+
+    # return
+    redirect "/emails/campaigns/#{gid.to_guid}/schedules?msg="+ CGI::escape("Schdule #{s.name} deleted.")
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{gid.to_guid}/schedules?err="+ CGI::escape(e.message)
+end
+%>

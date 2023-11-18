@@ -1,0 +1,48 @@
+<%
+return_message = {}
+begin
+    id_lead = params['id_lead']
+
+    # TODO: check if the user is allowed to see this lead.
+
+    # load the object
+    o = BlackStack::Leads::Lead.where(:id=>id_lead).first
+
+    # decide the color of the button
+    return_message['button_color'] = 'green' 
+    return_message['button_color'] = 'gray' if o.id_user
+    return_message['button_color'] = 'blue' if o.exported_by?(@login.user.account)
+
+    return_message['button_text'] = 'Export' 
+    return_message['button_text'] = 'Owned' if o.id_user
+    return_message['button_text'] = 'Exported' if o.exported_by?(@login.user.account)
+
+    return_message[:datas] = o.fl_datas.select { |d| 
+        d.delete_time.nil?
+    }.select { |d| 
+        d.type==BlackStack::Leads::Data::TYPE_EMAIL || 
+        d.type==BlackStack::Leads::Data::TYPE_PHONE ||
+        d.type==BlackStack::Leads::Data::TYPE_LINKEDIN || 
+        d.type==BlackStack::Leads::Data::TYPE_FACEBOOK
+    }.sort_by { |d| d.type }.map { |d| d.to_hash }
+
+    return_message[:reminders] = []
+
+    return_message[:reminders] += o.fl_reminders.select { |r| 
+        r.delete_time.nil? && !r.done
+    }.sort_by { |r| 
+        r.expiration_time
+    }.map { |r| r.to_hash }
+
+    return_message[:reminders] += o.fl_reminders.select { |r| 
+        r.delete_time.nil? && r.done
+    }.sort_by { |r| 
+        r.expiration_time
+    }.reverse.map { |r| r.to_hash }
+
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

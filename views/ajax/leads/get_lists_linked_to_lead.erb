@@ -1,0 +1,23 @@
+<%
+return_message = { :id_lead => params['id_lead'], :exports => [], }
+begin
+    l = BlackStack::Leads::Lead.where(:id=>params['id_lead']).first
+    if l
+        a = l.export_lists_hash(@login.user.id_account.to_guid, true)
+        b = l.export_lists_hash(@login.user.id_account.to_guid, false)
+        # 
+        a.each { |h| h[:belonging] = true }
+        b.each { |h| h[:belonging] = false }
+        # 
+        return_message[:exports] += a
+        return_message[:exports] += b
+        # return
+        return_message[:status] = 'success'
+    else
+        return_message[:status] = 'lead not found'
+    end
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

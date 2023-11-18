@@ -22,21 +22,8 @@ BlackStack::Funnel.set({
     # code by following the steps in this tutorial:
     # https://www.monsterinsights.com/docs/where-to-find-utm-tracking-code-results-data-in-google-analytics
     # 
-    # Comment the line below if you don't want google analytics.
-    #
-    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-xxxxxxx',
-
-    # reCaptcha v2 keys
-    # 
-    # Create your keys here: https://www.google.com/recaptcha/admin/create
-    # Find your analytics here: https://www.google.com/recaptcha/admin
-    #
-    # Comment the lines below if you don't want reCaptcha v2.
-    #  
-    :recaptcha2_site_key => 'xxxxxxx',
-    :recaptcha2_secret_key => 'xxxxxxx-xxxxxxx',
+    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-XXXXXXXXXX',
 })
-
 
 # Funnel Configuration
 BlackStack::Funnel.add({
@@ -44,7 +31,7 @@ BlackStack::Funnel.add({
     # decide if go to one-time-offer screen, or 
     # to the plans screen. Return the URL to go.    
     :url_plans => Proc.new do |login, *args|
-        '/plans'
+        '/plans?service=dfy-leads'
     end,
     # return the url to go after signup
     :url_after_signup => Proc.new do |login, *args|
@@ -190,7 +177,7 @@ BlackStack::Deployer::add_nodes([{
     :ssh_username => 'ubuntu',
     :ssh_port => 22,
     #:ssh_password => ssh_password,
-    :ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/cs.pem' : '$HOME/code/my.saas/cli/cs.pem',
+    :ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/app/cli/cs.pem' : '$HOME/code/app/cli/cs.pem',
     # git
     :git_branch => 'main',
     :git_username => 'leandrosardi',
@@ -202,7 +189,7 @@ BlackStack::Deployer::add_nodes([{
     # sinatra
     :web_port => 3000,
     # config.rb content - always using dev-environment here
-    :config_rb_content => File.read(BlackStack.sandbox? ? '/home/leandro/code/my.saas/config.rb' : '$HOME/code/my.saas/config.rb'),
+    :config_rb_content => File.read(BlackStack.sandbox? ? '/home/leandro/code/app/config.rb' : '$HOME/code/app/config.rb'),
     # default deployment routine for this node
     :deployment_routine => 'deploy-my.saas',
     # setup stand-alone processes
@@ -212,12 +199,12 @@ BlackStack::Deployer::add_nodes([{
         :procs => [
             {
                 :name => 'leads.export',
-                :logfile => '$HOME/code/my.saas/export.log',
+                :logfile => '$HOME/code/app/export.log',
                 :params => [
                     { :name=>'foo', :value=>'bar' },
                     { :name=>'foo2', :value=>'bar2'},
                 ],
-                #:command => 'cd ~ & nohup ruby ~/code/my.saas/extensions/leads/p/export.rb >/dev/null 2>&1 &',
+                #:command => 'cd ~ & nohup ruby ~/code/app/extensions/leads/p/export.rb >/dev/null 2>&1 &',
                 :min_cycle_seconds => 60,
                 :processing_function => Proc.new do |*args|
                     # TODO: Code Me!
@@ -234,7 +221,7 @@ BlackStack::DropBox.set({
 })
 
 # Manage backup of secret files
-# Reference: https://github.com/leandrosardi/my.saas/blob/main/docu/03.secret-files-management.md
+# Reference: https://github.com/leandrosardi/app/blob/main/docu/03.secret-files-management.md
 BlackStack::BackUp.set({
     # different cloud folders to upload differt local folders 
     :bucket => [{
@@ -256,13 +243,13 @@ BlackStack::BackUp.set({
       # certificate to connect AWS instances.
       :name => 'aws-certificate',
       :folder => 'freeleadsdata.app',
-      :path => CODE_PATH + '/my.saas/cli',
+      :path => CODE_PATH + '/app/cli',
       :files => ['fld.pem'],
     }, {
       # database deploying .lock files for SQL migrations
       :name => 'deploying-lockfiles',
       :folder => 'freeleadsdata.app',
-      :path => CODE_PATH + '/my.saas/cli',
+      :path => CODE_PATH + '/app/cli',
       :files => [
         'my-ruby-deployer.lock', 
         'my-ruby-deployer.i2p.lock', 
@@ -273,7 +260,7 @@ BlackStack::BackUp.set({
       # SSL certificaties.
       :name => 'ssl-Certificates',
       :folder => 'freeleadsdata.app',
-      :path => CODE_PATH + '/my.saas/ssl',
+      :path => CODE_PATH + '/app/ssl',
       :files => ['prod.crt', 'prod.key'],
     }]
 })

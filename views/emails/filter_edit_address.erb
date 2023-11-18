@@ -1,0 +1,28 @@
+<%
+err = []
+begin
+    # map parameters
+    aid = params[:aid]
+    shared = params[:shared].to_s == '1'
+    enabled = params[:enabled].to_s == '1'
+    max_deliveries_per_day = params[:max_deliveries_per_day].to_i
+
+    # there is no valiations here, just save the address
+
+    # if any error happened, return to the edition screen
+    raise err.join("\n") if err.size > 0
+
+    # load, edit and save the campaign
+    o = BlackStack::Emails::Address.where(:id=>aid).first
+    o.shared = shared
+    o.enabled = enabled
+    o.max_deliveries_per_day = max_deliveries_per_day
+    o.save
+
+    # return
+    redirect "/emails/addresses?msg="+ CGI::escape('Address updated.')
+rescue => e
+    # return errors
+    redirect "/emails/addresses/#{params[:aid].to_guid}/edit?err="+ CGI::escape(e.message)
+end
+%>

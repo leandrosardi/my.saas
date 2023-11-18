@@ -1,0 +1,214 @@
+<%
+gid = params[:gid]
+fid = params[:fid]
+search_keyword = @login.user.preference('emails.report.search_keyword', '', params[:search_keyword]).strip
+report = @login.user.preference('emails.report.type', 'all', params[:report]).strip
+
+url = nil
+if !fid.to_s.empty?
+    url = "/emails/campaigns/#{gid}/followups/#{fid}/report"
+elsif !gid.to_s.empty?
+    url = "/emails/campaigns/#{gid}/report"
+else
+    url = "/emails/activity"
+end
+
+# normalization
+title = "Activity"
+if !report.nil?
+    title = report.capitalize
+    report = 'all' if report == 'all'
+    report = 'sent' if report == 'sents'
+    #report = 'bounce' if report == 'bounces' # --> NOT SUPPORTED YET
+    report = 'open' if report == 'opens'
+    report = 'click' if report == 'clicks'
+    report = 'unsubscribe' if report == 'unsubscribes'
+    report = 'reply' if report == 'replies'
+    #report = 'positive_reply' if report == 'positives' # --> NOT SUPPORTED YET
+end
+
+# report must be one of these values:
+reports = BlackStack::Emails::Delivery::LOG_TYPES + ['all']
+
+# if report is not nil, it must be a valid code
+redirect '/emails/campaigns?err='+CGI.escape("Invalid report request.") if !report.nil? && !reports.include?(report)
+
+all = "
+    SELECT 
+        count(o.id) as n,
+        max(o.create_time) as create_time, 
+        o.\"type\",
+        o.\"color\",
+        o.id_campaign,
+        o.campaign_name,
+        o.id_lead,
+        o.lead_name, 
+        o.id_followup,
+        f.name as followup_name
+--        o.planning_time,
+--        o.url as url
+    FROM eml_log o
+    LEFT JOIN eml_followup f ON f.id = o.id_followup
+    WHERE o.id_account = '#{@login.user.id_account}' 
+    #{gid.nil? ? "" : "AND o.id_campaign = '#{gid}'"} 
+    #{fid.nil? ? "" : "AND o.id_followup = '#{fid}'"} 
+    #{report.to_s == 'all' ? "" : "AND o.\"type\" = '#{report.to_sql}'"}
+"
+
+if !search_keyword.to_s.empty?
+    all += "AND (o.campaign_name ILIKE '%#{search_keyword.to_sql}%' OR o.lead_name ILIKE '%#{search_keyword.to_sql}%' OR f.name ILIKE '%#{search_keyword.to_sql}%')"
+end
+
+all += "
+    GROUP BY
+        o.\"type\",
+        o.\"color\",
+        o.id_campaign,
+        o.campaign_name,
+        o.id_lead,
+        o.lead_name, 
+        o.id_followup,
+        f.name
+    ORDER BY max(o.create_time) DESC
+"
+
+# TODO: use re-utilizable function here.
+page_size = 25
+total_rows = DB[all].count
+if total_rows>0
+  total_pages = (total_rows.to_f/page_size.to_f).ceil
+  # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
+  # then, get user preferences regarding the page number on this screen
+  page_number = @login.user.preference("emails.campaign.report.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  # pagination correction to prevent glitches
+  page_number = 1 if page_number < 1
+  page_number = total_pages if page_number > total_pages
+  # calculate info for showing at the bottom of the table
+  from_row = (page_number.to_i-1) * page_size.to_i + 1
+  to_row = [page_number*page_size, total_rows].min
+else
+  total_pages = 1
+  page_number = 1
+  from_row = 0
+  to_row = 0
+end
+
+q = "
+"+all+"
+  LIMIT #{page_size.to_s}
+  OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+            <%
+            if !fid.to_s.empty?
+                o = BlackStack::Emails::Followup.where(:id=>fid).first
+                %>
+                <%=nav5("Campaigns", '/emails/campaigns', o.campaign.name, "/emails/campaigns/#{o.campaign.id.to_guid}/edit", 'FollowUps', "/emails/campaigns/#{o.campaign.id.to_guid}/followups", o.name, "/emails/campaigns/#{o.campaign.id.to_guid}/followups/#{o.id.to_guid}/edit", title)%>
+                <%
+            elsif !gid.to_s.empty?
+                o = BlackStack::Emails::Campaign.where(:id=>gid).first
+                %>
+                <%=nav3("Campaigns", '/emails/campaigns', o.name, "/emails/campaigns/#{o.id.to_guid}/edit", title)%>
+                <%
+            else
+                %>
+                <%=nav1("Activity")%>
+                <%
+            end
+            %>
+		</div>
+		<div class="span6" style='text-align:right;'>
+            <div class="pull-right">
+                <form action="<%=url%>/<%=report%>" method="get">
+                    <div class="span8">
+                        <input type='text' class='input-block-level select-all-on-focus' id='search_keyword' name='search_keyword' value='<%=search_keyword.encode_html%>' />
+                    </div>
+                    <button class="btn btn-blue btn-medium btn-submit" style="margin-left: 2px;" type="submit">
+                        <i class='icon-search'></i> Search
+                    </button>
+                </form>
+            </div>    
+        </div>
+    </section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+        <section class="row-fluid">
+            <b>Records:</b> <%=from_row.to_label%> to <%=to_row.to_label%> <b>of</b> <%=total_rows.to_label%> | <b>Events:</b> 
+            <span style='margin:5px;'>
+            <%
+            (['all'] + BlackStack::Emails::Delivery::LOG_TYPES).each { |s|
+                if s == report
+                %>
+                    <span class='badge badge-blue'><%=s%></span>
+                <%
+                else
+                %>
+                    <a href="<%=url%>/<%=s%>"><%=s%></a>
+                <%
+                end
+                %>
+                <span style='margin:5px;'> </span>
+                <%
+            }
+            %>
+            </span>
+        </section>
+        <section class="row-fluid">
+            <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+                <thead>
+                    <th style="width:auto;">Campaign</th>
+                    <th style="width:auto;">FollowUp</th>
+                    <th style="width:auto;">Lead</th>
+                    <th style="width:75px;text-align:right;">Date</th>
+                    <th style="width:90px;text-align:right;">Event</th>
+                    <th style="width:24px;text-align:right;">#</th>
+                </thead>
+                <tbody>
+                    <%
+                    i = 0
+                    DB[q].all { |row|
+                        i += 1
+                        %>
+                        <tr>
+                            <td class="fix"><a href='/emails/campaigns/<%=row[:id_campaign]%>/edit' title='<%=row[:campaign_name].to_s.encode_html%>'><%=row[:campaign_name].to_s.encode_html%></a></td>
+                            <td class="fix"><a href='/emails/campaigns/<%=row[:id_campaign]%>/followups/<%=row[:id_followup]%>/edit' title='<%=row[:followup_name].to_s.encode_html%>'><%=row[:followup_name].to_s.encode_html%></a></td>
+                            <td class="fix"><a href='/leads/results/<%=row[:id_lead]%>' title='<%=row[:lead_name].to_s.encode_html%>'><%=row[:lead_name].to_s.encode_html%></a></td>
+                            <td class="fix" style='text-align:right;'><%=row[:create_time].to_s[0..9]%></td>
+                            <td class="fix" style='text-align:right;'><span class='badge badge-<%=row[:color]%>'><%=row[:type].to_s.encode_html%></span></td>
+                            <td class="fix" style='text-align:right;'><span class='badge badge-blue'><%=row[:n].to_i.to_label%></span></td>
+                        </tr>
+                        <%
+                    }
+                    %>
+
+                    <%
+                    if i == 0 
+                    %>
+                    <tr>
+                        <td colspan="6" class="fix">
+                            <br/>
+                            <center>No results found.</center>
+                            <br/>
+                        </td>
+                    </tr>
+                    <%
+                    end
+                    %>
+                </tbody>
+            </table>
+        </section>
+        <div class="pagination"></div>
+    </div>
+</section>
+
+<script>
+    drawPagination($(".pagination"), <%=page_number%>, <%=total_pages%>);
+</script>

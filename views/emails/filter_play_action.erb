@@ -1,0 +1,12 @@
+<%
+err = []
+begin
+    # delete the action
+    DB.execute("UPDATE eml_action SET status=true WHERE id='#{params[:aid]}'")
+    # return
+    redirect "/emails/actions?msg="+ CGI::escape('Action activated.')
+rescue => e
+    # return errors
+    redirect "/emails/actions?err="+ CGI::escape(e.message)
+end
+%>

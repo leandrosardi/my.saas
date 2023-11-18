@@ -1,0 +1,171 @@
+<%
+gid = params[:gid]
+g = BlackStack::Emails::Campaign.where(:id=>gid).first
+
+# load preferences
+name = @login.user.preference('emails.campaign.followup.new.name', '', nil)
+subject = @login.user.preference('emails.campaign.followup.new.subject', '', nil)
+body = @login.user.preference('emails.campaign.followup.new.body', '', nil)
+type = @login.user.preference('emails.campaign.followup.new.type', BlackStack::Emails::Followup::TYPE_TEXT, nil)
+sequence_number = @login.user.preference('emails.campaign.followup.new.sequence_number', 1, nil)
+delay_days = @login.user.preference('emails.campaign.followup.new.delay_days', 1, nil)
+track_opens_enabled = @login.user.preference('emails.campaign.followup.new.track_opens_enabled', true, nil)
+track_clicks_enabled = @login.user.preference('emails.campaign.followup.new.track_clicks_enabled', true, nil)
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		<%=nav4("Campaigns", "/emails/campaigns", g.name, "/emails/campaigns/#{g.id.to_guid}/edit", "FollowUps", "/emails/campaigns/#{g.id.to_guid}/followups", "New")%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_new_followup' class="form-horizontal">
+            <input type='hidden' id='gid' name='gid' value='<%=gid%>'/>
+            <!-- textfield for name -->
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <div class="controls">
+                    <input type="text" id="name" name='name' placeholder="Name" value='<%=name.to_s.encode_html%>' />
+                </div>
+            </div>
+            <!-- dropdown list for type -->
+            <div class="control-group">
+                <label class="control-label" for="type">Type</label>
+                <div class="controls">
+                    <select id="type" name='type'>
+                        <%
+                        BlackStack::Emails::Followup.types.each do |t|
+                            %>
+                            <option value='<%=t%>'<%=(t==type ? ' selected="selected"' : '')%>><%=BlackStack::Emails::Followup.type_name(t)%></option>
+                            <%
+                        end
+                        %>
+                    </select>
+                </div>
+            </div>
+            <!-- enable/disable tracking -->
+            <div class="control-group">
+                <label class="control-label" for="exclude">Track Opens</label>
+                <div class="controls">
+                    <input type="checkbox" id="track_opens_enabled" name='track_opens_enabled' <%=track_opens_enabled ? 'checked' : ''%> />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="exclude">Track Clicks</label>
+                <div class="controls">
+                    <input type="checkbox" id="track_clicks_enabled" name='track_clicks_enabled' <%=track_clicks_enabled ? 'checked' : ''%> />
+                </div>
+            </div>
+            <!-- dropdown list for sequence number -->
+            <div class="control-group">
+                <label class="control-label" for="sequence_number">Sequence Number</label>
+                <div class="controls">
+                    <input type="number" id="sequence_number" name='sequence_number' placeholder="Sequence Number" value='<%=sequence_number.to_s.encode_html%>' />
+                </div>
+            </div>
+            <!-- dropdown list for delay days -->
+            <div class="control-group">
+                <label class="control-label" for="delay_days">Delay Days</label>
+                <div class="controls">
+                    <input type="number" id="delay_days" name='delay_days' placeholder="Delay Days" value='<%=delay_days.to_s.encode_html%>' />
+                    <br/>
+                    <div class='alert alert-warning'>
+                      <b>Hint:</b><br/>
+                      <b>Delay days:</b> Number of days after the lead was added to the list, or after the previous followup has been delivered.<br/> 
+                    </div>
+                </div>
+            </div>
+            <!-- textfield for subject -->
+            <div class="control-group">
+                <label class="control-label" for="subject">Subject</label>
+                <div class="controls">
+                    <input class='input input-block-level' type="text" id="subject" name='subject' placeholder="subject" value='<%=subject.to_s.encode_html%>' />
+                </div>
+            </div>
+            <!-- textarea for body -->
+            <div class="control-group">
+                <label class="control-label" for="divbody">Body</label>
+                <div class="controls">
+                    <textarea id="body" name='body' placeholder="Body" rows=5 style='width:100%;' maxlength=4000>
+                        <%=body%>
+                    </textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Create</button>
+                </div>
+            </div>
+        </form>
+	</div>
+</section>
+
+<script> 
+    function enableTrackingCheckBoxes() {
+        var track_opens_enabled = document.getElementById('track_opens_enabled');
+        var track_clicks_enabled = document.getElementById('track_clicks_enabled');
+        // if type is HTML, enable checkboxes
+        if (document.getElementById('type').value == '<%=BlackStack::Emails::Followup::TYPE_HTML.to_s%>') {
+            track_opens_enabled.disabled = false;
+            track_clicks_enabled.disabled = false;
+        } else {
+            track_opens_enabled.disabled = true;
+            track_clicks_enabled.disabled = true;            
+        }
+    }
+
+    $(document).ready(function() {
+        // enable/disable tracking checkboxes when changing type
+        document.getElementById('type').onchange = enableTrackingCheckBoxes;
+        // enable/disable tracking checkboxes on page load
+        enableTrackingCheckBoxes();
+        // draw the editor
+        tinymce.init({
+            selector: '#body',
+            plugins: "emoticons hr image link lists table", 
+            toolbar: "undo redo | bold italic image emoticons | formatgroup paragraphgroup insertgroup | <%=BlackStack::Emails::mergetags.map { |tag| tag.gsub('{','').gsub('}','') }.join(' ')%>",
+            autosave_restore_when_empty: false,
+            toolbar_groups: {
+                formatgroup: {
+                    icon: 'format',
+                    tooltip: 'Formatting',
+                    items: 'bold italic underline strikethrough | forecolor backcolor | superscript subscript | removeformat'
+                },
+                paragraphgroup: {
+                    icon: 'paragraph',
+                    tooltip: 'Paragraph format',
+                    items: 'h1 h2 h3 | bullist numlist | alignleft aligncenter alignright | indent outdent'
+                },
+                insertgroup: {
+                    icon: 'plus',
+                    tooltip: 'Insert',
+                    items: 'link image emoticons hr'
+                }
+            },
+            skin: 'outside',
+            toolbar_location: 'bottom',
+            menubar: false,
+            statusbar: false,
+            setup: function (editor) {
+                <%
+                BlackStack::Emails::mergetags.map { |tag| tag.gsub('{','').gsub('}','') }.each { |tag|
+                    %>
+                    editor.ui.registry.addButton('<%=tag%>', {
+                        text: '{<%=tag%>}',
+                        onAction: function (_) {
+                            editor.insertContent('{<%=tag%>}');
+                        }
+                    });
+                    <%
+                }
+                %>
+            },
+        });
+    });
+</script>

@@ -1,0 +1,71 @@
+<%
+return_message = {}
+begin
+    vid = params[:vid] # conversation id
+    body = params[:body] # body of the email
+
+    # validate: vid is mandatory
+    if vid.nil? || vid.empty?
+        return_message[:status] = 'vid is mandatory'
+        return return_message.to_json
+    end
+
+    # validate: body is mandatory
+    if body.nil? || body.empty?
+        return_message[:status] = 'body is mandatory'
+        return return_message.to_json
+    end
+
+    # get the first delivery of the conversation
+    delivery = BlackStack::Emails::Delivery.where(:id_conversation=>vid, :is_response=>false).order(:create_time).last
+
+    # validate: delivery exists
+    if delivery.nil?
+        return_message[:status] = 'conversation not found'
+        return return_message.to_json
+    end
+    # create the new delivery
+    d = BlackStack::Emails::Delivery.new
+    d.id = guid
+    d.id_followup = delivery.id_followup
+    d.id_lead = delivery.id_lead
+    d.create_time = now
+    d.email = delivery.email
+    d.subject = "Re: #{delivery.subject}"
+    d.body = body
+    d.is_response = false
+    d.id_conversation = vid
+    d.id_user = @login.id_user
+    d.id_address = delivery.id_address
+    d.is_single = true
+    d.save
+=begin
+    # create new record in the table `eml_link` for each anchor in the body.
+    # iterate all href attributes of anchor tags
+    # reference: https://stackoverflow.com/questions/53766997/replacing-links-in-the-content-with-processed-links-in-rails-using-nokogiri
+    n = BlackStack::Emails::Link.where(:id_campaign=>self.job.id_campaign).all 
+    fragment = Nokogiri::HTML.fragment(self.body)
+    fragment.css("a[href]").each do |link| 
+        # increment the URL counter
+        n += 1
+        # create and save the object BlackStack::Emails::Link
+        o = BlackStack::Emails::Link.new
+        o.id = guid
+        o.id_campaign = self.id
+        o.create_time = now
+        o.link_number = n
+        o.url = link['href']
+        o.save
+    end
+=end
+    # send the email
+    d.deliver
+
+    # return
+    return_message[:delivery] = d.to_hash
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

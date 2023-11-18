@@ -325,12 +325,6 @@ CREATE TABLE IF NOT EXISTS public.notification (
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
-ALTER TABLE public.notification ADD COLUMN IF NOT EXISTS id_object uuid NULL;
-
-ALTER TABLE public."user" ADD COLUMN IF NOT EXISTS notification_confirm_email_requested bool NOT NULL DEFAULT false;
-ALTER TABLE public."user" ADD COLUMN IF NOT EXISTS notification_reset_password_requested bool NOT NULL DEFAULT false;
-ALTER TABLE public."user" ADD COLUMN IF NOT EXISTS notification_you_have_been_added bool NOT NULL DEFAULT false;
-
 CREATE TABLE IF NOT EXISTS public.notification_link (
 	id uuid NOT NULL,
 	id_notification uuid NOT NULL,

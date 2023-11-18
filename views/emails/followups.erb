@@ -1,0 +1,141 @@
+<%
+gid = params[:gid]
+g = BlackStack::Emails::Campaign.where(:id=>gid).first
+timezone = @login.user.account.timezone
+daychars = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+daynames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+q = "
+    select 
+        f.id, 
+        f.name, 
+        f.create_time,
+        f.subject,
+        f.type, -- 0 - plain text, 1 - html
+        f.status,
+        f.sequence_number,
+        f.delay_days,
+        f.stat_left,
+        f.stat_replies,
+        f.stat_positive_replies,
+        f.stat_sents,
+        f.stat_opens,
+        f.stat_clicks,
+        f.stat_unsubscribes
+    from eml_followup f
+    where f.id_campaign='#{gid}'
+    and f.delete_time is null
+    order by f.sequence_number, f.create_time desc
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav3("Campaigns", "/emails/campaigns", g.name, "/emails/campaigns/#{g.id.to_guid}/edit", "FollowUps")%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=gid%>/followups/new'><i class='icon-plus'></i> New</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+        <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+            <thead>
+                <th style="width:auto;">Name</th>
+                <th style="width:75px;">Creation</th>
+                <th style="width:36px;">Type</th>
+                <th style="width:36px;">Status</th>
+                <th style="width:60px;text-align:right;">Seq. #</th>
+                <th style="width:60px;text-align:right;">Delay<br/>Days</th>
+                <th style="width:45px;text-align:right;">Left</th>
+                <th style="width:45px;text-align:right;">Sent</th>
+                <th style="width:45px;text-align:right;">Opens</th>
+                <th style="width:45px;text-align:right;">Clicks</th>
+                <th style="width:45px;text-align:right;">Unsubs</th>
+                <th style="width:45px;text-align:right;">Replies</th>
+                <th style="width:45px;text-align:right;">Hits</th>
+                <th style="width:14px;"><!-- edit icon --></th>
+                <th style="width:14px;"><!-- delete icon --></th>
+            </thead>
+            <tbody>
+                <%
+                i = 0
+                DB[q].all do |row|
+                    i += 1
+                    f = BlackStack::Emails::Followup.where(:id=>row[:id]).first
+                %>
+                <tr>
+                    <td class="fix" title="<%=row[:name].to_s.encode_html%>">
+                        <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/edit'><%=row[:name].to_s.encode_html%></a><br/>
+                        <span style='color:gray;font-weight:bold;'>Subject:</span> <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/edit'><%=row[:subject].to_s.encode_html%></a>
+                    </td>
+                    <td class="fix" title="<%=row[:create_time].to_s[0..9].encode_html%>"><%=row[:create_time].to_s[0..9].encode_html%></td>
+                                       
+                    <td class="fix" title="<%=f.type_name.encode_html%>"><span class='badge badge-<%=f.type_color%>'><%=f.type_name.encode_html%></span></td>
+                    <td class="fix" title="<%=f.status_name.encode_html%>"><span class='badge badge-<%=f.status_color%>'><%=f.status_name.encode_html%></span></td>
+                    
+                    <td class="fix" style='text-align:right;' title="<%=row[:sequence_number].to_s.encode_html%>"><span class='label label-black'><%=row[:sequence_number].to_label%></span></td>
+                    <td class="fix" style='text-align:right;' title="<%=row[:delay_days].to_s.encode_html%>"><span class='label label-black'><%=row[:delay_days].to_label%></span></td>
+
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_left].to_i.to_label%>">
+                        <%=row[:stat_left].to_i.to_label%>
+                    </td>
+
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_sents].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/report/sent'><%=row[:stat_sents].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=f.sent_ratio.to_i.to_label%>%</span>
+                    </td>
+                    
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_opens].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/report/opens'><%=row[:stat_opens].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=f.opens_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_clicks].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/report/clicks'><%=row[:stat_clicks].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=f.clicks_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_unsubscribes].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/report/unsubscribes'><%=row[:stat_unsubscribes].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=f.unsubscribes_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_replies].to_i.to_label%>">
+                        <a href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/report/replies'><%=row[:stat_replies].to_i.to_label%></a>
+                        <br/>
+                        <span style='color:gray;'><%=f.replies_ratio.round(2).to_s%>%</span>
+                    </td>
+                    <td class="fix" style="text-align:right;" title="<%=row[:stat_positive_replies].to_i.to_label%>">
+                        <span><%=row[:stat_positive_replies].to_i.to_label%></span>
+                        <br/>
+                        <span style='color:gray;'><%=f.positive_replies_ratio.round(2).to_s%>%</span>
+                    </td>
+
+                    <td class="fix" style="text-align:right;"><a title='Delete' href='/emails/campaigns/<%=gid%>/followups/<%=row[:id].to_guid%>/edit'><i class='icon-pencil'></i></a></td>
+                    <td class="fix" style="text-align:right;"><a title='Delete' href='/emails/filter_delete_followup?fid=<%=row[:id].to_guid%>'><i class='icon-trash'></i></a></td>
+                </tr>
+                <%
+                end
+
+                if i==0
+                %>
+                <tr>
+                    <td colspan="11" class="fix" align='center' style='text-align:center;'>
+                        No campaigns found.</br>
+                        <a href='/emails/campaigns/<%=gid%>/followups/new'>Create a new followup here.</a>
+                    </td>
+                <tr>
+                <%
+                end
+                %>
+            </tbody>
+        </table>
+    </div>
+</section>

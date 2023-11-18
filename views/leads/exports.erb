@@ -1,0 +1,228 @@
+<%
+all = "
+	SELECT 
+    e.id,    
+    e.filename, 
+    e.create_time, 
+"
+
+all += "
+    -- sourcing order
+    o.id as id_order,
+    o.name as order_name,
+" if BlackStack::Extensions.exists?(:'dfy-leads')
+
+all += "
+    -- export parameters
+    e.id_search, -- decide if this is a bulk or manual export
+    e.number_of_records, -- number of records requested for bulk exports
+    COALESCE(e.allow_multiple_contacts_per_company, false) as allow_multiple_contacts_per_company, -- allow multiple contacts per company, only for bulk exports
+
+    -- file creation status
+    e.create_file_start_time,
+    e.create_file_end_time,
+    COALESCE(e.create_file_success, false) as create_file_success,
+    e.download_url,
+    
+    -- file creation result
+    e.no_of_results, -- how many leads exported
+    e.no_of_companies, -- how many unique companies exported
+
+    -- if the export is requested for add new results continuously
+    COALESCE(e.continious_restarting, false) as continious_restarting
+
+	FROM fl_export e 
+  JOIN \"user\" u ON ( e.id_user = u.id AND u.id_account = '#{@login.user.id_account.to_guid}' )
+"
+
+# don't show deleted exports
+all += "
+  WHERE e.delete_time IS NULL
+" 
+
+filter_search = @login.user.preference('leads.exports.filter.name', "", params[:name])
+
+all += "
+  AND UPPER(e.filename) LIKE '%#{filter_search.to_s.upcase.to_sql}%'
+" if filter_search.to_s.length > 0
+
+all += "
+  ORDER BY e.create_time DESC
+" 
+
+# TODO: use re-utilizable function here.
+page_size = 25
+total_rows = DB[all].count
+if total_rows>0
+  total_pages = (total_rows.to_f/page_size.to_f).ceil
+  # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
+  # then, get user preferences regarding the page number on this screen
+  page_number = @login.user.preference("leads.exports.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  # pagination correction to prevent glitches
+  page_number = 1 if page_number < 1
+  page_number = total_pages if page_number > total_pages
+  # calculate info for showing at the bottom of the table
+  from_row = (page_number.to_i-1) * page_size.to_i + 1
+  to_row = [page_number*page_size, total_rows].min
+else
+  total_pages = 1
+  page_number = 1
+  from_row = 0
+  to_row = 0
+end
+
+q = "
+"+all+"
+  LIMIT #{page_size.to_s}
+  OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}
+"
+%>
+
+<div class='mynavbar mysticky'> 
+  <section class="row-fluid">
+    <section class='span6'>
+      <%=nav2("Leads", "/leads", "Exports")%>
+    </section>
+    <section class='span6'>
+      <form action="/leads/exports" method="get">
+        <div class="pull-right">
+          <div class="span8">
+            <input type='text' class='input-block-level select-all-on-focus' id='name' name='name' value='<%=filter_search.encode_html%>'/>
+          </div>
+
+          <button class="btn btn-blue btn-medium btn-submit" style="margin-left: 2px;" type="submit" onclick="">
+            <i class='icon-search'></i> Search
+          </button>
+        </div>
+      </form>
+    </section>
+  </section>
+</div>
+
+<section class="row-fluid">
+  <div class="span12 box">
+    <p><b>Records:</b> <%=from_row.to_label%> to <%=to_row.to_label%> <b>of</b> <%=total_rows.to_label%></p>
+    <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+      <thead>
+        <th style='width:75px;'>Creation</th>
+        <th style='width:auto;'>Name</th>
+        <th style='width:65px;'>Type</th> <!-- bulk or manual export ? -->
+        <th style='width:65px; text-align:right;'>Leads<br/>Requested</th>
+        <th style='width:65px; text-align:right;''>Multiple<br/>Companies</th>
+        <th style='width:65px; text-align:right;'>Total<br/>Leads</th>
+        <th style='width:65px; text-align:right;'>Total<br/>Companies</th>
+        <th style='width:24px; text-align:center;'><i class='icon-refresh' title='Keep List Updating With New Results'></i></th>
+        <th style='width:24px; text-align:center;'></th>
+        <th style='width:55px;'><!-- last update --></th>
+        <th style='width:45px;'><!-- view results --></th>
+        <th style='width:45px;'><!-- view search --></th>
+      </thead>
+      <tbody>
+        <%
+        if DB[q].first.nil?
+          %>
+          <tr>
+            <td colspan='8' style='text-align:center;height:65px;vertical-align:middle;'>No results found</td>
+          </tr>
+          <%
+        end
+        %>
+
+        <%
+        DB[q].all do |row|
+          failed = !(row[:create_file_success] && !row[:create_file_end_time].nil? && !row[:download_url].nil?)
+          # show when the export have been updated the last time
+          timeago = !failed ? htimediff(row[:create_file_end_time], now)+' ago' : ''
+          # array of campaign being sourced by this list
+          a = DB["
+            SELECT c.id, c.name
+            FROM eml_campaign c 
+            WHERE c.id_export = '#{row[:id].to_guid}'
+            --AND c.delete_time IS NULL
+          "].all
+          %>
+          <tr>
+            <td class='fix'><%=row[:create_time].to_s[0..9].encode_html%></td>
+            <td class='fix'>
+              <%=row[:filename].to_s.encode_html%>
+              <%
+              if !row[:id_order].nil? && BlackStack::Extensions.exists?(:'dfy-leads')
+                %>
+                <br/>
+                <span style='color:gray; font-weight:bold;'>Order:</span> <a href='/dfy-leads/orders/<%=row[:id_order]%>/edit'><%=row[:order_name].encode_html%></a>
+                <%
+              end
+              %>
+
+              <%
+              a.each { |h|
+                %>
+                <br/>
+                <span style='color:gray; font-weight:bold;'>Campaign:</span> <a href='/emails/campaigns/<%=h[:id]%>/edit'><%=h[:name].to_s.encode_html%></a>
+                <%
+              }
+              %>
+            </td>
+
+            <td class='fix'><%=row[:id_search].nil? ? "<span class='badge badge-gray' title='You created this export list manually, by exporting leads individually.'>manual</span>" : "<span class='badge badge-blue' title='You created this export list manually, by requesting a bulk export of a search.'>bulk</span>"%></td>
+            <td class='fix' style='text-align:right;'><%=row[:id_search].nil? ? 'n/a' : ( row[:number_of_records].nil? ? '-' : row[:number_of_records].to_i.to_label )%></td>
+            <td class='fix' style='text-align:right;'><%=row[:id_search].nil? ? 'n/a' : ( row[:allow_multiple_contacts_per_company] ? "<span class='badge badge-blue'>yes</span>" : "<span class='badge badge-gray'>no</span>" )%></td>
+            <td class='fix' style='text-align:right;'><%=row[:create_file_success] && !row[:create_file_end_time].nil? ? row[:no_of_results].to_i.to_label : '-'%></td>
+            <td class='fix' style='text-align:right;'><%=row[:create_file_success] && !row[:create_file_end_time].nil? ? row[:no_of_companies].to_i.to_label : '-'%></td>
+
+            <td class='fix' style='text-align:center;'>
+              <%
+              if row[:continious_restarting]
+              %>
+              <i class='icon-ok' style='color:green;'></i
+              <%
+              end #if row[:continious_restarting]
+              %>
+            </td>
+
+            <td style='text-align:center;'>
+              <%
+              if !failed
+                %>
+                <a href="<%=row[:download_url].to_s%>" class="btn btn-link"><i class='icon-cloud-download'></i></a>
+                <%
+              elsif !row[:create_file_success] && !row[:create_file_end_time].nil? 
+                %>
+                <i style='color:red;'>failed</i>
+                <%
+              else
+                %>
+                <i>pending</i>
+                <%
+              end
+              %>
+            </td>
+            <td>
+              <span style='color:gray;'><%=timeago%></span>
+            </td>
+            <td>
+              <a class='btn btn-link btn-mini' href='/leads/filter_view_export_results?eid=<%=row[:id].to_guid%>' title='View Results In This Export List'>View Results</a>
+            </td>
+            <td>
+              <%
+              if row[:id_search]
+              %>
+              <a class='btn btn-link btn-mini' href='/leads/results/<%=row[:id_search].to_guid%>' title='View the Original Search Used to Create this Export'>View Search</a>
+              <%
+              end #if row[:id_search]
+              %>
+            </td>
+          </tr>
+          <%
+        end
+        %>
+      </tbody>
+    </table>
+    <div class="pagination"></div>
+    <script>
+        drawPagination($(".pagination"), <%=page_number%>, <%=total_pages%>);
+    </script>
+  </div>
+
+</section>
+

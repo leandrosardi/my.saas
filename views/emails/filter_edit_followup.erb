@@ -1,0 +1,71 @@
+<%
+err = []
+# map parameters
+gid = params[:gid]
+fid = params[:fid]
+g = BlackStack::Emails::Campaign.where(:id=>gid).first
+f = BlackStack::Emails::Followup.where(:id=>fid).first
+begin
+        
+    # load preferences
+    name = params[:name] #@login.user.preference('emails.campaign.followup.edit.name', '', params[:name])
+    subject = params[:subject] #@login.user.preference('emails.campaign.followup.edit.subject', '', params[:subject])
+    body = params[:body] #@login.user.preference('emails.campaign.followup.edit.body', '', params[:body])
+    type = params[:type] #@login.user.preference('emails.campaign.followup.edit.type', BlackStack::Emails::Followup::TYPE_TEXT, params[:type])
+    sequence_number = f.can_edit? ? params[:sequence_number] : f.sequence_number #@login.user.preference('emails.campaign.followup.edit.sequence_number', 1, params[:sequence_number])
+    delay_days = params[:delay_days] #@login.user.preference('emails.campaign.followup.edit.delay_days', 1, )
+    track_opens_enabled = params[:track_opens_enabled].to_s == 'on' #@login.user.preference('emails.campaign.followup.edit.track_opens_enabled', true, params[:track_opens_enabled] == 'on')
+    track_clicks_enabled = params[:track_clicks_enabled].to_s == 'on' #@login.user.preference('emails.campaign.followup.edit.track_clicks_enabled', true, params[:track_clicks_enabled] == 'on')
+
+    # validate: campaign exists
+    err << "Campaign not found." if g.nil?
+
+    # validate: the name is not empty
+    err << "Name is required." if name.empty?
+
+    # validate: subject is not empty
+    err << "Subject is required." if subject.empty?
+
+    # validate: body is not empty
+    err << "Body is required." if body.empty?
+
+    # validate: type is valid
+    err << "Type is invalid." unless BlackStack::Emails::Followup.types.include?(type.to_i)
+
+    # validate: sequence number is a number
+    err << "Sequence Number is invalid." unless sequence_number.to_s =~ /^\d+$/
+
+    # validate: sequence number is valid
+    err << "Sequence number must be greater than 0." unless sequence_number.to_i > 0
+
+    # validate: delay_days is a number
+    err << "Delay days is invalid." unless delay_days.to_s =~ /^\d+$/
+
+    # validate: delay_days is valid
+    err << "Delay days must be greater or equal than 0 when sequence number is 1." if sequence_number.to_i==1 && delay_days.to_i < 0
+    err << "Delay days must be greater than 0 when sequence number is higher than 1." if sequence_number.to_i>1 && delay_days.to_i <= 0
+
+    # if any error happened, return to the edition screen
+    raise err.join("\n") if err.size > 0
+
+    # create the campaign
+    o = f
+    o.name = name
+    # parameters
+    o.subject = subject
+    o.body = body
+    o.type = type
+    o.sequence_number = sequence_number
+    o.delay_days = delay_days
+    o.track_opens_enabled = type.to_i==BlackStack::Emails::Followup::TYPE_HTML && track_opens_enabled
+    o.track_clicks_enabled = type.to_i==BlackStack::Emails::Followup::TYPE_HTML && track_clicks_enabled
+    # save
+    o.save
+
+    # return
+    redirect "/emails/campaigns/#{g.id.to_guid}/followups/#{f.id.to_guid}/edit?msg="+ CGI::escape('FollowUp updated.')
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{g.id.to_guid}/followups/#{f.id.to_guid}/edit?err="+ CGI::escape(e.message)
+end
+%>

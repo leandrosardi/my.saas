@@ -1,0 +1,73 @@
+<%
+begin
+  # getting the search filters
+  name = params[:search_name]
+  description = params[:search_description]
+  positive_positions = params[:positive_positions]
+  positive_industries = params[:positive_industries]
+  positive_locations = params[:positive_locations]
+  negative_positions = params[:negative_positions]
+  negative_industries = params[:negative_industries]
+  negative_locations = params[:negative_locations]
+  company_only = params[:company_only]
+  phone_only = params[:phone_only]  
+  email_only = params[:email_only]
+  
+  id_export = params[:id_export]
+  lead_name = params[:lead_name]
+  verified_only = params[:verified_only]
+  private_only = params[:private_only]
+
+  # writing the hash descriptor for the new search
+  h = {
+    'name' => name,
+    'description' => description.to_s.size == 0 ? nil : description,
+    'id_user' => @login.id_user,
+    'saved' => true,
+    'no_of_results' => -1, # unknown - no matters, 
+    'no_of_companies' => -1, # unknown - no matters
+
+    'id_export' => id_export.to_s.empty? ? nil : id_export,
+    'lead_name' => lead_name.to_s.empty? ? nil : lead_name,
+    'verified_only' => verified_only == 'yes',
+    'private_only' => private_only == 'yes',
+
+    'positions' => [],
+    'locations' => [],
+    'industries' => [],
+    'company_only' => company_only == 'yes',
+    'email_only' => email_only == 'yes',
+    'phone_only' => phone_only == 'yes',
+  }
+
+  # adding the positive job positions to the hash
+  h['positions'] += positive_positions.split(/;/).map { |p| { 'value' => p.strip, 'positive' => true } } if positive_positions.strip.length > 0
+
+  # adding the negative job positions to the hash
+  h['positions'] += negative_positions.split(/;/).map { |p| { 'value' => p.strip, 'positive' => false } } if negative_positions.strip.length > 0
+
+  # adding the positive industries to the hash
+  h['industries'] += positive_industries.split(/;/).map { |i| { 'name' => i.strip, 'positive' => true } } if positive_industries.strip.length > 0
+
+  # adding the negative industries to the hash
+  h['industries'] += negative_industries.split(/;/).map { |i| { 'name' => i.strip, 'positive' => false } } if negative_industries.strip.length > 0
+
+  # adding hte positive locations to the hash
+  h['locations'] += positive_locations.split(/;/).map { |l| { 'value' => l.strip, 'positive' => true } } if positive_locations.strip.length > 0
+
+  # adding the negative locations to the hash
+  h['locations'] += negative_locations.split(/;/).map { |l| { 'value' => l.strip, 'positive' => false } } if negative_locations.strip.length > 0
+
+  # sace search
+  s = BlackStack::Leads::Search.new(h)
+  s.save
+
+  # return 
+  # on a new search, return the paginatin to the page 1.
+  # don't show any success message in this case. Just the results of the search.
+  redirect "/leads/results/#{s.id.to_guid}?msg=Search+Saved+Successfully&number=1"
+rescue => e
+  # return errors
+  redirect "/leads?err=#{CGI::escape(e.message)}"
+end
+%>

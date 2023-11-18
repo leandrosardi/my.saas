@@ -2,19 +2,13 @@ module BlackStack
     module MySaaS
       class Notification < Sequel::Model(:notification)
         many_to_one :user, :class=>:'BlackStack::MySaaS::User', :key=>:id_user
-        one_to_many :links, :class=>:'BlackStack::MySaaS::NotificationLink', :key=>:id_notification
         # options
         attr_accessor :track_opens, :track_clicks
-        # events
-        attr_accessor :after_deliver, :object
-
-
-        LINK_TIMEOUT = 15 # 15 minutes
-
+  
         # replace the merge-tag <CONTENT HERE> for the content of the email
         PIXEL_MERGE_TAG = '<!-- PIXEL_IMAGE_HERE -->'
         NOTIFICATION_CONTENT_MERGE_TAG = "<CONTENT HERE>"
-        NOTIFICATION_BODY_FRAME = "
+        NOTIFICATION_BODY_TEMPLATE = "
           <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
           <html xmlns=\"http://www.w3.org/1999/xhtml\">
           <head>
@@ -79,6 +73,45 @@ module BlackStack
           </html>
         "
 
+        def initialize(i_user, options={})
+          super()
+          self.id_user = i_user.id
+          self.type = 0
+          # if options has key :track_opens, map its value to self.track_opens.
+          # otherwise, set self.track_opens to true.
+          self.track_opens = options[:track_opens] if options.has_key?(:track_opens)
+          self.track_opens = true if self.track_opens.nil? 
+          # if options has key :track_clicks, map its value to self.track_clicks.
+          # otherwise, set self.track_clicks to true.
+          self.track_clicks = options[:track_clicks] if options.has_key?(:track_clicks)
+          self.track_clicks = true if self.track_clicks.nil? 
+        end
+
+        # return how many minutes ago was the email sent.
+        # if `delivery_time` is nil, then return nil.
+        def oldness
+          return nil if self.delivery_time.nil?
+          q = "SELECT EXTRACT(MINUTES FROM n.delivery_time-current_timestamp()) AS \"old\" FROM notification n WHERE n.id='#{self.id}'"
+          -DB[q].first[:old].to_i 
+        end
+
+        def subject_template
+          "Hello World Subject!"
+        end
+
+        def body_template
+          "Hello World Body!"
+        end
+
+        def delivery
+          BlackStack::Emails::delivery(
+            :receiver_name => self.user.name,
+            :receiver_email => self.user.email,
+            :subject => self.subject,
+            :body => self.body,
+          )
+        end # def delivery
+        
         # return the url of the pixel for open tracking
         def pixel_url
           errors = []
@@ -92,35 +125,22 @@ module BlackStack
           "#{BlackStack::Emails.tracking_url}/api1.0/notifications/open.json?nid=#{self.id.to_guid}"
         end
 
-        def initialize(o, h)
-          raise 'BlackStack::Emails not configured' if !BlackStack::Emails.is_configured?          
-          super()
+        def do
+          return if !BlackStack::Emails.is_configured?
+
+          # save the email to the database
           self.id = guid
           self.create_time = now
-          self.type = h[:type]
-          self.id_user = h[:user].call(o).id
-          self.name_to = h[:name_to].call(o)
-          self.email_to = h[:email_to].call(o)
+          #self.type = i_type # this has been defined in the constructor
+          #self.id_user = self.user.id # this has been defined in the constructor
+          self.name_to = self.user.name
+          self.email_to = self.user.email
+          self.subject = self.subject_template
+          self.body = NOTIFICATION_BODY_TEMPLATE.gsub(/#{NOTIFICATION_CONTENT_MERGE_TAG}/, self.body_template)
           self.name_from = BlackStack::Emails::from_name
           self.email_from = BlackStack::Emails::from_email
-          self.subject = h[:subject].call(o)
-          self.body = h[:body].call(o)
-          self.id_object = o.id
-          # if options has key :track_opens, map its value to self.track_opens.
-          # otherwise, set self.track_opens to true.
-          self.track_opens = h[:track_opens] if h.has_key?(:track_opens)
-          self.track_opens = true if self.track_opens.nil? 
-          # if options has key :track_clicks, map its value to self.track_clicks.
-          # otherwise, set self.track_clicks to true.
-          self.track_clicks = h[:track_clicks] if h.has_key?(:track_clicks)
-          self.track_clicks = true if self.track_clicks.nil? 
-          # events
-          self.after_deliver = h[:after_deliver] if h.has_key?(:after_deliver)
-          self.object = o
-          # apply !nid merge-tag
-          self.body = self.body.gsub('!nid', self.id.to_guid)
-          # apply body frame
-          self.body = NOTIFICATION_BODY_FRAME.gsub(/#{NOTIFICATION_CONTENT_MERGE_TAG}/, self.body)
+          self.save
+
           # replace all links by tracking links
           if self.track_clicks
             # number of URL
@@ -138,54 +158,31 @@ module BlackStack
               o.create_time = now
               o.link_number = n
               o.url = link['href']
+              o.save
               # replace the url by the tracking url
               link['href'] = o.tracking_url
-              # add link to the notification
-              self.links << o
             end
             # update notification body
-            self.body = fragment.to_html            
+            self.body = fragment.to_html
+            # update changes
+            self.save
           end # if self.track_clicks
+
           # apply the pixel for open tracking
           if self.track_opens
             self.body = self.body.gsub(/#{Regexp.escape(PIXEL_MERGE_TAG)}/, "<img src='#{self.pixel_url}' height='1px' width='1px' />")
+            # update changes
+            self.save
           end
-        end
 
-        # insert/update fields of this object into the notification table.
-        # insert/update fields of the links regarding to this notification.
-        def save
-          super()
-          self.links.each { |o| o.save }
-        end
+          # delivery the email
+          self.delivery
 
-        # return how many minutes ago was the email sent.
-        # if `delivery_time` is nil, then return nil.
-        def oldness
-          return nil if self.delivery_time.nil?
-          q = "SELECT EXTRACT(MINUTES FROM delivery_time-current_timestamp()) AS \"old\" FROM notification n WHERE id='#{self.id}'"
-          -DB[q].first[:old].to_i 
-        end
-
-        # raise an exception if `delivery_time` is not nil.
-        # deliver notification and track `delivery_time` flag.
-        def deliver
-          # raise an exception if `delivery_time` is not nil.
-          raise "delivery_time is not nil" if !self.delivery_time.nil?
-          # deliver
-          BlackStack::Emails::delivery(
-            :receiver_name => self.user.name,
-            :receiver_email => self.user.email,
-            :subject => self.subject,
-            :body => self.body,
-          )
           # update the email status
           self.delivery_time = now
           self.save
-          # call after_deliver event
-          self.after_deliver.call(self.object) if !self.after_deliver.nil?
-        end # def delivery
-
+        end
+        
       end # class Notification
     end # module MySaaS
   end # module BlackStack

@@ -1,0 +1,41 @@
+<%
+err = []
+begin
+    # this function call is to convert the keys, from strings to symbols.
+    # reference: https://stackoverflow.com/questions/800122/best-way-to-convert-strings-to-symbols-in-hash
+    h = params.transform_keys(&:to_sym)
+
+    # Creating MTA
+    if BlackStack::Emails::Mta.exists?(h)
+        mta = BlackStack::Emails::Mta.load(h)
+        # loaded
+    else
+        mta = BlackStack::Emails::Mta.new(h).save
+        # created
+    end
+
+    # Creating Address
+    h[:id_mta] = mta.id
+    if BlackStack::Emails::Address.exists?(h)
+        raise 'Address already exists'
+    else
+        add = BlackStack::Emails::Address.new(h)
+        
+        # testing
+        begin
+            add.test
+        rescue => e
+            raise "Connection Filed: #{e.message}."
+        end
+
+        # created
+        add.save
+    end
+    
+    # return
+    redirect "/emails/addresses?msg="+ CGI::escape('Address registered.')
+rescue => e
+    # return errors
+    redirect "/emails/addresses/new?err="+ CGI::escape(e.message)
+end
+%>

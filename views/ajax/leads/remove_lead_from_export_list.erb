@@ -1,0 +1,21 @@
+<%
+return_message = {}
+begin
+    id_lead = params['id_lead']
+    id_export = params['id_export']
+
+    # find the lead already linked to the export
+    o = BlackStack::Leads::ExportLead.where(:id_export=>id_export, :id_lead=>id_lead).first
+    if !o.nil?
+        # remove the lead from the list
+        o.delete_time = now
+        o.save
+    end
+
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

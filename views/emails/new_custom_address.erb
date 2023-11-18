@@ -1,0 +1,220 @@
+<%
+# load preferences
+predefined = @login.user.preference('emails.address.custom.new.predefined', BlackStack::Emails::Address::TYPE_GMAIL, nil)
+
+first_name = @login.user.preference('emails.address.custom.new.first_name', '', nil)
+last_name = @login.user.preference('emails.address.custom.new.last_name', '', nil)
+address = @login.user.preference('emails.address.custom.new.address', '', nil)
+password = @login.user.preference('emails.address.custom.new.password', '', nil)
+
+smtp_address = @login.user.preference('emails.address.custom.new.smtp_address', '', nil)
+smtp_port = @login.user.preference('emails.address.custom.new.smtp_port', '', nil)
+smtp_username = @login.user.preference('emails.address.custom.new.smtp_username', '', nil)
+smtp_password = @login.user.preference('emails.address.custom.new.smtp_password', '', nil)
+
+imap_address = @login.user.preference('emails.address.custom.new.imap_address', '', nil)
+imap_port = @login.user.preference('emails.address.custom.new.imap_port', '', nil)
+imap_username = @login.user.preference('emails.address.custom.new.imap_username', '', nil)
+imap_password = @login.user.preference('emails.address.custom.new.imap_password', '', nil)
+
+authentication = @login.user.preference('emails.address.custom.new.authentication', 'plain', nil)
+enable_starttls_auto = @login.user.preference('emails.address.custom.new.enable_starttls_auto', true, nil)
+openssl_verify_mode = @login.user.preference('emails.address.custom.new.openssl_verify_mode', OpenSSL::SSL::VERIFY_NONE, nil)
+
+inbox_label = @login.user.preference('emails.address.custom.new.inbox_label', '', nil)
+spam_label = @login.user.preference('emails.address.custom.new.spam_label', '', nil)
+search_all_wildcard = @login.user.preference('emails.address.custom.new.search_all_wildcard', '', nil)
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span12">
+    		<%=nav3("Addresses", "/emails/addresses", "New", "/emails/addresses/new", "Custom")%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">            
+        <form method='post' action='/emails/filter_new_address'>
+            <h3>Add a Custom Address</h3>
+            <p>
+                Use Pre-Defined Email Provider to Receive Responses?
+                <select class='input-medium' id='predefined' name='predefined'>
+                    <%
+                    BlackStack::Emails::Address.types.each { |type|
+                        h = BlackStack::Emails::Address.type_config(type)
+                        %>
+                        <option value='<%=type%>' 
+                            data-smtp-address='<%=h[:smtp_address].to_s%>'
+                            data-smtp-port='<%=h[:smtp_port].to_s%>'
+                            data-imap-allowed='<%=h[:imap_allowed] ? '1' : '0'%>'
+                            data-imap-address='<%=h[:imap_address].to_s%>'
+                            data-imap-port='<%=h[:imap_port].to_s%>'
+                            data-authentication='<%=h[:authentication].to_s%>'
+                            data-enable-starttls-auto='<%=h[:enable_starttls_auto].to_s%>'
+                            data-openssl-verify-mode='<%=h[:openssl_verify_mode].to_s%>'
+                            data-inbox-label='<%=h[:inbox_label].to_s%>'
+                            data-spam-label='<%=h[:spam_label].to_s%>'
+                            data-search-all-wildcard='<%=h[:search_all_wildcard].to_s%>'
+                            <%=predefined.to_i == type.to_i ? 'selected="selected"' : ''%>
+                        ><%=BlackStack::Emails::Address.type_name(type)%></option>
+                        <%
+                    }
+                    %>
+                </select>
+            </p>
+            <div class='alert alert-warning'>
+                <b>Hint:</b><br/>
+                <br/>
+                Use a pre-defined email provider like <b>Gmail</b> if you are using an SMTP Relay provider like <a href='https://postmarkapp.com' target='_window'>Postmark</a>, who allows you to send email in behalf of your personal email address.<br/>
+                <br/>
+                Instead, choose <b>Custom</b> if you are running your own <b>MTA</b> using a software like <a href='https://www.hmailserver.com/' target='_window'>hMailServer</a>.
+            </div>
+
+            <p>First Name</p>
+            <input class='input input-block-level' type="text" id="first_name" name='first_name' placeholder="Example: John" value='<%=first_name%>' /><br/>
+
+            <p>Last Name</p>
+            <input class='input input-block-level' type="text" id="last_name" name='last_name' placeholder="Example: Connor" value='<%=last_name%>' /><br/>
+
+            <p>Email Address</p>
+            <input class='input input-block-level' type="text" id="address" name='address' placeholder="Example: my_name@gmail.com" value='<%=address%>' /><br/>
+
+            <p>App Password</p>
+            <input class='input input-block-level' type="text" id="password" name='password' placeholder="Example: atdzebbqlslovjxt" value='<%=password%>' /><br/>
+
+            <!-- common paramaters --!>
+            <input type='hidden' name='id_user' value='<%=@login.id_user%>' />
+
+            <!-- mta regarding paramaters --!>
+            <h4>SMTP</h4>
+            <input type='text' id='smtp_address' name='smtp_address' value='smtp.gmail.com' />
+            <input type='number' id='smtp_port' name='smtp_port' value='25' />
+            <input type='text' id='smtp_username' name='smtp_username' value='foo-user' />
+            <input type='text' id='smtp_password' name='smtp_password' value='foo-pass' />
+            <br/>
+            
+            <fieldset>
+                <label class="checkbox">
+                    <h4><input type='checkbox' id='imap_allowed' name='imap_allowed' value='true' /> IMAP</h4>
+                </label>
+            </fieldset>            
+            
+            <span>
+            <input type='text' id='imap_address' name='imap_address' value='imap.googlemail.com' />
+            <input type='number' id='imap_port' name='imap_port' value='993' />
+            <input type='text' id='imap_username' name='imap_username' value='foo-user' />
+            <input type='text' id='imap_password' name='imap_password' value='foo-pass' />
+            <br/>
+
+            <h4>Security</h4>
+            <p>Authentication</p>
+            <input type='text' id='authentication' name='authentication' value='plain' /><br/>
+            
+            <p>Enable TLS</p>
+            <input type='checkbox' id='enable_starttls_auto' name='enable_starttls_auto' checked /><br/>
+            
+            <p>SSL Verify Mode</p>
+            <select id='openssl_verify_mode' name='openssl_verify_mode'>
+            <%
+            [
+                {:mode=>OpenSSL::SSL::VERIFY_NONE, :description=>'None'}, 
+                {:mode=>OpenSSL::SSL::VERIFY_PEER, :description=>'Peer'},
+                {:mode=>OpenSSL::SSL::VERIFY_CLIENT_ONCE, :description=>'Client Once'},
+                {:mode=>OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT, :description=>'Fail If No Peer Cert'},
+            ].each { |h|
+            %>
+                <option value='<%=h[:mode]%>'><%=h[:description]%></option>
+            <%
+            }
+            %>
+            </select>
+            <br/>
+
+            <p>Account Type</p>
+            <input type='hidden' id='type' name='type' value='<%=BlackStack::Emails::Address::TYPE_CUSTOM.to_s%>' /><br/>
+
+            <h4>Unibox</h4>
+            <p>Inbox Label</p>
+            <input type='text' id='inbox_label' name='inbox_label' value='Inbox' /><br/>
+            <p>Spam Label</p>
+            <input type='text' id='spam_label' name='spam_label' value='[Gmail]/Spam' /><br/>
+            <p>Searching Wildcard</p>
+            <input type='text' id='search_all_wildcard' name='search_all_wildcard' value='*' /><br/>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-blue">Submit</button>
+        </form>
+	</div>
+</section>
+
+<script> 
+function updateForm() {
+    // get the selected option
+    var o = $('#predefined').find('option:selected');
+    if ( $(o).val() == '<%=BlackStack::Emails::Address::TYPE_CUSTOM%>' ) {
+        // disable #password input
+        $('#password').attr('disabled', 'disabled');
+        // enable IMAP fields
+        $('#imap_address').removeAttr('readonly');
+        $('#imap_port').removeAttr('readonly');
+        $('#imap_username').removeAttr('readonly');
+        $('#imap_password').removeAttr('readonly');
+        // enable Security fields
+        $('#authentication').removeAttr('readonly');
+        $('#enable_starttls_auto').removeAttr('readonly');
+        $('#openssl_verify_mode').removeAttr('readonly');
+        // enable Unibox fields
+        $('#inbox_label').removeAttr('readonly');
+        $('#spam_label').removeAttr('readonly');
+        $('#search_all_wildcard').removeAttr('readonly');
+    } else {
+        // enable #password input
+        $('#password').removeAttr('disabled');
+        // disable IMAP fields
+        $('#imap_address').attr('readonly', 'readonly');
+        $('#imap_port').attr('readonly', 'readonly');
+        $('#imap_username').attr('readonly', 'readonly');
+        $('#imap_password').attr('readonly', 'readonly');
+        // disable Security fields
+        $('#authentication').attr('readonly', 'readonly');
+        $('#enable_starttls_auto').attr('readonly', 'readonly');
+        $('#openssl_verify_mode').attr('readonly', 'readonly');
+        // disable Unibox fields
+        $('#inbox_label').attr('readonly', 'readonly');
+        $('#spam_label').attr('readonly', 'readonly');
+        $('#search_all_wildcard').attr('readonly', 'readonly');
+        // set the values
+        $('#imap_address').val( $(o).attr('data-imap-address') );
+        $('#imap_port').val( $(o).attr('data-imap-port') );
+        $('#imap_username').val( '' );
+        $('#imap_password').val( '' );
+        $('authentication').val( $(o).attr('data-authentication') );
+        $('#enable_starttls_auto').val( $(o).attr('data-enable-starttls-auto') );
+        $('#openssl_verify_mode').val( $(o).attr('data-openssl-verify-mode') );
+        $('#inbox_label').val( $(o).attr('data-inbox-label') );
+        $('#spam_label').val( $(o).attr('data-spam-label') );
+        $('#search_all_wildcard').val( $(o).attr('data-search-all-wildcard') );
+    }
+    b = $(o).attr('data-imap-allowed');
+console.log(b);
+    if (b == true) {
+console.log('1');
+        $('#imap_allowed').attr('checked', 'checked');
+    } else {
+console.log('2');
+        $('#imap_allowed').removeAttr('checked');
+    }    
+}
+
+$(document).ready(function() {
+    $('#predefined').change(function() {
+        updateForm();
+    });
+
+    updateForm();
+});
+</script>

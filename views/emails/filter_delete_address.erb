@@ -1,0 +1,23 @@
+<%
+err = []
+begin
+    # map parameters
+    aid = params[:aid]
+
+    # load campaign
+    a = BlackStack::Emails::Address.where(:id=>aid).first
+
+    # edit
+    if a.delete_time.nil?
+        a.delete_time = now
+        # save
+        a.save
+    end
+
+    # return
+    redirect "/emails/addresses?msg="+ CGI::escape("Address #{a.address} deleted.")
+rescue => e
+    # return errors
+    redirect "/emails/addresses?err="+ CGI::escape(e.message)
+end
+%>

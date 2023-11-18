@@ -1,7 +1,6 @@
 <%
 # get extension
 e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase }.first
-
 %>
 
 <nav id="left-panel">
@@ -18,40 +17,32 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 		%>
 
 		<ul>
-			<%
-			if e.nil? # I am in the home
-			%>
 			<li>
 				<a href="/dashboard"><span class="icon-bar-chart"></span>Dashboard</a>
 			</li>
 			<li>
-				<a href="/new"><span class="icon-plus"></span>New</a>
+				<a href="/leads"><span class="icon-heart-empty"></span>Leads</a>
 			</li>
 			<li>
-				<a href="/wizard"><span class="icon-magic"></span>Wizard</a>
+				<a href="/emails/campaigns"><span class="icon-bullhorn"></span>Campaigns</a>
 			</li>
-			<%
-			else # I am in a service
-				e.leftbar_icons.each { |i|
-					%>
-					<li style='position:relative;'>
-						<a href="/<%=e.name.downcase.to_s.encode_html%>/<%=i.screen.to_s.downcase.encode_html%>">
-							<span class="icon-<%=i.icon.to_s%>"></span> <%=i.label.encode_html%>
-						</a>
-						<%
-						if !i.badge_color.to_s.empty?
-						%>
-							<div style='position:absolute;right:10px;top:10px;'>
-								<span class='badge badge-<%=i.badge_color.to_s%>' title='<%=i.badge_title.to_s.encode_html%>'><i class='icon-<%=i.badge_icon.to_s%>'></i> <%=i.badge_text.to_s.encode_html%></span>
-							</div>
-						<%
-						end
-						%>
-					</li>
-					<%
-				}
-			end
-			%>
+			<li>
+				<a href="/leads/exports"><span class="icon-cloud-download"></span>Exports</a>
+			</li>
+			<li>
+				<a href="/leads/searches"><span class="icon-search"></span>Searches</a>
+			</li>
+			<!--
+			<li>
+				<a href="/emails/actions"><span class="icon-play-circle"></span>Actions</a>
+			</li>
+			<li>
+				<a href="/unibox"><span class="icon-inbox"></span>Unibox</a>
+			</li>
+			-->
+			<li>
+				<a href="/emails/addresses"><span class="icon-hdd"></span>Addresses</a>
+			</li>
 			<!-- this is shwn for all the services -->
 			<li class="lp-dropdown">
 				<a href="/settings/dashboard" class="lp-dropdown-toggle" id="settings-dropdown"><span class="icon-cog"></span>Settings</a>

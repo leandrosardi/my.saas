@@ -34,7 +34,10 @@ theme = 'black-blue'
 	
 	<script type="text/javascript">
 		DEMO_CURRENT_THEME = "<%=theme%>";
-		
+
+		// Include Leads stylesheet 
+		document.write('<link href="/core/css/leads.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">');
+
 		// Include Bootstrap stylesheet 
 		document.write('<link href="/core/css/' + DEMO_ADMINFLARE_VERSION + '/' + DEMO_CURRENT_THEME + '/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">');
 		// Include AdminFlare stylesheet 

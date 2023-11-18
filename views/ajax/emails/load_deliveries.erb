@@ -1,0 +1,43 @@
+<%
+return_message = {}
+return_message[:deliveries] = []
+return_message[:datas] = []
+return_message[:reminders] = []
+begin
+    vid = params[:vid] # conversation id
+    lead = nil
+
+    # validate vid is mandatory
+    if vid.nil? || vid.empty?
+        return_message[:status] = 'vid is mandatory'
+        return return_message.to_json
+    end
+
+    # load the conversation
+    BlackStack::Emails::Delivery.where(:id_conversation=>vid).order(:create_time).all { |delivery|
+        lead = delivery.lead if lead.nil?
+        return_message[:deliveries] << delivery.to_hash
+        # release resources
+        DB.disconnect
+        GC.start
+    }
+
+    # load datas
+    return_message[:lead] = lead.to_hash     
+
+    # export lists
+    return_message[:lead][:exports] = []
+    a = lead.export_lists_hash(@login.user.id_account.to_guid, true)
+    b = lead.export_lists_hash(@login.user.id_account.to_guid, false)
+    a.each { |h| h[:belonging] = true }
+    b.each { |h| h[:belonging] = false }
+    return_message[:lead][:exports] += a
+    return_message[:lead][:exports] += b
+
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

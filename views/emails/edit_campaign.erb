@@ -1,0 +1,201 @@
+<%
+# load preferences
+gid = params[:gid]
+o = BlackStack::Emails::Campaign.where(:id=>gid).first
+name = o.name
+id_export = o.id_export
+exclude = o.exclude_leads_reached_by_another_campaign
+stop = o.stop_followups_if_lead_replied
+shared = o.use_public_addresses
+privat = o.use_private_addresses
+# put fields in readonly mode ?
+disabled = o.can_edit? ? '' : 'disabled'
+# getting account 
+account = BlackStack::Emails::Account.where(:id=>@login.user.id_account).first
+%>
+
+<%
+q = "
+    select 
+        e.id as id,
+        e.filename as filename
+    from fl_export e
+    join \"user\" u on (u.id=e.id_user and u.id_account='#{@login.user.id_account}')
+    --where e.delete_time is null
+    order by e.filename
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav2("Campaigns", "/emails/campaigns", name)%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=gid.to_guid%>/schedules'><i class='icon-calendar'></i> Schedules</a>
+		    <a class='btn btn-blue' href='/emails/campaigns/<%=gid.to_guid%>/followups'><i class='icon-envelope'></i> FollowUps</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<form method='post' action='/emails/filter_edit_campaign' class="form-horizontal">
+            <input type='hidden' id='gid' name='gid' value='<%=gid%>'/>
+            <input type="hidden" id="tags" name='tags' value='<%=o.tags.map { |t| t.name }.join(',')%>'>
+
+            <div class="control-group">
+                <label class="control-label" for="status"><b>Status</b></label>
+                <div class="controls">
+                    <span class='badge badge-<%=o.status_color%>'><%=o.status_name%></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <div class="controls">
+                    <input type="text" id="name" name='name' placeholder="Name" value='<%=name.to_s.encode_html%>' />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="export">Export List</label>
+                <div class="controls">
+                    <select type="text" id="id_export" name='id_export' placeholder="Export List" <%=disabled%> >
+                        <option value=''></option>
+                        <%
+                        DB[q].each { |row|
+                            selected = id_export.to_s == row[:id].to_s ? "selected" : ""
+                            %>
+                            <option value='<%=row[:id].to_s.to_guid%>' <%=selected%>><%=row[:filename].to_s.encode_html%></option>
+                            <%
+                        }
+                        GC.start
+                        DB.disconnect
+                        %>
+                    </select>
+                    <%
+                    if !disabled.to_s.empty?
+                    %>
+                    <p><i class='icon-info-sign'></i> You can't change the list because this campaign started running.</p>
+                    <%
+                    end #if !disabled.to_s.empty?
+                    %>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="exclude">Exclude Leads Reached By Another Campaign</label>
+                <div class="controls">
+                    <input type="checkbox" id="exclude" name='exclude' <%=exclude ? 'checked' : ''%> />
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="stop">Stop Follow-Ups To Leads Who Replied</label>
+                <div class="controls">
+                    <input type="checkbox" id="stop" name='stop' <%=stop ? 'checked' : ''%> />
+                </div>
+            </div>
+
+            <div class='alert alert-warning'>
+                <p><b>Hint:</b></p>
+                <p>- You can choose to use <b>addresses shared by other users</b>.</p>
+                <p>- Using <b>Shared Addresses</b> requires your emails are <b>verified</b>.</p>
+                <p>- At this moment, the only way to get <b>verified emails</b> is placing a <a href='/dfy-leads/orders/new' target='_window'>DFY-Leads Order</a>.</p>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="shared">Use Shared Addresses</label>
+                <div class="controls">
+                    <input type="checkbox" id="shared" name='shared' <%=shared ? 'checked' : ''%> />
+                </div>
+            </div>
+
+            <div class='alert alert-warning'>
+                <p><b>Hints:</b></p>
+                <p>- Using <b>Private Addresses</b> NOT requires your emails are <b>verified</b>.</p>
+                <p>- Using <b>QUALITY Private Addresses</b> is good for running campaigns for a list of opted-in leads.</p>
+                <p>- Add the tags of the addresses you want to use to run this campaign.</p>
+                <p>- Don't add any tag if you want to use all your addresses.</p>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="privat">Use Private Addresses</label>
+                <div class="controls">
+                    <input type="checkbox" id="privat" name='privat' <%=privat ? 'checked' : ''%> />
+                </div>
+            </div>
+            <div class="control-group" id='tags_field'>
+                <label class="control-label" for="keyword">Address Tags</label>
+                <div id='tags_container' style='width:500px'></div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-blue">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    var tags_container = document.getElementById('tags_container');
+
+    function update_hidden_fields() {
+        // update hidden fields
+        let i = 0; 
+        let s = '';
+        filtersJs.getPositiveValues(tags_container).forEach(function(value) {
+            if (i>0) { s += ','; }
+            s += value.trim();
+            i++;
+        });
+        $('#tags').val(s);      
+    }
+
+    function toggle_tags() {
+        if ($('#privat').is(':checked')) {
+            $('#tags_field').show();
+        } else {
+            $('#tags_field').hide();
+        }
+    }
+
+    $(document).ready(function() {  
+        // toggle tags on load
+        toggle_tags();
+        // toggle tags on change
+        $('#privat').change(function() {
+            toggle_tags();
+        });
+        // use filtersjs to draw a filter of tags in element with id tags
+        filtersJs.draw(tags_container, {
+            label: '',
+            allowed_positive_keywords: true, // default value: true
+            allowed_negative_keywords: false, // default value: false
+            allowed_values: [
+                <%=account.tags.size==0 ? '' : "'"+account.tags.map { |t| t.name.downcase }.join("','")+"'" %>
+            ],
+            // catch event: update hidden textfield when filter is changed    
+            on_add_value: function (value) {
+                update_hidden_fields();
+            },
+            // catch event: update hidden textfield when filter is changed    
+            on_remove_value: function (value) {
+                update_hidden_fields();
+            },
+        });
+
+        // add tags to the filter
+        <%
+        o.outreaches.each { |t|
+        %>
+            filtersJs.addValue(tags_container, '<%=t.tag.name.downcase%>', true)
+        <%
+        }
+        %>
+    });
+</script>

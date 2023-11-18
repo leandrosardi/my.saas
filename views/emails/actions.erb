@@ -1,0 +1,148 @@
+<%
+q = "
+    select 
+        a.id, 
+        a.name, 
+        a.create_time,
+        u.name as user_name,
+        u.id as id_user,
+        a.status,
+        a.trigger_type,
+        a.action_type,
+
+        e.id as id_export,
+        e.filename as export_name,
+
+        c.id as id_campaign,
+        c.name as campaign_name,
+
+        f.id as id_followup,
+        f.name as followup_name
+        
+    from eml_action a
+    left join fl_export e on e.id=a.id_export
+    left join eml_campaign c on c.id=a.id_campaign
+    left join eml_followup f on f.id=a.id_followup
+    join \"user\" u on (u.id=a.id_user and u.id_account='#{@login.user.id_account}')
+    where a.delete_time is null
+    order by a.create_Time desc
+"
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		    <%=nav1("Actions")%>
+		</div>
+		<div class="span6" style='text-align:right;'>
+		    <a class='btn btn-blue' href='/emails/actions/new'><i class='icon-plus'></i> New</a>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+        <table class="table table-condensed" style="table-layout: fixed; width: 100%;">
+            <thead>
+                <th style="width:auto;">Name</th>
+                <th style="width:95px;">Creator</th>
+                <th style="width:95px;">Creation</th>
+                <th style="width:56px;">Status</th>
+                <th style="width:115px;">Trigger</th>
+                <th style="width:115px;">Action</th>
+                <th style="width:14px;"><!-- edit icon --></th>
+                <th style="width:14px;"><!-- delete icon --></th>
+                <th style="width:14px;"><!-- log icon --></th>
+                <th style="width:14px;"><!-- play/pause icon --></th>
+            </thead>
+            <tbody>
+                <%
+                i = 0
+                DB[q].all do |row|
+                    i += 1
+                %>
+                <tr>
+                    <td class="fix" title="<%=row[:name].to_s.encode_html%>">
+                        <a href='/emails/actions/<%=row[:id]%>/edit'><%=row[:name].to_s.encode_html%></a>
+                        <%
+                        if false
+                            if !row[:id_export].to_s.empty?
+                                %>
+                                <br/>
+                                <span style='color:gray; font-weight:bold;'>List: </span> <a title='<%=row[:export_name].encode_html%>' href='/leads/exports/<%=row[:id_export]%>'><%=row[:export_name].to_s.encode_html%></a>
+                                <%
+                            end
+
+                            if !row[:id_campaign].to_s.empty?
+                                %>
+                                <br/>
+                                <span style='color:gray; font-weight:bold;'>Campaign: </span> <a title='<%=row[:campaign_name].encode_html%>' href='/emails/campaigns/<%=row[:id_campaign]%>/edit'><%=row[:campaign_name].to_s.encode_html%></a>
+                                <%
+                            end
+                        end # if false
+                        %>
+
+                    </td>
+                    <td class="fix" >
+                        <%=row[:user_name].to_s.encode_html%>
+                    </td>
+                    <td class="fix" >
+                        <%=row[:create_time].to_s[0..9].encode_html%>
+                    </td>
+                    <td class="fix" >
+                        <%
+                        if row[:status]
+                            %>
+                            <span class='label label-success'>Active</span>
+                            <%
+                        else
+                            %>
+                            <span class='label label-important'>Paused</span>
+                            <%
+                        end
+                        %>
+                    </td>
+                    <td class="fix" >
+                        <span class='badge badge-<%=BlackStack::Emails::Action.trigger_color(row[:trigger_type])%>'><%=BlackStack::Emails::Action.trigger_name(row[:trigger_type])%></span>
+                    </td>
+                    <td class="fix" >
+                        <span class='badge badge-<%=BlackStack::Emails::Action.action_color(row[:action_type])%>'><%=BlackStack::Emails::Action.action_name(row[:action_type])%></span>
+                    </td>
+                    <td class="fix" style="text-align:right;"><a title='Edit' href='/emails/actions/<%=row[:id]%>/edit'><i class='icon-pencil'></i></a></td>
+                    <td class="fix" style="text-align:right;"><a title='Delete' href='/emails/filter_delete_action?aid=<%=row[:id].to_guid%>'><i class='icon-trash'></i></a></td>
+                    <td class="fix" style="text-align:right;"><a title='View Log' href='/emails/actions/<%=row[:id]%>/view'><i class='icon-tasks'></i></a></td>
+                    <td class="fix" style="text-align:right;">
+                        <%
+                        if row[:status]
+                        %>
+                        <a title='Pause' href='/emails/filter_pause_action?aid=<%=row[:id].to_guid%>'><i class='icon-pause'></i></a>
+                        <%
+                        else #if row[:status]
+                        %>
+                        <a title='Play' href='/emails/filter_play_action?aid=<%=row[:id].to_guid%>'><i class='icon-play'></i></a>
+                        <%
+                        end #if row[:status]
+                        %>
+                    </td>
+                </tr>
+                <%
+                end
+
+                if i==0
+                %>
+                <tr>
+                    <td colspan="10" class="fix" align='center' style='text-align:center;'>
+                        </br>
+                        No actions found.</br>
+                        <a href='/emails/actions/new'>Create a new action here.</a>
+                    </td>
+                <tr>
+                <%
+                end
+                %>
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,22 @@
+<%
+err = []
+begin
+    # map parameters
+    fid = params[:fid]
+
+    # load campaign
+    o = BlackStack::Emails::Followup.where(:id=>fid).first
+
+    # edit
+    o.status = BlackStack::Emails::Followup::STATUS_OFF
+
+    # save
+    o.save
+
+    # return
+    redirect "/emails/campaigns/#{o.id_campaign.to_guid}/followups/#{o.id.to_guid}/edit?msg="+ CGI::escape('FollowUp is OFF.')
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{o.id_campaign.to_guid}/followups/#{o.id.to_guid}/edit?err="+ CGI::escape(e.message)
+end
+%>

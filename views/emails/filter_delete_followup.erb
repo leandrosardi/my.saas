@@ -1,0 +1,24 @@
+<%
+err = []
+f = nil
+begin
+    # map parameters
+    fid = params[:fid]
+
+    # load campaign
+    f = BlackStack::Emails::Followup.where(:id=>fid).first
+
+    # edit
+    if f.delete_time.nil?
+        f.delete_time = now
+        # save
+        f.save
+    end
+
+    # return
+    redirect "/emails/campaigns/#{f.id_campaign}/followups?msg="+ CGI::escape("Followup #{f.name} deleted.")
+rescue => e
+    # return errors
+    redirect "/emails/campaigns/#{f.id_campaign}/followups?err="+ CGI::escape(e.message)
+end
+%>

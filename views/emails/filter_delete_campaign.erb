@@ -1,0 +1,23 @@
+<%
+err = []
+begin
+    # map parameters
+    cid = params[:cid]
+
+    # load campaign
+    c = BlackStack::Emails::Campaign.where(:id=>cid).first
+
+    # edit
+    if c.delete_time.nil?
+        c.delete_time = now
+        # save
+        c.save
+    end
+
+    # return
+    redirect "/emails/campaigns?msg="+ CGI::escape("Campaign #{c.name} deleted.")
+rescue => e
+    # return errors
+    redirect "/emails/campaigns?err="+ CGI::escape(e.message)
+end
+%>

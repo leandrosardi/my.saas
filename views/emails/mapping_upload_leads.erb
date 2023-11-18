@@ -1,0 +1,140 @@
+<%
+# filter location
+url = "#{BlackStack::API.api_url}/emails/filter_new_upload_job"
+# random colors
+colors = ['blue', 'green', 'orange', 'purple', 'pink', 'brown', 'black']
+# parameters
+id_export = @login.user.preference('emails.leads.upload.id_export', '', params[:id_export])
+filename = @login.user.preference('emails.leads.upload.filename', '', params[:filename])
+csv_content = params[:csv_content].to_s #@login.user.preference('emails.leads.upload.csv_content', '', params[:csv_content])
+# parameters
+columns = @login.user.preference('emails.leads.upload.columns', '', params[:columns])
+# parameters
+i = 0
+fields = []
+custom_field_names = []
+while i<columns.to_i
+    fields[i] = @login.user.preference("emails.leads.upload.field.#{i.to_s}", '', nil)
+    custom_field_names[i] = @login.user.preference("emails.leads.upload.custom_field_name.#{i.to_s}", '', nil)
+    i+=1
+end
+# strip CSV content
+csv_content.strip!
+# getting array of errors
+err = []
+# get the first 5 lines of CSV content
+rows = csv_content.split(/\n/)[0..4]
+# validation: check if the CSV content has at least 1 line
+err << 'CSV content is empty.' if rows.empty?
+# validation: 5 first rows have the same # of columns
+rows.each do |line|
+	err << 'All lines must have the same number of columns.' if line.split("\t").length != rows[0].split("\t").length
+end
+# validation: if id_export.empty? then filename must have a value
+err << 'Filename is empty.' if id_export.empty? && filename.empty?
+# unique the list of errors found.
+err.uniq!
+# redirect if errors found
+redirect "/leads/uploads/new?err=#{CGI.escape(err.join('<br/>'))}" unless err.empty?
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span12">
+			<%=nav3("Leads", "/leads", "Uploads", "/leads/uploads", "Mapping")%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span12 box">
+		<h3>Upload Leads</h3>
+		<p>Setup the mapping of columns from your CSV to our Database:</p>
+
+		<br/>
+		<br/>
+		<p><b>Export Lists</b>: <%= id_export.to_s.empty? ? "#{filename.encode_html} <i style='color:blue;'>(new)</i>" : BlackStack::Leads::Export.where(:id=>id_export).first.filename.encode_html %></p>
+		<form method='post' action='<%=url%>'>
+			<input type='hidden' name='id_login' value='<%=@login.id%>'/>
+			<table class="table">
+				<tr>
+					<th>CSV Column</th>
+					<th>Field Name</th>
+					<th>Custom Field Name</th>
+					<th>Sample Values</th>
+				</tr>
+				<%
+				fields = rows[0].split("\t")
+				fields.each_with_index do |field, index|
+					%>
+					<tr>
+						<td><%=field%></td>
+						<td>
+							<select id='field_<%=index%>' name='field_<%=index%>' class='field' data-index='<%=index%>'>
+								<option value='' <%=fields%> <%= fields[index].to_s.empty? ? 'select' : '' %>>--</option>
+								<%
+								BlackStack::Leads::Data.types.each do |type|
+									%>
+									<option value='<%=type.to_s%>'><%=BlackStack::Leads::Data::type_merge_tag(type)%></option>
+									<%
+								end
+								%>
+
+							</select>
+						</td>
+						<td>
+							<input type='text' id='custom_field_name_<%=index%>' name='custom_field_name_<%=index%>' class='cutom-field-name' data-index='<%=index%>' value='' disabled/>
+						</td>
+						<td>
+							<%
+							i = 0
+							rows.each do |row|
+								%>
+								<span style='color:<%=colors[i]%>;'><%=row.split("\t")[index]%></span></br>
+								<%
+								i += 1
+							end
+							%>
+						</td>
+					</tr>
+					<%
+				end
+				%>
+			</table>
+
+			<input type='hidden' id='columns' name='columns' value='<%=fields.size%>'/>
+			<input type='hidden' id='id_export' name='id_export' value='<%=id_export%>'/>
+			<input type='hidden' id='filename' name='filename' value='<%=filename%>'/>
+			<input type='hidden' id='csv_content' name='csv_content' value='<%=csv_content%>'/>
+
+			<br/>
+			<br/>
+			<button type='submit' class='btn btn-primary'>Import</button>
+			<a href='/leads/uploads/new' class='btn btn-gray'>Cancel</a>
+		</form>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function(){
+		// custom field name
+		$('.field').change(function(){
+			var index = $(this).data('index');
+			var value = $(this).val();
+			if(value == <%=BlackStack::Leads::Data::TYPE_CUSTOM.to_s%>) {
+				// enable custom field name
+				$('.cutom-field-name[data-index="'+index+'"]').prop('disabled', false);
+				$('.cutom-field-name[data-index="'+index+'"]').focus();
+			} else {
+				// disable custom field name
+				$('.cutom-field-name[data-index="'+index+'"]').prop('disabled', true);
+			}
+		});
+		// custom field name select all on focus
+		$('.cutom-field-name').focus(function(){
+			$(this).select();
+		});
+	});
+</script>

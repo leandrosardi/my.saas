@@ -1,0 +1,91 @@
+<%
+# load preferences
+first_name = @login.user.preference('emails.address.gmail.new.first_name', '', nil)
+last_name = @login.user.preference('emails.address.gmail.new.last_name', '', nil)
+address = @login.user.preference('emails.address.gmail.new.address', '', nil)
+password = @login.user.preference('emails.address.gmail.new.password', '', nil)
+%>
+
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span12">
+    		<%=nav3("Addresses", "/emails/addresses", "New", "/emails/addresses/new", "Gmail")%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<section class="row-fluid">
+	<div class="span6 box">            
+        <h3>Steps to Add a Gmail Address</h3>
+
+        <p>An app password is a long, randomly generated password that you provide only once instead of your regular password when signing in to an app or device</p>
+
+        <p>Follow the steps below to get a <b>app password</b> for your Gmail address.</p>
+
+        <p><b>Step 1:</b> Go <a href='https://mail.google.com/mail/u/1/#settings/fwdandpop' target='_window'>here</a>, enable IMAP and save changes.</p>
+
+        <img src='/emails/images/gmail1.png' class='img-polaroid' />
+        <br/><br/>
+
+        <p><b>Step 2:</b> Go <a href='https://myaccount.google.com/u/1/security' target='_window'>here</a> and enable <b>2-step verification</b>.</p>
+        <img src='/emails/images/gmail2.png' class='img-polaroid' />
+        <br/><br/>
+
+        <p><b>Step 3:</b> Go <a href='https://myaccount.google.com/u/1/apppasswords' target='_window'>here</a> and create an <b>app password</b>.</p>
+        <img src='/emails/images/gmail3.png' class='img-polaroid' />
+        <br/><br/>
+        <img src='/emails/images/gmail4.png' class='img-polaroid' />
+        <br/><br/>
+    </div>
+
+	<div class="span6 box">            
+        <form method='post' action='/emails/filter_new_address'>
+            <h3>Add a Gmail Address</h3>
+
+            <!-- common paramaters --!>
+            <input type='hidden' name='id_user' value='<%=@login.id_user%>' />
+
+            <!-- mta regarding paramaters --!>
+            <input type='hidden' name='smtp_address' value='smtp.gmail.com' />
+            <input type='hidden' name='smtp_port' value='25' />
+            <input type='hidden' name='imap_address' value='imap.googlemail.com' />
+            <input type='hidden' name='imap_port' value='993' />
+
+            <input type='hidden' name='authentication' value='plain' />
+            <input type='hidden' name='enable_starttls_auto' value='true' />
+            <input type='hidden' name='openssl_verify_mode' value='<%=OpenSSL::SSL::VERIFY_NONE%>' />
+            
+            <!-- address regarding paramaters --!>
+            <input type='hidden' name='type' value='<%=BlackStack::Emails::Address::TYPE_GMAIL.to_s%>' />
+
+            <input type='hidden' name='inbox_label' value='Inbox' />
+            <input type='hidden' name='spam_label' value='[Gmail]/Spam' />
+            <input type='hidden' name='search_all_wildcard' value='*' />
+
+            <p>First Name</p>
+            <input class='input input-block-level' type="text" id="first_name" name='first_name' placeholder="Example: John" value='<%=first_name%>' /><br/>
+
+            <p>Last Name</p>
+            <input class='input input-block-level' type="text" id="last_name" name='last_name' placeholder="Example: Connor" value='<%=last_name%>' /><br/>
+
+            <p>Email Address</p>
+            <input class='input input-block-level' type="text" id="address" name='address' placeholder="Example: my_name@gmail.com" value='<%=address%>' /><br/>
+
+            <p>App Password</p>
+            <input class='input input-block-level' type="text" id="password" name='password' placeholder="Example: atdzebbqlslovjxt" value='<%=password%>' /><br/>
+
+            <button type="submit" class="btn btn-blue">Submit</button>
+        </form>
+	</div>
+</section>
+
+<script> 
+$(document).ready(function() {
+    $("#open").click(function() {
+        window.open('<%=url%>','popup','width=600,height=600'); 
+        return false;
+    });
+});
+</script>

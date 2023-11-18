@@ -1,0 +1,32 @@
+<%
+return_message = {}
+begin
+    id_lead = params['id_lead']
+    name = params['name']
+
+    # create the export object
+    e = BlackStack::Leads::Export.new
+    e.id = guid
+    e.id_user = @login.id_user
+    e.create_time = now
+    e.filename = name
+    e.save
+
+    # add the lead to the export
+    o = BlackStack::Leads::ExportLead.new
+    o.id = guid
+    o.create_time = now
+    o.added_manually = true
+    o.id_user = @login.id_user
+    o.id_export = e.id
+    o.id_lead = id_lead
+    o.save
+
+    # return
+    return_message[:id_export_list] = e.id.to_guid
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

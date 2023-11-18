@@ -1,0 +1,150 @@
+<%
+edit_shared = @login.user.preference('emails.addresses.edit_shared', false, params[:edit_shared].to_s=='on')
+edit_enabled = @login.user.preference('emails.addresses.edit_enabled', false, params[:edit_enabled].to_s=='on')
+edit_max_deliveries_per_day = @login.user.preference('emails.addresses.edit_max_deliveries_per_day', false, params[:edit_max_deliveries_per_day].to_s=='on')
+edit_delivery_interval_min_minutes = @login.user.preference('emails.addresses.edit_delivery_interval_min_minutes', false, params[:edit_delivery_interval_min_minutes].to_s=='on')
+edit_delivery_interval_max_minutes = @login.user.preference('emails.addresses.edit_delivery_interval_max_minutes', false, params[:edit_delivery_interval_max_minutes].to_s=='on')
+edit_tags = @login.user.preference('emails.addresses.edit_tags', false, params[:edit_tags].to_s=='on')
+edit_tracking_domain = @login.user.preference('emails.addresses.edit_tracking_domain', false, params[:edit_tracking_domain].to_s=='on')
+
+shared = @login.user.preference('emails.addresses.shared', false, params[:shared].to_s=='on')
+enabled = @login.user.preference('emails.addresses.enabled', false, params[:enabled].to_s=='on')
+max_deliveries_per_day = @login.user.preference('emails.addresses.max_deliveries_per_day', 10, params[:max_deliveries_per_day].to_i)
+delivery_interval_min_minutes = @login.user.preference('emails.addresses.delivery_interval_min_minutes', 5, params[:delivery_interval_min_minutes].to_i)
+delivery_interval_max_minutes = @login.user.preference('emails.addresses.delivery_interval_max_minutes', 15, params[:delivery_interval_max_minutes].to_i)
+tracking_domain = @login.user.preference('emails.addresses.tracking_domain', '', params[:tracking_domain])
+
+selected_ids = @login.user.preference('emails.addresses.selected_ids', '', params[:selected_ids])
+tags_selected = @login.user.preference('emails.addresses.tags_selected', '', params[:tags_selected])
+
+ids = selected_ids.split(',')
+tags = tags_selected.split(',')
+account = BlackStack::Emails::Account.where(:id=>@login.user.id_account).first
+errs = []
+
+begin
+    # validation: there is one or more ids
+    errs << 'No addresses selected' if ids.empty?
+
+    # if tags exist, they must have alpha chars only
+    errs << 'Tags must have alpha chars only' if !tags.empty? && !tags.all?{|t| t.match(/^[a-zA-Z]+$/i)}
+
+    # validation: if edit_max_deliveries_per_day is 'on', then max_deliveries_per_day must a number
+#    errs << 'Max deliveries per day must be a number' if edit_max_deliveries_per_day && max_deliveries_per_day.to_i.to_s != max_deliveries_per_day
+
+    # validation: if edit_delivery_interval_min_minutes is 'on', then delivery_interval_min_minutes must a number
+#    errs << 'Delivery interval min minutes must be a number' if edit_delivery_interval_min_minutes && delivery_interval_min_minutes.to_i.to_s != delivery_interval_min_minutes
+
+    # validation: if edit_delivery_interval_max_minutes is 'on', then delivery_interval_max_minutes must a number
+#    errs << 'Delivery interval max minutes must be a number' if edit_delivery_interval_max_minutes && delivery_interval_max_minutes.to_i.to_s != delivery_interval_max_minutes
+
+    # validation: if edit_max_deliveries_per_day is 'on', then max_deliveries_per_day must equal or greater than 0
+    errs << 'Max deliveries per day must be equal or greater than 0' if edit_max_deliveries_per_day && max_deliveries_per_day.to_i < 0
+
+    # validation: if edit_delivery_interval_min_minutes is 'on', then delivery_interval_min_minutes must equal or greater than 0
+    errs << '"Interval min minutes" must be equal or greater than 0' if edit_delivery_interval_min_minutes && delivery_interval_min_minutes.to_i < 0
+
+    # validation: if edit_delivery_interval_max_minutes is 'on', then delivery_interval_max_minutes must equal or greater than 0
+    errs << '"Interval max minutes" must be equal or greater than 0' if edit_delivery_interval_max_minutes && delivery_interval_max_minutes.to_i < 0
+
+
+    # validation: if edit_delivery_interval_min_minutes is 'on', then delivery_interval_min_minutes must equal or less than 1440
+    errs << '"Interval min minutes" must be equal or less than 1440' if edit_delivery_interval_min_minutes && delivery_interval_min_minutes.to_i > 1440
+
+    # validation: if edit_delivery_interval_max_minutes is 'on', then delivery_interval_max_minutes must equal or less than 1440
+    errs << '"Interval max minutes" must be equal or less than 1440' if edit_delivery_interval_max_minutes && delivery_interval_max_minutes.to_i > 1440
+
+
+    # validation: if edit_delivery_interval_min_minutes is 'on', then delivery_interval_min_minutes must equal or less than delivery_interval_max_minutes
+    errs << '"Interval min minutes" must be equal or less than "Interval max minutes"' if edit_delivery_interval_min_minutes && edit_delivery_interval_max_minutes && delivery_interval_min_minutes.to_i > delivery_interval_max_minutes.to_i
+
+
+    # validation: if edit_delivery_interval_min_minutes is 'on', then edit_delivery_interval_max_minutes must be 'on'
+    errs << '"Interval max minutes" is required if "Interval min minutes" is specified' if edit_delivery_interval_min_minutes && !edit_delivery_interval_max_minutes
+
+    # validation: if edit_delivery_interval_max_minutes is 'on', then edit_delivery_interval_min_minutes must be 'on'
+    errs << '"Interval min minutes" is required if "Interval max minutes" is specified' if edit_delivery_interval_max_minutes && !edit_delivery_interval_min_minutes
+
+
+    # if any error happneed, the raise them
+   raise errs.join(".\n") unless errs.empty?
+
+    # building the query
+    q = "UPDATE eml_address SET "
+
+    # update max_deliveries_per_day
+    q += "max_deliveries_per_day = #{max_deliveries_per_day.to_i}, " if edit_max_deliveries_per_day
+
+    # update delivery_interval_min_minutes
+    q += "delivery_interval_min_minutes = #{delivery_interval_min_minutes.to_i}, " if edit_delivery_interval_min_minutes
+
+    # update delivery_interval_max_minutes
+    q += "delivery_interval_max_minutes = #{delivery_interval_max_minutes.to_i}, " if edit_delivery_interval_max_minutes
+
+    # update tracking_domain
+    q += "tracking_domain = '#{tracking_domain}', " if edit_tracking_domain
+
+    # update shared
+    q += "shared = #{shared ? 'true' : 'false'}, " if edit_shared
+
+    # update enabled
+    q += "enabled = #{enabled ? 'true' : 'false'}, " if edit_enabled
+
+    # update tags
+    q += "stat_tags = '#{tags_selected.downcase}', " if edit_tags
+
+    # trvial update, just to remove the last comma
+    q += "address=address "
+
+    # where clause
+    q += "WHERE id IN ('#{ids.join("','")}')"
+
+    # run the update
+    DB.execute(q)
+
+    if edit_tags
+        # add tags
+        tags.each do |tag|
+            tag.strip!
+            next if tag.empty?
+            if account.tags.select { |t| t.name.downcase == tag.downcase }.first.nil?
+                # create the tag
+                t = BlackStack::Emails::Tag.new
+                t.id = guid
+                t.id_user = @login.user.id
+                t.create_time = now
+                t.name = tag
+                t.save
+            end
+        end # tags.each
+
+        # remove all existing tags from these users
+        DB.execute("DELETE FROM eml_address_tag WHERE id_address IN ('#{ids.join("','")}')")
+
+        # add tags to these users
+        tags.each do |tag|
+            tag.strip!
+            next if tag.empty?
+            t = account.tags.select { |t| t.name.downcase == tag.downcase }.first
+            next if t.nil?
+            ids.each do |id|
+                x = BlackStack::Emails::AddressTag.new
+                x.id = guid
+                x.id_user = @login.user.id
+                x.create_time = now
+                x.id_address = id
+                x.id_tag = t.id
+                x.save
+            end
+            # release resources
+            GC.start
+            DB.disconnect
+        end # tags.each
+    end # if edit_tags
+    # return
+    redirect "/emails/addresses?msg="+ CGI::escape('Addresses updated.')
+rescue => e
+    # return errors
+    redirect "/emails/addresses?err="+ CGI::escape(e.message)
+end
+%>

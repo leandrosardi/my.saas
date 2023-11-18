@@ -1,0 +1,21 @@
+<%
+# map parameters
+lid = params[:lid]
+did = params[:did]
+# get the campaign link
+l = BlackStack::Emails::Link.where(:id => lid).first
+# get the delivery
+d = BlackStack::Emails::Delivery.where(:id => did).first
+# if l and d are valids
+if !l.nil? && !d.nil?
+    # create the object BlackStack::MySaaS::NotificationClick and save it
+    o = BlackStack::Emails::Click.new
+    o.id = guid
+    o.id_delivery = did
+    o.id_link = l.id
+    o.create_time = now
+    o.save
+    # redirect
+    redirect l.url
+end
+%>
