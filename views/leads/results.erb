@@ -287,23 +287,11 @@ status = s.status(i)
           <span class='headline'><b>location:</b> <span class='li-location'><%=row[:stat_location_name].to_s.encode_html%></span></span>
           <br/>
           <span class='headline'><b>industry:</b> <span class='li-industry'><%=row[:stat_industry_name].to_s.encode_html%></span></span>
+          <!--
           <br/>
-          <span class='headline'><b>owner:</b> <span class='li-industry'><%=row[:user_name].to_s.encode_html%></span></span>
+          <span class='headline'><b>owner:</b> <span class='li-owner'><%=row[:user_name].to_s.encode_html%></span></span>
+          -->
           <br/>
-          <%
-          if row[:stat_verified]
-          %>
-          <span class='badge badge-green'><i class='icon-ok'></i> Verified</span>
-          <%
-          elsif row[:stat_trust_rate]
-          %>
-          <span class='badge badge-blue'>Trust: <%=row[:stat_trust_rate]%>%</span>
-          <%
-          end # if row[:id_user].nil?
-          %>
-
-          <br/>
-
           <div class='reminders' data-id-lead='<%=row[:id].to_guid%>'>
           </div>
       </div>
