@@ -9,7 +9,15 @@ email = session['email'].to_s
 phone = session['phone'].to_s
 err = params[:err]
 %>
-	
+
+<%
+if BlackStack::Funnel.recaptcha2_site_key
+%>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<%
+end # if BlackStack::Funnel.recaptcha2_site_key
+%>
+
 <div style='position:absolute;left:5px;top:15px;height:50px;'>
 	<a href='/'><img src="/core/images/logo.png" height="100%" title="ConnectionSphere Logo" /></a>
 </div>
@@ -77,8 +85,16 @@ err = params[:err]
 					<p class='text-left btn-mini'>Phone Number</p>
 					<input type="text" name="phone" id="id_phone" placeholder="You Direct Phone for Better Support" tabindex="7" value="<%=phone.encode_html%>" onfocus="$(this).select();" />
 				</div>
-				<button type="submit" style='font-size:24px;' class="btn btn-blue btn-large btn-block" tabindex="8">
-					<%
+
+				<%
+				if BlackStack::Funnel.recaptcha2_site_key
+				%>
+				<div class="g-recaptcha" data-sitekey="<%=BlackStack::Funnel.recaptcha2_site_key%>" data-callback='recaptcha_callback'></div>
+				<%
+				end # if BlackStack::Funnel.recaptcha2_site_key
+				%>
+
+				<button type="submit" id='submit' name='submit' style='font-size:24px;' class="btn btn-blue btn-large btn-block" tabindex="8" <%=BlackStack::Funnel.recaptcha2_site_key ? 'disabled' : ''%>>					<%
 					if !notrial?
 					%>
 					Start For Free!
@@ -106,6 +122,11 @@ err = params[:err]
 </section>
 
 <script>
+	function recaptcha_callback(){
+		//alert("callback working");
+		$('#submit').prop("disabled", false);
+	}
+
 	$(document).ready(function() {
 		document.getElementById("id_companyname").focus();
 	});

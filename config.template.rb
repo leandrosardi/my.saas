@@ -22,7 +22,15 @@ BlackStack::Funnel.set({
     # code by following the steps in this tutorial:
     # https://www.monsterinsights.com/docs/where-to-find-utm-tracking-code-results-data-in-google-analytics
     # 
-    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-XXXXXXXXXX',
+    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-xxxxxxx',
+
+    # reCaptcha v2 keys
+    # 
+    # Create your keys here: https://www.google.com/recaptcha/admin/create
+    # Find your analytics here: https://www.google.com/recaptcha/admin
+    # 
+    :recaptcha2_site_key => 'xxxxxxx',
+    :recaptcha2_secret_key => 'xxxxxxx-xxxxxxx',
 })
 
 # Funnel Configuration
