@@ -1,4 +1,6 @@
 <%
+export_button_color = 'gray'
+export_button_text = 'lists'
 acc = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
 
 leads = DB["
@@ -22,7 +24,7 @@ rows = DB["
     join fl_reminder r on (
         r.id_lead=l.id and 
         r.delete_time is null and
-        r.done = false and
+        --r.done = false and
         extract(year from r.expiration_time) = extract(year from cast('#{now}' as timestamp)) and
         extract(month from r.expiration_time) = extract(month from cast('#{now}' as timestamp)) --and
         --extract(day from r.expiration_time) = extract(day from cast('#{now}' as timestamp)) 
@@ -166,8 +168,23 @@ reminders = rows.size
         <%
         end
         %>
+        <div class='buttons2'>
+          <div class="btn-group">
+            <button class="btn btn-<%=export_button_color%> dropdown-toggle btn-export-lists" data-id-lead='<%=row[:id].to_guid%>' data-toggle="dropdown"><span class='caption'><%=export_button_text.to_s.encode_html%></span> <span class="caret"></span></button>
+            <ul class="dropdown-menu ul-export-lists" data-id-lead='<%=row[:id].to_guid%>'>
+              <div class='div-export-lists' data-id-lead='<%=row[:id].to_guid%>'>
+                <!-- fill the div by AJAX when the user clicks on the export button -->
+              </div>
+              <li class="divider"></li>
+              <li>
+                <p>Create New List</p>
+                <input class='input input-medium input-export-lists' data-id-lead='<%=row[:id].to_guid%>' /><br/> 
+                <button class='btn btn-link btn-create-export-list' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-plus'></i> Add</button>
+              </li>
+            </ul>
+          </div>      
+        </div>
 
-        <br/>
         <span class='headline li-headline'><%=row[:position].to_s.encode_html%></span>
         <br/>
         <span class='headline'><b>location:</b> <span class='li-location'><%=row[:stat_location_name].to_s.encode_html%></span></span>
@@ -178,7 +195,7 @@ reminders = rows.size
         <br/>
       </div>
 
-      <div style='position:absolute;top:0px;left:350px;width:250px;'>
+      <div style='position:absolute;top:0px;left:300px;right:270px;'>
         <b>reminders</b><br/>
         <div class='reminders' data-id-lead='<%=row[:id].to_guid%>'><i>loading...</i></div>
         <div class='contact-commands'>
@@ -197,7 +214,7 @@ reminders = rows.size
           </div>
         </div>
 
-      <div style='position:absolute;top:0px;left:600px;width:250px;'>
+      <div style='position:absolute;top:0px;left:570px;width:270px;'>
         <b>contact infromation</b><br/>
         <div class='contact-info' data-id-lead='<%=row[:id].to_guid%>'><i>loading...</i></div>
         <div class='contact-commands'>
@@ -216,9 +233,7 @@ reminders = rows.size
             <button class='btn btn-link add-data-cancel' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-remove'></i></button>
           </div>
         </div>
-
       </div>
-
     </div>
     <%
     }

@@ -351,7 +351,7 @@ function setup_remove_data() {
               icon.setAttribute('class', 'icon-envelope');
               span.setAttribute('class', 'contact-info-item email');
               a.setAttribute('href', 'mailto:'+h.value);
-            } else if ( h.type == 20 ) {
+            } else if ( h.type == 10 ) {
               icon.setAttribute('class', 'icon-phone');
               span.setAttribute('class', 'contact-info-item phone');
               a.setAttribute('href', 'tel:'+h.value);

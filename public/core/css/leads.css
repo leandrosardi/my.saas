@@ -167,12 +167,11 @@ button.btn-remove-data {
     /* CSS that should be displayed if width is higher than 840px goes here */
     div.lead-card {
       position:relative;
-      height: 205px;
-      display: block;
-      overflow: auto;
+      height:205px;
+      //display:block;
       width:100%;
-      margin-bottom: 25px;
-      overflow: scroll;
+      margin-bottom:25px;
+      overflow:scroll;
     }
   
     div.lead-card div.acronym {
@@ -221,7 +220,7 @@ button.btn-remove-data {
       position:absolute;
       left:125px;
       top:0;
-      width:calc(100% - 70px - 155px - 65px);
+      width:175px; //calc(100% - 70px - 155px - 65px);
       display: block;
       overflow: auto;
     }
@@ -251,60 +250,3 @@ button.btn-remove-data {
     }
   */
   }
-  
-  @media (max-width: 840px) {
-    /* CSS that should be displayed if width is equal to or less than 840px goes here */
-    div.lead-card {
-      position:relative;
-      height: 205px;
-      display: block;
-      overflow: auto;
-      width:100%;
-      margin-bottom: 25px;
-      overflow: scroll;
-    }
-  
-    div.lead-card div.acronym {
-      position:absolute;
-      left:0;
-      top:0;
-      width:70px;
-      height:50px;
-      display: block;
-      overflow: auto;
-      border-radius:35px;
-      padding-top:20px;
-      font-size:32px;
-      text-align:center;
-      vertical-align:middle;
-      color:white;
-    }
-  
-    div.lead-card div.buttons {
-      position:absolute;
-      left:0px;
-      top: 75px;
-    }
-  
-    div.lead-card div.insights {
-      position:relative;
-      left:125px;
-      top:0;
-      width:calc(100% - 70px);
-      display: block;
-      overflow: auto;
-    }
-  
-    div.lead-card div.data {
-      position:relative;
-      left:125px;
-      margin-top: 10px;
-      width:calc(100%-70px);
-      display: block;
-      z-order: 99999999;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;  
-    }
-  }
-  
