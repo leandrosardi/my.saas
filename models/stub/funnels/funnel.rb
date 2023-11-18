@@ -1,11 +1,23 @@
 module BlackStack
   module Funnel
     @@ga = nil # GTM code
+    @@recaptcha2_site_key = nil
+    @@recaptcha2_secret_key = nil
     @@funnels = []
 
     # Google Analytics
     def self.set(h)
       @@ga = h[:ga]
+      @@recaptcha2_site_key = h[:recaptcha2_site_key]
+      @@recaptcha2_secret_key = h[:recaptcha2_secret_key]
+    end
+
+    def self.recaptcha2_site_key
+      @@recaptcha2_site_key
+    end
+
+    def self.recaptcha2_secret_key
+      @@recaptcha2_secret_key
     end
 
     def self.ga_head_code
