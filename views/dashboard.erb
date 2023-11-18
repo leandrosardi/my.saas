@@ -15,7 +15,7 @@ campaigns = DB["
     where g.delete_time is null
 "].first[:n]
 
-ds = DB["
+rows = DB["
     select l.id, l.name, l.picture_url
     from fl_lead l
     join \"user\" u on (u.id=l.id_user and u.id_account='#{acc.id}')
@@ -30,8 +30,8 @@ ds = DB["
     where l.delete_time is null
     group by l.id, l.name, l.picture_url
     order by min(r.expiration_time) asc
-"]
-reminders = ds.count
+"].all
+reminders = rows.size
 %>
 
 <!--
@@ -45,7 +45,7 @@ reminders = ds.count
             </div>
             <div class="span9" style='text-align:right;'>
                 <a href='/leads/new' class='btn btn-blue' alt='New Lead'><i class="icon-heart-empty"></i></a>
-                <a href='/campaigns/new' class='btn btn-blue' alt='New Campaign'><i class="icon-bullhorn"></i></a>
+                <a href='/emails/campaigns/new' class='btn btn-blue' alt='New Campaign'><i class="icon-bullhorn"></i></a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@ reminders = ds.count
                     <div class='span3 box'>
                         <center><h4>Campaigns</h4></center>
                         <center><h3 style='color:blue;'><%=campaigns.to_i.to_label%></h3></center>
-                        <center><a class='btn btn-small btn-blue' href='/campaigns'><b>view</b></a></center>
+                        <center><a class='btn btn-small btn-blue' href='/emails/campaigns'><b>view</b></a></center>
                     </div>
 
                     <div class='span3 box'>
@@ -121,7 +121,7 @@ reminders = ds.count
 
     <div class='row-fluid box'>
     <%
-    ds.all { |row|
+    rows.each { |row|
         acronym = row[:name].to_s[0..1].capitalize
         picture_url = row[:picture_url]
         i = acronym.chr.ord.to_i % 10
@@ -180,10 +180,43 @@ reminders = ds.count
 
       <div style='position:absolute;top:0px;left:350px;width:250px;'>
         <b>reminders</b><br/>
-      </div>
+        <div class='reminders' data-id-lead='<%=row[:id].to_guid%>'><i>loading...</i></div>
+        <div class='contact-commands'>
+            <span>Add Reminder: </span>
+            <button class='btn btn-link add-reminder' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-calendar' title='Add Reminder About This Lead'></i></button>
+            <!-- form to add data -->
+            <div class='add-reminder-div' data-id-lead='<%=row[:id].to_guid%>'>
+              <textarea rows=2 class="input-block-level add-reminder-description" data-id-lead='<%=row[:id].to_guid%>' placeholder="Write a note here."></textarea>
+              <button class='btn btn-link add-reminder-submit' data-period-number='1' data-period-unit='day' data-id-lead='<%=row[:id].to_guid%>'>1D</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='2' data-period-unit='day' data-id-lead='<%=row[:id].to_guid%>'>2D</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='3' data-period-unit='day' data-id-lead='<%=row[:id].to_guid%>'>3D</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='1' data-period-unit='week' data-id-lead='<%=row[:id].to_guid%>'>1W</button>
+              <button class='btn btn-link add-reminder-submit' data-period-number='2' data-period-unit='week' data-id-lead='<%=row[:id].to_guid%>'>2W</button>
+              <button class='btn btn-link add-reminder-cancel' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-remove'></i></button>
+            </div>
+          </div>
+        </div>
 
       <div style='position:absolute;top:0px;left:600px;width:250px;'>
         <b>contact infromation</b><br/>
+        <div class='contact-info' data-id-lead='<%=row[:id].to_guid%>'><i>loading...</i></div>
+        <div class='contact-commands'>
+          <span>Add Data: </span>
+          <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_EMAIL.to_s%>'><i class='icon-envelope' title='Add Email Address'></i></button>
+          <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_PHONE.to_s%>'><i class='icon-phone' title='Add Phone Number'></i></button>
+          <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_LINKEDIN.to_s%>'><i class='icon-linkedin' title='Add LinkedIn URL'></i></button>
+          <button class='btn btn-link add-data' data-id-lead='<%=row[:id].to_guid%>' data-type='<%=BlackStack::Leads::Data::TYPE_FACEBOOK.to_s%>'><i class='icon-facebook' title='Add Facebook URL'></i></button>
+
+          <!-- form to add data -->
+          <div class='add-data-div' data-id-lead='<%=row[:id].to_guid%>'>
+            <input type="hidden" class="input-block-level add-data-type" data-id-lead='<%=row[:id].to_guid%>' value="" />
+            <input type="text" class="input-block-level add-data-value" data-id-lead='<%=row[:id].to_guid%>' placeholder="Write data here." value="" />
+            <br/>
+            <button class='btn btn-link add-data-submit' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-ok'></i></button>
+            <button class='btn btn-link add-data-cancel' data-id-lead='<%=row[:id].to_guid%>'><i class='icon-remove'></i></button>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -193,90 +226,18 @@ reminders = ds.count
     </div>
 
 <script>
-function setup_remove_reminder() {
-    $('.btn-remove-reminder').click(function() {
-      // get the id_lead
-      let id_reminder = $(this).attr('data-id-reminder');
-      let span = document.querySelector('span.reminders-item[data-id-reminder="'+id_reminder+'"]');
-      // show adding legend
-      span.innerHTML = 'removing reminder...<br/>';      
-      // ajax call
-      $.ajax({
-        url: '/ajax/leads/remove_reminder.json',
-        type: 'POST',
-        data: { id_reminder: id_reminder },
-        success: function(data) {
-          // get the json response
-          let response = JSON.parse(data);
-          if (response.status == 'success') {
-            span.remove();
-          } else {
-            alert(response.status);
-            alert('An error occured trying to remove reminder from the lead. Error: ' + response.status);
-          }
-        }, error: function(data) {
-          // get the json response
-          let response = JSON.parse(data);
-          alert('Unknown error occured trying to remove reminder from the lead.');
-        }
-      });      
-    });
-  }
-
-  function setup_done_reminder() {
-    $('.btn-done-reminder').click(function() {
-      // get the id_lead
-      let id_reminder = $(this).attr('data-id-reminder');
-      let span = this;
-      // show adding legend
-      span.style.color = 'gray';   
-      span.setAttribute('class', '');
-      if ( span.style.textDecoration != 'line-through' ) {
-        $.ajax({
-          url: '/ajax/leads/mark_reminder_as_done.json',
-          type: 'POST',
-          data: { id_reminder: id_reminder },
-          success: function(data) {
-            // get the json response
-            let response = JSON.parse(data);
-            if (response.status == 'success') {
-              span.style.color = 'black';      
-              span.style.textDecoration = 'line-through';
-            } else {
-              alert(response.status);
-              alert('An error occured trying to mark reminder as done. Error: ' + response.status);
-            }
-          }, error: function(data) {
-            // get the json response
-            let response = JSON.parse(data);
-            alert('Unknown error occured trying to mark reminder as done.');
-          }
-        });
-      } else {
-        $.ajax({
-          url: '/ajax/leads/mark_reminder_as_pending.json',
-          type: 'POST',
-          data: { id_reminder: id_reminder },
-          success: function(data) {
-            // get the json response
-            let response = JSON.parse(data);
-            if (response.status == 'success') {
-              span.style.color = 'black';      
-              span.style.textDecoration = 'none';
-            } else {
-              alert(response.status);
-              alert('An error occured trying to mark reminder as pending. Error: ' + response.status);
-            }
-          }, error: function(data) {
-            // get the json response
-            let response = JSON.parse(data);
-            alert('Unknown error occured trying to mark reminder as pending.');
-          }
-        });
-      }
-    });
-  }
-
     $(document).ready(function() {
+      init_lead_data();
+      init_lead_reminders();
+      init_lead_exports();
+  
+      // load data of already exported leads
+      <%
+      rows.each do |row|
+        %>
+          unlock_data('<%=row[:id].to_guid%>');
+        <%
+      end # rows.each
+      %>  
     });
 </script>
