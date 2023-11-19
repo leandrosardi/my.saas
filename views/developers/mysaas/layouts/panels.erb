@@ -1,0 +1,119 @@
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "Panels")%>
+		</div>
+	</section>
+</div>
+
+<!-- Single Panel -->
+<h4>Single Panel</h4>
+<section class="row-fluid">
+	<div class="span12 box">
+		<p>This is a single panel</p>
+	</div>
+</section>
+
+<section class="row-fluid box">
+	<p>This code is to draw the panel(s) above, including the navbar.</p>
+	<p>The class <code>span12</code> means that it will use the 100% of the viewport width.</p>
+	<pre class="line-numbers language-html html">
+<%='
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "Panels")%
+		</div>
+	</section>
+</div>
+<!-- Single Panel -->
+<h4>Single Panel</h4>
+<section class="row-fluid">
+	<div class="span12 box">
+		<p>This is a single panel</p>
+	</div>
+</section>
+'.encode_html
+%>
+	</pre>
+</section>
+
+<!-- Left Panel -->
+<h4>Left Panel</h4>
+<section class="row-fluid">
+	<div class="span3 box">
+		<p>This is a left panel</p>
+	</div>
+	<div class="span9 box">
+		<p>This is the main panel</p>
+	</div>
+</section>
+
+<section class="row-fluid box">
+	<p>This code is to draw the panel(s) above, including the navbar.</p>
+	<p>The class <code>span3</code> means that it will use the 3/12 (25%) of the viewport width.</p>
+	<p>The class <code>span9</code> means that it will use the 9/12 (75%) of the viewport width.</p>
+	<pre class="line-numbers language-html html">
+<%='
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "Panels")%
+		</div>
+	</section>
+</div>
+<!-- Left Panel -->
+<h4>Left Panel</h4>
+<section class="row-fluid">
+	<div class="span3 box">
+		<p>This is a left panel</p>
+	</div>
+	<div class="span9 box">
+		<p>This is the main panel</p>
+	</div>
+</section>
+'.encode_html
+%>
+	</pre>
+</section>
+
+<!-- Two Panel -->
+<h4>Two Panels</h4>
+<section class="row-fluid">
+	<div class="span6 box">
+		<p>This is a left panel</p>
+	</div>
+	<div class="span6 box">
+		<p>This is the right panel</p>
+	</div>
+</section>
+
+<section class="row-fluid box">
+	<p>This code is to draw the panel(s) above, including the navbar.</p>
+	<p>The class <code>span6</code> means that it will use the 6/12 (50%) of the viewport width.</p>
+	<pre class="line-numbers language-html html">
+<%='
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "Panels")%
+		</div>
+	</section>
+</div>
+<h4>Two Panels</h4>
+<section class="row-fluid">
+	<div class="span6 box">
+		<p>This is a left panel</p>
+	</div>
+	<div class="span6 box">
+		<p>This is the right panel</p>
+	</div>
+</section>
+'.encode_html
+%>
+	</pre>
+</section>

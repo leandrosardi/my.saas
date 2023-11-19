@@ -398,6 +398,65 @@ begin
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Developers Training Pages.
+  # TODO: Move this to a dedicated extension
+
+  # root page of the developers center
+  get '/developers', :auth => true do
+    erb :"/views/developers/landing", :layout => :'/views/layouts/core'
+  end
+
+  # root page of the developers center
+  get '/developers/myip' do
+    request.ip
+  end
+
+  get '/developers/mysaas', :auth => true do
+    erb :"/views/developers/mysaas/landing", :layout => :'/views/layouts/core'
+  end
+
+  # layouts
+  get '/developers/mysaas/layouts', :auth => true do
+    erb :"/views/developers/mysaas/layouts/landing", :layout => :'/views/layouts/core'
+  end
+
+  get '/developers/mysaas/layouts/navbars', :auth => true, :agent => /(.*)/ do
+    erb :"/views/developers/mysaas/layouts/navbars", :layout => :'/views/layouts/core'
+  end
+
+  get '/developers/mysaas/layouts/panels', :auth => true, :agent => /(.*)/ do
+    erb :"/views/developers/mysaas/layouts/panels", :layout => :'/views/layouts/core'
+  end
+
+  # tables
+  get '/developers/mysaas/tables', :auth => true do
+    erb :"/views/developers/mysaas/tables/landing", :layout => :'/views/layouts/core'
+  end
+
+  get '/developers/mysaas/tables/basics', :auth => true, :agent => /(.*)/ do
+    erb :"/views/developers/mysaas/tables/basics", :layout => :'/views/layouts/core'
+  end
+
+  get '/developers/dss', :auth => true, :agent => /(.*)/ do
+    erb :"/views/developers/dss/helper", :layout => :'/views/layouts/core'
+  end
+
+  get '/developers/dss/', :auth => true, :agent => /(.*)/ do
+    erb :"/views/developers/dss/helper", :layout => :'/views/layouts/core'
+  end
+
+  get '/developers/dss/helper', :auth => true, :agent => /(.*)/ do
+    erb :"/views/developers/dss/helper", :layout => :'/views/layouts/core'
+  end
+
+  post '/ajax/developers/dss/get_refresh_token.json' do
+    erb :'/views/ajax/developers/dss/get_refresh_token'
+  end
+  get '/ajax/developers/dss/get_refresh_token.json' do
+    erb :'/views/ajax/developers/dss/get_refresh_token'
+  end
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Funnel
   # 
   get '/' do

@@ -1,0 +1,140 @@
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "NavBars")%>
+		</div>
+	</section>
+</div>
+
+<!-- 2-level navbar -->
+<h4>2-Level Navbars</h4>
+
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav2("Developers", "/developers", "MySaaS")%>
+		</div>
+	</section>
+</div>
+
+<section class="row-fluid box">
+	<p>This code is to draw the navbar above.</p>
+
+	<pre class="line-numbers language-html html">
+<%='
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		<%=nav2("Developers", "/developers", "MySaaS")% 
+		</div>
+	</section>
+</div>
+'.encode_html
+%>
+	</pre>
+</section>
+
+
+<!-- Top-Bar Buttons -->
+<h4>Top-Bar Buttons</h4>
+
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav2("Developers", "/developers", "MySaaS")%>
+		</div>
+		<div class="span6" align="right" style="text-align: right;alignment-adjust: right; margin-left: 0;">
+			<button id="update" name="update" data-rows-group-id="users" class="btn btn-blue btn-medium" type="button" title="Save Fields of Selected Users">
+				<i class="icon-ok"></i>
+				Update
+			</button>
+			<button id="remove" name="remove" data-rows-group-id="users" class="btn btn-default btn-medium" type="button" title="Delete Selected Users">
+				<i class="icon-remove"></i>
+				Ramove
+			</button>
+		</div>
+	</section>
+</div>
+
+<section class="row-fluid box">
+	<p>This code is to draw the navbar above, with the 2 buttons in the right side.</p>
+
+	<pre class="line-numbers language-html html">
+<%='
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		<%=nav2("Developers", "/developers", "MySaaS")% 
+		</div>
+	</section>
+	<div class="span6" align="right" style="text-align: right;alignment-adjust: right; margin-left: 0;">
+	<button id="update" name="update" data-rows-group-id="users" class="btn btn-blue btn-medium" type="button" title="Save Fields of Selected Users">
+		<i class="icon-ok"></i>
+		Update
+	</button>
+	<button id="remove" name="remove" data-rows-group-id="users" class="btn btn-default btn-medium" type="button" title="Delete Selected Users">
+		<i class="icon-remove"></i>
+		Ramove
+	</button>
+</div>
+'.encode_html
+%>
+	</pre>
+</section>
+
+<!-- 3-level navbar -->
+<h4>3-Level Navbars</h4>
+
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav3("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts")%>
+		</div>
+	</section>
+</div>
+
+<section class="row-fluid box">
+	<p>This code is to draw the navbar above.</p>
+
+	<pre class="line-numbers language-html html">
+<%='
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		<%=nav3("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts")%
+		</div>
+	</section>
+</div>
+'.encode_html
+%>
+	</pre>
+</section>
+
+
+<!-- 4-level navbar -->
+<h4>4-Level Navbars</h4>
+
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "`NavBar`s")%>
+		</div>
+	</section>
+</div>
+
+<section class="row-fluid box">
+	<p>This code is to draw the navbar above.</p>
+
+	<pre class="line-numbers language-html html">
+<%='
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+		<%=nav4("Developers", "/developers", "MySaaS", "/developers/mysaas", "Layouts", "/developers/mysaas/layouts", "NavBars")%
+		</div>
+	</section>
+</div>
+'.encode_html
+%>
+	</pre>
+</section>

@@ -1,0 +1,53 @@
+<div class="mynavbar mysticky">
+	<section class="row-fluid">	
+		<div class="span6">
+			<%=nav2('Developers', '/developers', 'DropBox Storage Service')%>
+		</div>
+	</section>
+</div>
+
+<section class="row-fluid box">
+	<div class='span7'>
+		<h4>What is This?</h4>
+		<p>
+		Dropbox is in the process of switching to only issuing short-lived access tokens (and optional refresh tokens) instead of long-lived access tokens. You can find more information on this migration here.</br>
+		<br/>
+		Apps can still get long-term access by requesting "offline" access though, in which case the app receives a "refresh token" that can be used to retrieve new short-lived access tokens as needed, without further manual user intervention. You can find more information in the OAuth Guide and authorization documentation.<br/>
+		<br/>
+		Get and <b>Access Code</b> <a href='<%=DROPBOX_APP_AUTH_URL%>' target='_window'>here</a>, and get_refresh_token it in the next form to get a <b>Refresh Token</b>.<br/>
+		</p>	
+	</div>
+	<div class="span5">
+		<h4>Access Code</h4>
+		<input type="text" class="input input-block-level" name="access_code" id="access_code" value="" />
+		<button type="btn btn-blue" id="get_refresh_token" class="btn btn-blue">Submit</button><br/>
+		<br/>
+		<input type="text" class="input input-block-level" name="refresh_token" id="refresh_token" value="" readonly />
+	</div>
+</section>
+
+<script>
+$(document).ready(function(){
+	$('#get_refresh_token').click(function() {
+		$.ajax({
+			url: '/ajax/developers/dss/get_refresh_token.json',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				access_code: $('#access_code').val()
+			},
+			success: function(data) {
+				if (data.status == 'success') {
+alert(data.refresh_token);
+					$('#refresh_token').val(data.refresh_token);
+				} else {
+					alert(data.status);
+				}
+			},
+			error: function(data) {
+				alert('error');
+			}
+		});
+	})
+});
+</script>
