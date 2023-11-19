@@ -339,7 +339,7 @@ begin
     # decide to which landing redirect, based on the extensions and configuration
     # reference: https://github.com/leandrosardi/i2p/issues/3
     #redirect '/landing'
-    redirect '/free'
+    redirect '/signup'
   end
 
   get '/404', :agent => /(.*)/ do
@@ -401,7 +401,7 @@ begin
   # Funnel
   # 
   get '/' do
-    erb :'views/free', :layout => :'/views/layouts/public'
+    erb :'views/signup', :layout => :'/views/layouts/public'
   end
 
   get '/free' do
