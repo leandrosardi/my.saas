@@ -6,6 +6,12 @@ params_to_session
 redirect_on_success = session['redirect_on_success']
 redirect_on_error = session['redirect_on_error']
 
+# validate recaptcha_response is not an empty string
+recaptcha_response = params[:recaptcha_response]
+if recaptcha_response.to_s.size == 0
+	redirect "/signup?err=#{CGI::escape("Recaptcha is Required.")}"
+end
+
 # setup default values
 redirect_on_error = "/signup" if redirect_on_error.to_s.size == 0
 

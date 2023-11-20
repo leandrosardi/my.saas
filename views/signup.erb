@@ -65,6 +65,7 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 		%>
 			
 		<form action="/signup" method="post" style='background-color: white;'>
+			<input type='hidden' id='recaptcha_response' name='recaptcha_response' value='' />
 			<fieldset>
 				<div class="fields">
 					<!--
@@ -126,6 +127,7 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 	function recaptcha_callback(){
 		//alert("callback working");
 		$('#submit').prop("disabled", false);
+		$('#recaptcha_response').val(grecaptcha.getResponse());
 	}
 
 	$(document).ready(function() {
