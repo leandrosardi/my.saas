@@ -619,6 +619,14 @@ begin
     erb :'views/api1.0/ping'
   end
 
+  # dropbox
+  get "/api1.0/dropbox/get_access_token.json", :api_key => true do
+    erb :"views/api1.0/dropbox/get_access_token"
+  end
+  post "/api1.0/dropbox/get_access_token.json", :api_key => true do
+    erb :"views/api1.0/dropbox/get_access_token"
+  end
+
   # notifications
   get '/api1.0/notifications/open.json' do
     erb :'views/api1.0/notifications/open'
