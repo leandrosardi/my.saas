@@ -45,6 +45,7 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 	</span>
 
 	<form action="recover" method="post">
+		<input type='hidden' id='recaptcha_response' name='recaptcha_response' value='' />
 		<fieldset>
 			<div class="fields">
 				<input type="text" class='input-xlarge' name="email" placeholder="Email" id="id_email" tabindex="1" onfocus="$(this).select();" />
@@ -74,9 +75,10 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 <br/>
 
 <script type="text/javascript">
-	function recaptcha_callback(){
+	function recaptcha_callback() {
 		//alert("callback working");
 		$('#submit').prop("disabled", false);
+		$('#recaptcha_response').val(grecaptcha.getResponse());
 	}
 
 	$(document).ready(function() {

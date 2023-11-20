@@ -3,6 +3,12 @@
 params_to_session
 
 email = params[:email]
+recaptcha_response = params[:recaptcha_response]
+
+# validate recaptcha_response is not an empty string
+if recaptcha_response.to_s.size == 0
+	redirect "/recover?err=#{CGI::escape("Recaptcha is Required.")}"
+end
 
 # validar que los parametros no esten vacios
 if email.to_s.size == 0
