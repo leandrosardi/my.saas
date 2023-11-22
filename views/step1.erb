@@ -67,11 +67,15 @@ table.wizard_table tr td input[type=button]:focus {
 	<form method='post' action='/filter_step1'>
 	</form>
 	<section class='row-fluid'>
-		<div class='span6'>
+		<div class='span8'>
 			<div id='leads_table'></div>
+		</div>
+		<div class='span4'>
+			
 		</div>
 	</section>	
 	<section class='row-fluid text-right'>
+		<button class='btn btn-large btn-link' id='add'>Add Row</button>
 		<button class="btn btn-primary btn-large" id="step1-next" disabled>Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
 		<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Need Custom Job Positions? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
 	</section>
@@ -143,11 +147,13 @@ table.wizard_table tr td input[type=button]:focus {
 			},
 		});
 		// enable feature to add rows
-		$('.add').click(function () {
+		$('#add').click(function () {
 			// add a row
 			tablesJs.add(ctx);
 			// set focus on the first cell or the last row
 			tablesJs.focus(ctx, tablesJs.count(ctx)-1, 0);
+			// scroll to the bottom
+			$('html, body').animate({scrollTop:$(document).height()}, 'slow');
 		});
 		// set focus
 		tablesJs.focus(ctx, 0, 0);
