@@ -1,17 +1,17 @@
 <%
-#selected_positions = @login.user.preference('step1.positions', a.join(','), nil).split(/,/)
+min_rows = 5
 %>
 
 <style>
 table.wizard_table {
-	width: 50%;
+	width: 320px;
+	max-width: 320px;
 }
 
 table.wizard_table thead th {
     font-size:14pt;
     text-align:left;
 	color: #555;
-	width: 100%;
 }
 
 table.wizard_table tr td {
@@ -58,6 +58,12 @@ table.wizard_table tr td input[type=button]:hover {
 table.wizard_table tr td input[type=button]:focus {
 	opacity: 1; 
 }
+
+
+span.wizard-error {
+	color:red;
+	font-size:14pt;
+}
 </style>
 
 <section class="step">
@@ -66,7 +72,7 @@ table.wizard_table tr td input[type=button]:focus {
 		<h1><b>STEP 1:</b> Add Your Leads</h1>
 	</section>
 	<section class='row-fluid'>
-		<h2>Add Your First Leads Here.</h2>
+		<h2>Add Your First Leads Here. <span id='err' name='err' class='wizard-error'></span></h2>
 	</section>
 	<br/>
 	<form method='post' action='/filter_step1'>
@@ -99,10 +105,14 @@ table.wizard_table tr td input[type=button]:focus {
 	function validateCells() {
 		let r = 0;
 		let n = tablesJs.count(ctx);
-		let b = true; // result
+		let b = true; // errors found
+		let err = ''; // error message
 
-		// validate there are 3 rows as minimum
-		if (n<3) { b=false; }
+		// validate there are <%=min_rows%> rows as minimum
+		if (n <= <%=min_rows%>) { 
+			b=false; 
+			err += 'You must add at least <%=min_rows%> leads.';
+		}
 
 		while (r<n) {
 			// get value
@@ -120,6 +130,8 @@ table.wizard_table tr td input[type=button]:focus {
 				}
 			} else {
 				tablesJs.set_color(ctx,r,0,'') 
+				// if field is empty, and it is not the last row, show error
+				if (r < n-1) { b = false; }
 			}
 
 			// if fname is not empty, validate it
@@ -127,6 +139,8 @@ table.wizard_table tr td input[type=button]:focus {
 				tablesJs.set_color(ctx,r,1,'green') 
 			} else {
 				tablesJs.set_color(ctx,r,1,'') 
+				// if field is empty, and it is not the last row, show error
+				if (r < n-1) { b = false; }
 			}
 
 			// if lname is not empty, validate it
@@ -134,11 +148,35 @@ table.wizard_table tr td input[type=button]:focus {
 				tablesJs.set_color(ctx,r,2,'green') 
 			} else {
 				tablesJs.set_color(ctx,r,2,'') 
+				// if field is empty, and it is not the last row, show error
+				if (r < n-1) { b = false; }
 			}
-			
+
+			// if it is the last row, and all fields have a value, then add a field
+			if (r == n-1) { 
+				if (email.length>0 && fname.length>0 && lname.length>0) {
+					tablesJs.add(ctx);
+				}
+			}
+
+
 			r++;
 		}
-		
+
+		// show error message
+		if (err.length > 0) { 
+			$('#err').text(err); 
+		} else {
+			$('#err').text(''); 
+		}
+
+		// enable/disable next button
+		if (b) {
+			$('#step1-next').removeAttr('disabled');
+		} else {
+			$('#step1-next').attr('disabled', 'disabled');
+		}
+
 		// return result
 		return b;
 	}
@@ -146,7 +184,7 @@ table.wizard_table tr td input[type=button]:focus {
 	$(document).ready(function() {
 		// draw the table
 		tablesJs.draw(ctx, {
-			rows: 5,
+			rows: <%=(min_rows+1)%>,
 			class: 'wizard_table', // Assign a custom value to the class atribute of the table.
 			remove_row_button: true, // Add a "remove" button at the right side of each row. This is false by default.
 			row_height: '50px', // This value will be added in the CSS heigh attribute of the row (tr).
@@ -190,6 +228,8 @@ table.wizard_table tr td input[type=button]:focus {
 			tablesJs.add(ctx);
 			// set focus on the first cell or the last row
 			tablesJs.focus(ctx, tablesJs.count(ctx)-1, 0);
+			// validate
+			validateCells();
 			// scroll to the bottom
 			$('html, body').animate({scrollTop:$(document).height()}, 'slow');
 		});
