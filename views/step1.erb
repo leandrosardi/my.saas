@@ -3,10 +3,15 @@
 %>
 
 <style>
+table.wizard_table {
+	width: 50%;
+}
+
 table.wizard_table thead th {
     font-size:14pt;
     text-align:left;
 	color: #555;
+	width: 100%;
 }
 
 table.wizard_table tr td {
@@ -67,11 +72,11 @@ table.wizard_table tr td input[type=button]:focus {
 	<form method='post' action='/filter_step1'>
 	</form>
 	<section class='row-fluid'>
-		<div class='span8'>
+		<div class='span6'>
 			<div id='leads_table'></div>
 		</div>
-		<div class='span4'>
-			
+		<div class='span6'>
+			lalala
 		</div>
 	</section>	
 	<section class='row-fluid text-right'>
@@ -83,6 +88,60 @@ table.wizard_table tr td input[type=button]:focus {
 
 <script type="text/javascript" charset="utf-8">
 	var ctx = document.getElementById('leads_table');
+
+	// function to validate email address
+	function validEmail(s) {
+		var re = /\S+@\S+\.\S+/;
+		return re.test(s);
+	}
+
+	// function to validate cells
+	function validateCells() {
+		let r = 0;
+		let n = tablesJs.count(ctx);
+		let b = true; // result
+
+		// validate there are 3 rows as minimum
+		if (n<3) { b=false; }
+
+		while (r<n) {
+			// get value
+			email = tablesJs.get_value(ctx, r, 0);
+			fname = tablesJs.get_value(ctx, r, 1);
+			lname = tablesJs.get_value(ctx, r, 2);
+
+			// if email is not empty, validate it
+			if (email.length > 0) { 
+				if (!validEmail(email)) { 
+					b = false; 
+					tablesJs.set_color(ctx,r,0,'red') 
+				} else {
+					tablesJs.set_color(ctx,r,0,'green') 
+				}
+			} else {
+				tablesJs.set_color(ctx,r,0,'') 
+			}
+
+			// if fname is not empty, validate it
+			if (fname.length > 0) {
+				tablesJs.set_color(ctx,r,1,'green') 
+			} else {
+				tablesJs.set_color(ctx,r,1,'') 
+			}
+
+			// if lname is not empty, validate it
+			if (lname.length > 0) {
+				tablesJs.set_color(ctx,r,2,'green') 
+			} else {
+				tablesJs.set_color(ctx,r,2,'') 
+			}
+			
+			r++;
+		}
+		
+		// return result
+		return b;
+	}
 
 	$(document).ready(function() {
 		// draw the table
@@ -119,31 +178,10 @@ table.wizard_table tr td input[type=button]:focus {
 				},
 			],
 			on_remove_row: function(rownum) {
-				// trace log
-				console.log('REMOVE');
-				console.log('rownum: '+rownum);
-				$('#myTableValues').val( 'REMOVE row ' + rownum.toString() );
+				validateCells();
 			},
 			on_edit_cell: function(rownum, colnum, value) {
-				// trace log
-				console.log('EDITION: '+value);
-				console.log('rownum: '+rownum);
-				console.log('colnum: '+colnum);
-				$('#myTableValues').val( 'EDIT row ' + rownum.toString() + ' col ' + colnum.toString() + ' value ' + value.toString() );
-
-				// if col is 0
-				if (colnum == 0) {
-					// if the value is a valid URL, set cell color green
-					// add validation result to the texteare
-					s = value ; //tablesJs.get_value(ctx, rownum, colnum); 
-					if (validUrl(s)) {
-						tablesJs.set_color(ctx, rownum, colnum, 'green');
-						$('#myTableValues').val( $('#myTableValues').val() + ' - VALID URL');
-					} else {
-						tablesJs.set_color(ctx, rownum, colnum, 'red');
-						$('#myTableValues').val( $('#myTableValues').val() + ' - INVALID URL');
-					}
-				}
+				validateCells();
 			},
 		});
 		// enable feature to add rows
