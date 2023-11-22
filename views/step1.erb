@@ -1,5 +1,5 @@
 <%
-min_rows = 1
+min_rows = 3
 csv = @login.user.preference('step1.csv', '', nil)
 rows = csv.split("\n").map { |row| row.split(',').map { |s| s.strip } }
 # complete rows with empty cells

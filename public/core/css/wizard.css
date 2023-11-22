@@ -39,21 +39,3 @@ section.step form section div.checkboxes-row span {
     vertical-align: middle;
 }
 
-
-
-table.wizard_table {
-    font-size:14pt;
-    text-align:left;
-    width:100%;
-}
-
-table.wizard_table thead th {
-    font-size:14pt;
-    text-align:left;
-}
-
-table.wizard_table tr td input {
-    font-size:14pt;
-    text-align:left;
-    border: 2px solid blue;
-}
