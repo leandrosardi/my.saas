@@ -23,7 +23,7 @@ body = @login.user.preference('step2.body', default_body, nil)
 
 <style>
 form.wizard_form span {
-    font-size:24pt;
+    font-size:18pt;
     text-align:left;
 	color: #555;
 	font-weight: bold;
@@ -31,31 +31,33 @@ form.wizard_form span {
 
 form.wizard_form input {
 	width: 100%;
-    font-size:24pt;
+    font-size:18pt;
     text-align:left;
-    border: 5px solid #ccc;
+    border: 5px solid blue;
+	color: #fff;
 	margin:5px;
 	padding:0px;
 	height: 45px;
 	border-radius: 10px;
 	opacity: 0.5; 
 	margin-bottom: 30px;
-	padding: 15px;
+	padding: 10px;
 }
 
 form.wizard_form textarea {
 	width: 100%;
-    font-size:24pt;
+    font-size:18pt;
 	line-height: 1.5;
     text-align:left;
-    border: 5px solid #ccc;
+    border: 5px solid blue;
+	color: #fff;
 	margin:5px;
 	padding:0px;
 	height: 245px;
 	border-radius: 10px;
 	opacity: 0.5; 
 	margin-bottom: 30px;
-	padding: 35px 15px 15px 15px;
+	padding: 25px 10px 10px 10px;
 }
 
 </style>
@@ -81,7 +83,6 @@ form.wizard_form textarea {
 				<section class='row-fluid text-right'>
 					<a class='btn btn-large btn-gray' id='back' href='/step1'><i class="icon-long-arrow-left"></i> Back</a>&nbsp;&nbsp;
 					<button class="btn btn-primary btn-large" id="step2-next" disabled>Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
-					<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Need AI Scraping? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
 				</section>
 			</form>
 		</div>
@@ -97,21 +98,17 @@ form.wizard_form textarea {
 		var b = true;
 
 		if (subject.length == 0) {
-			$('#subject').css('border-color', '#ccc');
-			$('#subject').css('color', '#ccc');
+			$('#subject').css('border-color', 'blue');
 			b = false;
 		} else {
 			$('#subject').css('border-color', 'green');
-			$('#subject').css('color', 'green');
 		}
 
 		if (body.length == 0) {
-			$('#body').css('border-color', '#ccc');
-			$('#body').css('color', '#ccc');
+			$('#body').css('border-color', 'blue');
 			b = false;
 		} else {
 			$('#body').css('border-color', 'green');
-			$('#body').css('color', 'green');
 		}
 
 		if (b) {
