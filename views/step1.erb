@@ -101,9 +101,15 @@ span.wizard-error {
 <script type="text/javascript" charset="utf-8">
 	var ctx = document.getElementById('leads_table');
 
-	// function to validate email address
+	// function to validate email address has the right format and has not other chars more than @, . and alphanumeric
 	function validEmail(s) {
-		var re = /\S+@\S+\.\S+/;
+		var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		return re.test(s);
+	}
+
+	// function to validate name has not other chars more than apha and spaces
+	function validName(s) {
+		var re = /^[a-zA-Z ]+$/;
 		return re.test(s);
 	}
 
@@ -146,7 +152,12 @@ span.wizard-error {
 
 			// if fname is not empty, validate it
 			if (fname.length > 0) {
-				tablesJs.set_color(ctx,r,1,'green') 
+				if (!validName(fname)) { 
+					b = false; 
+					tablesJs.set_color(ctx,r,1,'red') 
+				} else {
+					tablesJs.set_color(ctx,r,1,'green') 
+				}
 			} else {
 				tablesJs.set_color(ctx,r,1,'') 
 				// if field is empty, and it is not the last row, show error
@@ -155,7 +166,12 @@ span.wizard-error {
 
 			// if lname is not empty, validate it
 			if (lname.length > 0) {
-				tablesJs.set_color(ctx,r,2,'green') 
+				if (!validName(lname)) { 
+					b = false; 
+					tablesJs.set_color(ctx,r,2,'red') 
+				} else {
+					tablesJs.set_color(ctx,r,2,'green') 
+				}
 			} else {
 				tablesJs.set_color(ctx,r,2,'') 
 				// if field is empty, and it is not the last row, show error
