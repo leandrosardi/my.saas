@@ -1,9 +1,12 @@
 <%
 begin
-  selected_positions = params.values.join(',')
-  @login.user.preference('step1.positions', '', selected_positions)
-  redirect "/step2"
+  csv = params[:csv]
+  @login.user.preference('step1.csv', '', csv)
+#  redirect "/step2"
 rescue => e
   redirect "/step1?err="+ CGI::escape(e.message)
 end
 %>
+
+<h1>Step 1</h1>
+<p><%=csv%></p>

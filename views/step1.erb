@@ -1,5 +1,9 @@
 <%
-min_rows = 5
+min_rows = 1
+csv = @login.user.preference('step1.csv', '', nil)
+rows = csv.split("\n").map { |row| row.split(',').map { |s| s.strip } }
+# complete rows with empty cells
+(min_rows - rows.size + 1).times { rows << ['', '', ''] } if rows.size <= min_rows
 %>
 
 <style>
@@ -75,8 +79,6 @@ span.wizard-error {
 		<h2>Add Your First Leads Here. <span id='err' name='err' class='wizard-error'></span></h2>
 	</section>
 	<br/>
-	<form method='post' action='/filter_step1'>
-	</form>
 	<section class='row-fluid'>
 		<div class='span6'>
 			<div id='leads_table'></div>
@@ -90,6 +92,10 @@ span.wizard-error {
 		<button class="btn btn-primary btn-large" id="step1-next" disabled>Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
 		<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Need Custom Job Positions? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
 	</section>
+	<form method='post' action='/filter_step1'>
+		<textarea id='csv' name='csv' style='visibility:hidden;'></textarea>
+		<input type='submit' id='submit' name='submit' style='visibility:hidden;' value='submit'/>
+	</form>
 </section>
 
 <script type="text/javascript" charset="utf-8">
@@ -107,6 +113,7 @@ span.wizard-error {
 		let n = tablesJs.count(ctx);
 		let b = true; // errors found
 		let err = ''; // error message
+		let csv = ''; // csv string
 
 		// validate there are <%=min_rows%> rows as minimum
 		if (n <= <%=min_rows%>) { 
@@ -119,6 +126,9 @@ span.wizard-error {
 			email = tablesJs.get_value(ctx, r, 0);
 			fname = tablesJs.get_value(ctx, r, 1);
 			lname = tablesJs.get_value(ctx, r, 2);
+
+			csv = csv + email + ',' + fname + ',' + lname + '\n';
+			$('#csv').val(csv);
 
 			// if email is not empty, validate it
 			if (email.length > 0) { 
@@ -158,8 +168,6 @@ span.wizard-error {
 					tablesJs.add(ctx);
 				}
 			}
-
-
 			r++;
 		}
 
@@ -181,10 +189,27 @@ span.wizard-error {
 		return b;
 	}
 
+	// initialize cells with the values in the <%=rows%> array
+	function initCells() {
+		<%
+		r = -1
+		rows.each { |row|
+			r += 1
+			%>
+			// set value
+			tablesJs.set_value(ctx, <%=r.to_s%>, 0, '<%=row[0]%>');
+			tablesJs.set_value(ctx, <%=r.to_s%>, 1, '<%=row[1]%>');
+			tablesJs.set_value(ctx, <%=r.to_s%>, 2, '<%=row[2]%>');
+			<%
+		}
+		%>
+	}
+
+	// when document is ready
 	$(document).ready(function() {
 		// draw the table
 		tablesJs.draw(ctx, {
-			rows: <%=(min_rows+1)%>,
+			rows: <%=rows.size%>,
 			class: 'wizard_table', // Assign a custom value to the class atribute of the table.
 			remove_row_button: true, // Add a "remove" button at the right side of each row. This is false by default.
 			row_height: '50px', // This value will be added in the CSS heigh attribute of the row (tr).
@@ -223,7 +248,7 @@ span.wizard-error {
 			},
 		});
 		// enable feature to add rows
-		$('#add').click(function () {
+		$('#add').click(function() {
 			// add a row
 			tablesJs.add(ctx);
 			// set focus on the first cell or the last row
@@ -233,6 +258,15 @@ span.wizard-error {
 			// scroll to the bottom
 			$('html, body').animate({scrollTop:$(document).height()}, 'slow');
 		});
+		// submit form #csv when click on #step1-next
+		$('#step1-next').click(function() {
+			// submit #csv form
+			$('#submit').click();
+		});
+		// initCells
+		initCells();
+		// validate
+		validateCells();
 		// set focus
 		tablesJs.focus(ctx, 0, 0);
 	});
