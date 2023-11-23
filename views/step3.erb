@@ -161,6 +161,7 @@ div.wizard_tutorial img {
 				$('#fname').css('border-color', 'green');
 			} else {
 				$('#fname').css('border-color', 'red');
+				b = false;
 			}
 		}
 
@@ -172,6 +173,7 @@ div.wizard_tutorial img {
 				$('#lname').css('border-color', 'green');
 			} else {
 				$('#lname').css('border-color', 'red');
+				b = false;
 			}
 		}
 
@@ -183,6 +185,7 @@ div.wizard_tutorial img {
 				$('#email').css('border-color', 'green');
 			} else {
 				$('#email').css('border-color', 'red');
+				b = false;
 			}
 		}
 
@@ -194,8 +197,11 @@ div.wizard_tutorial img {
 				$('#passw').css('border-color', 'green');
 			} else {
 				$('#passw').css('border-color', 'red');
+				b = false;
 			}
 		}
+
+		$('#step3-next').attr('disabled', b ? null : 'disabled');
 	} // validate
 
 	$(document).ready(function() {
@@ -220,8 +226,10 @@ div.wizard_tutorial img {
 			$(this).select();
 		});
 
+		// validate
+		validate();
+
 		// set focus on #fname input
 		$('#fname').focus();
-
 	});
 </script>

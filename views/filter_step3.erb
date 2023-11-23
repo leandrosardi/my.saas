@@ -1,5 +1,6 @@
 <%
-begin
+#begin
+  # store parameters in preferences
   fname = @login.user.preference('step3.fname', '', params[:fname])
   lname = @login.user.preference('step3.lname', '', params[:lname])
   email = @login.user.preference('step3.email', '', params[:email])
@@ -20,6 +21,7 @@ begin
       }
     }
   }
+  rows.pop # remove last row with blank values
 
   subject = @login.user.preference('step2.subject', '', nil)
   body = @login.user.preference('step2.body', '', nil)
@@ -30,7 +32,7 @@ begin
   passw = @login.user.preference('step3.passw', '', nil)
 
   # create address
-  mta = BlackStack::Funnel::Mta.new({
+  mta = BlackStack::Emails::Mta.new({
     :id_user => @login.user.id,
 
     :smtp_address => 'smtp.gmail.com',
@@ -52,7 +54,7 @@ begin
   })
   mta.save
 
-  address = BlackStack::Funnel::Address.new({
+  address = BlackStack::Emails::Address.new({
     :id_user => @login.user.id,
     :id_mta => mta.id,
     :type => BlackStack::Emails::Address::TYPE_GMAIL,
@@ -83,16 +85,14 @@ begin
 
   # create an export list
   export = BlackStack::Leads::Export.new
-  export.id_user = @login.user.id
   export.id = guid
+  export.id_user = @login.user.id
   export.create_time = now
-  export.name = 'export1'
-  export.id_address = address.id
-  export.id_tag = tag.id
+  export.filename = 'export1'
   export.save
 
   # create leads
-  leads = BlackStack::Leads::Lead.merge_many(rows)
+  leads = BlackStack::Leads::Lead.merge_many({'leads'=>rows})
   leads.each { |lead| lead.save }
 
   # add leads to the export list
@@ -116,7 +116,7 @@ begin
   campaign.id_user = @login.user.id
   campaign.create_time = now
   campaign.name = 'campaign1'
-  campaign.id_export = id_export
+  campaign.id_export = export.id
   campaign.stat_replies = 0
   campaign.stat_positive_replies = 0
   campaign.stat_sents = 0
@@ -133,11 +133,11 @@ begin
   outreach.id_user = @login.user.id
   outreach.create_time = now
   outreach.id_campaign = campaign.id
-  outreach.id_tag = @login.user.account.tags.select { |g| g.name.downcase == tag.downcase }.first.id
+  outreach.id_tag = tag.id
   outreach.save
 
   # create followup
-  followup = BlackStack::Emails::FollowUp.new
+  followup = BlackStack::Emails::Followup.new
   followup.id = guid
   followup.id_user = @login.user.id
   followup.create_time = now
@@ -171,7 +171,7 @@ begin
   url = BlackStack::Funnel.url_after_login(@login, 'funnels.main')
   # go to done wizard
   redirect url
-rescue => e
-  redirect "/step3?err="+ CGI::escape(e.message)
-end
+#rescue => e
+#  redirect "/step3?err="+ CGI::escape(e.message)
+#end
 %>
