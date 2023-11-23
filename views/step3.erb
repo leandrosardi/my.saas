@@ -1,28 +1,227 @@
 <%
-keywords = @login.user.preference('step3.keywords', '', nil)
+fname = @login.user.preference('step3.fname', '', nil)
+lname = @login.user.preference('step3.lname', '', nil)
+email = @login.user.preference('step3.email', '', nil)
+passw = @login.user.preference('step3.passw', '', nil)
 %>
+
+<style>
+form.wizard_form span {
+    font-size:18pt;
+    text-align:left;
+	color: #555;
+	font-weight: bold;
+}
+
+form.wizard_form input {
+	width: 100%;
+    font-size:18pt;
+    text-align:left;
+    border: 5px solid blue;
+	color: #fff;
+	margin:5px;
+	padding:0px;
+	height: 45px;
+	border-radius: 10px;
+	opacity: 0.5; 
+	margin-bottom: 30px;
+	padding: 10px;
+}
+
+form.wizard_form textarea {
+	width: 100%;
+    font-size:18pt;
+	line-height: 1.5;
+    text-align:left;
+    border: 5px solid blue;
+	color: #fff;
+	margin:5px;
+	padding:0px;
+	height: 245px;
+	border-radius: 10px;
+	opacity: 0.5; 
+	margin-bottom: 30px;
+	padding: 25px 10px 10px 10px;
+}
+
+
+div.wizard_tutorial h3 {
+	font-size:24pt;
+	line-height: 1.5;
+}
+
+div.wizard_tutorial p {
+	font-size:18pt;
+	line-height: 1.5;
+}
+
+div.wizard_tutorial img {
+	width: 100%;
+	shadow: 10px 10px 5px #888888;
+}
+
+</style>
 
 <section class="step">
 	<br/>
 	<section class='row-fluid'>
-		<h1><b>STEP 3:</b> Set Keywords</h1>
+		<h1><b>STEP 3:</b> Connect Your Gmail</h1>
 	</section>
 	<section class='row-fluid'>
 		<h2>
-			Write COMPANY KEYWORDS to Find in Their Websites.<br/>
+			Connect Your Gmail or GSuite Email.
+			<!--
+			<br/>
 			<small>Separate each keyword with a comma. <b>Example:</b> HVAC, Plumbing</small>
+			-->
 		</h2>
 	</section>
 	<br/>
-	<form id='keywords_form' name='keywords_form' method='post' action='/filter_step3'>
-		<section class='row-fluid'>
-			<input class='text' type="text" name="keywords" id="keywords" placeholder="Write company keywords separated by comma." autocomplete="false" value="<%=keywords.to_s.encode_html%>" tabindex="6">
-		</section>
-		<div align="right">
-			<a class='btn btn-large btn-link' id='exit' href='/filter_step3'>Skip</a>&nbsp;&nbsp;
-			<a href="/step2" class="btn btn-large"><i class="icon-long-arrow-left"></i> Back</a>&nbsp;&nbsp;
-			<button id="step2-next" class="btn btn-primary btn-large">Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
-			<p style='font-size:14px;padding-top:10px;'><span class='badge badge-green'><i class='icon-star'></i> Premium</span> <b>Want to target by 7 different filters? <a href='/offer'>UPGRADE <i class="icon-long-arrow-right"></i></b></a></p>
+	<section class='row-fluid'>
+		<div class='span6'>
+			<form class='wizard_form' id='gmail_form' name='gmail_form' method='post' action='/filter_step3'>
+				<br/>
+				<span for="fname">Your First Name</span><br/>
+				<input type="text" id="fname" name="fname" value="<%=fname.encode_html%>">
+				<br/>
+				<span for="fname">Your Last Name</span><br/>
+				<input type="text" id="lname" name="lname" value="<%=lname.encode_html%>">
+				<br/>
+				<span for="fname">Your Email Address</span><br/>
+				<input type="text" id="email" name="email" value="<%=email.encode_html%>">
+				<br/>
+				<span for="fname">Gmail/GSuite App Password</span><br/>
+				<input type="text" id="passw" name="passw" value="<%=passw.encode_html%>">
+				<br/>
+				<section class='row-fluid text-right'>
+					<a class='btn btn-large btn-gray' id='back' href='/step2'><i class="icon-long-arrow-left"></i> Back</a>&nbsp;&nbsp;
+					<button class="btn btn-primary btn-large" id="step3-next" disabled>Next <i class="icon-long-arrow-right"></i></button>&nbsp;&nbsp;
+				</section>
+			</form>
 		</div>
-	</form>
+		<div class='span6 wizard_tutorial'>
+			<h3>Steps to Add a Gmail Address</h3>
+
+			<p>An app password is a long, randomly generated password that you provide only once instead of your regular password when signing in to an app or device</p>
+
+			<p>Follow the steps below to get a <b>app password</b> for your Gmail address.</p>
+
+			<br/>
+
+			<p><b>Step 1:</b> Go <a href="https://mail.google.com/mail/u/1/#settings/fwdandpop" target="_window">here</a>, enable IMAP and save changes.</p>
+
+			<img src="/emails/images/gmail1.png" class="img-polaroid">
+			<br><br>
+
+			<p><b>Step 2:</b> Go <a href="https://myaccount.google.com/u/1/security" target="_window">here</a> and enable <b>2-step verification</b>.</p>
+			<img src="/emails/images/gmail2.png" class="img-polaroid">
+			<br><br>
+
+			<p><b>Step 3:</b> Go <a href="https://myaccount.google.com/u/1/apppasswords" target="_window">here</a> and create an <b>app password</b>.</p>
+			<img src="/emails/images/gmail3.png" class="img-polaroid">
+			<br><br>
+			<img src="/emails/images/gmail4.png" class="img-polaroid">
+			<br><br>
+		</div>
+	</section>
 </section>
+
+<script>
+	// function to validate email address has the right format and has not other chars more than @, . and alphanumeric
+	function validEmail(s) {
+		var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		return re.test(s);
+	}
+
+	// function to validate name has not other chars more than apha and spaces
+	function validName(s) {
+		var re = /^[a-zA-Z ]+$/;
+		return re.test(s);
+	}
+
+	// function to validate a gmail app password, that is composed by 4 groups of 4 aphanumeric chars each, separated by space
+	function validPassw(s) {
+		var re = /^[a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4} [a-zA-Z0-9]{4}$/;
+		return re.test(s);
+	}
+
+	// validate subject and body
+	function validate() {
+		var fname = $('#fname').val();
+		var lname = $('#lname').val();
+		var email = $('#email').val();
+		var passw = $('#passw').val();
+		var b = true;
+
+		if (fname.length == 0) {
+			$('#fname').css('border-color', 'blue');
+			b = false;
+		} else {
+			if (validName(fname)) {
+				$('#fname').css('border-color', 'green');
+			} else {
+				$('#fname').css('border-color', 'red');
+			}
+		}
+
+		if (lname.length == 0) {
+			$('#lname').css('border-color', 'blue');
+			b = false;
+		} else {
+			if (validName(lname)) {
+				$('#lname').css('border-color', 'green');
+			} else {
+				$('#lname').css('border-color', 'red');
+			}
+		}
+
+		if (email.length == 0) {
+			$('#email').css('border-color', 'blue');
+			b = false;
+		} else {
+			if (validEmail(email)) {
+				$('#email').css('border-color', 'green');
+			} else {
+				$('#email').css('border-color', 'red');
+			}
+		}
+
+		if (passw.length == 0) {
+			$('#passw').css('border-color', 'blue');
+			b = false;
+		} else {
+			if (validPassw(passw)) {
+				$('#passw').css('border-color', 'green');
+			} else {
+				$('#passw').css('border-color', 'red');
+			}
+		}
+	} // validate
+
+	$(document).ready(function() {
+		$('#fname').keyup(function() {
+			validate();
+		});
+
+		$('#lname').keyup(function() {
+			validate();
+		});
+
+		$('#email').keyup(function() {
+			validate();
+		});
+
+		$('#passw').keyup(function() {
+			validate();
+		});
+
+		// select all text when focus
+		$('.wizard_form input').focus(function() {
+			$(this).select();
+		});
+
+		// set focus on #fname input
+		$('#fname').focus();
+
+	});
+</script>

@@ -1,31 +1,10 @@
 <%
 begin
-  # remember the industry
-  @login.user.preference('step3.keywords', '', params[:keywords])
-  # get search parameters
-  # remove values that are not listed in the regarding table
-  positions = @login.user.preference('step1.positions', '', nil).to_s.split(/,/).map { |p| p.strip }.select { |s| JOBPOSITIONS.map { |j| j.downcase }.include?(s.downcase) }.map { |s| { 'value'=>s, 'positive'=>true } }
-  headcounts = @login.user.preference('step2.headcounts', '', nil).to_s.split(/,/).map { |h| h.strip }.select { |s| BlackStack::MicroData::Zi::CompanyHeadcount.map { |o| o.value.downcase }.include?(s.downcase) }.map { |s| { 'value'=>s, 'positive'=>true } }
-  keywords = @login.user.preference('step3.keywords', '', nil).to_s.split(/,/).map { |k| k.strip }.map { |s| { 'value'=>s, 'type'=>0 } }
-  # get i2p account
-  i2p = BlackStack::I2P::Account.where(:id=>@login.user.id_account).first
-  # create the search
-  h = {
-    'name' => 'my search',
-    'status' => true,
-    'stop_limit' => 10,
-    'verify_email' => i2p.premium?, # request verified emails if the account is premium only
-    'direct_phone_numbers_only' => false,
-    'keywords' => keywords,
-    'job_titles' => positions,
-    'company_headcounts' => headcounts,
-  }
-  o = BlackStack::MicroData::Zi::Search.new(h)
-  o.id = guid
-  o.create_time = now
-  o.id_user = @login.id_user
-  o.id_account = @login.user.id_account
-  o.save
+  fname = @login.user.preference('step3.fname', '', params[:fname])
+  lname = @login.user.preference('step3.lname', '', params[:lname])
+  email = @login.user.preference('step3.email', '', params[:email])
+  passw = @login.user.preference('step3.passw', '', params[:passw])
+  
   # url to go after filter
   url = BlackStack::Funnel.url_after_login(@login, 'funnels.main')
   # go to done wizard

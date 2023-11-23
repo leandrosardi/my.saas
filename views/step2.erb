@@ -59,7 +59,6 @@ form.wizard_form textarea {
 	margin-bottom: 30px;
 	padding: 25px 10px 10px 10px;
 }
-
 </style>
 
 <section class="step">
@@ -127,6 +126,19 @@ form.wizard_form textarea {
 		$('#body').keyup(function() {
 			validate();
 		});
+
+		// select all text when focus #subject
+		$('#subject').focus(function() {
+			$(this).select();
+		});
+
+		// select all text when focus #body
+		$('#body').focus(function() {
+			$(this).select();
+		});
+
+		// set focus on #subject input
+		$('#subject').focus();
 
 		// validate subject and body
 		validate();
