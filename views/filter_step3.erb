@@ -14,11 +14,12 @@
     } 
   }.map { |row|
     {
-      'name' => "#{row[0]} #{row[1]}",
-      'datas' => {
-        'email' => row[2],
+      'name' => "#{row[1]} #{row[2]}",
+      'id_user' => @login.user.id,
+      'datas' => [{
+        'value' => row[0],
         'type' => BlackStack::Leads::Data::TYPE_EMAIL,
-      }
+      }],
     }
   }
   rows.pop # remove last row with blank values

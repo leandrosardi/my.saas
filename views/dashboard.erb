@@ -4,12 +4,13 @@ export_button_text = 'lists'
 acc = BlackStack::Leads::Account.where(:id=>@login.user.id_account).first
 id_export = @login.user.preference('dashboard.id_export', '', params[:id_export].to_s.empty? ? nil : params[:id_export].to_s)
 
-leads = DB["
-    select count(*) as n
-    from fl_lead l
-    join \"user\" u on (u.id=l.id_user and u.id_account='#{acc.id}')
-    where l.delete_time is null
-"].first[:n]
+q = "
+select count(*) as n
+from fl_lead l
+join \"user\" u on (u.id=l.id_user and u.id_account='#{acc.id}')
+where l.delete_time is null
+"
+leads = DB[q].first[:n]
 
 campaigns = DB["
     select count(*) as n

@@ -17,7 +17,7 @@ module Leads
       # i need credits and it will consume my credits.
       if self.fl_lead.id_user.nil?
         account = BlackStack::I2P::Account.where(:id=>self.fl_export.user.id_account).first
-        raise 'No Credits' if account.credits('leads').to_i < 1        
+        #raise 'No Credits' if account.credits('leads').to_i < 1        
       end
       
       super()
