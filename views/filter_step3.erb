@@ -7,7 +7,19 @@ begin
   
   # parsing csv
   csv = @login.user.preference('step1.csv', '', nil)
-  rows = csv.split("\n").map { |row| row.split(',').map { |s| s.strip } }
+  rows = csv.split("\n").map { |row| 
+    row.split(',').map { |s| 
+      s.strip 
+    } 
+  }.map { |row|
+    {
+      'name' => "#{row[0]} #{row[1]}",
+      'datas' => {
+        'email' => row[2],
+        'type' => BlackStack::Leads::Data::TYPE_EMAIL,
+      }
+    }
+  }
 
   subject = @login.user.preference('step2.subject', '', nil)
   body = @login.user.preference('step2.body', '', nil)
@@ -70,10 +82,90 @@ begin
   address_tag.save
 
   # create an export list
+  export = BlackStack::Leads::Export.new
+  export.id_user = @login.user.id
+  export.id = guid
+  export.create_time = now
+  export.name = 'export1'
+  export.id_address = address.id
+  export.id_tag = tag.id
+  export.save
+
   # create leads
+  leads = BlackStack::Leads::Lead.merge_many(rows)
+  leads.each { |lead| lead.save }
+
   # add leads to the export list
+  leads.each { |lead|
+    export_lead = BlackStack::Leads::ExportLead.new
+    export_lead.id = guid
+    export_lead.create_time = now
+    export_lead.id_user = @login.user.id
+    export_lead.id_export = export.id
+    export_lead.id_lead = lead.id
+    export_lead.added_manually = true
+    export_lead.save
+    # release resource
+    GC.start
+    DB.disconnect
+  }
+
   # create campaign
+  campaign = BlackStack::Emails::Campaign.new
+  campaign.id = guid
+  campaign.id_user = @login.user.id
+  campaign.create_time = now
+  campaign.name = 'campaign1'
+  campaign.id_export = id_export
+  campaign.stat_replies = 0
+  campaign.stat_positive_replies = 0
+  campaign.stat_sents = 0
+  campaign.stat_opens = 0
+  campaign.stat_clicks = 0
+  campaign.stat_bounces = 0
+  campaign.stat_unsubscribes = 0
+  campaign.stat_complaints = 0
+  campaign.save
+  
+  # create outreach
+  outreach = BlackStack::Emails::Outreach.new
+  outreach.id = guid
+  outreach.id_user = @login.user.id
+  outreach.create_time = now
+  outreach.id_campaign = campaign.id
+  outreach.id_tag = @login.user.account.tags.select { |g| g.name.downcase == tag.downcase }.first.id
+  outreach.save
+
   # create followup
+  followup = BlackStack::Emails::FollowUp.new
+  followup.id = guid
+  followup.id_user = @login.user.id
+  followup.create_time = now
+  followup.name = 'followup1'
+  followup.id_campaign = campaign.id
+  # parameters
+  followup.subject = subject
+  followup.body = body
+  followup.type = BlackStack::Emails::Followup::TYPE_HTML
+  followup.status = BlackStack::Emails::Followup::STATUS_ON
+  followup.sequence_number = 1
+  followup.delay_days = 0
+  followup.track_opens_enabled = true
+  followup.track_clicks_enabled = true
+  # stats
+  followup.stat_replies = 0
+  followup.stat_positive_replies = 0
+  followup.stat_sents = 0
+  followup.stat_opens = 0
+  followup.stat_clicks = 0
+  followup.stat_bounces = 0
+  followup.stat_unsubscribes = 0
+  followup.stat_complaints = 0
+  # stats
+  followup.stat_subject_spintax_variations = 0
+  followup.stat_body_spintax_variations = 0
+  # save
+  followup.save
 
   # url to go after filter
   url = BlackStack::Funnel.url_after_login(@login, 'funnels.main')
