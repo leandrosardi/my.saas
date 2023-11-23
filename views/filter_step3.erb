@@ -5,6 +5,76 @@ begin
   email = @login.user.preference('step3.email', '', params[:email])
   passw = @login.user.preference('step3.passw', '', params[:passw])
   
+  # parsing csv
+  csv = @login.user.preference('step1.csv', '', nil)
+  rows = csv.split("\n").map { |row| row.split(',').map { |s| s.strip } }
+
+  subject = @login.user.preference('step2.subject', '', nil)
+  body = @login.user.preference('step2.body', '', nil)
+
+  fname = @login.user.preference('step3.fname', '', nil)
+  lname = @login.user.preference('step3.lname', '', nil)
+  email = @login.user.preference('step3.email', '', nil)
+  passw = @login.user.preference('step3.passw', '', nil)
+
+  # create address
+  mta = BlackStack::Funnel::Mta.new({
+    :id_user => @login.user.id,
+
+    :smtp_address => 'smtp.gmail.com',
+    :smtp_port => 25,
+    :smtp_username => email,
+    :smtp_password => passw,
+    
+    :imap_address => 'imap.googlemail.com',
+    :imap_port => 993,
+    :imap_username => email,
+    :imap_password => passw,
+
+    :authentication => 'plain',
+    :enable_starttls_auto => true,
+    :openssl_verify_mode => OpenSSL::SSL::VERIFY_NONE,
+    :inbox_label => 'Inbox',
+    :spam_label => 'Spam',
+    :search_all_wildcard => '*',
+  })
+  mta.save
+
+  address = BlackStack::Funnel::Address.new({
+    :id_user => @login.user.id,
+    :id_mta => mta.id,
+    :type => BlackStack::Emails::Address::TYPE_GMAIL,
+    :first_name => fname,
+    :last_name => lname,
+    :address => email,
+    :password => passw,
+    :enabled => true,
+  })
+  address.save
+
+  # create tag
+  tag = BlackStack::Emails::Tag.new
+  tag.id = guid
+  tag.create_time = now
+  tag.id_user = @login.user.id
+  tag.name = 'tag1'
+  tag.save
+
+  # add tag to address
+  address_tag = BlackStack::Emails::AddressTag.new
+  address_tag.id = guid
+  address_tag.create_time = now
+  address_tag.id_user = @login.user.id
+  address_tag.id_address = address.id
+  address_tag.id_tag = tag.id
+  address_tag.save
+
+  # create an export list
+  # create leads
+  # add leads to the export list
+  # create campaign
+  # create followup
+
   # url to go after filter
   url = BlackStack::Funnel.url_after_login(@login, 'funnels.main')
   # go to done wizard
