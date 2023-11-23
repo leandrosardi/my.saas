@@ -169,7 +169,7 @@
   followup.save
 
   # url to go after filter
-  url = BlackStack::Funnel.url_after_login(@login, 'funnels.main')
+  url = '/dashboard' #BlackStack::Funnel.url_after_login(@login, 'funnels.main')
   # go to done wizard
   redirect url
 #rescue => e
