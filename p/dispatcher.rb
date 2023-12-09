@@ -1,2 +1,4 @@
-# add your required libraries here
+require 'mysaas'
+require 'lib/stubs'
 require 'pampa/dispatcher'
+
