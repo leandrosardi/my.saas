@@ -1,2 +1,4 @@
-# add your required libraries here
+require 'app/mysaas'
+require 'app/lib/stubs'
 require 'pampa/worker'
+
