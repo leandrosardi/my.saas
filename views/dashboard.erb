@@ -214,51 +214,7 @@ a = a.order(:large_description).limit(page_size, (page_number.to_i - 1) * page_s
                 </section>
             </div>
         </div>
-    </div>
-    
-    <%
-    BlackStack::Pampa.jobs.each { |j|
-    %>
-    <div class='row-fluid box'>
-        <div class='row-fluid'>
-            <div class='span12'>
-                <h2><%=j.name.encode_html%></h2>
-            </div>
-        </div>
-        <div class='row-fluid'>
-            <div class='span3'>
-                <button class='btn btn-black btn-block btn-large' id='dfyl-verify' type='button' disabled>
-                    <span style='font-size:32px;'><%=j.total.to_label%></span>
-                    <br/>
-                    <b>total</b>
-                </button>
-            </div>
-            <div class='span3'>
-                <button class='btn btn-blue btn-block btn-large' id='dfyl-verify' type='button' disabled>
-                    <span style='font-size:32px;'><%=j.completed.to_label%></span>
-                    <br/>
-                    <b>completed</b>
-                </button>
-            </div>
-            <div class='span3'>
-                <button class='btn btn-green btn-block btn-large' id='dfyl-verify' type='button' disabled>
-                    <span style='font-size:32px;'><%=j.pending.to_label%></span>
-                    <br/>
-                    <b>pending</b>
-                </button>
-            </div>
-            <div class='span3'>
-                <button class='btn btn-red btn-block btn-large' id='dfyl-verify' type='button' disabled>
-                    <span style='font-size:32px;'><%=j.failed.to_label%></span>
-                    <br/>
-                    <b>failed</b>
-                </button>
-            </div>
-        </div>
-    </div>
-    <%
-    }
-    %>    
+    </div>    
 <!--
 </section>
 -->
