@@ -24,7 +24,7 @@ BlackStack::Funnel.set({
     # 
     # Comment the line below if you don't want google analytics.
     #
-    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-xxxxxxx',
+    :ga => BlackStack.sandbox? ? nil : nil,
 
     # reCaptcha v2 keys
     # 
@@ -33,8 +33,8 @@ BlackStack::Funnel.set({
     #
     # Comment the lines below if you don't want reCaptcha v2.
     #  
-    :recaptcha2_site_key => 'xxxxxxx',
-    :recaptcha2_secret_key => 'xxxxxxx-xxxxxxx',
+    :recaptcha2_site_key => nil,
+    :recaptcha2_secret_key => nil,
 })
 
 
