@@ -6,7 +6,7 @@ email = params[:email]
 recaptcha_response = params[:recaptcha_response]
 
 # validate recaptcha_response is not an empty string
-if recaptcha_response.to_s.size == 0
+if recaptcha_response.to_s.size == 0 && BlackStack::Funnel.recaptcha2_site_key
 	redirect "/recover?err=#{CGI::escape("Recaptcha is Required.")}"
 end
 
