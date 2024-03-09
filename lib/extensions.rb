@@ -1,8 +1,8 @@
-require 'my.saas/controllers/extensions/leftbaricon'
-require 'my.saas/controllers/extensions/dependency'
-require 'my.saas/controllers/extensions/settingscreen'
-require 'my.saas/controllers/extensions/storagefolder'
-require 'my.saas/controllers/extensions/extension'
+require 'controllers/extensions/leftbaricon'
+require 'controllers/extensions/dependency'
+require 'controllers/extensions/settingscreen'
+require 'controllers/extensions/storagefolder'
+require 'controllers/extensions/extension'
 
 module BlackStack
     module Extensions
@@ -29,9 +29,9 @@ module BlackStack
             # validate: name must be a symbol
             raise "name must be a symbol" if !ext_name.is_a?(Symbol)
             # require the extension definition. it is usually added in the `config.rb` file.
-            require "my.saas/extensions/#{ext_name.to_s}/extension"            
+            require "extensions/#{ext_name.to_s}/extension"            
             # require the object, because sometimes they are needed in the `config.rb` file.
-            require "my.saas/extensions/#{ext_name.to_s}/main"
+            require "extensions/#{ext_name.to_s}/main"
             # add updates
             BlackStack::Extensions.extensions.select { |o| o.name.upcase == ext_name.to_s.upcase }.first.update(custom_config)
         end # require

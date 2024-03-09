@@ -1,4 +1,4 @@
-require 'my.saas/lib/emails'
+require 'lib/emails'
 
 module BlackStack
     module Notifications

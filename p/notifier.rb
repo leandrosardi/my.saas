@@ -1,10 +1,10 @@
 # encoding: utf-8
-require 'my.saas/mysaas'
-require 'my.saas/lib/stubs'
+require 'mysaas'
+require 'lib/stubs'
 #require_relative '/home/leandro/code/my-ruby-deployer/lib/my-ruby-deployer' # enable this line if you want to work with a live version of deployer
 #require_relative '/home/leandro/code/blackstack-nodes/lib/blackstack-nodes' # enable this line if you want to work with a live version of nodes
-require 'my.saas/config'
-require 'my.saas/version'
+require 'config'
+require 'version'
 
 l = BlackStack::LocalLogger.new('./notifier.log')
 
@@ -15,7 +15,7 @@ DB = BlackStack::CRDB::connect
 l.logf 'done'.green
 
 l.logs 'Loading models... '
-require 'my.saas/lib/skeletons'
+require 'lib/skeletons'
 l.logf 'done'.green
 
 # parse command line parameters
