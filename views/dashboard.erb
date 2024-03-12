@@ -165,7 +165,7 @@ reminders = rows.size
 
           <%
           e = acc.exports.select { |e| e.id==id_export.to_s.to_guid }.first
-          unless id_export.to_s.empty?
+          unless id_export.to_s.empty? || e.nil?
             %>
             <span class='badge badge-blue'>List: <%=e.filename.encode_html%> <a href='/dashboard?id_export='><i class='icon-remove'></i></a></span>
             <%
