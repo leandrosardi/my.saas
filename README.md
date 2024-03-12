@@ -60,7 +60,7 @@ I will be adding one new chapter week by week, so follow this project and get no
 ### Basic
 
 01. [Installation](./docu/01.Installation.md)
-02. [Sandbox](./docu/02.sandbox.md)
+02. [Configurations](./docu/02.configurations.md)
 03. [Secret Files Management](./docu/03.secret-files-management.md)
 04. [Deployment](./docu/04.deployment.md) 
 05. [Transactional Emails](./docu/05.transactional-emails.md) 
@@ -68,16 +68,15 @@ I will be adding one new chapter week by week, so follow this project and get no
 07. Invoicing and Payments Processing
 08. System Owner
 09. Accounts Management
-
-### Advanced
-
-09. User Storage
-10. Access Points Publishing
-11. Single-Thread Backend Processing
-12. Multi-Thread Backend Processing
-13. Extensibility
-14. Available Extensions
-15. Available UI Components
+10. User Storage
+11. Access Points Publishing
+12. Single-Thread Backend Processing
+13. Multi-Thread Backend Processing
+14. Extensibility
+15. Available Extensions
+16. Available UI Components
+17. Security
+18. Archivlement
 
 ## Further Work
 

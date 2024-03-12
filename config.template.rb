@@ -12,7 +12,7 @@
 
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata' : '/home/ubuntu/code/freeleadsdata'
-CS_API_KEY = '118f3c32-****-****-****-************'
+VYMECO_API_KEY = '118f3c32-****-****-****-************'
 DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 BlackStack::Funnel.set({
@@ -24,7 +24,7 @@ BlackStack::Funnel.set({
     # 
     # Comment the line below if you don't want google analytics.
     #
-    :ga => BlackStack.sandbox? ? 'G-*****LRH' : 'G-xxxxxxx',
+    :ga => BlackStack.sandbox? ? nil : nil,
 
     # reCaptcha v2 keys
     # 
@@ -33,8 +33,8 @@ BlackStack::Funnel.set({
     #
     # Comment the lines below if you don't want reCaptcha v2.
     #  
-    :recaptcha2_site_key => 'xxxxxxx',
-    :recaptcha2_secret_key => 'xxxxxxx-xxxxxxx',
+    :recaptcha2_site_key => nil,
+    :recaptcha2_secret_key => nil,
 })
 
 
@@ -229,7 +229,7 @@ BlackStack::Deployer::add_nodes([{
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
-  :connectionsphere_api_key => CS_API_KEY,
+  :vymeco_api_key => VYMECO_API_KEY,
   :dropbox_refresh_token => DB_REFRESH_TOKEN,
 })
 
