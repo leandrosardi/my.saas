@@ -31,10 +31,10 @@ require 'fileutils'
 require 'rack/contrib/try_static' # this is to manage many public folders
 require 'postmark'
 
-require 'my.saas/lib/controllers'
-require 'my.saas/lib/emails'
-require 'my.saas/lib/extensions'
-require 'my.saas/lib/notifications'
+require 'lib/controllers'
+require 'lib/emails'
+require 'lib/extensions'
+require 'lib/notifications'
 
 # Default login and signup screens.
 # 

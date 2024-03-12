@@ -11,8 +11,9 @@
 #
 
 # CODE_PATH may be different in production and development environments.
-CODE_PATH = BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata' : '/home/ubuntu/code/freeleadsdata'
+CODE_PATH = '$RUBYLIB'
 VYMECO_API_KEY = '118f3c32-****-****-****-************'
+
 DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 BlackStack::Funnel.set({

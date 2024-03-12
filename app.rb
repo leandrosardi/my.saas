@@ -1,8 +1,8 @@
 begin
   print 'Loading libraries... '
   require 'sinatra'
-  require 'my.saas/mysaas'
-  require 'my.saas/lib/stubs'
+  require 'mysaas'
+  require 'lib/stubs'
   puts 'done'.green
 
   # 
@@ -20,7 +20,7 @@ begin
       :mandatory=>false, 
       :description=>'Name of the configuration file.', 
       :type=>BlackStack::SimpleCommandLineParser::STRING,
-      :default => 'my.saas/config',
+      :default => 'config',
     }]
   )
   puts 'done'.green
@@ -31,7 +31,7 @@ begin
   puts 'done'.green
 
   print 'Loading version information... '
-  require 'my.saas/version'
+  require 'version'
   puts 'done'.green
 
   print 'Connecting database... '
@@ -39,7 +39,7 @@ begin
   puts 'done'.green
 
   print 'Loading models... '
-  require 'my.saas/lib/skeletons'
+  require 'lib/skeletons'
   puts 'done'.green
 
   print 'Loading helpers... '
@@ -172,14 +172,14 @@ begin
   # include the libraries of the extensions
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   BlackStack::Extensions.extensions.each { |e|
-    require "my.saas/extensions/#{e.name.downcase}/main"
+    require "extensions/#{e.name.downcase}/main"
   }
   puts 'done'.green
 
   print 'Loading extensions models... '
   # Load skeleton classes
   BlackStack::Extensions.extensions.each { |e|
-    require "my.saas/extensions/#{e.name.downcase}/lib/skeletons"
+    require "extensions/#{e.name.downcase}/lib/skeletons"
   }
   puts 'done'.green
   
@@ -641,7 +641,7 @@ begin
   # reference: https://github.com/leandrosardi/mysaas/issues/33
   print 'Setting up extensions entries... '
   BlackStack::Extensions.extensions.each { |e|
-    require "my.saas/extensions/#{e.name.downcase}/app.rb"
+    require "extensions/#{e.name.downcase}/app.rb"
   }
   puts 'done'.green
   
