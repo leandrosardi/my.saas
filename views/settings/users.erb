@@ -162,7 +162,7 @@ DB[q].each { |row|
 						<input class="checkbox select-row" data-rows-group-id='users' type="checkbox" id="<%=u.id.to_guid%>" data-id="<%=u.id.to_guid%>" />
 					</td>
 					<td>
-						<img class='avatar' src="<%="https://www.gravatar.com/avatar/" + Digest::MD5.hexdigest(u.email.strip.downcase)%>" alt="<%=u.name.to_s.encode_html%>" />
+						<img class='avatar' src="<%=GRAVATAR_PATH + Digest::MD5.hexdigest(u.email.strip.downcase)%>" alt="<%=u.name.to_s.encode_html%>" />
 					</td>
 					<td style='text-align: center; vertical-align: top;'>
 						<%

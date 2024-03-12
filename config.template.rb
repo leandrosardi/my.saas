@@ -12,6 +12,8 @@
 
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata' : '/home/ubuntu/code/freeleadsdata'
+CONNECTIVITY = BlackStack.sandbox? ? false : true
+GRAVATAR_PATH = BlackStack.sandbox? ? '' : "https://www.gravatar.com/avatar/"
 CS_API_KEY = '118f3c32-****-****-****-************'
 DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
