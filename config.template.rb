@@ -12,7 +12,7 @@
 
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata' : '/home/ubuntu/code/freeleadsdata'
-CS_API_KEY = '118f3c32-****-****-****-************'
+VYMECO_API_KEY = '118f3c32-****-****-****-************'
 DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 BlackStack::Funnel.set({
@@ -229,7 +229,7 @@ BlackStack::Deployer::add_nodes([{
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
-  :connectionsphere_api_key => CS_API_KEY,
+  :vymeco_api_key => VYMECO_API_KEY,
   :dropbox_refresh_token => DB_REFRESH_TOKEN,
 })
 
