@@ -31,7 +31,6 @@ ngrok
 # reference: for more information, read #33
 /extensions/*
 !/extensions/README.md
-!/extensions/*js
 
 # igonore the backups of the configuration files
 config.*.rb

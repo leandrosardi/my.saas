@@ -68,17 +68,15 @@ I will be adding one new chapter week by week, so follow this project and get no
 07. Invoicing and Payments Processing
 08. System Owner
 09. Accounts Management
-10. [Security](./docu/11.security.md)
-
-### Advanced
-
-09. User Storage
-10. Access Points Publishing
-11. Single-Thread Backend Processing
-12. Multi-Thread Backend Processing
-13. Extensibility
-14. Available Extensions
-15. Available UI Components
+10. User Storage
+11. Access Points Publishing
+12. Single-Thread Backend Processing
+13. Multi-Thread Backend Processing
+14. Extensibility
+15. Available Extensions
+16. Available UI Components
+17. Security
+18. Archivlement
 
 ## Further Work
 
