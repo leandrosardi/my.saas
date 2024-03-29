@@ -24,12 +24,6 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 			<li>
 				<a href="/dashboard"><span class="icon-bar-chart"></span>Dashboard</a>
 			</li>
-			<li>
-				<a href="/new"><span class="icon-plus"></span>New</a>
-			</li>
-			<li>
-				<a href="/wizard"><span class="icon-magic"></span>Wizard</a>
-			</li>
 			<%
 			else # I am in a service
 				e.leftbar_icons.each { |i|
@@ -53,8 +47,8 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 			end
 			%>
 			<!-- this is shwn for all the services -->
-			<li class="lp-dropdown">
-				<a href="/settings/dashboard" class="lp-dropdown-toggle" id="settings-dropdown"><span class="icon-cog"></span>Settings</a>
+			<li>
+				<a href="/settings/dashboard"><span class="icon-cog"></span>Settings</a>
 			</li>
 		</ul>
 	</div>

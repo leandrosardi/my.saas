@@ -5,6 +5,8 @@ begin
   require 'lib/stubs'
   puts 'done'.green
 
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Parsing command line parameters.
   # 
   print 'Parsing command line parameters... '
   parser = BlackStack::SimpleCommandLineParser.new(
@@ -145,10 +147,21 @@ begin
     "</p>"
   end
   puts 'done'.green
+  
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Buffering some tables required in some screens.
+  # 
+  print 'Buffering timezone table... '
+  TIMEZONES = BlackStack::MySaaS::Timezone.all
+  puts 'done'.green + " (#{TIMEZONES.size.to_s.blue} records)"
 
-  # enable this line if you want to work with the live version of blackstack-core.
-  #require_relative '../blackstack-core/lib/blackstack-core' 
+  print 'Buffering country table... '
+  COUNTRIES = BlackStack::MySaaS::Country.all
+  puts 'done'.green + " (#{COUNTRIES.size.to_s.blue} records)"
 
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Run webserver.
+  # 
   puts '
 
   /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\   

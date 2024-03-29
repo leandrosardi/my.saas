@@ -28,7 +28,7 @@ redirect = params[:redirect]
 			<div class="controls">
 				<select class="input-xlarge" name="id_timezone" id="id_timezone">
 					<%
-					BlackStack::MySaaS::Timezone.order(:offset, :large_description).all { |t|
+					TIMEZONES.sort_by { |t| [t.offset, t.large_description] }.each { |t|
 						sSelected = ""
 						if t.id.to_guid == account.id_timezone.to_guid
 							sSelected = "selected"
@@ -37,6 +37,8 @@ redirect = params[:redirect]
 						<option value='<%=t.id.to_guid%>' <%=sSelected%>><%=t.short_description.encode_html%> (GMT <%=t.offset.to_s.encode_html%>)</option>
 						<%
 					}
+					DB.disconnect
+					GC.start
 					%>
 				</select>
 			</div>
@@ -73,14 +75,14 @@ redirect = params[:redirect]
 					<option value="" <%=selected%>></option>
 
 					<%
-					BlackStack::MySaaS::Country.order(:name).all { |c|
+					COUNTRIES.sort_by { |c| [c.name] }.each { |c|
 						selected = account.billing_country.to_s == c.name.to_s ? "selected" : ""
 						%>
 						<option value='<%=c.name.to_s.encode_html%>' <%=selected%>><%=c.name.to_s.encode_html%></option>
 						<%
-						DB.disconnect
-						GC.start
 					}
+					DB.disconnect
+					GC.start
 					%>
 				</select>
 			</div>
