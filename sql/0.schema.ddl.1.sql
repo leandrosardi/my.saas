@@ -1,3 +1,8 @@
+-- This line works in PostgeSQL only.
+-- It is commented to keep portability with CockroachDB.
+-- Run this line manually in your database.
+--CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Timezone must be GTM -3
 -- Reference: https://github.com/leandrosardi/mysaas/issues/29
 SET TIMEZONE = 'America/Argentina/Buenos_Aires';
@@ -10,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.country (
 	id uuid NOT NULL,
 	code varchar(500) NOT NULL,
 	"name" varchar(500) NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC)
+	CONSTRAINT "primary_country" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.state (
@@ -18,8 +23,8 @@ CREATE TABLE IF NOT EXISTS public.state (
 	code varchar(500) NOT NULL,
 	"name" varchar(500) NOT NULL,
 	id_country uuid NOT NULL REFERENCES public.country(id),
-	CONSTRAINT state_code_id_country_key UNIQUE (code ASC, id_country ASC),
-	CONSTRAINT state_pkey PRIMARY KEY (id ASC)
+	CONSTRAINT state_code_id_country_key UNIQUE (code, id_country),
+	CONSTRAINT state_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.timeoffset (
@@ -27,27 +32,27 @@ CREATE TABLE IF NOT EXISTS public.timeoffset (
 	"region" varchar(500) NOT NULL,
 	utc numeric(2) NOT NULL,
 	dst numeric(2) NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC)
+	CONSTRAINT "primary_timeoffset" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.zipcode (
 	value varchar(500) NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (value ASC)
+	CONSTRAINT "primary_zipcode" PRIMARY KEY (value)
 );
 
 CREATE TABLE IF NOT EXISTS public.daily (
 	"date" date NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (date ASC)
+	CONSTRAINT "primary_daily" PRIMARY KEY (date)
 );
 
 CREATE TABLE IF NOT EXISTS public.hourly (
 	"hour" numeric(18) NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (hour ASC)
+	CONSTRAINT "primary_hourly" PRIMARY KEY (hour)
 );
 
 CREATE TABLE IF NOT EXISTS public.minutely (
 	"minute" numeric(18) NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (minute ASC)
+	CONSTRAINT "primary_minutely" PRIMARY KEY (minute)
 );
 
 CREATE TABLE IF NOT EXISTS public.timezone (
@@ -55,7 +60,7 @@ CREATE TABLE IF NOT EXISTS public.timezone (
 	"offset" float8 NOT NULL,
 	large_description varchar(500) NULL,
 	short_description varchar(500) NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC)
+	CONSTRAINT "primary_timezone" PRIMARY KEY (id)
 );
 
 -- User security tables
@@ -87,7 +92,7 @@ CREATE TABLE IF NOT EXISTS public.account (
 	update_balance_end_time timestamp NULL,
 	update_balance_error_description varchar(8000) NULL,
 
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_account" PRIMARY KEY (id),
 
 	--CONSTRAINT fk__account__id_user_to_contact FOREIGN KEY (id_user_to_contact) REFERENCES public."user"(id),
 	CONSTRAINT fk_id_account_owner_ref_account FOREIGN KEY (id_account_owner) REFERENCES public.account(id)
@@ -96,7 +101,7 @@ CREATE TABLE IF NOT EXISTS public.account (
 CREATE TABLE IF NOT EXISTS public."role" (
 	id uuid NOT NULL,
 	"name" varchar(500) NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC)
+	CONSTRAINT "primary_role" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public."user" (
@@ -110,8 +115,8 @@ CREATE TABLE IF NOT EXISTS public."user" (
 	phone varchar(500) NULL,
 	verified bool NULL,
 	"restricted" bool NOT NULL DEFAULT false,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
-	CONSTRAINT user_email_key UNIQUE (email ASC),
+	CONSTRAINT "primary_user" PRIMARY KEY (id),
+	CONSTRAINT user_email_key UNIQUE (email),
 	CONSTRAINT fk_id_account_ref_account FOREIGN KEY (id_account) REFERENCES public.account(id)
 );
 
@@ -121,7 +126,7 @@ CREATE TABLE IF NOT EXISTS public.user_role (
 	id_creator uuid NOT NULL,
 	id_user uuid NOT NULL,
 	id_role uuid NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_user_role" PRIMARY KEY (id),
 	CONSTRAINT fk_id_creator_ref_user FOREIGN KEY (id_creator) REFERENCES public."user"(id),
 	CONSTRAINT fk_id_role_ref_role FOREIGN KEY (id_role) REFERENCES public."role"(id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
@@ -132,7 +137,7 @@ CREATE TABLE IF NOT EXISTS public."login" (
 	id_user uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	id_real_user uuid NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_login" PRIMARY KEY (id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id),
 	CONSTRAINT login_id_real_user_fkey FOREIGN KEY (id_real_user) REFERENCES public."user"(id),
 	CONSTRAINT login_id_real_user_fkey_1 FOREIGN KEY (id_real_user) REFERENCES public."user"(id),
@@ -188,7 +193,7 @@ CREATE TABLE IF NOT EXISTS public.buffer_paypal_notification (
 	sync_end_time timestamp NULL,
 	sync_result varchar(8000) NULL,
 	sync_reservation_id varchar(500) NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC)
+	CONSTRAINT "primary_buffer_paypal_notification" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public."subscription" (
@@ -222,7 +227,7 @@ CREATE TABLE IF NOT EXISTS public."subscription" (
 	period3 varchar(500) NULL,
 	mc_amount3 varchar(500) NULL,
 	ipn_track_id varchar(500) NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_subscription" PRIMARY KEY (id),
 	CONSTRAINT fk_id_account_ref_account FOREIGN KEY (id_account) REFERENCES public.account(id),
 	CONSTRAINT fk_id_buffer_paypal_notification_ref_buffer_paypal_notification FOREIGN KEY (id_buffer_paypal_notification) REFERENCES public.buffer_paypal_notification(id)
 );
@@ -234,8 +239,8 @@ CREATE TABLE IF NOT EXISTS public.balance (
 	last_update_time timestamp NOT NULL,
 	credits int8 NOT NULL,
 	amount numeric(22, 8) NOT NULL,
-	CONSTRAINT balance_pkey PRIMARY KEY (id ASC),
-	CONSTRAINT uk_balance UNIQUE (id_account ASC, service_code ASC),
+	CONSTRAINT "primary_balance" PRIMARY KEY (id),
+	CONSTRAINT uk_balance UNIQUE (id_account, service_code),
 	CONSTRAINT balance_id_account_fkey FOREIGN KEY (id_account) REFERENCES public.account(id)
 );
 
@@ -254,7 +259,7 @@ CREATE TABLE IF NOT EXISTS public.invoice (
 	disabled_modification bool NULL,
 	id_previous_invoice uuid NULL,
 	delete_time timestamp NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_invoice" PRIMARY KEY (id),
 	CONSTRAINT fk_id_account_ref_account FOREIGN KEY (id_account) REFERENCES public.account(id),
 	CONSTRAINT fk_id_buffer_paypal_notification_ref_buffer_paypal_notification FOREIGN KEY (id_buffer_paypal_notification) REFERENCES public.buffer_paypal_notification(id),
 	CONSTRAINT fk_id_previous_invoice_ref_invoice FOREIGN KEY (id_previous_invoice) REFERENCES public.invoice(id)
@@ -271,7 +276,7 @@ CREATE TABLE IF NOT EXISTS public.invoice_item (
 	item_number varchar(500) NULL,
 	description varchar(500) NULL,
 	create_time timestamp NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_invoice_item" PRIMARY KEY (id),
 	CONSTRAINT fk_id_invoice_ref_invoice FOREIGN KEY (id_invoice) REFERENCES public.invoice(id)
 );
 
@@ -298,7 +303,7 @@ CREATE TABLE IF NOT EXISTS public.movement (
 	expiration_lead_period varchar(500) NULL,
 	expiration_lead_units int8 NULL,
 	give_away_negative_credits bool NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_movement" PRIMARY KEY (id),
 	CONSTRAINT fk_id_account_ref_account FOREIGN KEY (id_account) REFERENCES public.account(id),
 	CONSTRAINT fk_id_invoice_item_ref_invoice_item FOREIGN KEY (id_invoice_item) REFERENCES public.invoice_item(id),
 	CONSTRAINT fk_id_user_creator_ref_user FOREIGN KEY (id_user_creator) REFERENCES public."user"(id)
@@ -321,7 +326,7 @@ CREATE TABLE IF NOT EXISTS public.notification (
 	email_from varchar(500) NOT NULL,
 	subject varchar(500) NOT NULL,
 	body text NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_notification" PRIMARY KEY (id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
 
@@ -337,7 +342,7 @@ CREATE TABLE IF NOT EXISTS public.notification_link (
 	create_time timestamp NOT NULL,
 	link_number int8 NOT NULL,
 	url varchar(8000) NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_notification_link" PRIMARY KEY (id),
 	CONSTRAINT fk_id_notification_ref_notification FOREIGN KEY (id_notification) REFERENCES public.notification(id)
 );
 
@@ -346,7 +351,7 @@ CREATE TABLE IF NOT EXISTS public.notification_click (
 	id_link uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	id_user uuid NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_notification_click" PRIMARY KEY (id),
 	CONSTRAINT fk_id_link_ref_notification_link FOREIGN KEY (id_link) REFERENCES public.notification_link(id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
@@ -356,7 +361,7 @@ CREATE TABLE IF NOT EXISTS public.notification_open (
 	id_notification uuid NOT NULL,
 	create_time timestamp NOT NULL,
 	id_user uuid NOT NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_notification_open" PRIMARY KEY (id),
 	CONSTRAINT fk_id_notification_ref_notification FOREIGN KEY (id_notification) REFERENCES public.notification(id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
@@ -378,7 +383,7 @@ CREATE TABLE IF NOT EXISTS public.preference_history (
 	value_int int8 NULL,
 	value_float float8 NULL,
 	value_bool bool NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC, update_time ASC)
+	CONSTRAINT "primary_preference_history" PRIMARY KEY (id, update_time)
 );
 
 CREATE TABLE IF NOT EXISTS public.preference (
@@ -391,6 +396,6 @@ CREATE TABLE IF NOT EXISTS public.preference (
 	value_int int8 NULL,
 	value_float float8 NULL,
 	value_bool bool NULL,
-	CONSTRAINT "primary" PRIMARY KEY (id ASC),
+	CONSTRAINT "primary_preference" PRIMARY KEY (id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
