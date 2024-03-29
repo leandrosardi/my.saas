@@ -1,9 +1,4 @@
 <%
-err = params[:err]
-msg = params[:msg]
-%>
-
-<%
 if BlackStack::Funnel.recaptcha2_site_key
 %>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -19,27 +14,7 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 <br/>
 <br/>
 
-<section class='box span10'>	
-	<%
-	if err!=nil
-	%>
-	<div class="alert alert-error">
-	<%=err.to_s.encode_html%>
-	</div>
-	<%
-	end # err
-	%>
-
-	<%
-	if msg!=nil
-	%>
-	<div class="alert alert-info">
-		<a href="#" class="close" data-dismiss="alert"><i class='icon-remove-sign'></i></a><%=msg.encode_html%>
-	</div>
-	<%
-	end # msg
-	%>
-
+<section class='box span10'>
 	<span align='left'>
 		<h4>Recover your password</b></h4>
 	</span>

@@ -336,9 +336,7 @@ begin
   print 'Setting up entries of external pages... '
   # TODO: here where you have to develop notrial? feature
   get '/', :agent => /(.*)/ do
-    # decide to which landing redirect, based on the extensions and configuration
-    # reference: https://github.com/leandrosardi/i2p/issues/3
-    redirect '/free'
+    redirect '/login'
   end
 
   get '/404', :agent => /(.*)/ do
@@ -350,8 +348,6 @@ begin
   end
 
   get '/login', :agent => /(.*)/ do
-    # TODO: decide to which landing redirect, based on the extensions and configuration
-    # reference: https://github.com/leandrosardi/i2p/issues/3
     erb :'views/login', :layout => :'/views/layouts/public'
   end
   post '/login' do
@@ -362,8 +358,6 @@ begin
   end
 
   get '/signup', :agent => /(.*)/ do
-    # TODO: decide to which landing redirect, based on the extensions and configuration
-    # reference: https://github.com/leandrosardi/i2p/issues/3
     erb :'views/signup', :layout => :'/views/layouts/public'
   end
   post '/signup' do
@@ -399,59 +393,6 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Funnel
   # 
-  get '/' do
-    erb :'views/free', :layout => :'/views/layouts/public'
-  end
-
-  get '/free' do
-    erb :'views/free', :layout => :'/views/layouts/public'
-  end
-
-  get '/landing' do
-    erb :'views/landing', :layout => :'/views/layouts/public'
-  end
-
-  get '/wizard', :auth => true do
-    erb :'views/step1', :layout => :'/views/layouts/public'
-  end
-
-  get '/wizard/', :auth => true do
-    erb :'views/step1', :layout => :'/views/layouts/public'
-  end
-
-  get '/step1', :auth => true do # job positions
-    erb :'views/step1', :layout => :'/views/layouts/public'
-  end
-
-  get '/step2', :auth => true do # headcount
-    erb :'views/step2', :layout => :'/views/layouts/public'
-  end
-
-  get '/step3', :auth => true do # industry
-    erb :'views/step3', :layout => :'/views/layouts/public'
-  end
-
-  get '/filter_step1', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_step1'
-  end
-  post '/filter_step1', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_step1'
-  end
-
-  get '/filter_step2', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_step2'
-  end
-  post '/filter_step2', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_step2'
-  end
-
-  get '/filter_step3', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_step3'
-  end
-  post '/filter_step3', :auth => true, :agent => /(.*)/ do
-    erb :'views/filter_step3'
-  end
-
   get '/offer', :auth => true, :agent => /(.*)/ do
     erb :'views/offer', :layout => :'/views/layouts/public'
   end
@@ -623,20 +564,7 @@ begin
   post '/api1.0/notifications/click.json' do
     erb :'views/api1.0/notifications/click'
   end
-
-  # micro.data
-  post '/api1.0/zi/pull.json', :api_key => true, :agent => /(.*)/ do
-    erb :'views/api1.0/zi/pull'
-  end  
-
-  post '/api1.0/zi/new.json', :api_key => true, :agent => /(.*)/ do
-    erb :'views/api1.0/zi/new'
-  end  
-
-  post '/api1.0/zi/get.json', :api_key => true, :agent => /(.*)/ do
-    erb :'views/api1.0/zi/get'
-  end  
-  
+    
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------

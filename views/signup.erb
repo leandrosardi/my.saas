@@ -7,7 +7,6 @@ companyname = session[:companyname].to_s
 username = session['username'].to_s
 email = session['email'].to_s
 phone = session['phone'].to_s
-err = params[:err]
 %>
 
 <%
@@ -19,7 +18,9 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 %>
 
 <div style='position:absolute;left:5px;top:15px;height:50px;'>
+	<!--
 	<a href='/'><img src="/core/images/logo.png" height="100%" title="ConnectionSphere Logo" /></a>
+	-->
 </div>
 
 <br/>
@@ -54,16 +55,6 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 	<div class='span1'></div>
 
 	<div id='signup-container' class='span5 signin-page'>
-		<%
-		if err!=nil
-		%>
-		<div class="alert alert-error">
-		<%=err.to_s.encode_html%>
-		</div>
-		<%
-		end # err
-		%>
-			
 		<form action="/signup" method="post" style='background-color: white;'>
 			<input type='hidden' id='recaptcha_response' name='recaptcha_response' value='' />
 			<fieldset>

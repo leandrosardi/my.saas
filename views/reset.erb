@@ -1,6 +1,4 @@
 <%
-err = params[:err]
-msg = params[:msg]
 nid = params[:nid]
 
 # validar que los parametros no esten vacios
@@ -41,26 +39,6 @@ end
 <br/>
 
 <section class='box span10'>	
-	<%
-	if err!=nil
-	%>
-	<div class="alert alert-error">
-	<%=err.to_s.encode_html%>
-	</div>
-	<%
-	end # err
-	%>
-
-	<%
-	if msg!=nil
-	%>
-	<div class="alert alert-info">
-		<a href="#" class="close" data-dismiss="alert"><i class='icon-remove-sign'></i></a><%=msg.encode_html%>
-	</div>
-	<%
-	end # msg
-	%>
-
 	<span align='left'>
 		<h4>Reset your password</b></h4>
 	</span>
