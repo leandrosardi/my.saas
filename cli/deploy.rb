@@ -3,14 +3,24 @@ require 'mysaas'
 require 'lib/stubs'
 #require_relative '/home/leandro/code/my-ruby-deployer/lib/my-ruby-deployer' # enable this line if you want to work with a live version of deployer
 #require_relative '/home/leandro/code/blackstack-nodes/lib/blackstack-nodes' # enable this line if you want to work with a live version of nodes
+
+# un-comment this line for testing only.
+#require_relative '../../my-ruby-deployer/lib/my-ruby-deployer.rb'
+
 require 'config'
 require 'version'
 
-require'deployment/install-webserver'
+require'deployment/default'
+require'deployment/extension'
 
 l = BlackStack::LocalLogger.new('./deploy.log')
 
 l.log "Sandbox mode: #{BlackStack.sandbox? ? 'yes'.green : 'no'.red }"
+
+if BlackStack.sandbox?
+  l.log 'Sandbox is not allowed in CLI commands. Remove the `.sandbox` file in the `/cli` directory.'.red
+  exit(1)
+end
 
 # command parameters 
 parser = BlackStack::SimpleCommandLineParser.new(
@@ -21,11 +31,23 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>false, 
     :description=>'Enable or disable the deploying of database migrations.', 
     :type=>BlackStack::SimpleCommandLineParser::BOOL,
-    :default => false,
+    :default => true,
   }, {
     :name=>'code', 
     :mandatory=>false, 
-    :description=>'Enable or disable the deploying of source code.', 
+    :description=>'Install/Updat the source code.', 
+    :type=>BlackStack::SimpleCommandLineParser::BOOL,
+    :default => true,
+  }, {
+    :name=>'ext', 
+    :mandatory=>false, 
+    :description=>'Install/Update the source code of the extensions.', 
+    :type=>BlackStack::SimpleCommandLineParser::BOOL,
+    :default => true,
+  }, {
+    :name=>'restart', 
+    :mandatory=>false, 
+    :description=>'Stop and start all the processes who run on each node.', 
     :type=>BlackStack::SimpleCommandLineParser::BOOL,
     :default => true,
   }, {
@@ -42,15 +64,6 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :description=>'Name of the routine to execute. Default: take default routine of each node.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
     :default => '-',
-=begin
-  }, {
-  # web server installation
-    :name=>'show_output', 
-    :mandatory=>false, 
-    :description=>'Activate this flag if you want to see the show_output of each bash command executed.', 
-    :type=>BlackStack::SimpleCommandLineParser::BOOL,
-    :default => false,
-=end
   }]
 )
 
@@ -66,7 +79,7 @@ else
 
   l.logs 'Connecting the database... '
   BlackStack::Deployer::DB::connect(
-    BlackStack::CRDB::connection_string # use the connection parameters setting in ./config.rb
+    BlackStack.connection_string # use the connection parameters setting in ./config.rb
   )
   l.done
 
@@ -76,7 +89,7 @@ else
 
   l.logs 'Running database updates... '
   BlackStack::Deployer::DB::set_folder ('../sql')
-  BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.lock")
+  BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.lock", l)
   l.done
 
   # run the .sql scripts of each extension
@@ -92,14 +105,11 @@ else
   }
 end # if parser.value('db')
 
-# restart webserver
-# Reference: https://stackoverflow.com/questions/3430330/best-way-to-make-a-shell-script-daemon
-l.logs 'Deploy code updates... '
+# run deployment routine to each node 
+l.logs 'Install/Update source code... '
 if !parser.value('code')
   l.logf 'no'.red
 else
-  l.logf 'yes'.green
-
   # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
   BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
     node_name = n.name  
@@ -108,4 +118,51 @@ else
     BlackStack::Deployer.run_routine(node_name, routine_name || n.deployment_routine, l)
     l.logf 'done'.green
   } # BlackStack::Deployer.nodes
-end # if parser.value('web')
+
+  l.logf 'done'.green
+end # if parser.value('code')
+
+# update the source code of extensions
+l.logs 'Install/Update extensions... '
+if !parser.value('ext')
+  l.logf 'no'.red
+else
+  # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
+  BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
+    node_name = n.name  
+
+    l.logs "Node #{node_name.blue}... "
+    BlackStack::Extensions.extensions.each { |e|
+      l.logs "Updating code for #{e.name.downcase.to_s.blue}... "
+      BlackStack::Deployer.run_routine(node_name, 'extension', l, {
+        # name of the git repository
+        :extension_name => e.name.downcase, 
+        # name of git user beloning the repository of this extension
+        :repo_url => e.repo_url, 
+        # branch to download from
+        :repo_branch => e.repo_branch, 
+      })
+      l.logf 'done'.green
+    }
+    l.logf 'done'.green
+  } # BlackStack::Deployer.nodes
+
+  l.logf 'done'.green
+end # if parser.value('ext')
+
+# update the source code of extensions
+l.logs 'Restart processes... '
+if !parser.value('restart')
+  l.logf 'no'.red
+else
+  # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
+  BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
+    l.logs "Node #{n.name.blue}... "
+    n.connect
+    n.stop(OUTPUT_FILE)
+    n.start(OUTPUT_FILE)
+    n.disconnect
+    l.logf 'done'.green
+  } # BlackStack::Deployer.nodes
+  l.logf 'done'.green
+end # if parser.value('ext')

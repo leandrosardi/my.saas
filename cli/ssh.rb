@@ -37,9 +37,9 @@ end
 # if the node has a key, use it
 s = nil
 if node.ssh_private_key_file
-    s = "xterm -e 'sudo ssh -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}'"
+    s = "sudo ssh -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 else
-    s = "xterm -e 'sudo sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}'"
+    s = "sudo sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 end
 
-`#{s}`
+system(s)

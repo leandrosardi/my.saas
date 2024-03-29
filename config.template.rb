@@ -10,6 +10,9 @@
 # files into a cloud storage specified by you.
 #
 
+# deployment routines will write in this file, in hard drive of the node where deploying.
+OUTPUT_FILE = '~/deployment.log'
+
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = '$RUBYLIB'
 VYMECO_API_KEY = '118f3c32-****-****-****-************'
@@ -83,8 +86,8 @@ BlackStack::Debugging::set({
 # 
 BlackStack::PostgreSQL::set_db_params({ 
   :db_url => '127.0.0.1', 
-  :db_port => '26257', 
-  :db_name => 'my.saas', 
+  :db_port => '5432', 
+  :db_name => 'demo', 
   :db_user => 'blackstack', 
   :db_password => '*****',
 })
@@ -202,23 +205,34 @@ BlackStack::Notifications.set(
 # declare production nodes.
 # .BlackStack.sandbox? flag doesn't play here.
 # both cs.pem file and config.rb file are always taken from the local dev machine (leandro).
-BlackStack::Deployer::add_nodes([{
-    # use this command to connect from terminal: ssh -i 'cs.pem' ubuntu@ec2-34-234-83-88.compute-1.amazonaws.com
+BlackStack::Deployer::add_nodes([
+  {
+    # unique name to identify a host (a.k.a.: node)
+    #
     :name => 'node01', 
 
-    # ssh
-    :net_remote_ip => BlackStack.sandbox? ? '127.0.0.1' : 'xx.xx.xx.xx',  
+    # ssh connection parameters
+    # use either `ssh_password` or `ssh_private_key_file` for identification.
+    # 
+    :net_remote_ip => '127.0.0.1',  
     :ssh_username => 'blackstack',
     :ssh_port => 22,
     :ssh_password => '*******',
     #:ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/cs.pem' : '$HOME/code/my.saas/cli/cs.pem',
 
-    # git
+    # github credentials
+    # 
+    # Generate GitHub app password following the instructions here:
+    # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens 
+    # 
+    :git_repository => 'leandrosardi/my.saas',
     :git_branch => 'main',
     :git_username => '<your github username here>',
     :git_password => '****',
 
     # code folder
+    # name of the folder where source code is placed
+    # 
     :code_folder => 'demo',
 
     # name of the LAN interface
@@ -277,7 +291,8 @@ BlackStack::Deployer::add_nodes([{
       #'$RUBYLIB/filter.log',
       #'$RUBYLIB/plan.log',
     ],
-}])
+  }
+])
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
