@@ -10,7 +10,7 @@ require 'config.rb'
 require 'shellwords'
 
 puts
-puts 'This command is to get the latest n lines of any log in a node..'
+puts 'This command is to connect a node via SSH using the connection parameters in the configuration file.'
 puts 
 
 # command parameters
