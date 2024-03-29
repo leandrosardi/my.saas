@@ -4,7 +4,7 @@ source 'http://rubygems.org'
 ruby '~>3.1.2'
 
 # BlackStack framework gems
-gem 'blackstack-db', '~>1.0.7'
+gem 'blackstack-db', '~>1.0.9'
 gem 'blackstack-core', '~>1.2.15'
 gem 'blackstack-nodes', '~>1.2.12'
 gem 'blackstack-enrichment', '~>1.0.1'
