@@ -4,6 +4,6 @@ require 'lib/core'
 require 'lib/stub'
 require 'config.rb'
 
-DB = BlackStack::CRDB::connect
+DB = BlackStack.db_connect
 
 p now

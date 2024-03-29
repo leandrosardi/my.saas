@@ -35,7 +35,7 @@ begin
   puts 'done'.green
 
   print 'Connecting database... '
-  DB = BlackStack::CRDB::connect
+  DB = BlackStack.db_connect
   puts 'done'.green
 
   print 'Loading models... '

@@ -11,7 +11,7 @@ l = BlackStack::LocalLogger.new('./notifier.log')
 l.log "Sandbox mode: #{BlackStack.sandbox? ? 'yes'.green : 'no'.red }"
 
 l.logs 'Connecting the database... '
-DB = BlackStack::CRDB::connect
+DB = BlackStack.db_connect
 l.logf 'done'.green
 
 l.logs 'Loading models... '
