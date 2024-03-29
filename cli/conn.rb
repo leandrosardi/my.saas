@@ -9,5 +9,5 @@ require 'mysaas'
 require 'lib/stubs'
 require 'config'
 l = BlackStack::BaseLogger.new(nil)
-BlackStack::CRDB.test(l)
+BlackStack.db_test(l)
 exit(0)

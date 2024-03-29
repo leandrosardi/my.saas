@@ -2,7 +2,7 @@
 require 'mysaas'
 require 'lib/stubs'
 require 'config'
-DB = BlackStack::CRDB::connect
+DB = BlackStack.db_connect
 require 'lib/skeletons'
 
 BlackStack::Emails::delivery(

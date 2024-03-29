@@ -10,10 +10,12 @@
 # files into a cloud storage specified by you.
 #
 
+# deployment routines will write in this file, in hard drive of the node where deploying.
+OUTPUT_FILE = '~/deployment.log'
+
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = '$RUBYLIB'
 VYMECO_API_KEY = '118f3c32-****-****-****-************'
-
 DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 BlackStack::Funnel.set({
@@ -40,24 +42,30 @@ BlackStack::Funnel.set({
 
 
 # Funnel Configuration
+# Build your funnel logic here.
+#
 BlackStack::Funnel.add({
     :name => 'funnels.main',
-    # decide if go to one-time-offer screen, or 
+    # Decide if go to one-time-offer screen, or 
     # to the plans screen. Return the URL to go.    
+    # 
     :url_plans => Proc.new do |login, *args|
         '/plans'
     end,
-    # return the url to go after signup
+    # Return the url to go after signup.
+    # 
     :url_after_signup => Proc.new do |login, *args|
         BlackStack::Funnel.url_after_login(login, 'funnels.main')
     end,
-    # return the url to go after login
+    # Return the url to go after login.
+    # 
     :url_after_login => Proc.new do |login, *args|
         '/dashboard'
     end,
-    # return the url to go if the user
+    # Return the url to go if the user
     # choose to go for free in the plans
     # screen.
+    # 
     :url_to_go_free => Proc.new do |login, *args|
         '/dashboard'
     end,
@@ -71,6 +79,19 @@ BlackStack::Debugging::set({
 
 # DB ACCESS - KEEP IT SECRET
 # 
+# Connecting to PostgreSQL database in your local machine.
+#
+# Refere to this tutorial for installing a local environment:
+# https://github.com/leandrosardi/environment
+# 
+BlackStack::PostgreSQL::set_db_params({ 
+  :db_url => '127.0.0.1', 
+  :db_port => '5432', 
+  :db_name => 'demo', 
+  :db_user => 'blackstack', 
+  :db_password => '*****',
+})
+=begin
 # For running a CockroachDB instance in your local computer:
 # - cockroach start-single-node --insecure
 # 
@@ -88,6 +109,7 @@ BlackStack::CRDB::set_db_params({
   :db_password => '<db password here>',
   :db_sslmode => BlackStack.sandbox? ? 'disable' : 'verify-full',
 })
+=end
 
 # Setup connection to the API, in order get bots requesting and pushing data to the database.
 # TODO: write your API-Key here. Refer to this article about how to create your API key:
@@ -136,10 +158,10 @@ COMPANY_PHONE = '+54 11 15 5061 2148'
 COMPANY_URL = 'https://<your saas domain here>'
 
 # Useful URLs
-TERMS_URL = 'https://connectionsphere.com/seminars/pub/legal/terms-of-service' # Terms and Conditions URL.
-PRIVACY_URL = 'https://connectionsphere.com/seminars/pub/legal/privacy-policy' # Privacy Policy URL.
-CANCEL_URL = 'https://connectionsphere.com/seminars/pub/help/how-to-cancel-subscription' # Article explaining how to cancel the service.
-HELPDESK_URL = 'https://connectionsphere.com/seminars/pub/help/getting-started' # Helpdesk URL.
+TERMS_URL = '<URL of service terms here>' # Terms and Conditions URL.
+PRIVACY_URL = '<URL of private policy here>' # Privacy Policy URL.
+CANCEL_URL = '<URL of cancel policy here>' # Article explaining how to cancel the service.
+HELPDESK_URL = '<HelpDesk URL here>' # Helpdesk URL.
 
 # app url
 CS_HOME_PAGE_PROTOCOL = BlackStack.sandbox? ? 'http' : 'https'
@@ -150,7 +172,7 @@ CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PA
 # default timezone
 DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'
 
-# parameters for emails delivery
+# parameters to deliver transactional emails
 BlackStack::Emails.set(
   # postmark api key
   :postmark_api_key => '1499e037-****-****-****-************',
@@ -183,50 +205,94 @@ BlackStack::Notifications.set(
 # declare production nodes.
 # .BlackStack.sandbox? flag doesn't play here.
 # both cs.pem file and config.rb file are always taken from the local dev machine (leandro).
-BlackStack::Deployer::add_nodes([{
-    # use this command to connect from terminal: ssh -i 'cs.pem' ubuntu@ec2-34-234-83-88.compute-1.amazonaws.com
-    :name => 'web-server', 
-    # ssh
-    :net_remote_ip => BlackStack.sandbox? ? '127.0.0.1' : '54.157.239.98',  
-    :ssh_username => 'ubuntu',
+BlackStack::Deployer::add_nodes([
+  {
+    # unique name to identify a host (a.k.a.: node)
+    #
+    :name => 'node01', 
+
+    # ssh connection parameters
+    # use either `ssh_password` or `ssh_private_key_file` for identification.
+    # 
+    :net_remote_ip => '127.0.0.1',  
+    :ssh_username => 'blackstack',
     :ssh_port => 22,
-    #:ssh_password => ssh_password,
-    :ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/cs.pem' : '$HOME/code/my.saas/cli/cs.pem',
-    # git
+    :ssh_password => '*******',
+    #:ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/cs.pem' : '$HOME/code/my.saas/cli/cs.pem',
+
+    # github credentials
+    # 
+    # Generate GitHub app password following the instructions here:
+    # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens 
+    # 
+    :git_repository => 'leandrosardi/my.saas',
     :git_branch => 'main',
-    :git_username => 'leandrosardi',
+    :git_username => '<your github username here>',
     :git_password => '****',
+
     # code folder
-    :code_folder => BlackStack.sandbox? ? '/home/leandro/code/my.saas' : '/ubuntu/code/my.saas',
+    # name of the folder where source code is placed
+    # 
+    :code_folder => 'demo',
+
     # name of the LAN interface
     :laninterface => 'eth0',
+
     # sinatra
     :web_port => 3000,
+
     # config.rb content - always using dev-environment here
-    :config_rb_content => File.read(BlackStack.sandbox? ? '/home/leandro/code/my.saas/config.rb' : '$HOME/code/my.saas/config.rb'),
+    #
+    # Escape the double-quotes (") to make it embeddeable in the bash script generated by /deployment/default.rb.
+    # (`echo "%config_rb_content%"` > ./config.rb)
+    #
+    # Don't call `File.read("$RUBYLIB/config.rb")` because the `$RUBYLIB` is not managed by the File module.
+    # Use the `ENV` array instead.
+    #
+    # Don't use ``cat $RUBYLIB/config.rb`` because it won't be mapped to production,
+    # because my-ruby-deployer will remove any text between ``.
+    # 
+    # Don't use the `sandbox?` method here, because the commands in the /cli folder must run with no `.sandbox` flag.
+    # 
+    :config_rb_content => File.read(ENV['RUBYLIB']+'/config.rb').gsub(/"/, '\"'),
     # default deployment routine for this node
-    :deployment_routine => 'deploy-my.saas',
-    # setup stand-alone processes
-    # setup worker processes
-    :pampa => {
-        :max_workers => 0,
-        :procs => [
-            {
-                :name => 'leads.export',
-                :logfile => '$HOME/code/my.saas/export.log',
-                :params => [
-                    { :name=>'foo', :value=>'bar' },
-                    { :name=>'foo2', :value=>'bar2'},
-                ],
-                #:command => 'cd ~ & nohup ruby ~/code/my.saas/extensions/leads/p/export.rb >/dev/null 2>&1 &',
-                :min_cycle_seconds => 60,
-                :processing_function => Proc.new do |*args|
-                    # TODO: Code Me!
-                end,
-            },
-        ],
-    },
-}])
+    # 
+    :deployment_routine => 'default',
+    # this is always the folder where the app.rb file is located,
+    # and from where you will run all the processes who run in this node.
+    # 
+    :rubylib => "~/code/demo",
+    # processes to run on this node
+    # all these processes are run in the background
+    # all the processes are located into the $RUBYLIB folder
+    # all these
+    # 
+    :processes => [
+      # Webserver
+      #
+      'app.rb port=3000 config=./config.rb',
+      
+      # Look for new records in the table event. 
+      # Apply AI to detect opportunities and craft direct messages. 
+      # Insert into outbox.
+      # 
+      #'p/filter.rb',
+      
+      # Look for new records in the table outbox. 
+      # Look for available profiles. 
+      # Update outbox.id_profile.
+      # 
+      #'p/plan.rb',
+    ],
+    # logfiles to watch
+    # 
+    :logfiles => [
+      OUTPUT_FILE, # '~/deployment.log',
+      #'$RUBYLIB/filter.log',
+      #'$RUBYLIB/plan.log',
+    ],
+  }
+])
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
@@ -242,7 +308,7 @@ BlackStack::BackUp.set({
       # configuration file.
       :name => 'mysaas-configuration',
       # drop box folder where to store this backup
-      :folder => 'freeleadsdata.app',
+      :folder => 'my.saas',
       # must be absolute paths
       :path => CODE_PATH + '/app',
       # pattern of files to find in the :path_origin
@@ -250,19 +316,19 @@ BlackStack::BackUp.set({
     }, {
       # certification file for connecting serverless CockroackDB.
       :name => 'postgres-certificate',
-      :folder => 'freeleadsdata.app',
+      :folder => 'my.saas',
       :path => '~/.postgresql',
       :files => ['root.crt'],
     }, {
       # certificate to connect AWS instances.
       :name => 'aws-certificate',
-      :folder => 'freeleadsdata.app',
+      :folder => 'my.saas',
       :path => CODE_PATH + '/my.saas/cli',
       :files => ['fld.pem'],
     }, {
       # database deploying .lock files for SQL migrations
       :name => 'deploying-lockfiles',
-      :folder => 'freeleadsdata.app',
+      :folder => 'my.saas',
       :path => CODE_PATH + '/my.saas/cli',
       :files => [
         'my-ruby-deployer.lock', 
@@ -272,8 +338,8 @@ BlackStack::BackUp.set({
       ],
     }, {
       # SSL certificaties.
-      :name => 'ssl-Certificates',
-      :folder => 'freeleadsdata.app',
+      :name => 'ssl-certificates',
+      :folder => 'my.saas',
       :path => CODE_PATH + '/my.saas/ssl',
       :files => ['prod.crt', 'prod.key'],
     }]
@@ -285,12 +351,12 @@ BlackStack::BackUp.set({
 #BlackStack::Extensions.append :monitoring, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
 
 # developer extensions
-BlackStack::Extensions.append :selectrowsjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
-BlackStack::Extensions.append :filtersjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
-BlackStack::Extensions.append :progressjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
-BlackStack::Extensions.append :templatesjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
-BlackStack::Extensions.append :listsjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
-BlackStack::Extensions.append :datasjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+#BlackStack::Extensions.append :selectrowsjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+#BlackStack::Extensions.append :filtersjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+#BlackStack::Extensions.append :progressjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+#BlackStack::Extensions.append :templatesjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+#BlackStack::Extensions.append :listsjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
+#BlackStack::Extensions.append :datasjs, { :show_in_top_bar => false, :show_in_footer => true, :show_in_dashboard => false }
 
 =begin
 #
@@ -343,70 +409,6 @@ BlackStack::I2P::set({
   #:paypal_api_username => 'sardi.leandro.daniel-facilitator_api1.gmail.com',
   #:paypal_api_password => 'EPP7VD3GFBTUAXN3',
   #:paypal_signature => 'AKrdO3kt3BSAxRkptc13PKogax8XADsJf-6fRSDKm7J1yKHWf.MNYDro',
-})
-
-BlackStack::Workmesh.add_service({
-    # unique service name
-    :name => 'micro.data',
-    # Define the tasks table: each record is a task.
-    #
-    # In this example, each account in our saas is assigned to a micr-service node.
-    # In other words, the work is assigned at an account-level.
-    #
-    # Each account is stored in a row in the `account` table.
-    # 
-    :entity_table => :account,
-    # Define what is the column in the table where I store the name of the assigned node.
-    :entity_field_assignation => :'node_for_micro_dfyl_appending',
-
-    # Defining assignation criteria
-    :assignation => :roundrobin, # other choices are: `:entityweight`, `:roundrobin` and `:entitynumber`
-
-    # Defining micro-service protocol.
-    # This is the list of entities at the SaaS side.
-    :protocols => [{
-      :name => 'push_order',
-      # I need to push all the emails delivered and received, including bounce reports.
-      :entity_table => :scr_order,
-      :entity_field_id => :id, # identify each record in the table uniquely
-      :entity_field_sort => :create_time, # push/process/pull entities in this order - Workmesh uses this field to know which was the latest record pushed/processed/pulled.
-      :push_function => Proc.new do |entity, node, l, *args|
-        # entity: the entity to be pushed
-        # node: the node where the entity will be pushed
-        # l: the logger
-        # args: additional arguments
-        #
-        res = nil
-        b = BlackStack::I2P::Account.where(:id=>entity.user.id_account).first
-        h = entity.to_hash
-        # add the leads credits of the account
-        b.update_balance
-        h['credits'] = b.credits('leads')
-        # apply transformations        
-        h['insights'].each do |i|
-          i['prompt1'] = BlackStack::Scraper::Insight.transform(i['prompt1']) if i['prompt1']
-          i['prompt2'] = BlackStack::Scraper::Insight.transform(i['prompt2']) if i['prompt2']
-        end
-        # call access point
-        url = 'http://'+node.net_remote_ip+':'+node.workmesh_port}/api1.0/orders/zi/push.json'
-        begin
-            params = {
-                'api_key' => node.workmesh_api_key,
-                'order' => h,
-            }
-            res = BlackStack::Netting::call_post(url, params)
-            parsed = JSON.parse(res.body)
-            raise parsed['status'] if parsed['status']!='success'
-        rescue Errno::ECONNREFUSED => e
-            raise 'Errno::ECONNREFUSED:' + e.message.red
-        rescue => e2
-            raise 'Exception:' + e2.message.red
-        end
-      end, # push_function
-      :entity_field_push_time => :'micro_emails_delivery_push_time',
-      :entity_field_push_success => :'micro_emails_delivery_push_success',
-      :entity_field_push_error_description => :'micro_emails_delivery_push_error_description',
-    }],
 })
 
 BlackStack::I2P::add_plans([
@@ -520,32 +522,4 @@ BlackStack::I2P::add_plans([
         ],
     }
 ])
-=end
-
-=begin
-## 
-## Micro Services - Nodes
-## 
-## 
-BlackStack::Workmesh.add_node({
-    :name => 'n02',
-    # setup SSH connection parameters
-    :net_remote_ip => '45.10.154.254',  
-    :ssh_username => 'root', # example: root
-    :ssh_port => 22,
-    :ssh_password => 'SantaClara123',
-    # workmesh parameters
-    :workmesh_api_key => '118f3c32-c920-40c0-a938-22b7471f8d20', # keep this secret - don't push this to your repository.
-    :workmesh_port => 3000, #BlackStack.sandbox? ? 3001 : 3000,  
-    :workmesh_service => :'freeleadsdata/micro.data',
-    # git
-    :git_user => 'ConnectionSphere',
-    :git_branch => 'main',
-    # name of the LAN interface
-    :laninterface => 'eth0',
-    # config.rb content - always using dev-environment here
-    :config_rb_content => File.read(BlackStack.sandbox? ? '/home/leandro/code/freeleadsdata/micro.data/config.rb' : '$HOME/code/freeleadsdata/micro.data/config.rb'),
-    # deployment routine for this node
-    :deployment_routine => 'deploy-micro.dfyl.appending',
-})
 =end

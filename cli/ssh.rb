@@ -10,7 +10,7 @@ require 'config.rb'
 require 'shellwords'
 
 puts
-puts 'This command is to get the latest n lines of any log in a node..'
+puts 'This command is to connect a node via SSH using the connection parameters in the configuration file.'
 puts 
 
 # command parameters
@@ -37,9 +37,9 @@ end
 # if the node has a key, use it
 s = nil
 if node.ssh_private_key_file
-    s = "xterm -e 'sudo ssh -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}'"
+    s = "sudo ssh -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 else
-    s = "xterm -e 'sudo sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}'"
+    s = "sudo sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 end
 
-`#{s}`
+system(s)

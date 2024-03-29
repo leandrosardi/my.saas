@@ -5,7 +5,7 @@ require 'mysaas'
 require 'lib/stubs'
 require 'config'
 require 'version'
-DB = BlackStack::CRDB::connect
+DB = BlackStack.db_connect
 require 'lib/skeletons'
 
 l = BlackStack::LocalLogger.new('./update_signatures.log')
