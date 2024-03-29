@@ -18,7 +18,7 @@ l = BlackStack::LocalLogger.new('./deploy.log')
 l.log "Sandbox mode: #{BlackStack.sandbox? ? 'yes'.green : 'no'.red }"
 
 if BlackStack.sandbox?
-  l.log 'Sandbox is not allowed in CLI commands. Remove the `.sandbox` file in the `/cli` directory.'.red
+  l.log 'Sandbox mode is not allowed by `deploy.rb` command. Remove the `.sandbox` file in the `/cli` directory.'.red
   exit(1)
 end
 
