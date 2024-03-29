@@ -24,7 +24,7 @@ end
 
 # command parameters 
 parser = BlackStack::SimpleCommandLineParser.new(
-  :description => 'This command will launch a Sinatra-based BlackStack webserver.', 
+  :description => 'This command will apply migrations into database, pull source code from repositry, install/update extensions, and restart processes assigned to run on each node.', 
   :configuration => [{
   # installation options
     :name=>'db', 

@@ -338,7 +338,6 @@ begin
   get '/', :agent => /(.*)/ do
     # decide to which landing redirect, based on the extensions and configuration
     # reference: https://github.com/leandrosardi/i2p/issues/3
-    #redirect '/landing'
     redirect '/free'
   end
 
@@ -406,6 +405,10 @@ begin
 
   get '/free' do
     erb :'views/free', :layout => :'/views/layouts/public'
+  end
+
+  get '/landing' do
+    erb :'views/landing', :layout => :'/views/layouts/public'
   end
 
   get '/wizard', :auth => true do
