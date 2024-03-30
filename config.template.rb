@@ -15,8 +15,8 @@ OUTPUT_FILE = '~/deployment.log'
 
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = '$RUBYLIB'
-VYMECO_API_KEY = '118f3c32-****-****-****-************'
-DB_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
+MYSAAS_API_KEY = '118f3c32-****-****-****-************'
+DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 BlackStack::Funnel.set({
     # Goolge Analytics
@@ -301,8 +301,8 @@ BlackStack::Deployer::add_nodes([
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
-  :vymeco_api_key => VYMECO_API_KEY,
-  :dropbox_refresh_token => DB_REFRESH_TOKEN,
+  :vymeco_api_key => MYSAAS_API_KEY,
+  :dropbox_refresh_token => DROPBOX_REFRESH_TOKEN,
 })
 
 # DEPRECATED in Favor of BlackStack::Dropbox (
