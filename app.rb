@@ -347,7 +347,6 @@ begin
   # External pages: pages that don't require login
 
   print 'Setting up entries of external pages... '
-  # TODO: here where you have to develop notrial? feature
   get '/', :agent => /(.*)/ do
     redirect '/login'
   end

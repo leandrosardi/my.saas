@@ -1,9 +1,0 @@
-<%
-begin
-  selected_headcounts = params.values.join(',')
-  @login.user.preference('step2.headcounts', '', selected_headcounts)
-  redirect "/step3"
-rescue => e
-  redirect "/step2?err="+ CGI::escape(e.message)
-end
-%>
