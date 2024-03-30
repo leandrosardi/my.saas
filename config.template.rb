@@ -168,6 +168,7 @@ CS_HOME_PAGE_PROTOCOL = BlackStack.sandbox? ? 'http' : 'https'
 CS_HOME_PAGE_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : '<your saas domain here>'
 CS_HOME_PAGE_PORT = BlackStack.sandbox? ? '3000' : '443'
 CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PAGE_PORT
+CS_HOME_LOGO = CS_HOME_WEBSITE + '/core/images/logo.png'
 
 # default timezone
 DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'
