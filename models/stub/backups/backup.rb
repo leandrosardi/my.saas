@@ -16,7 +16,7 @@ module BlackStack
 
         # Setup the bakcup module.
         def self.set(h)
-            @@destinations = h[:bucket]
+            @@destinations = h[:destinations]
         end # set
 
         # Run the backup process.
