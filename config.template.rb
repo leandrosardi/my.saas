@@ -315,33 +315,38 @@ BlackStack::BackUp.set(
     :destinations => [{
       # configuration file.
       :name => 'config',
-      :folder => BlackStack.sandbox? ? 'vymeco.dev.config' : 'vymeco.prod.config',
-      :path =>  BlackStack.sandbox? ? '/home/leandro/code/my.saas' : '$RUBYLIB',
+      :folder => 'vymeco.config',
+      :path =>  '$RUBYLIB',
       :files => ['config.rb'],
     }, {
       # certification file for connecting serverless CockroackDB.
       :name => 'postgresql',
-      :folder => BlackStack.sandbox? ? 'vymeco.dev.postgresql' : 'vymeco.prod.postgresql',
-      :path =>  BlackStack.sandbox? ? '/home/leandro/.postgresql' : '$HOME/.postgresql',
-      :files => ['*'],
+      :folder => 'vymeco.postgresql',
+      :path =>  '$HOME/.postgresql',
+      :files => ['root.crt'],
     }, {
       # certificate to connect AWS instances.
       :name => 'aws',
-      :folder => BlackStack.sandbox? ? 'vymeco.dev.cli.pem' : 'vymeco.prod.cli.pem',
-      :path =>  BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli' : '$RUBYLIB/cli',
-      :files => ['*.pen'],
+      :folder => 'vymeco.cli.pem',
+      :path =>  '$RUBYLIB/cli',
+      :files => ['vymeco.pem'],
     }, {
       # database deploying .lock files.
       :name => 'lock',
-      :folder => BlackStack.sandbox? ? 'vymeco.dev.cli.lock' : 'vymeco.prod.cli.lock',
-      :path =>  BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli' : '$RUBYLIB/cli',
-      :files => ['*.lock'],
+      :folder => 'vymeco.cli.lock',
+      :path =>  '$RUBYLIB/cli',
+      :files => [
+        'my-ruby-deployer.lock', 
+        'my-ruby-deployer.i2p.lock', 
+        'my-ruby-deployer.monitoring.lock',
+        'my-ruby-deployer.content.lock',
+      ],
     }, {
       # Website HTTPS certificaties.
       :name => 'ssl',
-      :folder => BlackStack.sandbox? ? 'vymeco.dev.ssl' : 'vymeco.prod.ssl',
-      :path =>  BlackStack.sandbox? ? '/home/leandro/code/my.saas/ssl' : '$RUBYLIB/ssl',
-      :files => ['*'],
+      :folder => 'vymeco.ssl',
+      :path =>  '$RUBYLIB/ssl',
+      :files => ['prod.crt', 'prod.key'],
     }]
   }
 )
