@@ -21,6 +21,12 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>true, 
     :description=>'Name of the node.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
+  }, {
+    :name=>'show', 
+    :mandatory=>false, 
+    :description=>'Show the SSH command executed.', 
+    :type=>BlackStack::SimpleCommandLineParser::BOOL,
+    :default=>false
   }]
 )
 
@@ -41,5 +47,7 @@ if node.ssh_private_key_file
 else
     s = "sudo sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 end
+
+puts "Command: #{s.blue}" if parser.value('show')
 
 system(s)
