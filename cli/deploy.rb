@@ -94,11 +94,11 @@ else
 
   # run the .sql scripts of each extension
   BlackStack::Extensions.extensions.each { |e|
-    l.logs "Loading checkpoint for #{e.name.downcase}... "
+    l.logs "Loading checkpoint for #{e.name.downcase.blue}... "
     BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.#{e.name.downcase}.lock")
     l.logf "done (#{BlackStack::Deployer::DB::checkpoint.to_s})"
 
-    l.logs "Running database updates for #{e.name.downcase}... "
+    l.logs "Running database updates for #{e.name.downcase.blue}... "
     BlackStack::Deployer::DB::set_folder ("../extensions/#{e.name.downcase}/sql")
     BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.#{e.name.downcase}.lock")
     l.done
