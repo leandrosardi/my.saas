@@ -348,7 +348,7 @@ begin
 
   print 'Setting up entries of external pages... '
   get '/', :agent => /(.*)/ do
-    redirect '/login'
+    redirect BlackStack::Funnel.url_root(@login, 'funnels.main')
   end
 
   get '/404', :agent => /(.*)/ do

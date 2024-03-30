@@ -9,67 +9,35 @@ email = session['email'].to_s
 			<span align='left'><h1>
 				<a href='/'><img src='<%=CS_HOME_LOGO%>' height='100px' title='<%=APP_NAME%> logo' /></a>
 			</h1></span><br/>
-
-			<form action="/login" method="post">	
-				<fieldset>
-					<div class="fields">
-						<input type="text" name="email" placeholder="Email" id="id_email" tabindex="1"  onfocus="$(this).select();" value="<%=email.encode_html%>">
-						<input type="password" name="password" placeholder="Password" id="id_password" tabindex="2" onfocus="$(this).select();">
-					</div>						
-					<button type="submit" class="btn btn-primary btn-block" tabindex="3"><b>Login</b></button>
-				</fieldset>
-			</form>
-			<div>
-				<span align='right'><a href='./recover' tabindex="4">Reset your password</a></span><br/>
-				<br/>
-				<center>
-					Don't have an account?<br/>
-					<a href='./signup' class='btn btn-gray btn-block' tabindex="5"><b>Create a new <%=APP_NAME%> account</b></a>
-				</center>
-			</div>
 		</div>
 	</div>
 		
 	<div class='span1 signin-page'></div>
 		
-	<div class='span6 signin-page' style='vertical-align: middle; height: 100%;' height='100%'>
+	<div class='span5 signin-page' style='vertical-align: middle; height: 100%;' height='100%'>
 		<center>
 
 		<br/>
 		<br/>
 
-		<img src='/core/images/screenshot.png' style='border: 1px solid gray; box-shadow: 4px 4px 5px rgb(200,200,200);' width='100%' title='<%=APP_NAME%> Dahsboard' /><br/>
+		<form action="/login" method="post">	
+			<fieldset>
+				<div class="fields">
+					<input type="text" name="email" placeholder="Email" id="id_email" tabindex="1"  onfocus="$(this).select();" value="<%=email.encode_html%>">
+					<input type="password" name="password" placeholder="Password" id="id_password" tabindex="2" onfocus="$(this).select();">
+				</div>						
+				<button type="submit" class="btn btn-primary btn-block" tabindex="3"><b>Login</b></button>
+			</fieldset>
+		</form>
+		<div>
+			<span align='right'><a href='./recover' tabindex="4">Reset your password</a></span><br/>
+			<br/>
+			<center>
+				Don't have an account?<br/>
+				<a href='./signup' class='btn btn-gray btn-block' tabindex="5"><b>Create a new <%=APP_NAME%> account</b></a>
+			</center>
+		</div>
 		
-		<%
-		if false
-		%>
-		<h3 class='landing'>
-			<%
-			if !notrial?
-			%>
-			<%=APP_NAME%> Accounts<br/>Include <b>15-Day Trial</b>.
-			<%
-			end # if !notrial?
-			%>
-		</h3>
-
-		<span>
-			<%
-			if !notrial?
-			%>
-			<a href='<%=CS_HOME_WEBSITE%>/signup' target='_window'>Signup</a> to Grab Your Trial.
-			<%
-			else # if !notrial?
-			%>
-			Don't have an account? <a href='<%=CS_HOME_WEBSITE%>/signup' target='_window'>Signup Here</a>.
-			<%
-			end # if !notrial?
-			%>
-		</span>
-		<%
-		end
-		%>
-
 		</center>
 	</div>
 

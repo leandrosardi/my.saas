@@ -46,6 +46,10 @@ BlackStack::Funnel.set({
 #
 BlackStack::Funnel.add({
     :name => 'funnels.main',
+    # decide what is the screen to show in the root of the app.
+    :url_root => Proc.new do |login, *args|
+        '/login'
+    end,
     # Decide if go to one-time-offer screen, or 
     # to the plans screen. Return the URL to go.    
     # 

@@ -38,6 +38,11 @@ module BlackStack
       @@funnels << h
     end
 
+    def self.url_root(login, name)
+      h = @@funnels.find { |h| h[:name] == name }
+      h[:url_root].call(login)
+    end
+
     def self.url_plans(login, name)
       h = @@funnels.find { |h| h[:name] == name }
       h[:url_plans].call(login)
