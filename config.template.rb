@@ -305,48 +305,34 @@ BlackStack::DropBox.set({
   :dropbox_refresh_token => DB_REFRESH_TOKEN,
 })
 
-# Manage backup of secret files
-# Reference: https://github.com/leandrosardi/my.saas/blob/main/docu/03.secret-files-management.md
+# DEPRECATED in Favor of BlackStack::Dropbox (
+# Refrence: 
+# * https://github.com/leandrosardi/my-dropbox-api
+# * https://github.com/leandrosardi/cs/issues/17
 BlackStack::BackUp.set({
+    # leandro@connectionsphere.com
+    :dropbox_refresh_token => '****-****',
     # different cloud folders to upload differt local folders 
-    :bucket => [{
+    :destinations => [{
       # configuration file.
-      :name => 'mysaas-configuration',
-      # drop box folder where to store this backup
-      :folder => 'my.saas',
-      # must be absolute paths
-      :path => CODE_PATH + '/app',
-      # pattern of files to find in the :path_origin
-      :files => ['config.rb'],
+      :folder => BlackStack.sandbox? ? 'dev.config' : 'prod.config',
+      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/config.rb' : '$HOME/code/my.saas/config.rb',
     }, {
       # certification file for connecting serverless CockroackDB.
-      :name => 'postgres-certificate',
-      :folder => 'my.saas',
-      :path => '~/.postgresql',
-      :files => ['root.crt'],
+      :folder => BlackStack.sandbox? ? 'dev.postgresql' : 'prod.postgresql',
+      :source => BlackStack.sandbox? ? '/home/leandro/.postgresql/*' : '$HOME/.postgresql/*',
     }, {
       # certificate to connect AWS instances.
-      :name => 'aws-certificate',
-      :folder => 'my.saas',
-      :path => CODE_PATH + '/my.saas/cli',
-      :files => ['fld.pem'],
+      :folder => BlackStack.sandbox? ? 'dev.cli.pem' : 'prod.cli.pem',
+      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/*.pem' : '$HOME/code/my.saas/cli/*.pem',
     }, {
-      # database deploying .lock files for SQL migrations
-      :name => 'deploying-lockfiles',
-      :folder => 'my.saas',
-      :path => CODE_PATH + '/my.saas/cli',
-      :files => [
-        'my-ruby-deployer.lock', 
-        'my-ruby-deployer.i2p.lock', 
-        'my-ruby-deployer.monitoring.lock',
-        'my-ruby-deployer.content.lock',
-      ],
+      # database deploying .lock files.
+      :folder => BlackStack.sandbox? ? 'dev.cli.lock' : 'prod.cli.lock',
+      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/*.lock' : '$HOME/code/my.saas/cli/*.lock',
     }, {
-      # SSL certificaties.
-      :name => 'ssl-certificates',
-      :folder => 'my.saas',
-      :path => CODE_PATH + '/my.saas/ssl',
-      :files => ['prod.crt', 'prod.key'],
+      # Website HTTPS certificaties.
+      :folder => BlackStack.sandbox? ? 'dev.ssl' : 'prod.ssl',
+      :source => BlackStack.sandbox? ? '/home/leandro/code/my.saas/ssl/*' : '$HOME/code/my.saas/ssl/*',
     }]
 })
 
