@@ -41,7 +41,15 @@ module BlackStack
                     l.logs "Create folder #{folder.blue}... "
                     BlackStack::DropBox.dropbox_create_folder("/#{folder}")
                     l.logf 'done'.green
-                    
+# TODO: CLI commands backup and restore should support wildcards.
+# https://github.com/leandrosardi/my.saas/issues/29
+=begin                    
+                    files = []
+                    d[:files].each { |file|
+                        # get all the files that match with "#{path}/#{file}"
+                        files += Dir.glob("#{path}/#{file}")
+                    }
+=end
                     d[:files].each { |file|
                         l.logs "Upload #{file.blue} to #{folder.blue}... "
                         BlackStack::DropBox.dropbox_upload_file("#{path}/#{file}", "/#{folder}/#{name}/#{file}")
