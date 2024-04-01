@@ -271,7 +271,7 @@ begin
         redirect "/unavailable"      
       else
         @login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
-        @service = @login.user.preference('service', '', params[:service])
+        @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
       end
     end
   end

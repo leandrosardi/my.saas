@@ -10,6 +10,9 @@
 # files into a cloud storage specified by you.
 #
 
+# run an extension as a service
+SERVICE_NAME = nil
+
 # deployment routines will write in this file, in hard drive of the node where deploying.
 OUTPUT_FILE = '~/deployment.log'
 
