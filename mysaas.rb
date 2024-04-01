@@ -36,6 +36,19 @@ require 'lib/emails'
 require 'lib/extensions'
 require 'lib/notifications'
 
+# Use these values in the screens with a period-filter.
+PERIOD_FILTER_VALUES = [
+    {'unit' => 'hours', 'number' => 1, 'text' => 'Last Hour'},
+    {'unit' => 'hours', 'number' => 3, 'text' => 'Last 3 Hours'},
+    {'unit' => 'hours', 'number' => 6, 'text' => 'Last 6 Hours'},
+    {'unit' => 'hours', 'number' => 12, 'text' => 'Last 12 Hours'},
+    {'unit' => 'hours', 'number' => 24, 'text' => 'Last 24 Hours'},
+    {'unit' => 'days', 'number' => 1, 'text' => 'Last 1 Day'},
+    {'unit' => 'days', 'number' => 3, 'text' => 'Last 3 Days'},
+    {'unit' => 'weeks', 'number' => 1, 'text' => 'Last 1 Week'},
+    {'unit' => 'weeks', 'number' => 4, 'text' => 'Last 4 Weeks'},
+]
+
 # Default login and signup screens.
 # 
 DEFAULT_LOGIN = '/login'
