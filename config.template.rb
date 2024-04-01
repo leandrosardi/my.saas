@@ -64,14 +64,14 @@ BlackStack::Funnel.add({
     # Return the url to go after login.
     # 
     :url_after_login => Proc.new do |login, *args|
-        '/dashboard'
+        '/welcome'
     end,
     # Return the url to go if the user
     # choose to go for free in the plans
     # screen.
     # 
     :url_to_go_free => Proc.new do |login, *args|
-        '/dashboard'
+        '/welcome'
     end,
 })
 

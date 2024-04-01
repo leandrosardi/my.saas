@@ -57,7 +57,7 @@ begin
 
     ret = 
     "<p>" + 
-    "<a class='simple' href='/dashboard'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" + 
+    "<a class='simple' href='/welcome'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     CGI.escapeHTML(name1)
 
@@ -71,7 +71,7 @@ begin
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
 
     "<p>" + 
-    "<a class='simple' href='/dashboard'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -83,7 +83,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/dashboard'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -97,7 +97,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/dashboard'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -113,7 +113,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/dashboard'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -131,7 +131,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/dashboard'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -415,14 +415,14 @@ begin
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # User dashboard
+  # User welcome
   print 'Setting up entries of internal pages... '
 
-  get '/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/dashboard', :layout => :'/views/layouts/core'
+  get '/welcome', :auth => true, :agent => /(.*)/ do
+    erb :'views/welcome', :layout => :'/views/layouts/core'
   end
-  get '/ajax/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/ajax/dashboard'
+  get '/ajax/welcome', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/welcome'
   end
 
   get '/new', :auth => true, :agent => /(.*)/ do
@@ -466,13 +466,13 @@ begin
 
   # main configuration screen
   get '/settings', :auth => true do
-    redirect '/settings/dashboard'
+    redirect '/settings/welcome'
   end
   get '/settings/', :auth => true do
-    redirect '/settings/dashboard'
+    redirect '/settings/welcome'
   end
-  get '/settings/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/dashboard', :layout => :'/views/layouts/core'
+  get '/settings/welcome', :auth => true, :agent => /(.*)/ do
+    erb :'views/settings/welcome', :layout => :'/views/layouts/core'
   end
 
   # account information
