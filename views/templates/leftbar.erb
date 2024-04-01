@@ -27,9 +27,10 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 			<%
 			else # I am in a service
 				e.leftbar_icons.each { |i|
+					if i.screen
 					%>
 					<li style='position:relative;'>
-						<a href="/<%=e.name.downcase.to_s.encode_html%>/<%=i.screen.to_s.downcase.encode_html%>">
+						<a href="/<%=i.screen.to_s.downcase.encode_html%>">
 							<span class="icon-<%=i.icon.to_s%>"></span> <%=i.label.encode_html%>
 						</a>
 						<%
@@ -43,13 +44,54 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 						%>
 					</li>
 					<%
+					elsif i.items
+					%>
+					<li style='position:relative;' class='lp-dropdown'>
+						<a class='lp-dropdown-toggle open' id='<%=i.label.encode_html%>-dropdown'>
+							<span class="icon-<%=i.icon.to_s%>"></span> <%=i.label.encode_html%>
+						</a>
+						<%
+						if !i.badge_color.to_s.empty?
+						%>
+							<div style='position:absolute;right:10px;top:10px;'>
+								<span class='badge badge-<%=i.badge_color.to_s%>' title='<%=i.badge_title.to_s.encode_html%>'><i class='icon-<%=i.badge_icon.to_s%>'></i> <%=i.badge_text.to_s.encode_html%></span>
+							</div>
+						<%
+						end
+						%>
+					</li>
+					<%
+					end
+				}
+				%>
+				<!-- this is shwn for all the services -->
+				<li>
+					<a href="/settings/dashboard"><span class="icon-cog"></span>Settings</a>
+				</li>
+	
+				<%
+				e.leftbar_icons.select { |i| i.screen.nil? && i.items }.each { |i|
+					%>
+					<div class="lp-dropdown-wrapper simple open" data-dropdown-owner="<%=i.label.encode_html%>-dropdown" style="z-index:99999999999999999; display:inline; left: 85px; width: 150px; top: 180px;">
+						<div class="arrow" style="margin-top: 256px;">
+						</div>
+						<ul class="lp-dropdown-menu simple" style="width: 150px;">
+							<%
+							i.items.each { |item|
+								%>
+								<li style="width: 100%;">
+									<a tabindex="-1" href="/<%=item[:screen].to_s.downcase.encode_html%>" style="display: block; width: 100%;"><i class="icon-/<%=item[:icon]%>"></i>&nbsp;&nbsp;<%=item[:label].to_s.downcase.encode_html%></a>
+								</li>		
+								<%
+							}
+							%>
+		
+						</ul>
+					</div>
+					<%
 				}
 			end
 			%>
-			<!-- this is shwn for all the services -->
-			<li>
-				<a href="/settings/dashboard"><span class="icon-cog"></span>Settings</a>
-			</li>
 		</ul>
 	</div>
 </nav>

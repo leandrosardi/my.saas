@@ -466,13 +466,13 @@ begin
 
   # main configuration screen
   get '/settings', :auth => true do
-    redirect '/settings/welcome'
+    redirect '/settings/dashboard'
   end
   get '/settings/', :auth => true do
-    redirect '/settings/welcome'
+    redirect '/settings/dashboard'
   end
-  get '/settings/welcome', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/welcome', :layout => :'/views/layouts/core'
+  get '/settings/dashboard', :auth => true, :agent => /(.*)/ do
+    erb :'views/settings/dashboard', :layout => :'/views/layouts/core'
   end
 
   # account information
