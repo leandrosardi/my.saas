@@ -1,7 +1,6 @@
 <%
 # get extension
 e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase }.first
-
 %>
 
 <nav id="left-panel">
@@ -67,31 +66,38 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 				<!-- this is shwn for all the services -->
 				<li>
 					<a href="/settings/dashboard"><span class="icon-cog"></span>Settings</a>
-				</li>
-	
+				</li>	
 				<%
-				e.leftbar_icons.select { |i| i.screen.nil? && i.items }.each { |i|
-					%>
-					<div class="lp-dropdown-wrapper simple open" data-dropdown-owner="<%=i.label.encode_html%>-dropdown" style="z-index:99999999999999999; display:inline; left: 85px; width: 150px; top: 180px;">
-						<div class="arrow" style="margin-top: 256px;">
-						</div>
-						<ul class="lp-dropdown-menu simple" style="width: 150px;">
-							<%
-							i.items.each { |item|
-								%>
-								<li style="width: 100%;">
-									<a tabindex="-1" href="/<%=item[:screen].to_s.downcase.encode_html%>" style="display: block; width: 100%;"><i class="icon-/<%=item[:icon]%>"></i>&nbsp;&nbsp;<%=item[:label].to_s.downcase.encode_html%></a>
-								</li>		
-								<%
-							}
-							%>
-		
-						</ul>
-					</div>
-					<%
-				}
 			end
 			%>
 		</ul>
 	</div>
 </nav>
+
+<%
+e.leftbar_icons.select { |i| i.screen.nil? && i.items }.each { |i|
+%>
+<div class="lp-dropdown-wrapper simple open" data-dropdown-owner="<%=i.label.encode_html%>-dropdown" style="display:none; left: 85px; width: 150px; top: 180px;">
+	<div class="arrow" style="margin-top: 256px;"></div>
+	<ul class="lp-dropdown-menu simple" data-dropdown-owner2="<%=i.label.encode_html%>-dropdown" style="width: 150px;">
+		<li style="width: 100%;">
+			<a tabindex="-1" href="#" style="display: block; width: 100%;"><i class="icon-smile%>"></i>&nbsp;&nbsp;LALALA</a>
+		</li>		
+
+		<%
+		i.items.each { |item|
+puts
+puts
+puts item.inspect
+			%>
+			<li style="width: 100%;">
+				<a tabindex="-1" href="/<%=item[:screen].to_s.downcase.encode_html%>" style="display: block; width: 100%;"><i class="icon-<%=item[:icon]%>"></i>&nbsp;&nbsp;<%=item[:label].to_s.downcase.encode_html%></a>
+			</li>		
+			<%
+		}
+		%>
+	</ul>
+</div>
+<%
+}
+%>
