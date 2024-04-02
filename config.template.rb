@@ -10,7 +10,8 @@
 # files into a cloud storage specified by you.
 #
 
-hostname = system('hostname')
+# Where am I running?
+hostname = IO.popen(['hostname']).read.strip
 
 # run an extension as a service
 SERVICE_NAME = nil
