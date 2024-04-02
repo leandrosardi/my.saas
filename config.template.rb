@@ -84,40 +84,6 @@ BlackStack::Debugging::set({
   :allow_breakpoints => BlackStack.sandbox?,
 })
 
-# DB ACCESS - KEEP IT SECRET
-# 
-# Connecting to PostgreSQL database in your local machine.
-#
-# Refere to this tutorial for installing a local environment:
-# https://github.com/leandrosardi/environment
-# 
-BlackStack::PostgreSQL::set_db_params({ 
-  :db_url => '127.0.0.1', 
-  :db_port => '5432', 
-  :db_name => 'demo', 
-  :db_user => 'blackstack', 
-  :db_password => '*****',
-})
-=begin
-# For running a CockroachDB instance in your local computer:
-# - cockroach start-single-node --insecure
-# 
-# Either you use a local (demo) database, or a cloud (serverless) database, always find a connection string like this:
-# - postgresql://demo:demo7343@127.0.0.1:26257/movr?sslmode=require
-# - postgresql://root@dev1:26257/defaultdb?sslmode=disable
-# Then, map the parameters of such a connection string here.
-# 
-BlackStack::CRDB::set_db_params({ 
-  :db_url => BlackStack.sandbox? ? '127.0.0.1' : '<serverless instance IP here>', 
-  :db_port => '26257', 
-  :db_cluster => BlackStack.sandbox? ? nil : '<serverless cluster ID here>', # this parameter is optional. Use this when using CRDB serverless.
-  :db_name => '<db name here>', 
-  :db_user => '<db user here>', 
-  :db_password => '<db password here>',
-  :db_sslmode => BlackStack.sandbox? ? 'disable' : 'verify-full',
-})
-=end
-
 # Setup connection to the API, in order get bots requesting and pushing data to the database.
 # TODO: write your API-Key here. Refer to this article about how to create your API key:
 # https://sites.google.com/expandedventure.com/knowledge/
@@ -216,6 +182,74 @@ BlackStack::Notifications.set(
 BlackStack::Deployer::add_nodes([
   {
     # unique name to identify a host (a.k.a.: node)
+    :name => 'dev1', # Master. Internal usage only.
+    :dev => true, # ignore this node when deploying.
+
+    :net_remote_ip => '127.0.0.1',  
+    :ssh_username => 'demo', #'root',
+    :ssh_port => 22,
+    :ssh_password => '****',
+    #:ssh_private_key_file => BlackStack.sandbox? ? nil : './vymeco.pem',
+
+    # database
+    :db_type => :pg,
+    :db_port => 5432,
+    :db_name => 'demo',
+    :db_user => 'blackstack',
+    :db_password => '****',
+
+    # git
+    :git_repository => 'leandrosardi/my.saas',
+    :git_branch => '1.6.6',
+    :git_username => 'leandrosardi',
+    :git_password => '****',
+    # code folder
+    :code_folder => 'massp',
+    # name of the LAN interface
+    :laninterface => 'eth0',
+    # sinatra
+    :web_port => 3000,
+    # config.rb content - always using dev-environment here
+    :config_rb_content => File.read(ENV['RUBYLIB']+'/config.rb').gsub(/"/, '\"'),
+    # default deployment routine for this node
+    # 
+    :deployment_routine => 'default',
+    # this is always the folder where the app.rb file is located,
+    # and from where you will run all the processes who run in this node.
+    # 
+    :rubylib => "~/code/massp",
+    # processes to run on this node
+    # all these processes are run in the background
+    # all the processes are located into the $RUBYLIB folder
+    # all these
+    # 
+    :processes => [
+      # Webserver
+      #
+      'app.rb port=3000 config=./config.rb',
+      
+      # Look for new records in the table event. 
+      # Apply AI to detect opportunities and craft direct messages. 
+      # Insert into outbox.
+      # 
+      'extensions/product.massp/p/filter.rb',
+      
+      # Create records in the table job.
+      # Look for new records in the table outbox. 
+      # Look for available profiles. 
+      # Update outbox.id_profile.
+      # 
+      'extensions/product.massp/p/plan.rb',
+    ],
+    # logfiles to watch
+    # 
+    :logfiles => [
+      OUTPUT_FILE, # '~/deployment.log',
+      '$RUBYLIB/filter.log',
+      '$RUBYLIB/plan.log',
+    ],
+  }, {
+    # unique name to identify a host (a.k.a.: node)
     #
     :name => 'node01', 
 
@@ -301,6 +335,41 @@ BlackStack::Deployer::add_nodes([
     ],
   }
 ])
+
+# DB ACCESS - KEEP IT SECRET
+# 
+# Connecting to PostgreSQL database in your local machine.
+#
+# Refere to this tutorial for installing a local environment:
+# https://github.com/leandrosardi/environment
+# 
+node = BlackStack::Deployer.nodes.select { |n| n.name==`hostname`.strip }.first
+BlackStack::PostgreSQL::set_db_params({ 
+  :db_url => node.net_remote_ip, 
+  :db_port => node.parameters[:db_port],
+  :db_name => node.parameters[:db_name],
+  :db_user => node.parameters[:db_user],
+  :db_password => node.parameters[:db_password],
+})
+=begin
+# For running a CockroachDB instance in your local computer:
+# - cockroach start-single-node --insecure
+# 
+# Either you use a local (demo) database, or a cloud (serverless) database, always find a connection string like this:
+# - postgresql://demo:demo7343@127.0.0.1:26257/movr?sslmode=require
+# - postgresql://root@dev1:26257/defaultdb?sslmode=disable
+# Then, map the parameters of such a connection string here.
+# 
+BlackStack::CRDB::set_db_params({ 
+  :db_url => node.net_remote_ip,
+  :db_cluster => node.parameters[:db_cluster],
+  :db_sslmode => node.parameters[:db_sslmode],
+  :db_port => node.parameters[:db_port],
+  :db_name => node.parameters[:db_name],
+  :db_user => node.parameters[:db_user],
+  :db_password => node.parameters[:db_password],
+})
+=end
 
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({

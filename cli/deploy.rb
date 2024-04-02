@@ -18,8 +18,9 @@ l = BlackStack::LocalLogger.new('./deploy.log')
 l.log "Sandbox mode: #{BlackStack.sandbox? ? 'yes'.green : 'no'.red }"
 
 if BlackStack.sandbox?
-  l.log 'Sandbox mode is not allowed by `deploy.rb` command. Remove the `.sandbox` file in the `/cli` directory.'.red
-  exit(1)
+  #l.log 'Sandbox mode is not allowed by `deploy.rb` command. Remove the `.sandbox` file in the `/cli` directory.'.red
+  #exit(1)
+  l.log 'Warning: Sandbox mode is not recommended to run `deploy.rb` command. Remove the `.sandbox` file in the `/cli` directory.'.yellow
 end
 
 # command parameters 
@@ -77,32 +78,80 @@ if !parser.value('db')
 else
   l.logf 'yes'.green 
 
-  l.logs 'Connecting the database... '
-  BlackStack::Deployer::DB::connect(
-    BlackStack.connection_string # use the connection parameters setting in ./config.rb
-  )
-  l.done
-
-  l.logs 'Loading checkpoint... '
-  BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.lock")
-  l.logf "done (#{BlackStack::Deployer::DB::checkpoint.to_s})"
-
-  l.logs 'Running database updates... '
-  BlackStack::Deployer::DB::set_folder ('../sql')
-  BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.lock", l)
-  l.done
-
-  # run the .sql scripts of each extension
-  BlackStack::Extensions.extensions.each { |e|
-    l.logs "Loading checkpoint for #{e.name.downcase.blue}... "
-    BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.#{e.name.downcase}.lock")
-    l.logf "done (#{BlackStack::Deployer::DB::checkpoint.to_s})"
-
-    l.logs "Running database updates for #{e.name.downcase.blue}... "
-    BlackStack::Deployer::DB::set_folder ("../extensions/#{e.name.downcase}/sql")
-    BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.#{e.name.downcase}.lock")
-    l.done
+  # TODO: make a better way to decide which nodes are master nodes
+  l.logs 'Loading master nodes (nodes that serve as database servers)... ' 
+  masters = BlackStack::Deployer.nodes.select { |n| 
+    n.name=~/#{parser.value('nodes')}/ && 
+    !n.parameters[:db_type].nil? && 
+    n.parameters[:dev].to_s != 'true' 
   }
+  l.logf 'done'.green + " (#{masters.size.to_s.blue} nodes)"
+
+  masters.each { |node|
+    l.logs "Node #{node.name.blue}... "
+
+    if node.parameters[:db_type] != :pg && node.parameters[:db_type] != :crdb
+      l.logf 'skipped'.yellow + " (only :pg and :crdb are supported)"
+    end
+
+    if node.parameters[:db_type] == :pg
+      BlackStack::PostgreSQL::set_db_params({ 
+        :db_url => node.net_remote_ip, 
+        :db_port => node.parameters[:db_port],
+        :db_name => node.parameters[:db_name],
+        :db_user => node.parameters[:db_user],
+        :db_password => node.parameters[:db_password],
+      })
+    end
+
+    if node.parameters[:db_type] == :crdb
+      BlackStack::CockroachDB::set_db_params({
+        :db_url => node.net_remote_ip,
+        :db_cluster => node.parameters[:db_cluster],
+        :db_sslmode => node.parameters[:db_sslmode],
+        :db_port => node.parameters[:db_port],
+        :db_name => node.parameters[:db_name],
+        :db_user => node.parameters[:db_user],
+        :db_password => node.parameters[:db_password],
+      })
+    end
+
+    l.logs 'Connecting the database... '
+    BlackStack::Deployer::DB.connect(
+      BlackStack.connection_string # use the connection parameters setting in ./config.rb
+    )
+    l.logf 'done'.green
+
+    l.logs 'Loading checkpoint... '
+    BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.lock")
+    l.logf "done".green + " (#{BlackStack::Deployer::DB::checkpoint.to_s})"
+
+    l.logs 'Running database updates... '
+    BlackStack::Deployer::DB::set_folder ('../sql')
+    BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.lock", l)
+    l.logf 'done'.green
+
+    # run the .sql scripts of each extension
+    BlackStack::Extensions.extensions.each { |e|
+      l.logs "Loading checkpoint for #{e.name.downcase.blue}... "
+      BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.#{e.name.downcase}.lock")
+      l.logf "done".green + " (#{BlackStack::Deployer::DB::checkpoint.to_s})"
+
+      l.logs "Running database updates for #{e.name.downcase.blue}... "
+      BlackStack::Deployer::DB::set_folder ("../extensions/#{e.name.downcase}/sql")
+      BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.#{e.name.downcase}.lock")
+      l.logf 'done'.green
+    }
+
+    # disconnecting from the database
+    l.logs 'Disconnecting the database... '
+    #BlackStack::Deployer::DB.disconnect
+    #l.logf 'done'.green
+    l.logf "TODO: develop disconnect method!"
+
+    l.logf 'done'.green
+
+  } # masters.each
 end # if parser.value('db')
 
 # run deployment routine to each node 
@@ -111,7 +160,10 @@ if !parser.value('code')
   l.logf 'no'.red
 else
   # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
-  BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
+  BlackStack::Deployer.nodes.select { |n| 
+    n.name=~/#{parser.value('nodes')}/ && 
+    n.parameters[:dev].to_s != 'true' 
+  }.each { |n|
     node_name = n.name  
 
     l.logs "Node #{node_name.blue}... "
@@ -128,7 +180,10 @@ if !parser.value('ext')
   l.logf 'no'.red
 else
   # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
-  BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
+  BlackStack::Deployer.nodes.select { |n| 
+    n.name=~/#{parser.value('nodes')}/ &&
+    n.parameters[:dev].to_s != 'true'
+  }.each { |n|
     node_name = n.name  
 
     l.logs "Node #{node_name.blue}... "
@@ -156,7 +211,10 @@ if !parser.value('restart')
   l.logf 'no'.red
 else
   # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
-  BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
+  BlackStack::Deployer.nodes.select { |n| 
+    n.name=~/#{parser.value('nodes')}/ &&
+    n.parameters[:dev].to_s != 'true'
+  }.each { |n|
     l.logs "Node #{n.name.blue}... "
     n.connect
     n.stop(OUTPUT_FILE)
