@@ -10,6 +10,8 @@
 # files into a cloud storage specified by you.
 #
 
+hostname = system('hostname')
+
 # run an extension as a service
 SERVICE_NAME = nil
 
@@ -343,7 +345,7 @@ BlackStack::Deployer::add_nodes([
 # Refere to this tutorial for installing a local environment:
 # https://github.com/leandrosardi/environment
 # 
-node = BlackStack::Deployer.nodes.select { |n| n.name==`hostname`.strip }.first
+node = BlackStack::Deployer.nodes.select { |n| n.name==hostname.strip }.first
 BlackStack::PostgreSQL::set_db_params({ 
   :db_url => node.net_remote_ip, 
   :db_port => node.parameters[:db_port],
