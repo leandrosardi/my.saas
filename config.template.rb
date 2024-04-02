@@ -194,12 +194,15 @@ BlackStack::Deployer::add_nodes([
     :ssh_password => '****',
     #:ssh_private_key_file => BlackStack.sandbox? ? nil : './vymeco.pem',
 
-    # database
+    # database hosted by this node
     :db_type => :pg,
     :db_port => 5432,
     :db_name => 'demo',
     :db_user => 'blackstack',
     :db_password => '****',
+
+    # database to connect
+    :db_host => 'dev1',
 
     # git
     :git_repository => 'leandrosardi/my.saas',
@@ -264,6 +267,9 @@ BlackStack::Deployer::add_nodes([
     :ssh_port => 22,
     :ssh_password => '*******',
     #:ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/cs.pem' : '$HOME/code/my.saas/cli/cs.pem',
+
+    # database to connect
+    :db_host => 'dev1',
 
     # github credentials
     # 
@@ -346,13 +352,14 @@ BlackStack::Deployer::add_nodes([
 # Refere to this tutorial for installing a local environment:
 # https://github.com/leandrosardi/environment
 # 
-node = BlackStack::Deployer.nodes.select { |n| n.name==hostname.strip }.first
-BlackStack::PostgreSQL::set_db_params({ 
-  :db_url => node.net_remote_ip, 
-  :db_port => node.parameters[:db_port],
-  :db_name => node.parameters[:db_name],
-  :db_user => node.parameters[:db_user],
-  :db_password => node.parameters[:db_password],
+node_me = BlackStack::Deployer.nodes.select { |n| n.name==hostname.strip }.first
+node_db_host = BlackStack::Deployer.nodes.select { |n| n.name==node_me.parameters[:db_host] }.first
+BlackStack::PostgreSQL::set_db_params({
+  :db_url => node_db_host.net_remote_ip,
+  :db_port => node_db_host.parameters[:db_port],
+  :db_name => node_db_host.parameters[:db_name],
+  :db_user => node_db_host.parameters[:db_user],
+  :db_password => node_db_host.parameters[:db_password],
 })
 =begin
 # For running a CockroachDB instance in your local computer:
@@ -364,13 +371,13 @@ BlackStack::PostgreSQL::set_db_params({
 # Then, map the parameters of such a connection string here.
 # 
 BlackStack::CRDB::set_db_params({ 
-  :db_url => node.net_remote_ip,
-  :db_cluster => node.parameters[:db_cluster],
-  :db_sslmode => node.parameters[:db_sslmode],
-  :db_port => node.parameters[:db_port],
-  :db_name => node.parameters[:db_name],
-  :db_user => node.parameters[:db_user],
-  :db_password => node.parameters[:db_password],
+  :db_url => node_db_host.net_remote_ip,
+  :db_cluster => node_db_host.parameters[:db_cluster],
+  :db_sslmode => node_db_host.parameters[:db_sslmode],
+  :db_port => node_db_host.parameters[:db_port],
+  :db_name => node_db_host.parameters[:db_name],
+  :db_user => node_db_host.parameters[:db_user],
+  :db_password => node_db_host.parameters[:db_password],
 })
 =end
 
