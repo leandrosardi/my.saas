@@ -33,7 +33,10 @@ parser = BlackStack::SimpleCommandLineParser.new(
 )
 
 # TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
-BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }.each { |n|
+BlackStack::Deployer.nodes.select { |n| 
+  n.name=~/#{parser.value('nodes')}/ && 
+  n.parameters[:dev].to_s != 'true' 
+}.each { |n|
   l.logs "Node #{n.name.blue}... "
   n.connect
   n.stop(OUTPUT_FILE)
