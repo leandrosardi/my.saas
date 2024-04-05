@@ -9,7 +9,6 @@ require 'config.rb'
 
 puts
 puts 'This command is to get the latest n lines of any log in a node..'
-puts 
 
 # command parameters
 parser = BlackStack::SimpleCommandLineParser.new(
