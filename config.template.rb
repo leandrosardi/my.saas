@@ -9,6 +9,8 @@
 # command `backup`. I will create a backup of the current
 # files into a cloud storage specified by you.
 #
+# Guidelines:
+# - Use $HOME instead of ~.
 
 # Where am I running?
 hostname = IO.popen(['hostname']).read.strip
@@ -17,7 +19,7 @@ hostname = IO.popen(['hostname']).read.strip
 SERVICE_NAME = nil
 
 # deployment routines will write in this file, in hard drive of the node where deploying.
-OUTPUT_FILE = '~/deployment.log'
+OUTPUT_FILE = '$HOME/deployment.log'
 
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = '$RUBYLIB'
@@ -223,7 +225,7 @@ BlackStack::Deployer::add_nodes([
     # this is always the folder where the app.rb file is located,
     # and from where you will run all the processes who run in this node.
     # 
-    :rubylib => "~/code/massp",
+    :rubylib => "$HOME/code/massp",
     # processes to run on this node
     # all these processes are run in the background
     # all the processes are located into the $RUBYLIB folder
@@ -250,7 +252,7 @@ BlackStack::Deployer::add_nodes([
     # logfiles to watch
     # 
     :logfiles => [
-      OUTPUT_FILE, # '~/deployment.log',
+      OUTPUT_FILE, # '$HOME/deployment.log',
       '$RUBYLIB/filter.log',
       '$RUBYLIB/plan.log',
     ],
@@ -312,7 +314,7 @@ BlackStack::Deployer::add_nodes([
     # this is always the folder where the app.rb file is located,
     # and from where you will run all the processes who run in this node.
     # 
-    :rubylib => "~/code/demo",
+    :rubylib => "$HOME/code/demo",
     # processes to run on this node
     # all these processes are run in the background
     # all the processes are located into the $RUBYLIB folder
@@ -338,7 +340,7 @@ BlackStack::Deployer::add_nodes([
     # logfiles to watch
     # 
     :logfiles => [
-      OUTPUT_FILE, # '~/deployment.log',
+      OUTPUT_FILE, # '$HOME/deployment.log',
       #'$RUBYLIB/filter.log',
       #'$RUBYLIB/plan.log',
     ],
