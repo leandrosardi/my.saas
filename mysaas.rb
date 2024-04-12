@@ -11,7 +11,8 @@ require 'my-ruby-deployer'
 require 'pampa'
 #require_relative '../pampa/lib/pampa.rb'
 
-require 'workmesh'
+# DEPRECATED
+#require 'workmesh'
 #require_relative '../../workmesh/lib/workmesh.rb'
 
 require 'my-dropbox-api'

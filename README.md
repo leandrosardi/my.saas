@@ -101,6 +101,13 @@ cd ~/code
 git clone https://github.com/leandrosardi/my.saas
 ```
 
+```bash
+cd ~/code/my.saas
+git switch dev-1.6.7
+git fetch --all
+git reset --hard origin/dev-1.6.7
+```
+
 **Step 4:** Update gems.
 
 ```bash
@@ -119,6 +126,7 @@ mv config.template.rb config.rb
 
 ```bash
 export RUBYLIB=~/code/my.saas
+cd ~/code/my.saas/cli
 ruby deploy.rb
 ```
 
