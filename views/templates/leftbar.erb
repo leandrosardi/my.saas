@@ -1,6 +1,6 @@
 <%
 # get extension
-e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase }.first
+e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase && e.show_in_top_bar }.first
 %>
 
 <nav id="left-panel">
