@@ -23,9 +23,9 @@ BlackStack::Deployer::add_routine({
       mkdir -p ~/code >>'+OUTPUT_FILE+' 2>&1
 
       # backup old code folder
-      echo "" >>'+OUTPUT_FILE+' 2>&1
-      echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
-      [ -d ~/code/%code_folder% ] && mv ~/code/%code_folder% ~/code/%code_folder%.%timestamp% >>'+OUTPUT_FILE+' 2>&1
+      #echo "" >>'+OUTPUT_FILE+' 2>&1
+      #echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
+      #[ -d ~/code/%code_folder% ] && mv ~/code/%code_folder% ~/code/%code_folder%.%timestamp% >>'+OUTPUT_FILE+' 2>&1
 
       # clone the project
       echo "" >>'+OUTPUT_FILE+' 2>&1
