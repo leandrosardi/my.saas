@@ -10,9 +10,21 @@
 
 **Outline:**
 
-1. [Features](#1-features).
-2. [Getting Started](#2-getting-started).
-3. [Documentation](#3-documentation).
+1. [Features](#1-features)
+2. [Getting Started](#2-getting-started)
+3. [Running Scripts](#3-running-scripts)
+4. [Models](#4-models)
+
+
+4. [Screens](#4-screens)
+5. [Filters](#5-filers)
+6. [Access Points](#6-access-points)
+
+Configuration
+
+- changing deloyment output file
+- changing `MYSAAS_API_KEY`
+- setting `DROPBOX_REFRESH_TOKEN`
 
 ## 1. Features
 
@@ -59,7 +71,7 @@ Here is a full list of the MySaaS features:
 
 On a fresh installation of Ubuntu 20.04, and using the `root` user, run the commands below:
 
-**Step 1:** Run the **Environment Installation Script**:
+**Step 1:** Run the **Environment Installation Script**.
 
 Download our Environment Installation Script (or simply EIS) by running the lines below:
 
@@ -68,18 +80,16 @@ cd ~
 wget https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh
 ```
 
-and the EIS by running the line below:
+Then run the EIS by running the line below, replacing the merge-tags
+
+- `<hostname>` with the name you have to assisng the the node where my.saas will run; and
+- `<password>` with the password you want for a new Linux user called `blackstack` who will be created by the EIS.
 
 ```
 bash install.ubuntu.20_04.sh <hostname> <password>
 ```
 
-replacing 
-
-1. `<hostname>` with the name you have to assisng the the node where my.saas will run; and
-2. `<password>` with the password you want for a new Linux user called `blackstack` who will be created by the EIS.
-
-**Note:** For running this example, use the values `dev2` and `blackstack123`.
+**Note:** For running this example, use the values `dev2` and `blackstack123`. E.g.:
 
 ```
 bash install.ubuntu.20_04.sh dev2 blackstack123
@@ -87,7 +97,7 @@ bash install.ubuntu.20_04.sh dev2 blackstack123
 
 **Note:** Refer to [this other repository](https://github.com/leandrosardi/environment) for more information about the Environment Installation Script.
 
-**Step 2:** Switch to the new `blackstack` user.
+**Step 2:** Switch from `root` to the new `blackstack` user.
 
 ```bash
 sudo su - blackstack
@@ -132,45 +142,117 @@ ruby deploy.rb
 
 Now, you can navigatoe the my.saas website from the host browser:
 
-[http://127.0.0.1:3000](http://127.0.0.1:3000)
+[http://127.0.0.1:3000/login](http://127.0.0.1:3000/login)
 
+![Login Screen](./docu/thumbnails/login.png)
 
-If the website is not working, you can check the file `~/deployment.log`.
+You can login using the default credentials:
+- user: `su`
+- password: `Testing123` 
 
+If the website is not working, you can check the file `~/deployment.log` in the server node.
 
-## 3. Documentation
+## 3. Running Scripts
 
-01. [Installation](./docu/01.Installation.md)
-02. [Configurations](./docu/02.configurations.md)
-03. [Secret Files Management](./docu/03.secret-files-management.md)
-04. [Deployment](./docu/04.deployment.md) 
-05. [Transactional Emails](./docu/05.transactional-emails.md) 
-06. Screens Development
-07. Invoicing and Payments Processing
-08. System Owner
-09. Accounts Management
-10. User Storage
-11. Access Points Publishing
-12. Single-Thread Backend Processing
-13. Multi-Thread Backend Processing
-14. Extensibility
-15. Available Extensions
-16. Available UI Components
-17. Security
-18. Archivlement
+Every time you want to run a Ruby script using the my.saas framework, you have to set the environment variable `RUBYLIB` properly.
 
-## Further Work
+```bash
+export RUBYLIB=/home/blackstcack/code/my.saas
+```
 
-01. Complete documentation for all features as of version 1.5.6.
-02. affiliates tracking, for managing resellers and pay commission;
-03. domain aliasing, for licencing your site to other companies;
-04. abuse preventing, by tracking user's network and browser fingertings;
-05. shadow profiling [[1](https://en.wikipedia.org/wiki/Shadow_profile)], for sales optimizations and client retention;
-06. Affiliates Tracking Extension
-07. White-Labeling Features
-08. Custom Alerts
-09. Screens As a Code
-10. Improve Funnel Configuration
-	- add descriptor about the email marketing automation
-	- add descriptor about which transactional emails activate for this funnel
-	- add A/B testing of screens (landing, offer, plans, etc)
+E.g.: This [signup example](./examples/signup.rb) registers a new account in the database.
+
+```bash
+export RUBYLIB=/home/blackstcack/code/my.saas
+cd $RUBYLIB/examples
+ruby signup.rb
+```
+
+Every new script must looks like below:
+
+```ruby
+# load gems and connect database
+require 'mysaas'
+require 'lib/stubs'
+require 'config'
+require 'version'
+DB = BlackStack.db_connect
+require 'lib/skeletons'
+
+# create a new l
+l = BlackStack::LocalLogger.new('<your-script-name-here>.log')
+
+begin
+    l.logs 'Starting the process... '
+	
+	# TODO: Add your code here.
+
+    l.logf 'done'.green
+
+# catch the case when the process is interrupted
+rescue Interrupt => e
+    l.logf e.message.red
+    l.logf e.backtrace.join("\n")
+
+# catch the case when an exception is raised
+rescue Exception => e
+    l.logf e.message.red
+    l.logf e.backtrace.join("\n")
+
+# ensure releasing of resources and the execution of any other mandatory code
+ensure
+    GC.start
+    DB.disconnect
+
+    # TODO: add any other mandatory code here.
+
+    l.log 'process finished'.green
+end
+```
+
+## 4. Models
+
+The folder [sql](./sql/) contains the database schema and the seed data for running my.saas. Read the files into the folder [sql](./sql/) and get familiarized with them.
+
+The folder [models/skeleton](./models/skeleton/) has [Sequel](https://sequel.jeremyevans.net/) defined clases to manage objects that persist in the database. 
+
+Any **persistance class** should inherit from `Sequel::Model`.
+
+E.g.:
+
+```ruby
+module BlackStack
+  module MySaaS
+    class Account < Sequel::Model(:account)
+
+		# class attributes and method are here
+	
+	end 
+  end
+end
+```
+
+Use the function `guid` if you need a **Globally Unique ID** (or simply **GUID**) for creating a new persistance object.
+
+Use the function `now` if you need the current timestamp.
+The function `now` returns the current timestamp at GTM-3 (Buenos Aires date/time).
+
+E.g.:
+
+```ruby
+# load gem and connect database
+require 'mysaas'
+require 'lib/stubs'
+require 'config'
+require 'version'
+DB = BlackStack.db_connect
+require 'lib/skeletons'
+
+a = BlackStack::MySaaS::Account.new
+a.id = guid
+a.id_account_owner = BlackStack::MySaaS::Account.first.id
+a.name = 'ACMD LLC'
+a.create_time = now
+a.id_timezone = BlackStack::MySaaS::Timezone.first.id
+a.save
+```
