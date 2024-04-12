@@ -221,7 +221,7 @@ BlackStack::Deployer::add_nodes([
     # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens 
     # 
     :git_repository => 'leandrosardi/my.saas',
-    :git_branch => 'main',
+    :git_branch => 'dev-1.6.7',
     :git_username => '<your github username here>',
     :git_password => '****',
 
