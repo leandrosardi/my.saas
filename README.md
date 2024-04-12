@@ -1,20 +1,24 @@
 ![GitHub issues](https://img.shields.io/github/issues/leandrosardi/my.saas) ![GitHub](https://img.shields.io/github/license/leandrosardi/my.saas) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/leandrosardi/my.saas) ![GitHub last commit](https://img.shields.io/github/last-commit/leandrosardi/my.saas)
 
-**THIS PROJECT IS UNDER CONSTRUCTION**
-
 ![logo](./public/core/images/logo.png)
 
 # MySaaS - Open Source SaaS Platform - Extensible and Scalable.  
 
-**MySaaS** is an open-source, extensible and scalable platform for develop your own SaaS, e-Commerce, Education Platform, Social Network, Forum or any kind of memberships based product.
+**MySaaS** is an open-source, extensible and scalable platform for develop your own Software as a Service (SaaS), e-Commerce, Education Platform, Social Network, Forum or any kind of memberships based product.
 
 ![Example of What Can You Create with My.SaaS](./docu/thumbnails/dashboard.png)
 
-## Features
+**Outline:**
+
+1. [Features](#1-features).
+2. [Getting Started](#2-getting-started).
+3. [Documentation](#3-documentation).
+
+## 1. Features
 
 Here is a full list of the MySaaS features:
 
-**Fast Front-End Coding**
+**Fast Front-End Coding:**
 
 - :heavy_check_mark: Vast pool of JavaScript components for an imporved UX.
 - :heavy_check_mark: Vast pool of CSS entities for a nice UI.
@@ -26,7 +30,7 @@ Here is a full list of the MySaaS features:
 - :heavy_check_mark: Automated deployment CLI command.
 - :heavy_check_mark: Automated backing up and restoring of secret files that you can't store in repositories  ([DropBox](https://www.dropbox.com)).
 
-**Scalability**
+**Scalability:**
 
 - :heavy_check_mark: Infrasctructure as a Code (IaaC) capabilities for running a mesh of offline processes.
 - :heavy_check_mark: Scalable architecture: 
@@ -34,12 +38,12 @@ Here is a full list of the MySaaS features:
 	- [Dropbox API](https://aws.amazon.com/ebs/) for elastic storage; and 
 	- [CockroachDB](https://www.cockroachlabs.com/) for scalable and serverless database.
 
-**End-Users Management**
+**End-Users Management:**
 
 - :heavy_check_mark: Transactional emails ([Postmark](https://postmarkapp.com/)).
 - :heavy_check_mark: PayPal integration for Invoicing & Payments Processing ([I2P](https://github.com/leandrosardi/i2p)).
 
-**Extensibility**
+**Extensibility:**
 
 - :heavy_check_mark: Easy modules development.
 - :heavy_check_mark: Advanced JavaScript components:
@@ -51,13 +55,54 @@ Here is a full list of the MySaaS features:
 	- [Lists.js](https://github.com/leandrosardi/listsjs); and
 	- [Datas.js](https://github.com/leandrosardi/datasjs).
 
-## Documentation
+## 2. Getting Started
 
-Many chapters are still pending of writing.
+On a fresh installation of Ubuntu 20.04, and using the `root` user, run this command:
 
-I will be adding one new chapter week by week, so follow this project and get notified when new documentation is released.
+**Step 1:** Download the **Environment Installation Script**:
 
-### Basic
+```
+cd ~
+wget https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh
+```
+
+**Step 2:** Install the environment:
+
+```
+bash install.ubuntu.20_04.sh
+```
+
+**Step 3:** Clone **my.saas**:
+
+```bash
+mkdir ~/code
+cd ~/code
+git clone https://github.com/leandrosardi/my.saas
+```
+
+4. Install requrired gems
+
+```bash
+cd ~/code/my.saas
+bundler update
+```
+
+5. Install database migrations:
+
+```
+export RUBYLIB=~/code/my.saas
+cd ~/code/my.saas/cli
+ruby deploy.rb config=config.template.rb
+```
+
+6. Run **my.saas**:
+
+```
+export RUBYLIB=~/code/my.saas
+ruby app.rb port=3000 config=config.template.rb
+```
+
+## 3. Documentation
 
 01. [Installation](./docu/01.Installation.md)
 02. [Configurations](./docu/02.configurations.md)
