@@ -238,7 +238,7 @@ Use the function `guid` if you need a **Globally Unique ID** (or simply **GUID**
 Use the function `now` if you need the current timestamp.
 The function `now` returns the current timestamp at GTM-3 (Buenos Aires date/time).
 
-E.g.:
+E.g.: The script below will register a new account in the database.
 
 ```ruby
 # load gem and connect database
@@ -252,7 +252,7 @@ require 'lib/skeletons'
 a = BlackStack::MySaaS::Account.new
 a.id = guid
 a.id_account_owner = BlackStack::MySaaS::Account.first.id
-a.name = 'ACMD LLC'
+a.name = 'ACME LLC'
 a.create_time = now
 a.id_timezone = BlackStack::MySaaS::Timezone.first.id
 a.save
@@ -276,6 +276,8 @@ CREATE TABLE IF NOT EXISTS public.survey (
 );
 ```
 
+**Note:** The table `survey` has a foreing key to the tables `user` and `timezone` that are already part if the database schma of my.saas.
+
 **Note:** Name the file `a001.sql` if this is the first file you add into the folder [sql](./sql). If this is the second file you add, it should be `a002.sql`. When you add a new file into the [sql](./sql) filder you have to increase the number of the last file added.
 
 2. Create a new file `survey.rb` into the folder [models/skeletons/core](./models/skeleton/core), and write this script inside:
@@ -298,13 +300,21 @@ end
 require 'models/skeleton/core/survey'
 ```
 
-4. Run the migration file [a001.sql](./sql/a001.sql) and restart the webserver by running the script [deploy.rb](./cli/start.rb) script.
+4. Push the source code modifications to the git repository.
+
+```bash
+cd $RUBYLIB
+git add *
+git commit -m "adding a survey table"
+git push
+```
+
+5. In order to run the migration file [a001.sql](./sql/a001.sql) and restart the webserver, run the script [deploy.rb](./cli/start.rb).
 
 ```bash
 cd $RUBYLIB/cli
 ruby deploy.rb
 ```
-
 
 ## 5. Screens
 
@@ -390,6 +400,50 @@ ruby start.rb
 ![Survey Screen](./docu/thumbnails/survey-screen.png)
 
 **Navigation Bars**
+
+Add the code below at the top if the [/views/survey.erb](./views/survey.erb) screen, to add a 2-level navigation bar to your page.
+
+```ruby
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span3">
+            <%=nav1("Survey")%>
+        </div>
+    </div>
+</div>
+```
+
+In your survey page, a 2-level navigation bar will look like this:
+
+```
+ACME LLC > Survey
+```
+
+where `ACME LLC` is the the value in the field `name` of the record in the `account` table, to which the logged in user is beloning to.
+
+![Survey with Navigation Bar](./docu/thumbnails/survey-with-navigation-bar.png)
+
+**Top Buttons**
+
+Inside the `.mynavbar2` div, you can add another child to add buttons.
+
+E.g.: The code below adds one blue button to submit the survey, and one gray button to skip the survey.
+
+```ruby
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span3">
+            <%=nav1("Survey")%>
+        </div>
+    </div>
+
+    <div class="span9">
+      <button class='btn btn-blue'>Submit</button>
+      <button class='btn btn-gray'>Skip</button>
+    </div>
+</div>
+```
+
 
 **Panels**
 
