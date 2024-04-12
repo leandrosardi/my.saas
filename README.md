@@ -66,13 +66,15 @@ cd ~
 wget https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh
 ```
 
+Note: Refer to [this other repository](https://github.com/leandrosardi/environment) for more information about the Environment Installation Script.
+
 **Step 2:** Install the environment:
 
 ```
 bash install.ubuntu.20_04.sh
 ```
 
-**Step 3:** Clone **my.saas**:
+**Step 3:** Clone my.saas:
 
 ```bash
 mkdir ~/code
@@ -80,14 +82,14 @@ cd ~/code
 git clone https://github.com/leandrosardi/my.saas
 ```
 
-4. Install requrired gems
+**Step 4:** Install requrired gems
 
 ```bash
 cd ~/code/my.saas
 bundler update
 ```
 
-5. Install database migrations:
+**Step 5:** Install database migrations:
 
 ```
 export RUBYLIB=~/code/my.saas
@@ -95,7 +97,7 @@ cd ~/code/my.saas/cli
 ruby deploy.rb config=config.template.rb
 ```
 
-6. Run **my.saas**:
+**Step 6:** Run my.saas:
 
 ```
 export RUBYLIB=~/code/my.saas
