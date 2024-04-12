@@ -471,7 +471,6 @@ E.g.: The code below includes a tooltip to the submit button:
 
 ![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons-with-tooltip.png)
 
-
 ### 5.6. Dropdown Menus
 
 In the same div where you placed buttons you can also add dropdown menus.
@@ -514,11 +513,23 @@ E.g.: The code below adds a list of tasks to perform by the user, in order to he
 
 ![Survey with Dropdown Menu](./docu/thumbnails/survey-with-dropdown-menu.png)
 
-### 5.7. Panels
+### 5.7. Input Boxes
 
-### 5.8. Forms
 
-### 5.9. Tables
+
+### 5.8. Panels
+
+Below the `.mynavbar2` div you would want to place forms, tables, charts, etc.
+
+You may want to split the screen horizontally.
+
+E.g.: You may want to place a table in the left panel, and show other stats in the right panel.
+
+![panels example](./docu/thumbnails/panels.png)
+
+### 5.9. Forms
+
+### 5.10. Tables
 
 ## 6. Filters
 
