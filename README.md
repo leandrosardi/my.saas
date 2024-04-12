@@ -1,12 +1,12 @@
 ![GitHub issues](https://img.shields.io/github/issues/leandrosardi/my.saas) ![GitHub](https://img.shields.io/github/license/leandrosardi/my.saas) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/leandrosardi/my.saas) ![GitHub last commit](https://img.shields.io/github/last-commit/leandrosardi/my.saas)
 
-![logo](./public/core/images/logo.png)
+![logo](/public/core/images/logo.png)
 
 # MySaaS - Open Source SaaS Platform - Extensible and Scalable.  
 
 **MySaaS** is an open-source, extensible and scalable platform for develop your own Software as a Service (SaaS), e-Commerce, Education Platform, Social Network, Forum or any kind of memberships based product.
 
-![Example of What Can You Create with My.SaaS](./docu/thumbnails/dashboard.png)
+![Example of What Can You Create with My.SaaS](/docu/thumbnails/dashboard.png)
 
 **Outline:**
 
@@ -143,7 +143,7 @@ Now, you can navigatoe the my.saas website from the host browser:
 
 [http://127.0.0.1:3000/login](http://127.0.0.1:3000/login)
 
-![Login Screen](./docu/thumbnails/login.png)
+![Login Screen](/docu/thumbnails/login.png)
 
 You can login using the default credentials:
 - user: `su`
@@ -159,7 +159,7 @@ Every time you want to run a Ruby script using the my.saas framework, you have t
 export RUBYLIB=/home/blackstcack/code/my.saas
 ```
 
-E.g.: This [signup example](./examples/signup.rb) registers a new account in the database.
+E.g.: This [signup example](/examples/signup.rb) registers a new account in the database.
 
 ```bash
 export RUBYLIB=/home/blackstcack/code/my.saas
@@ -211,9 +211,9 @@ end
 
 ## 4. Models
 
-The folder [sql](./sql/) contains the database schema and the seed data for running my.saas. Read the files into the folder [sql](./sql/) and get familiarized with them.
+The folder [sql](/sql/) contains the database schema and the seed data for running my.saas. Read the files into the folder [sql](/sql/) and get familiarized with them.
 
-The folder [models/skeleton](./models/skeleton/) has [Sequel](https://sequel.jeremyevans.net/) defined clases to manage objects that persist in the database. 
+The folder [models/skeleton](/models/skeleton/) has [Sequel](https://sequel.jeremyevans.net/) defined clases to manage objects that persist in the database. 
 
 Any **persistance class** should inherit from `Sequel::Model`.
 
@@ -258,11 +258,11 @@ a.save
 
 ## 5. Adding Screens
 
-If you want to add a new screen, you have to modify the [app.rb](./app.rb) file.
+If you want to add a new screen, you have to modify the [app.rb](/app.rb) file.
 
 E.g.: Follow the steps below to add a new "demo page" to your project.
 
-1. add the lines below into the [app.rb](./app.rb) file:
+1. add the lines below into the [app.rb](/app.rb) file:
 
 ```ruby
 get '/demo' do
@@ -270,26 +270,26 @@ get '/demo' do
 end
 ```
 
-2. Restart the webserver by running the [start.rb](./cli/start.rb) script.
+2. Restart the webserver by running the [start.rb](/cli/start.rb) script.
 
 ```bash
 cd $RUBYLIB/cli
 ruby start.rb
 ```
 
-![Demo Screen](./docu/thumbnails/demo-screen.png)
+![Demo Screen](/docu/thumbnails/demo-screen.png)
 
 **Using the Layout for Public Pages:**
 
 You can embeed your HTML code into the same frame used by the [login screen](/views/login.erb) seen before.
 
-1. Save your HTML code into a new file into the [views](./views). In this example, it would be [views/demo.erb](./views/demo.erb).
+1. Save your HTML code into a new file into the [views](/views). In this example, it would be [views/demo.erb](/views/demo.erb).
 
 ```erb
 Demo Screen
 ```
 
-2. Write again the entry in the [app.rb](./app.rb) file.
+2. Write again the entry in the [app.rb](/app.rb) file.
 
 ```ruby
 get '/demo' do
@@ -297,14 +297,14 @@ get '/demo' do
 end
 ```
 
-Remember to restart the webserver by running the [start.rb](./cli/start.rb) script.
+Remember to restart the webserver by running the [start.rb](/cli/start.rb) script.
 
 ```bash
 cd $RUBYLIB/cli
 ruby start.rb
 ```
 
-![Demo Screen with Layout of Public Page](./docu/thumbnails/demo-screen-with-layout-of-public-page.png)
+![Demo Screen with Layout of Public Page](/docu/thumbnails/demo-screen-with-layout-of-public-page.png)
 
 **Using the Layout for Private Pages:**
 
@@ -312,13 +312,13 @@ The **private pages** are pages that require a login.
 
 E.g.: Follow the steps below to a **survey screen** to show up every when a new user signup.
 
-1. Save your HTML code into a new file into the [views](./views). In this example, it would be [views/survey.erb](./views/demo.erb).
+1. Save your HTML code into a new file into the [views](/views). In this example, it would be [views/survey.erb](/views/demo.erb).
 
 ```html
-<h1>Demo Screen</h1>
+<h1>Survey Screen</h1>
 ```
 
-2. Write again the entry in the [app.rb](./app.rb) file.
+2. Write again the entry in the [app.rb](/app.rb) file.
 
 ```ruby
 get '/survey', :auth => true do
@@ -326,15 +326,15 @@ get '/survey', :auth => true do
 end
 ```
 
-The `auth` condition will get the page forwarding to [login](./views/login.erb) if there are not any user logged in.
+The `auth` condition will get the page forwarding to [login](/views/login.erb) if there are not any user logged in.
 
 The `core` layout will embbed your HTML into a frame designed for private pages only.
 
-Remember to restart the webserver by running the [start.rb](./cli/start.rb) script.
+Remember to restart the webserver by running the [start.rb](/cli/start.rb) script.
 
 ```bash
 cd $RUBYLIB/cli
 ruby start.rb
 ```
 
-![Survey Screen](./docu/thumbnails/survey-screen.png)
+![Survey Screen](/docu/thumbnails/survey-screen.png)
