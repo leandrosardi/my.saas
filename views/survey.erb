@@ -7,10 +7,28 @@
 
         <div class="span9">
             <button class='btn btn-blue'>Submit</button>
-            <button class='btn btn-gray'>Skip</button>
+            <a class='btn btn-gray' href='./'>Skip</a>
+
+            <div class="btn-group" style="vertical-align:top;">  
+                <a id="tasks_list" name="tasks_list" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <b>Pending Tasks:</b> Complete the Survey <i class="icon-circle" style="color:gray;"></i> <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button class="btn btn-link" disabled=""><i class='icon-ok'></i> Signup</button>
+                    </li>
+                    <li>
+                        <button class="btn btn-link" href='/survey'><i class='icon-time'></i> Complete the Survey</i></button>
+                    </li>
+                    <li>
+                        <button class="btn btn-link" href='/settings/account'><i class='icon-time'></i> Setup Your TimeZone</i></button>
+                    </li>                    
+                </ul>
+            </div>
         </div>
 
     </div>
 </div>
 
 <h1>Survey Screen</h1>
+

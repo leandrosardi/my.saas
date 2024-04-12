@@ -35,6 +35,14 @@
 	var old_onload = window.onload;
 	window.onload = function () {
 
+		// execute redirection when click on a button.btn-link with an href attribute
+		$('.btn-link').click(function(){
+			// if the button is not disabled and if it has an href attribute
+			if (!$(this).attr('disabled') && $(this).attr('href')) {
+				window.location.href = $(this).attr('href');
+			}
+		});
+
 		// making it responsive
 		if ( $(window).width() < 485 ) {
 			// top bar responsive - hide service name if wdith < 485

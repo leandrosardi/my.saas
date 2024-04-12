@@ -403,7 +403,7 @@ ruby start.rb
 
 Add the code below at the top if the [/views/survey.erb](./views/survey.erb) screen, to add a 2-level navigation bar to your page.
 
-```ruby
+```html
 <div class="mynavbar2 mysticky">
     <div class="row-fluid">	
         <div class="span3">
@@ -425,11 +425,11 @@ where `ACME LLC` is the the value in the field `name` of the record in the `acco
 
 **Top Buttons**
 
-Inside the `.mynavbar2` div, you can add another child to add buttons.
+Inside the `.mynavbar2` div, you can add a second child div to place buttons.
 
 E.g.: The code below adds one blue button to submit the survey, and one gray button to skip the survey.
 
-```ruby
+```html
 <div class="mynavbar2 mysticky">
     <div class="row-fluid">	
         <div class="span3">
@@ -439,10 +439,56 @@ E.g.: The code below adds one blue button to submit the survey, and one gray but
 
     <div class="span9">
       <button class='btn btn-blue'>Submit</button>
-      <button class='btn btn-gray'>Skip</button>
+      <a class='btn btn-gray' href='./'>Skip</a>
     </div>
 </div>
 ```
+
+**Note:** The second button is really a link to the dashboard.
+
+![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons.png)
+
+**Top Dropdown Menus**
+
+In the same div where you placed buttons you can also add dropdown menus.
+
+E.g.: The code below adds a list of tasks to perform by the user, in order to help the user to operate the software.
+
+```html
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span3">
+            <%=nav1("Survey")%>
+        </div>
+
+        <div class="span9">
+            <button class='btn btn-blue'>Submit</button>
+            <a class='btn btn-gray' href='./'>Skip</a>
+
+            <div class="btn-group" style="vertical-align:top;">  
+                <a id="tasks_list" name="tasks_list" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <b>Pending Tasks:</b> Complete the Survey <i class="icon-circle" style="color:gray;"></i> <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <button class="btn btn-link" disabled=""><i class='icon-ok'></i> Signup</button>
+                    </li>
+                    <li>
+                        <button class="btn btn-link" href='/survey'><i class='icon-time'></i> Complete the Survey</i></button>
+                    </li>
+                    <li>
+                        <button class="btn btn-link" href='/settings/account'><i class='icon-time'></i> Setup Your TimeZone</i></button>
+                    </li>                    
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+```
+
+**Note: The first task in the list (signup) is already performed. The other 2 tasks are pending and include the `href` to there page where such a task should be performed.
+
 
 
 **Panels**
