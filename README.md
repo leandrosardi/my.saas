@@ -14,9 +14,8 @@
 2. [Getting Started](#2-getting-started)
 3. [Running Scripts](#3-running-scripts)
 4. [Models](#4-models)
+5. [Adding Screens](#5-adding-screens)
 
-
-4. [Screens](#4-screens)
 5. [Filters](#5-filers)
 6. [Access Points](#6-access-points)
 
@@ -256,3 +255,86 @@ a.create_time = now
 a.id_timezone = BlackStack::MySaaS::Timezone.first.id
 a.save
 ```
+
+## 5. Adding Screens
+
+If you want to add a new screen, you have to modify the [app.rb](./app.rb) file.
+
+E.g.: Follow the steps below to add a new "demo page" to your project.
+
+1. add the lines below into the [app.rb](./app.rb) file:
+
+```ruby
+get '/demo' do
+  "Deno Screen"
+end
+```
+
+2. Restart the webserver by running the [start.rb](./cli/start.rb) script.
+
+```bash
+cd $RUBYLIB/cli
+ruby start.rb
+```
+
+![Demo Screen](./docu/thumbnails/demo-screen.png)
+
+**Using the Layout for Public Pages:**
+
+You can embeed your HTML code into the same frame used by the [login screen](/views/login.erb) seen before.
+
+1. Save your HTML code into a new file into the [views](./views). In this example, it would be [views/demo.erb](./views/demo.erb).
+
+```erb
+Demo Screen
+```
+
+2. Write again the entry in the [app.rb](./app.rb) file.
+
+```ruby
+get '/demo' do
+  erb :'views/demo', :layout => :'/views/layouts/public'
+end
+```
+
+Remember to restart the webserver by running the [start.rb](./cli/start.rb) script.
+
+```bash
+cd $RUBYLIB/cli
+ruby start.rb
+```
+
+![Demo Screen with Layout of Public Page](./docu/thumbnails/demo-screen-with-layout-of-public-page.png)
+
+**Using the Layout for Private Pages:**
+
+The **private pages** are pages that require a login.
+
+E.g.: Follow the steps below to a **survey screen** to show up every when a new user signup.
+
+1. Save your HTML code into a new file into the [views](./views). In this example, it would be [views/survey.erb](./views/demo.erb).
+
+```html
+<h1>Demo Screen</h1>
+```
+
+2. Write again the entry in the [app.rb](./app.rb) file.
+
+```ruby
+get '/survey', :auth => true do
+  erb :'views/survey', :layout => :'/views/layouts/core'
+end
+```
+
+The `auth` condition will get the page forwarding to [login](./views/login.erb) if there are not any user logged in.
+
+The `core` layout will embbed your HTML into a frame designed for private pages only.
+
+Remember to restart the webserver by running the [start.rb](./cli/start.rb) script.
+
+```bash
+cd $RUBYLIB/cli
+ruby start.rb
+```
+
+![Survey Screen](./docu/thumbnails/survey-screen.png)
