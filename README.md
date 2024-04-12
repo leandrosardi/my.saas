@@ -14,7 +14,7 @@
 2. [Getting Started](#2-getting-started)
 3. [Running Scripts](#3-running-scripts)
 4. [Models](#4-models)
-5. [Adding Screens](#5-adding-screens)
+5. [Screens](#5-screens)
 
 5. [Filters](#5-filers)
 6. [Access Points](#6-access-points)
@@ -256,7 +256,7 @@ a.id_timezone = BlackStack::MySaaS::Timezone.first.id
 a.save
 ```
 
-## 5. Adding Screens
+## 5. Screens
 
 If you want to add a new screen, you have to modify the [app.rb](/app.rb) file.
 
@@ -338,3 +338,6 @@ ruby start.rb
 ```
 
 ![Survey Screen](/docu/thumbnails/survey-screen.png)
+
+**Drawing Navigation Bars**
+
