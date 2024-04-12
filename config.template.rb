@@ -23,7 +23,11 @@ OUTPUT_FILE = '$HOME/deployment.log'
 
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = '$RUBYLIB'
-MYSAAS_API_KEY = '118f3c32-****-****-****-************'
+
+# TODO: Generate a new API key for the mysaas's `su` user, and update it in your config.rb file.`
+MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
+
+# DropBox Access Token
 DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 BlackStack::Funnel.set({
@@ -99,10 +103,10 @@ BlackStack::API::set_api_url({
   # IMPORTANT: It is strongly recommended that you 
   # use the api_key of an account with prisma role, 
   # and assigned to the central division too.
-  :api_key => '118f3c32-****-****-****-************', 
+  :api_key => MYSAAS_API_KEY, 
   # IMPORTANT: It is stringly recommended that you 
   # write the URL of the central division here. 
-  :api_protocol => BlackStack.sandbox? ? 'http' : 'https',
+  :api_protocol => 'http',
   # IMPORTANT: Even if you are running process in our LAN, 
   # don't write a LAN IP here, since bots are designed to
   # run anywhere worldwide.
@@ -113,15 +117,15 @@ BlackStack::API::set_api_url({
   # - https://github.com/leandrosardi/leads/issues/110
   # - https://github.com/leandrosardi/emails/issues/142
   # 
-  :api_domain => BlackStack.sandbox? ? '127.0.0.1' : '<your saas domain here>', 
-  :api_port => BlackStack.sandbox? ? '3000' : '443',
+  :api_domain => '127.0.0.1', 
+  :api_port => '3000',
   :api_less_secure_port => '3000',
 })
 
 # IMPORTANT NOTE: This value should have a format like FOO.COM. 
 # => Other formats can generate bugs in the piece of codes where 
 # => this constant is concatenated. 
-APP_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : '<your saas domain here>' 
+APP_DOMAIN = '127.0.0.1' 
 APP_NAME = '<your saas name here>'
 APP_SHORT_NAME = '<your saas short name here>'
 
@@ -142,15 +146,16 @@ CANCEL_URL = '<URL of cancel policy here>' # Article explaining how to cancel th
 HELPDESK_URL = '<HelpDesk URL here>' # Helpdesk URL.
 
 # app url
-CS_HOME_PAGE_PROTOCOL = BlackStack.sandbox? ? 'http' : 'https'
-CS_HOME_PAGE_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : '<your saas domain here>'
-CS_HOME_PAGE_PORT = BlackStack.sandbox? ? '3000' : '443'
+CS_HOME_PAGE_PROTOCOL = 'http'
+CS_HOME_PAGE_DOMAIN = '127.0.0.1'
+CS_HOME_PAGE_PORT = '3000'
 CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PAGE_PORT
 CS_HOME_LOGO = CS_HOME_WEBSITE + '/core/images/logo.png'
 
 # default timezone
 DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'
 
+=begin
 # parameters to deliver transactional emails
 BlackStack::Emails.set(
   # postmark api key
@@ -180,83 +185,13 @@ BlackStack::Notifications.set(
   :signature_name => 'Sheldon Cooper',
   :signature_position => 'Founder & CEO',
 )
+=end
 
 # declare production nodes.
 # .BlackStack.sandbox? flag doesn't play here.
 # both cs.pem file and config.rb file are always taken from the local dev machine (leandro).
 BlackStack::Deployer::add_nodes([
   {
-    # unique name to identify a host (a.k.a.: node)
-    :name => 'dev1', # Master. Internal usage only.
-    :dev => true, # ignore this node when deploying.
-
-    :net_remote_ip => '127.0.0.1',  
-    :ssh_username => 'demo', #'root',
-    :ssh_port => 22,
-    :ssh_password => '****',
-    #:ssh_private_key_file => BlackStack.sandbox? ? nil : './vymeco.pem',
-
-    # database hosted by this node
-    :db_type => :pg,
-    :db_port => 5432,
-    :db_name => 'demo',
-    :db_user => 'blackstack',
-    :db_password => '****',
-
-    # database to connect
-    :db_host => 'dev1',
-
-    # git
-    :git_repository => 'leandrosardi/my.saas',
-    :git_branch => '1.6.6',
-    :git_username => 'leandrosardi',
-    :git_password => '****',
-    # code folder
-    :code_folder => 'massp',
-    # name of the LAN interface
-    :laninterface => 'eth0',
-    # sinatra
-    :web_port => 3000,
-    # config.rb content - always using dev-environment here
-    :config_rb_content => File.read(ENV['RUBYLIB']+'/config.rb').gsub(/"/, '\"'),
-    # default deployment routine for this node
-    # 
-    :deployment_routine => 'default',
-    # this is always the folder where the app.rb file is located,
-    # and from where you will run all the processes who run in this node.
-    # 
-    :rubylib => "$HOME/code/massp",
-    # processes to run on this node
-    # all these processes are run in the background
-    # all the processes are located into the $RUBYLIB folder
-    # all these
-    # 
-    :processes => [
-      # Webserver
-      #
-      'app.rb port=3000 config=./config.rb',
-      
-      # Look for new records in the table event. 
-      # Apply AI to detect opportunities and craft direct messages. 
-      # Insert into outbox.
-      # 
-      'extensions/product.massp/p/filter.rb',
-      
-      # Create records in the table job.
-      # Look for new records in the table outbox. 
-      # Look for available profiles. 
-      # Update outbox.id_profile.
-      # 
-      'extensions/product.massp/p/plan.rb',
-    ],
-    # logfiles to watch
-    # 
-    :logfiles => [
-      OUTPUT_FILE, # '$HOME/deployment.log',
-      '$RUBYLIB/filter.log',
-      '$RUBYLIB/plan.log',
-    ],
-  }, {
     # unique name to identify a host (a.k.a.: node)
     #
     :name => 'node01', 
@@ -267,11 +202,18 @@ BlackStack::Deployer::add_nodes([
     :net_remote_ip => '127.0.0.1',  
     :ssh_username => 'blackstack',
     :ssh_port => 22,
-    :ssh_password => '*******',
+    :ssh_password => 'blackstack123',
     #:ssh_private_key_file => BlackStack.sandbox? ? '/home/leandro/code/my.saas/cli/cs.pem' : '$HOME/code/my.saas/cli/cs.pem',
 
+    # database hosted by this node
+    :db_type => :pg,
+    :db_port => 5432,
+    :db_name => 'blackstack',
+    :db_user => 'blackstack',
+    :db_password => 'blackstack123',
+
     # database to connect
-    :db_host => 'dev1',
+    :db_host => 'node01',
 
     # github credentials
     # 
@@ -286,7 +228,7 @@ BlackStack::Deployer::add_nodes([
     # code folder
     # name of the folder where source code is placed
     # 
-    :code_folder => 'demo',
+    :code_folder => 'my.saas',
 
     # name of the LAN interface
     :laninterface => 'eth0',
@@ -314,7 +256,7 @@ BlackStack::Deployer::add_nodes([
     # this is always the folder where the app.rb file is located,
     # and from where you will run all the processes who run in this node.
     # 
-    :rubylib => "$HOME/code/demo",
+    :rubylib => "$HOME/code/my.saas",
     # processes to run on this node
     # all these processes are run in the background
     # all the processes are located into the $RUBYLIB folder
@@ -383,12 +325,15 @@ BlackStack::CRDB::set_db_params({
 })
 =end
 
+=begin
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
   :vymeco_api_key => MYSAAS_API_KEY,
   :dropbox_refresh_token => DROPBOX_REFRESH_TOKEN,
 })
+=end
 
+=begin
 # Manage backup of secret files
 # Reference: https://github.com/leandrosardi/my.saas/blob/main/docu/03.secret-files-management.md
 BlackStack::BackUp.set(
@@ -434,6 +379,7 @@ BlackStack::BackUp.set(
     }]
   }
 )
+=end
 
 # add required extensions
 #BlackStack::Extensions.append :i2p

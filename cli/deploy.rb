@@ -28,6 +28,12 @@ parser = BlackStack::SimpleCommandLineParser.new(
   :description => 'This command will apply migrations into database, pull source code from repositry, install/update extensions, and restart processes assigned to run on each node.', 
   :configuration => [{
   # installation options
+    :name=>'config', 
+    :mandatory=>false, 
+    :description=>'Name of the configuration file. Default: `config`.', 
+    :type=>BlackStack::SimpleCommandLineParser::STRING,
+    :default => 'config',
+  }, {
     :name=>'db', 
     :mandatory=>false, 
     :description=>'Enable or disable the deploying of database migrations.', 
@@ -67,6 +73,11 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :default => '-',
   }]
 )
+
+#
+print 'Loading configuration... '
+require parser.value('config')
+  puts 'done'.green
 
 # grab the name of the routine
 routine_name = parser.value('routine') == '-' ? nil : parser.value('routine')

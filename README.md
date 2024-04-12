@@ -57,24 +57,38 @@ Here is a full list of the MySaaS features:
 
 ## 2. Getting Started
 
-On a fresh installation of Ubuntu 20.04, and using the `root` user, run this command:
+On a fresh installation of Ubuntu 20.04, and using the `root` user, run the commands below:
 
-**Step 1:** Download the **Environment Installation Script**:
+**Step 1:** Run the **Environment Installation Script**:
+
+Download our Environment Installation Script (or simply EIS) by running the lines below:
 
 ```
 cd ~
 wget https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh
 ```
 
-Note: Refer to [this other repository](https://github.com/leandrosardi/environment) for more information about the Environment Installation Script.
-
-**Step 2:** Install the environment:
+and the EIS by running the line below:
 
 ```
-bash install.ubuntu.20_04.sh
+bash install.ubuntu.20_04.sh <hostname> <password>
 ```
 
-**Step 3:** Clone my.saas:
+replacing 
+
+1. `<hostname>` with the name you have to assisng the the node where my.saas will run; and
+2. `<password>` with the password you want for a new Linux user called `blackstack` who will be created by the EIS.
+
+**Note:** For running this example, use the values `node01` and `blackstack01`, because these ar
+
+```
+bash install.ubuntu.20_04.sh node01 blackstack123
+```
+
+**Note:** Refer to [this other repository](https://github.com/leandrosardi/environment) for more information about the Environment Installation Script.
+
+
+**Step 2:** Clone my.saas.
 
 ```bash
 mkdir ~/code
@@ -82,27 +96,17 @@ cd ~/code
 git clone https://github.com/leandrosardi/my.saas
 ```
 
-**Step 4:** Install requrired gems
-
-```bash
-cd ~/code/my.saas
-bundler update
-```
-
-**Step 5:** Install database migrations:
+**Step 3:** Deploy my.saas.
 
 ```
 export RUBYLIB=~/code/my.saas
-cd ~/code/my.saas/cli
 ruby deploy.rb config=config.template.rb
 ```
 
-**Step 6:** Run my.saas:
+Now, you can navigatoe the my.saas website from the host browser:
 
-```
-export RUBYLIB=~/code/my.saas
-ruby app.rb port=3000 config=config.template.rb
-```
+[http://127.0.0.1:3000](http://127.0.0.1:3000)
+
 
 ## 3. Documentation
 
