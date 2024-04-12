@@ -12,6 +12,7 @@ BlackStack::Deployer::add_routine({
       mkdir ~/code/%code_folder%/extensions/%extension_name% >>'+OUTPUT_FILE+' 2>&1
 
       # backup old code folder
+      # TODO: activate this if you want to backup the extension folder.
       #echo "" >>'+OUTPUT_FILE+' 2>&1
       #echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
       #[ -d ~/code/%code_folder%/extensions/%extension_name% ] && mv ~/code/%code_folder%/extensions/%extension_name% ~/code/%code_folder%/extensions/%extension_name%.%timestamp% >>'+OUTPUT_FILE+' 2>&1
