@@ -135,6 +135,9 @@ Now, you can navigatoe the my.saas website from the host browser:
 [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
 
+If the website is not working, you can check the file `~/deployment.log`.
+
+
 ## 3. Documentation
 
 01. [Installation](./docu/01.Installation.md)
