@@ -79,14 +79,13 @@ replacing
 1. `<hostname>` with the name you have to assisng the the node where my.saas will run; and
 2. `<password>` with the password you want for a new Linux user called `blackstack` who will be created by the EIS.
 
-**Note:** For running this example, use the values `node01` and `blackstack01`, because these ar
+**Note:** For running this example, use the values `dev2` and `blackstack123`.
 
 ```
-bash install.ubuntu.20_04.sh node01 blackstack123
+bash install.ubuntu.20_04.sh dev2 blackstack123
 ```
 
 **Note:** Refer to [this other repository](https://github.com/leandrosardi/environment) for more information about the Environment Installation Script.
-
 
 **Step 2:** Clone my.saas.
 
@@ -96,9 +95,23 @@ cd ~/code
 git clone https://github.com/leandrosardi/my.saas
 ```
 
-**Step 3:** Deploy my.saas.
+**Step 3:** Update gems.
 
+```bash
+cd ~/code/my.saas
+bundler update
 ```
+
+**Step 4:** Create a configuration file.
+
+```bash
+cd ~/code/my.saas
+mv config.template.rb config.rb
+```
+
+**Step 5:** Deploy my.saas.
+
+```bash
 export RUBYLIB=~/code/my.saas
 ruby deploy.rb config=config.template.rb
 ```

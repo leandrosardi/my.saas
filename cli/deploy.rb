@@ -1,17 +1,13 @@
 # encoding: utf-8
+
+print 'Loading libraries... '
 require 'mysaas'
 require 'lib/stubs'
-#require_relative '/home/leandro/code/my-ruby-deployer/lib/my-ruby-deployer' # enable this line if you want to work with a live version of deployer
-#require_relative '/home/leandro/code/blackstack-nodes/lib/blackstack-nodes' # enable this line if you want to work with a live version of nodes
-
-# un-comment this line for testing only.
-#require_relative '../../my-ruby-deployer/lib/my-ruby-deployer.rb'
-
 require 'config'
 require 'version'
-
-require'deployment/default'
-require'deployment/extension'
+require 'deployment/default'
+require 'deployment/extension'
+puts 'done'.green
 
 l = BlackStack::LocalLogger.new('./deploy.log')
 
@@ -28,12 +24,6 @@ parser = BlackStack::SimpleCommandLineParser.new(
   :description => 'This command will apply migrations into database, pull source code from repositry, install/update extensions, and restart processes assigned to run on each node.', 
   :configuration => [{
   # installation options
-    :name=>'config', 
-    :mandatory=>false, 
-    :description=>'Name of the configuration file. Default: `config`.', 
-    :type=>BlackStack::SimpleCommandLineParser::STRING,
-    :default => 'config',
-  }, {
     :name=>'db', 
     :mandatory=>false, 
     :description=>'Enable or disable the deploying of database migrations.', 
@@ -73,11 +63,6 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :default => '-',
   }]
 )
-
-#
-print 'Loading configuration... '
-require parser.value('config')
-  puts 'done'.green
 
 # grab the name of the routine
 routine_name = parser.value('routine') == '-' ? nil : parser.value('routine')

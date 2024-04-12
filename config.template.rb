@@ -194,7 +194,7 @@ BlackStack::Deployer::add_nodes([
   {
     # unique name to identify a host (a.k.a.: node)
     #
-    :name => 'node01', 
+    :name => 'dev2', 
 
     # ssh connection parameters
     # use either `ssh_password` or `ssh_private_key_file` for identification.
@@ -213,7 +213,7 @@ BlackStack::Deployer::add_nodes([
     :db_password => 'blackstack123',
 
     # database to connect
-    :db_host => 'node01',
+    :db_host => 'dev2',
 
     # github credentials
     # 
