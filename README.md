@@ -471,7 +471,33 @@ E.g.: The code below includes a tooltip to the submit button:
 
 ![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons-with-tooltip.png)
 
-### 5.6. Dropdown Menus
+### 5.6. Input Boxes
+
+You can add inputs too. 
+
+E.g.: The code below includes an input box and a button to perform searches.
+
+```html
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span3">
+            <%=nav1("Survey")%>
+        </div>
+    </div>
+
+    <div class="span9">
+      <button class='btn btn-blue' title="Click here after you have filled all the fields of the survey.">Submit</button>
+      <a class='btn btn-gray' href='./'>Skip</a>
+
+      <input class="input input-large" id="q" name="q" value="">
+      <button class="btn btn-blue" id="search"><i class="icon-search"></i></button>
+    </div>
+</div>
+```
+
+![Surve with Top Buttons with Input Box](./docu/thumbnails/survey-top-bar-with-input-box.png)
+
+### 5.7. Dropdown Menus
 
 In the same div where you placed buttons you can also add dropdown menus.
 
@@ -513,10 +539,6 @@ E.g.: The code below adds a list of tasks to perform by the user, in order to he
 
 ![Survey with Dropdown Menu](./docu/thumbnails/survey-with-dropdown-menu.png)
 
-### 5.7. Input Boxes
-
-
-
 ### 5.8. Panels
 
 Below the `.mynavbar2` div you would want to place forms, tables, charts, etc.
@@ -526,6 +548,45 @@ You may want to split the screen horizontally.
 E.g.: You may want to place a table in the left panel, and show other stats in the right panel.
 
 ![panels example](./docu/thumbnails/panels.png)
+
+E.g.: In the survey screen, you a left panel to show a list of users who submited the survey, and a right panel to place the survey form.
+
+```html
+<!-- NavBar -->
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span3">
+            <%=nav1("Survey")%>
+        </div>
+
+        <div class="span9">
+            <button class='btn btn-blue' title="Click here after you have filled all the fields of the survey.">Submit</button>
+            <a class='btn btn-gray' href='./'>Skip</a>
+        </div>
+    </div>
+</div>
+
+
+<section class="row-fluid box">
+    <h1>Survey Screen</h1>
+    
+    <p>Complete this survey to help us to setup your account in a way that fir your needs perfectly!</p>
+
+    <div class='span12'>
+        <div class='span6'>
+            <h3>Who Completed the Survey?</h3>
+            <!-- TODO: Place the list of users beloinig this account here -->
+        </div>
+
+        <div class='span6'>
+            <h3>Survey</h3>
+            <!-- TODO: Place the survey form here -->
+        </div>
+    </div>
+</section>
+```
+
+![Survey with 2 Panels](./docu/thumbnails/panels-2.png)
 
 ### 5.9. Forms
 
