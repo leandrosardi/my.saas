@@ -339,7 +339,7 @@ ruby start.rb
 
 ![Demo Screen](./docu/thumbnails/demo-screen.png)
 
-**Using the Layout for Public Pages:**
+### 5.1. Layout for Public Pages
 
 You can embeed your HTML code into the same frame used by the [login screen](./views/login.erb) seen before.
 
@@ -366,7 +366,7 @@ ruby start.rb
 
 ![Demo Screen with Layout of Public Page](./docu/thumbnails/demo-screen-with-layout-of-public-page.png)
 
-**Using the Layout for Private Pages:**
+### 5.2. Layout for Private Pages
 
 The **private pages** are pages that require a login.
 
@@ -399,7 +399,7 @@ ruby start.rb
 
 ![Survey Screen](./docu/thumbnails/survey-screen.png)
 
-**Navigation Bars**
+### 5.3. Navigation Bars
 
 Add the code below at the top if the [/views/survey.erb](./views/survey.erb) screen, to add a 2-level navigation bar to your page.
 
@@ -423,7 +423,7 @@ where `ACME LLC` is the the value in the field `name` of the record in the `acco
 
 ![Survey with Navigation Bar](./docu/thumbnails/survey-with-navigation-bar.png)
 
-**Top Buttons**
+### 5.4. Top Buttons
 
 Inside the `.mynavbar2` div, you can add a second child div to place buttons.
 
@@ -448,7 +448,7 @@ E.g.: The code below adds one blue button to submit the survey, and one gray but
 
 ![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons.png)
 
-**Top Dropdown Menus**
+### 5.5. Dropdown Menus
 
 In the same div where you placed buttons you can also add dropdown menus.
 
@@ -482,20 +482,21 @@ E.g.: The code below adds a list of tasks to perform by the user, in order to he
                 </ul>
             </div>
         </div>
-
     </div>
 </div>
 ```
 
-**Note: The first task in the list (signup) is already performed. The other 2 tasks are pending and include the `href` to there page where such a task should be performed.
+**Note:** The first task in the list (signup) is already performed. The other 2 tasks are pending and include the `href` to there page where such a task should be performed.
 
+![Survey with Dropdown Menu](./docu/thumbnails/survey-with-dropdown-menu.png)
 
+### 5.6. Panels
 
-**Panels**
+### 5.7. Forms
 
-**Forms**
+### 5.8. Tables
 
-**Tables**
+### 5.9. ToolTips
 
 ## 6. Filters
 
