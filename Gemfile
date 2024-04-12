@@ -13,11 +13,6 @@ gem 'simple_cloud_logging', '~>1.2.2'
 gem 'simple_command_line_parser', '~>1.1.2'
 gem 'pampa', '~>2.0.34'
 gem 'my-dropbox-api', '~>1.0.2'
-gem 'leadhypebot', '~>1.2'
-gem 'gmassbot', '~>1.2'
-gem 'workmesh', '~>1.0.7'
-gem 'openai-scraper', '~>1.5'
-gem 'bots', '~>1.0.1'
 
 # Other gems needed for running mysaas
 gem 'colorize', '~>0.8.1'

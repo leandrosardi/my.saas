@@ -87,7 +87,13 @@ bash install.ubuntu.20_04.sh dev2 blackstack123
 
 **Note:** Refer to [this other repository](https://github.com/leandrosardi/environment) for more information about the Environment Installation Script.
 
-**Step 2:** Clone my.saas.
+**Step 2:** Switch to the new `blackstack` user.
+
+```bash
+sudo su - blackstack
+```
+
+**Step 3:** Clone my.saas.
 
 ```bash
 mkdir ~/code
@@ -95,25 +101,25 @@ cd ~/code
 git clone https://github.com/leandrosardi/my.saas
 ```
 
-**Step 3:** Update gems.
+**Step 4:** Update gems.
 
 ```bash
 cd ~/code/my.saas
 bundler update
 ```
 
-**Step 4:** Create a configuration file.
+**Step 5:** Create a configuration file.
 
 ```bash
 cd ~/code/my.saas
 mv config.template.rb config.rb
 ```
 
-**Step 5:** Deploy my.saas.
+**Step 6:** Deploy my.saas.
 
 ```bash
 export RUBYLIB=~/code/my.saas
-ruby deploy.rb config=config.template.rb
+ruby deploy.rb
 ```
 
 Now, you can navigatoe the my.saas website from the host browser:
