@@ -339,7 +339,7 @@ ruby start.rb
 
 ![Demo Screen](./docu/thumbnails/demo-screen.png)
 
-### 5.1. Layout for Public Pages
+### 5.1. Layout of Public Pages
 
 You can embeed your HTML code into the same frame used by the [login screen](./views/login.erb) seen before.
 
@@ -366,7 +366,7 @@ ruby start.rb
 
 ![Demo Screen with Layout of Public Page](./docu/thumbnails/demo-screen-with-layout-of-public-page.png)
 
-### 5.2. Layout for Private Pages
+### 5.2. Layout of Private Pages
 
 The **private pages** are pages that require a login.
 
@@ -448,7 +448,30 @@ E.g.: The code below adds one blue button to submit the survey, and one gray but
 
 ![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons.png)
 
-### 5.5. Dropdown Menus
+### 5.5. ToolTips
+
+Buttons may have nice tooltips too.
+
+E.g.: The code below includes a tooltip to the submit button:
+
+```html
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span3">
+            <%=nav1("Survey")%>
+        </div>
+    </div>
+
+    <div class="span9">
+      <button class='btn btn-blue' title="Click here after you have filled all the fields of the survey.">Submit</button>
+      <a class='btn btn-gray' href='./'>Skip</a>
+    </div>
+</div>
+```
+
+
+
+### 5.6. Dropdown Menus
 
 In the same div where you placed buttons you can also add dropdown menus.
 
@@ -490,13 +513,11 @@ E.g.: The code below adds a list of tasks to perform by the user, in order to he
 
 ![Survey with Dropdown Menu](./docu/thumbnails/survey-with-dropdown-menu.png)
 
-### 5.6. Panels
+### 5.7. Panels
 
-### 5.7. Forms
+### 5.8. Forms
 
-### 5.8. Tables
-
-### 5.9. ToolTips
+### 5.9. Tables
 
 ## 6. Filters
 

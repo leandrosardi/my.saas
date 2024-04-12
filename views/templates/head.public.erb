@@ -85,7 +85,9 @@ theme = 'black-blue'
 
 		// apply tooltips CSS to any element with a title attribue
 		function applyToolTips() {
-			// $('[title]').tooltip();
+			$('[title]').tooltip({
+				'placement': 'bottom',
+			});
 		}		
 
 		// enable select-all-text when focus on any input with class `select-all-on-focus`
