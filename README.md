@@ -469,6 +469,7 @@ E.g.: The code below includes a tooltip to the submit button:
 </div>
 ```
 
+![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons-with-tooltip.png)
 
 
 ### 5.6. Dropdown Menus
