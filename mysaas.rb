@@ -36,6 +36,7 @@ require 'lib/controllers'
 require 'lib/emails'
 require 'lib/extensions'
 require 'lib/notifications'
+require 'lib/tablehelper'
 
 # Use these values in the screens with a period-filter.
 PERIOD_FILTER_VALUES = [
