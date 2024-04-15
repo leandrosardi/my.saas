@@ -36,6 +36,7 @@ gem 'down', '~>5.4.1'
 # Required by extensions
 gem 'email_verifier', '~>0.1.0'
 gem 'sisimai', '~>4.25.15'
+gem 'csv', '~>3.2.9'
 gem 'appending', '~>1.5.2'
 gem 'redcarpet', '~>3.5.1'
 gem 'ruby-openai', '~>6.5.0'

@@ -32,6 +32,10 @@ require 'fileutils'
 require 'rack/contrib/try_static' # this is to manage many public folders
 require 'postmark'
 
+require 'net/imap'
+require 'csv'
+require 'sisimai'
+
 require 'lib/controllers'
 require 'lib/emails'
 require 'lib/extensions'
