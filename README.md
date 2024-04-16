@@ -592,6 +592,8 @@ E.g.: In the survey screen, you a left panel to show a list of users who submite
 
 ### 5.10. Tables
 
+### 5.11. Fixed fields
+
 ## 6. Filters
 
 ## 7. Reactive Elements
