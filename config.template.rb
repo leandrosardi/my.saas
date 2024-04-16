@@ -24,6 +24,10 @@ OUTPUT_FILE = '$HOME/deployment.log'
 # CODE_PATH may be different in production and development environments.
 CODE_PATH = '$RUBYLIB'
 
+# Integration with TinyMCE
+# - Reference: https://www.tiny.cloud/docs/tinymce/latest/invalid-api-key
+#TINYMCE_API_KEY='<place your TinyMCE api key here>'
+
 # TODO: Generate a new API key for the mysaas's `su` user, and update it in your config.rb file.`
 MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
 
