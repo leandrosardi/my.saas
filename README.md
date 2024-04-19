@@ -213,7 +213,9 @@ end
 
 ## 4. Extensions
 
-_(pending)_
+If you want to add screens to My.SaaS, you shouldn't for the [my.saas repository](https://github.com/leandrosardi/my.saas), because each time [@leandrosardi](https://github.com/leandrosardi) releases a new version of my.saas you should have to merge such a new version with your fork.
+
+To to disengage the my.saas core from your project, my.saas provide a feature called **[extensions](https://github.com/leandrosardi/mysaas-extension-template)**.
 
 ## 5. Persistence Classes
 
