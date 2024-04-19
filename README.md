@@ -13,12 +13,13 @@
 1. [Features](#1-features)
 2. [Getting Started](#2-getting-started)
 3. [Running Scripts](#3-running-scripts)
-4. [Models](#4-models)
-5. [Screens](#5-screens)
-6. [Filters](#6-filers)
-7. [Access Points](#7-access-points)
-8. [Reactive Elements](#8-reactive-elements)
-9. [Extensions](#9-extensions)
+4. [Persistance Classes](#4-persistance-classes)
+5. [Creating Objects](#5-creating-objects)
+6. [Screens](#6-screens)
+7. [Filters](#7-filers)
+8. [Access Points](#8-access-points)
+9. [Reactive Elements](#9-reactive-elements)
+10. [Extensions](#10-extensions)
 
 Configuration
 
@@ -210,13 +211,17 @@ ensure
 end
 ```
 
-## 4. Models
+## 4. Persistance Classes
 
 The folder [sql](./sql/) contains the database schema and the seed data for running my.saas. Read the files into the folder [sql](./sql/) and get familiarized with them.
 
 The folder [models/skeleton](./models/skeleton/) has [Sequel](https://sequel.jeremyevans.net/) defined clases to manage objects that persist in the database. 
 
-Any **persistance class** should inherit from `Sequel::Model`.
+Here are the guidelines for writing **persistance classes**:
+
+1. Any **persistance class** must be placed in one differeng `.rb` file.
+
+2. Any **persistance class** should inherit from `Sequel::Model`.
 
 E.g.:
 
@@ -228,9 +233,23 @@ class Account < Sequel::Model(:account)
 end # class Account 
 ```
 
-Any **persistance class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). Such a module must be contained into the `BlackStack` module too.
+3. Any **persistance class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). 
 
-If you don't know the name of the **project module**, ask it to @leandrosardi.
+If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
+
+E.g.:
+
+```ruby
+module <name of the project module>
+  class Account < Sequel::Model(:account)
+
+	# class attributes and method are here
+	
+  end # class Account
+end # module <name of the project module>
+```
+
+4. The **project module** must be contained into the `BlackStack` module.
 
 E.g.:
 
@@ -246,7 +265,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-Any **persistance class** must have an array to all other **persistance classes** with a foreing key to it.
+5. Any **persistance class** must have an array attribute for each other **persistance class** who has a foreing key to it.
 
 E.g.:
 
@@ -254,6 +273,7 @@ E.g.:
 module BlackStack
   module <name of the project module>
     class Account < Sequel::Model(:account)
+        # array attribute for each other **persistance class** who has a foreing key to it.
         one_to_many :users, :class=>:'BlackStack::MySaaS::User', :key=>:id_account
 	
 	end # class Account
@@ -261,7 +281,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-Any **persistance class** must have an attribute to any **persistance class** that it has a foreing key to.
+6. Any **persistance class** must have an attribute for each other **persistance class** that it has a foreing key to.
 
 E.g.:
 
@@ -269,6 +289,7 @@ E.g.:
 module BlackStack
   module <name of the project module>
     class Account < Sequel::Model(:account)
+        # attribute for each other **persistance class** that it has a foreing key to.
         many_to_one :timezone, :class=>:'BlackStack::MySaaS::Timezone', :key=>:id_timezone
 	
 	end # class Account
@@ -276,7 +297,38 @@ module BlackStack
 end # module BlackStack
 ```
 
-**Creating Objects:**
+7. Some AI assistants use to add `blackstack_db` as a plugin of the sequel classes. That is not correct.
+
+E.g.: The class below has a line `plugin :blackstack_db`. That is not necessary.
+
+```ruby
+module BlackStack
+  module <name of the project module>
+    class Search < Sequel::Model(:search)
+        plugin :blackstack_db
+        plugin :validation_helpers
+        many_to_one :account
+        one_to_many :search_headcounts
+        one_to_many :search_revenues
+
+        def validate
+        super
+        validates_presence [:name, :id_account, :create_time, :status, :urls]
+        end
+	end # class Search
+  end # module <name of the project module>
+end # module BlackStack
+```
+
+8. Each file added to the folder [models/skeleton](./models/skeleton/), must be required from the file [lib/skeletons.rb]. Such a `require` must looks like follows:
+
+```ruby
+require "/extensions/<name of the project module>/models/skeleton/<name of the file with a persistance class>"
+```
+
+If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
+
+## 5. Creating Objects
 
 Use the function `guid` if you need a **Globally Unique ID** (or simply **GUID**) for creating a new persistance object.
 
@@ -303,65 +355,7 @@ a.id_timezone = BlackStack::MySaaS::Timezone.first.id
 a.save
 ```
 
-**Extending the Model**
-
-You can extend the database schema with new tables and define their persistance models too.
-
-E.g.: You would want to register surveys from new users. Follow the steps below to add a new table called `survey`
-
-1. Create a new file `a001.sql` into the folder [sql](./sql), and write this script inside:
-
-```sql
-CREATE TABLE IF NOT EXISTS public.survey (
-	id uuid NOT NULL PRIMARY KEY,
-  id_user uuid NOT NULL REFERENCES "user"("id"),
-  id_timezone uuid NOT NULL REFERENCES "timezone"("id"),
-  job_position VARCHAR(600) NOT NULL,
-  company_headcount INT NOT NULL
-);
-```
-
-**Note:** The table `survey` has a foreing key to the tables `user` and `timezone` that are already part if the database schma of my.saas.
-
-**Note:** Name the file `a001.sql` if this is the first file you add into the folder [sql](./sql). If this is the second file you add, it should be `a002.sql`. When you add a new file into the [sql](./sql) filder you have to increase the number of the last file added.
-
-2. Create a new file `survey.rb` into the folder [models/skeletons/core](./models/skeleton/core), and write this script inside:
-
-```ruby
-module BlackStack
-  module <name of the project module>
-    class Survey < Sequel::Model(:survey)
-
-		  # add custom attributes and methods here
-	
-	  end 
-  end
-end
-```
-
-3. Add a line to require the file `survey.rb` from [lib/skeletons.rb](./lib/skeletons.rb), as shown below:
-
-```ruby
-require 'models/skeleton/core/survey'
-```
-
-4. Push the source code modifications to the git repository.
-
-```bash
-cd $RUBYLIB
-git add *
-git commit -m "adding a survey table"
-git push
-```
-
-5. In order to run the migration file [a001.sql](./sql/a001.sql) and restart the webserver, run the script [deploy.rb](./cli/start.rb).
-
-```bash
-cd $RUBYLIB/cli
-ruby deploy.rb
-```
-
-## 5. Screens
+## 6. Screens
 
 If you want to add a new screen, you have to modify the [app.rb](./app.rb) file.
 
@@ -384,7 +378,7 @@ ruby start.rb
 
 ![Demo Screen](./docu/thumbnails/demo-screen.png)
 
-### 5.1. Layout of Public Pages
+### 6.1. Layout of Public Pages
 
 You can embeed your HTML code into the same frame used by the [login screen](./views/login.erb) seen before.
 
@@ -411,7 +405,7 @@ ruby start.rb
 
 ![Demo Screen with Layout of Public Page](./docu/thumbnails/demo-screen-with-layout-of-public-page.png)
 
-### 5.2. Layout of Private Pages
+### 6.2. Layout of Private Pages
 
 The **private pages** are pages that require a login.
 
@@ -444,7 +438,7 @@ ruby start.rb
 
 ![Survey Screen](./docu/thumbnails/survey-screen.png)
 
-### 5.3. Navigation Bars
+### 6.3. Navigation Bars
 
 Add the code below at the top if the [/views/survey.erb](./views/survey.erb) screen, to add a 2-level navigation bar to your page.
 
@@ -468,7 +462,7 @@ where `ACME LLC` is the the value in the field `name` of the record in the `acco
 
 ![Survey with Navigation Bar](./docu/thumbnails/survey-with-navigation-bar.png)
 
-### 5.4. Top Buttons
+### 6.4. Top Buttons
 
 Inside the `.mynavbar2` div, you can add a second child div to place buttons.
 
@@ -493,7 +487,7 @@ E.g.: The code below adds one blue button to submit the survey, and one gray but
 
 ![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons.png)
 
-### 5.5. ToolTips
+### 6.5. ToolTips
 
 Buttons may have nice tooltips too.
 
@@ -516,7 +510,7 @@ E.g.: The code below includes a tooltip to the submit button:
 
 ![Survey with Top Buttons](./docu/thumbnails/survey-top-buttons-with-tooltip.png)
 
-### 5.6. Input Boxes
+### 6.6. Input Boxes
 
 You can add inputs too. 
 
@@ -542,7 +536,7 @@ E.g.: The code below includes an input box and a button to perform searches.
 
 ![Surve with Top Buttons with Input Box](./docu/thumbnails/survey-top-bar-with-input-box.png)
 
-### 5.7. Dropdown Menus
+### 6.7. Dropdown Menus
 
 In the same div where you placed buttons you can also add dropdown menus.
 
@@ -584,7 +578,7 @@ E.g.: The code below adds a list of tasks to perform by the user, in order to he
 
 ![Survey with Dropdown Menu](./docu/thumbnails/survey-with-dropdown-menu.png)
 
-### 5.8. Panels
+### 6.8. Panels
 
 Below the `.mynavbar2` div you would want to place forms, tables, charts, etc.
 
@@ -633,31 +627,31 @@ E.g.: In the survey screen, you a left panel to show a list of users who submite
 
 ![Survey with 2 Panels](./docu/thumbnails/panels-2.png)
 
-### 5.9. Forms
+### 6.9. Forms
 
 _(pending)_
 
-### 5.10. Tables
+### 6.10. Tables
 
 _(pending)_
 
-### 5.11. Fixed fields
+### 6.11. Fixed fields
 
 _(pending)_
 
-## 6. Filters
+## 7. Filters
 
 _(pending)_
 
-## 7. Access Points
+## 8. Access Points
 
 _(pending)_
 
-## 8. Reactive Elements
+## 9. Reactive Elements
 
 _(pending)_
 
-## 9. Extensions
+## 10. Extensions
 
 _(pending)_
 
