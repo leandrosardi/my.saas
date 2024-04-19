@@ -20,6 +20,12 @@
 8. [Filters](#8-filers)
 9. [Access Points](#9-access-points)
 10. [Reactive Elements](#10-reactive-elements)
+11. [Charts](#11-charts)
+12. [Stand Alone Processes](#12-stand-alone-processes)
+13. [Distributed Processes](#13-distributed-processes)
+14. [Adding Javascript Libraries](#14-adding-javascript-libraries)
+15. [Adding Stylesheet Libraries](#15-adding-stylesheet-libraries)
+16. [Adding Image](#16-adding-images)
 
 Configuration
 
@@ -698,6 +704,30 @@ _(pending)_
 _(pending)_
 
 ## 10. Reactive Elements
+
+_(pending)_
+
+## 11. Charts
+
+_(pending)_
+
+## 12. Stand Alone Processes
+
+_(pending)_
+
+## 13. Distributed Processes
+
+_(pending)_
+
+## 14. Adding Javascript Libraries
+
+_(pending)_
+
+## 15. Adding Stylesheet Libraries
+
+_(pending)_
+
+## 16. Adding Image
 
 _(pending)_
 
