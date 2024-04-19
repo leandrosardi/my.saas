@@ -223,11 +223,11 @@ The folder [models/skeleton](./models/skeleton/) has [Sequel](https://sequel.jer
 
 Here are the guidelines for writing **persistence classes**:
 
-1. Each **persistence class** must be placed in one different `.rb` file.
+**Guideline 1.** Each **persistence class** must be placed in one different `.rb` file.
 
 E.g.: You create the file [models/skeleton/account.rb](./models/skeleton/account.rb) to place the code of the **persistence class** for the table **account**.
 
-2. Each file added to the folder [models/skeleton](./models/skeleton/), must be required from the file [lib/skeletons.rb]. Such a `require` must looks like follows:
+**Guideline 2.** Each file added to the folder [models/skeleton](./models/skeleton/), must be required from the file [lib/skeletons.rb]. Such a `require` must looks like follows:
 
 ```ruby
 require "/extensions/<name of the project module>/models/skeleton/<name of the file with a persistence class>"
@@ -241,8 +241,7 @@ require "/extensions/<name of the project module>/models/skeleton/account.rb"
 
 **Note:** If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
 
-
-3. Any **persistence class** should inherit from `Sequel::Model`.
+**Guideline 3.** Any **persistence class** should inherit from `Sequel::Model`.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -254,7 +253,7 @@ class Account < Sequel::Model(:account)
 end # class Account 
 ```
 
-3. Any **persistence class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). 
+**Guideline 4.** Any **persistence class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). 
 
 If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
 
@@ -270,7 +269,7 @@ module <name of the project module>
 end # module <name of the project module>
 ```
 
-4. The **project module** must be contained into the `BlackStack` module too.
+**Guideline 5.** The **project module** must be contained into the `BlackStack` module too.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -286,7 +285,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-5. Any **persistence class** must have an array attribute for each other **persistence class** who has a foreing key to it.
+**Guideline 6.** Any **persistence class** must have an array attribute for each other **persistence class** who has a foreing key to it.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -302,7 +301,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-6. Any **persistence class** must have an attribute for each other **persistence class** that it has a foreing key to.
+**Guideline 7.** Any **persistence class** must have an attribute for each other **persistence class** that it has a foreing key to.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -321,7 +320,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-7. Some AI assistants use to add `blackstack_db` as a plugin of the sequel classes. That is not correct.
+**Guideline 8.** Some AI assistants use to add `blackstack_db` as a plugin of the sequel classes. That is not correct.
 
 E.g.: The class below has a line `plugin :blackstack_db`. That is not necessary.
 
