@@ -221,15 +221,59 @@ Any **persistance class** should inherit from `Sequel::Model`.
 E.g.:
 
 ```ruby
+class Account < Sequel::Model(:account)
+
+	# class attributes and method are here
+	
+end # class Account 
+```
+
+Any **persistance class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). Such a module must be contained into the `BlackStack` module too.
+
+If you don't know the name of the **project module**, ask it to @leandrosardi.
+
+E.g.:
+
+```ruby
 module BlackStack
-  module MySaaS
+  module <name of the project module>
     class Account < Sequel::Model(:account)
 
 		# class attributes and method are here
 	
-	end 
-  end
-end
+	end # class Account
+  end # module <name of the project module>
+end # module BlackStack
+```
+
+Any **persistance class** must have an array to all other **persistance classes** with a foreing key to it.
+
+E.g.:
+
+```ruby
+module BlackStack
+  module <name of the project module>
+    class Account < Sequel::Model(:account)
+        one_to_many :users, :class=>:'BlackStack::MySaaS::User', :key=>:id_account
+	
+	end # class Account
+  end # module <name of the project module>
+end # module BlackStack
+```
+
+Any **persistance class** must have an attribute to any **persistance class** that it has a foreing key to.
+
+E.g.:
+
+```ruby
+module BlackStack
+  module <name of the project module>
+    class Account < Sequel::Model(:account)
+        many_to_one :timezone, :class=>:'BlackStack::MySaaS::Timezone', :key=>:id_timezone
+	
+	end # class Account
+  end # module <name of the project module>
+end # module BlackStack
 ```
 
 **Creating Objects:**
@@ -285,7 +329,7 @@ CREATE TABLE IF NOT EXISTS public.survey (
 
 ```ruby
 module BlackStack
-  module MySaaS
+  module <name of the project module>
     class Survey < Sequel::Model(:survey)
 
 		  # add custom attributes and methods here
