@@ -217,6 +217,41 @@ If you want to add screens to My.SaaS, you shouldn't for the [my.saas repository
 
 To to disengage the my.saas core from your project, my.saas provide a feature called **[extensions](https://github.com/leandrosardi/mysaas-extension-template)**.
 
+Follow these steps to create your own **extension**:
+
+**Step 1:** Fork the [my.saas extensions template](https://github.com/leandrosardi/mysaas-extension-template), as a new repository in your GitHub organization.
+
+E.g.: Your extension may be called **my.extension**.
+
+**Step 2:** Pull your new repository in your local computer.
+
+E.g.: If the name of your organization is **acme** and the name of your extension is **my.extension**, you should execute the following commands:
+
+```bash
+cd $HOME/code/my.saas/extensions
+git clone https://github.com/acme/my.extension
+```
+
+and you will find the source code of your extension in the folder `$HOME/code/my.saas/extensions/my.extension`.
+
+**Step 3:** Edit the **merge-tags** in the source code of your extension.
+
+E.g.: If the name of your organization is **acme** and the name of your extension is **my.extension**, you should replace the following merge-tags in the source code into the folder `$HOME/code/my.saas/extensions/my.extension`:
+
+| merge-tag                                    | replacement value                            |
+|----------------------------------------------|----------------------------------------------|
+| <!your-github-username!>                     | acme                                         |
+| <!your-github-repo-name-for-this-extension!> | my.extension                                 |
+| <!extension-description-here!>               | Example exension to become a My.SaaS expert. |
+
+**Step 4:** Rename the folder `<!your-github-repo-name-for-this-extension!>`.
+
+E.g.: If the name of your extension is **my.extension**, you should run the following command:
+
+```bash
+mv $HOME/code/my.saas/extensions/my.extension/public/<!your-github-repo-name-for-this-extension!> $HOME/code/my.saas/extensions/my.extension/public/my.extension
+```
+
 ## 5. Persistence Classes
 
 The folder [sql](./sql/) contains the database schema and the seed data for running my.saas. Read the files into the folder [sql](./sql/) and get familiarized with them.
@@ -255,7 +290,7 @@ class Account < Sequel::Model(:account)
 end # class Account 
 ```
 
-**Guideline 4.** Any **persistence class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). 
+**Guideline 4.** Any **persistence class** must be contained into the **project module** that you are working on (e.g.: `my.extension`). 
 
 If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
 
