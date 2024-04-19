@@ -1,6 +1,6 @@
 <%
 # get extension
-e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase }.first
+e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to_s.downcase && e.show_in_top_bar }.first
 %>
 
 <nav id="left-panel">
@@ -68,13 +68,14 @@ e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.to
 					<a href="/settings/dashboard"><span class="icon-cog"></span>Settings</a>
 				</li>	
 				<%
-			end
+			end # if e.nil?
 			%>
 		</ul>
 	</div>
 </nav>
 
 <%
+if false
 e.leftbar_icons.select { |i| i.screen.nil? && i.items }.each { |i|
 %>
 <div class="lp-dropdown-wrapper simple open" data-dropdown-owner="<%=i.label.encode_html%>-dropdown" style="display:none; left: 85px; width: 150px; top: 180px;">
@@ -100,4 +101,5 @@ puts item.inspect
 </div>
 <%
 }
+end
 %>

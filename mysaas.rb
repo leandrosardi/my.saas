@@ -11,7 +11,8 @@ require 'my-ruby-deployer'
 require 'pampa'
 #require_relative '../pampa/lib/pampa.rb'
 
-require 'workmesh'
+# DEPRECATED
+#require 'workmesh'
 #require_relative '../../workmesh/lib/workmesh.rb'
 
 require 'my-dropbox-api'
@@ -31,10 +32,15 @@ require 'fileutils'
 require 'rack/contrib/try_static' # this is to manage many public folders
 require 'postmark'
 
+require 'net/imap'
+require 'csv'
+require 'sisimai'
+
 require 'lib/controllers'
 require 'lib/emails'
 require 'lib/extensions'
 require 'lib/notifications'
+require 'lib/tablehelper'
 
 # Use these values in the screens with a period-filter.
 PERIOD_FILTER_VALUES = [

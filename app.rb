@@ -359,6 +359,10 @@ begin
     erb :'views/500', :layout => :'/views/layouts/public'
   end
 
+  get '/demo' do
+    erb :'views/demo', :layout => :'/views/layouts/public'
+  end
+
   get '/login', :agent => /(.*)/ do
     erb :'views/login', :layout => :'/views/layouts/public'
   end
@@ -417,6 +421,10 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # User welcome
   print 'Setting up entries of internal pages... '
+
+  get '/survey', :auth => true, :agent => /(.*)/ do
+    erb :'views/survey', :layout => :'/views/layouts/core'
+  end
 
   get '/welcome', :auth => true, :agent => /(.*)/ do
     erb :'views/welcome', :layout => :'/views/layouts/core'

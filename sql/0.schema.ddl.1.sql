@@ -1,8 +1,3 @@
--- This line works in PostgeSQL only.
--- It is commented to keep portability with CockroachDB.
--- Run this line manually in your database.
---CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Timezone must be GTM -3
 -- Reference: https://github.com/leandrosardi/mysaas/issues/29
 SET TIMEZONE = 'America/Argentina/Buenos_Aires';
@@ -399,3 +394,8 @@ CREATE TABLE IF NOT EXISTS public.preference (
 	CONSTRAINT "primary_preference" PRIMARY KEY (id),
 	CONSTRAINT fk_id_user_ref_user FOREIGN KEY (id_user) REFERENCES public."user"(id)
 );
+
+-- This line works in PostgeSQL only.
+-- It is commented to keep portability with CockroachDB.
+-- Run this line manually in your database.
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

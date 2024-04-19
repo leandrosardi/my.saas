@@ -1,17 +1,13 @@
 # encoding: utf-8
+
+print 'Loading libraries... '
 require 'mysaas'
 require 'lib/stubs'
-#require_relative '/home/leandro/code/my-ruby-deployer/lib/my-ruby-deployer' # enable this line if you want to work with a live version of deployer
-#require_relative '/home/leandro/code/blackstack-nodes/lib/blackstack-nodes' # enable this line if you want to work with a live version of nodes
-
-# un-comment this line for testing only.
-#require_relative '../../my-ruby-deployer/lib/my-ruby-deployer.rb'
-
 require 'config'
 require 'version'
-
-require'deployment/default'
-require'deployment/extension'
+require 'deployment/default'
+require 'deployment/extension'
+puts 'done'.green
 
 l = BlackStack::LocalLogger.new('./deploy.log')
 

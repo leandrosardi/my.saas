@@ -23,9 +23,10 @@ BlackStack::Deployer::add_routine({
       mkdir -p ~/code >>'+OUTPUT_FILE+' 2>&1
 
       # backup old code folder
-      echo "" >>'+OUTPUT_FILE+' 2>&1
-      echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
-      [ -d ~/code/%code_folder% ] && mv ~/code/%code_folder% ~/code/%code_folder%.%timestamp% >>'+OUTPUT_FILE+' 2>&1
+      # TODO: activate this if you want to backup the code folder.
+      #echo "" >>'+OUTPUT_FILE+' 2>&1
+      #echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
+      #[ -d ~/code/%code_folder% ] && mv ~/code/%code_folder% ~/code/%code_folder%.%timestamp% >>'+OUTPUT_FILE+' 2>&1
 
       # clone the project
       echo "" >>'+OUTPUT_FILE+' 2>&1
@@ -41,10 +42,11 @@ BlackStack::Deployer::add_routine({
       git reset --hard origin/%git_branch% >>'+OUTPUT_FILE+' 2>&1
 
       # upload configuration file
+      # TODO: activate the mv command if you want to backup the configuration file.
       echo "" >>'+OUTPUT_FILE+' 2>&1
       echo "Uploading configuration file..." >>'+OUTPUT_FILE+' 2>&1
       cd ~/code/%code_folder% >>'+OUTPUT_FILE+' 2>&1
-      [ -f ./config.rb ] && mv ./config.rb ./config.%timestamp%.rb >>'+OUTPUT_FILE+' 2>&1
+      #[ -f ./config.rb ] && mv ./config.rb ./config.%timestamp%.rb >>'+OUTPUT_FILE+' 2>&1 
       echo "%config_rb_content%" > ./config.rb 
       
       # update gems
