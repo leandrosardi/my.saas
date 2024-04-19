@@ -14,7 +14,7 @@
 2. [Getting Started](#2-getting-started)
 3. [Running Scripts](#3-running-scripts)
 4. [Extensions](#4-extensions)
-5. [Persistance Classes](#5-persistance-classes)
+5. [Persistence Classes](#5-persistence-classes)
 6. [Creating Objects](#6-creating-objects)
 7. [Screens](#7-screens)
 8. [Filters](#8-filers)
@@ -215,22 +215,22 @@ end
 
 _(pending)_
 
-## 5. Persistance Classes
+## 5. Persistence Classes
 
 The folder [sql](./sql/) contains the database schema and the seed data for running my.saas. Read the files into the folder [sql](./sql/) and get familiarized with them.
 
-The folder [models/skeleton](./models/skeleton/) has [Sequel](https://sequel.jeremyevans.net/) defined clases to manage objects that persist in the database. These classes are called **persistance classes**.
+The folder [models/skeleton](./models/skeleton/) has [Sequel](https://sequel.jeremyevans.net/) defined clases to manage objects that persist in the database. These classes are called **persistence classes**.
 
-Here are the guidelines for writing **persistance classes**:
+Here are the guidelines for writing **persistence classes**:
 
-1. Each **persistance class** must be placed in one different `.rb` file.
+1. Each **persistence class** must be placed in one different `.rb` file.
 
-E.g.: You create the file [models/skeleton/account.rb](./models/skeleton/account.rb) to place the code of the **persistance class** for the table **account**.
+E.g.: You create the file [models/skeleton/account.rb](./models/skeleton/account.rb) to place the code of the **persistence class** for the table **account**.
 
 2. Each file added to the folder [models/skeleton](./models/skeleton/), must be required from the file [lib/skeletons.rb]. Such a `require` must looks like follows:
 
 ```ruby
-require "/extensions/<name of the project module>/models/skeleton/<name of the file with a persistance class>"
+require "/extensions/<name of the project module>/models/skeleton/<name of the file with a persistence class>"
 ```
 
 E.g.:
@@ -242,7 +242,7 @@ require "/extensions/<name of the project module>/models/skeleton/account.rb"
 **Note:** If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
 
 
-3. Any **persistance class** should inherit from `Sequel::Model`.
+3. Any **persistence class** should inherit from `Sequel::Model`.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -254,7 +254,7 @@ class Account < Sequel::Model(:account)
 end # class Account 
 ```
 
-3. Any **persistance class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). 
+3. Any **persistence class** must be contained into the **project module** that you are working on (e.g.: `MySaaSFork`). 
 
 If you don't know the name of the **project module**, ask it to [@leandrosardi](https://github.com/leandrosardi).
 
@@ -286,7 +286,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-5. Any **persistance class** must have an array attribute for each other **persistance class** who has a foreing key to it.
+5. Any **persistence class** must have an array attribute for each other **persistence class** who has a foreing key to it.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -294,7 +294,7 @@ E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you
 module BlackStack
   module <name of the project module>
     class Account < Sequel::Model(:account)
-        # array attribute for each other **persistance class** who has a foreing key to it.
+        # array attribute for each other **persistence class** who has a foreing key to it.
         one_to_many :users, :class=>:'BlackStack::MySaaS::User', :key=>:id_account
 	
 	end # class Account
@@ -302,7 +302,7 @@ module BlackStack
 end # module BlackStack
 ```
 
-6. Any **persistance class** must have an attribute for each other **persistance class** that it has a foreing key to.
+6. Any **persistence class** must have an attribute for each other **persistence class** that it has a foreing key to.
 
 E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you write a Ruby code like this:
 
@@ -310,10 +310,10 @@ E.g.: In the file [models/skeleton/account.rb](./models/skeleton/account.rb) you
 module BlackStack
   module <name of the project module>
     class Account < Sequel::Model(:account)
-        # array attribute for each other **persistance class** who has a foreing key to it.
+        # array attribute for each other **persistence class** who has a foreing key to it.
         one_to_many :users, :class=>:'BlackStack::MySaaS::User', :key=>:id_account
 
-        # attribute for each other **persistance class** that it has a foreing key to.
+        # attribute for each other **persistence class** that it has a foreing key to.
         many_to_one :timezone, :class=>:'BlackStack::MySaaS::Timezone', :key=>:id_timezone
 	
 	end # class Account
@@ -331,10 +331,10 @@ module BlackStack
     class Account < Sequel::Model(:account)
         plugin :blackstack_db
 
-        # array attribute for each other **persistance class** who has a foreing key to it.
+        # array attribute for each other **persistence class** who has a foreing key to it.
         one_to_many :users, :class=>:'BlackStack::MySaaS::User', :key=>:id_account
 
-        # attribute for each other **persistance class** that it has a foreing key to.
+        # attribute for each other **persistence class** that it has a foreing key to.
         many_to_one :timezone, :class=>:'BlackStack::MySaaS::Timezone', :key=>:id_timezone
 	
 	end # class Account
@@ -344,7 +344,7 @@ end # module BlackStack
 
 ## 6. Creating Objects
 
-Use the function `guid` if you need a **Globally Unique ID** (or simply **GUID**) for creating a new persistance object.
+Use the function `guid` if you need a **Globally Unique ID** (or simply **GUID**) for creating a new persistence object.
 
 Use the function `now` if you need the current timestamp.
 The function `now` returns the current timestamp at GTM-3 (Buenos Aires date/time).
