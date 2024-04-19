@@ -15,9 +15,10 @@
 3. [Running Scripts](#3-running-scripts)
 4. [Models](#4-models)
 5. [Screens](#5-screens)
-
-5. [Filters](#5-filers)
-6. [Access Points](#6-access-points)
+6. [Filters](#6-filers)
+7. [Access Points](#7-access-points)
+8. [Reactive Elements](#8-reactive-elements)
+9. [Extensions](#9-extensions)
 
 Configuration
 
@@ -590,13 +591,29 @@ E.g.: In the survey screen, you a left panel to show a list of users who submite
 
 ### 5.9. Forms
 
+_(pending)_
+
 ### 5.10. Tables
+
+_(pending)_
 
 ### 5.11. Fixed fields
 
+_(pending)_
+
 ## 6. Filters
 
-## 7. Reactive Elements
+_(pending)_
 
-## 8. Extensions
+## 7. Access Points
+
+_(pending)_
+
+## 8. Reactive Elements
+
+_(pending)_
+
+## 9. Extensions
+
+_(pending)_
 
