@@ -31,11 +31,19 @@ CODE_PATH = '$RUBYLIB'
 # TODO: Generate a new API key for the mysaas's `su` user, and update it in your config.rb file.`
 MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
 
-# DropBox Access Token
-DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
+# Integration: DropBox Access Token
+#DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
-# Zyte API key 
-ZYTE_API_KEY = '************************0b818962'
+# Integration: Zyte API key 
+#ZYTE_API_KEY = '************************0b818962'
+
+# Integration: OpenAI API key and model 
+#OPENAI_API_KEY = '******'
+#OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
+
+# Integration: AdsPower API key
+#ADSPOWER_API_KEY = '***************'
+
 
 BlackStack::Funnel.set({
     # Goolge Analytics
