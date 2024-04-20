@@ -35,6 +35,7 @@ require 'postmark'
 require 'net/imap'
 require 'csv'
 require 'sisimai'
+require 'down'
 
 require 'lib/controllers'
 require 'lib/emails'
