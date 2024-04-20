@@ -10,22 +10,38 @@
 
 **Outline:**
 
+Getting Started
+
 1. [Features](#1-features)
 2. [Getting Started](#2-getting-started)
 3. [Running Scripts](#3-running-scripts)
 4. [Extensions](#4-extensions)
+
+Models
+
 5. [Persistence Classes](#5-persistence-classes)
 6. [Creating Objects](#6-creating-objects)
+x. Core Model _(review of the persistance classes)_
+x. Helper Functions _(review most frequently used blackstack core functions)_
+
+Screens
+
 7. [Screens](#7-screens)
 8. [Filters](#8-filers)
 9. [Access Points](#9-access-points)
 10. [Reactive Elements](#10-reactive-elements)
 11. [Charts](#11-charts)
+
+Back-End Processing
+
 12. [Stand Alone Processes](#12-stand-alone-processes)
 13. [Distributed Processes](#13-distributed-processes)
 14. [Adding Javascript Libraries](#14-adding-javascript-libraries)
 15. [Adding Stylesheet Libraries](#15-adding-stylesheet-libraries)
-16. [Adding Image](#16-adding-images)
+16. [Adding Images](#16-adding-images)
+
+Configurations
+
 17. Setting Logo
 18. Setting Left Bar
 19. Setting Footer _(config.rb, and extension is deprecated)_
@@ -33,13 +49,15 @@
 21. Funnel _(ga, captchas, screens workflow)_
 22. Super-User
 23. Elastic Storage
-24. Sandbox
+24. Sandbox Mode
 25. Debugging
 26. Transactional Emails
+
+Deploying
+
 27. Versioning _(config.rb, and extension)_
 28. Secret Files
 29. Deployment
-
 
 Configuration
 
@@ -741,7 +759,7 @@ _(pending)_
 
 _(pending)_
 
-## 16. Adding Image
+## 16. Adding Images
 
 _(pending)_
 
