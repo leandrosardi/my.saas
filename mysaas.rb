@@ -7,7 +7,7 @@ require 'blackstack-core'
 require 'simple_command_line_parser'
 require 'simple_cloud_logging'
 require 'my-ruby-deployer'
-
+require 'zyte-client'
 require 'pampa'
 #require_relative '../pampa/lib/pampa.rb'
 
