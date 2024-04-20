@@ -34,6 +34,9 @@ MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763'
 # DropBox Access Token
 DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
+# Zyte API key 
+ZYTE_API_KEY = '************************0b818962'
+
 BlackStack::Funnel.set({
     # Goolge Analytics
     #
