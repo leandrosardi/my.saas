@@ -26,6 +26,20 @@
 14. [Adding Javascript Libraries](#14-adding-javascript-libraries)
 15. [Adding Stylesheet Libraries](#15-adding-stylesheet-libraries)
 16. [Adding Image](#16-adding-images)
+17. Setting Logo
+18. Setting Left Bar
+19. Setting Footer _(config.rb, and extension is deprecated)_
+20. Adding Extensions _(config.rb, customizing extension settings, and extension dependencies)_
+21. Funnel _(ga, captchas, screens workflow)_
+22. Super-User
+23. Elastic Storage
+24. Sandbox
+25. Debugging
+26. Transactional Emails
+27. Versioning _(config.rb, and extension)_
+28. Secret Files
+29. Deployment
+
 
 Configuration
 
