@@ -32,17 +32,35 @@ CODE_PATH = '$RUBYLIB'
 MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
 
 # Integration: DropBox Access Token
-#DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
+DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
 
 # Integration: Zyte API key 
-#ZYTE_API_KEY = '************************0b818962'
+ZYTE_API_KEY = '************************0b818962'
+ZYTE_OPTIONS = {
+  "sessionContext": [
+    {
+      "name": "id",
+      "value": "2"
+    }
+  ],
+  "sessionContextParameters": {
+    "actions": [
+      {
+          "action": "waitForTimeout",
+          "timeout": 5,
+          "onError": "return"
+      }
+    ]
+  },            
+  "httpResponseBody": true
+}
 
 # Integration: OpenAI API key and model 
-#OPENAI_API_KEY = '******'
-#OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
+OPENAI_API_KEY = '******'
+OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
 
 # Integration: AdsPower API key
-#ADSPOWER_API_KEY = '***************'
+ADSPOWER_API_KEY = '***************'
 
 
 BlackStack::Funnel.set({
