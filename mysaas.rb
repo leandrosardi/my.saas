@@ -1,9 +1,11 @@
-#require_relative '../blackstack-nodes/lib/blackstack-nodes.rb'
-
+require 'blackstack-nodes'
 require 'blackstack-db'
+require 'blackstack-core'
+require 'blackstack-enrichment'
+
+#require_relative '../blackstack-nodes/lib/blackstack-nodes.rb'
 #require_relative '../blackstack-db/lib/blackstack-db.rb'
 
-require 'blackstack-core'
 require 'simple_command_line_parser'
 require 'simple_cloud_logging'
 require 'my-ruby-deployer'
