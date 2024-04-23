@@ -359,6 +359,74 @@ BlackStack::CRDB::set_db_params({
 =end
 
 =begin
+# Using Pampa for parallel processing.
+# Reference: https://github.com/leandrosardi/pampa
+
+# Setup cluster of nodes (computers) where to launch Pampa worker processes.
+# Reference: https://github.com/leandrosardi/pampa?tab=readme-ov-file#3-define-your-cluster
+# 
+BlackStack::Pampa.add_nodes(
+  [
+    {
+      :name => 'local'
+      # setup SSH connection parameters
+      :net_remote_ip => '127.0.0.1',  
+      :ssh_username => '<your ssh username>', # example: root
+      :ssh_port => 22,
+      :ssh_password => '<your ssh password>',
+      # setup max number of worker processes
+      :max_workers => 2,
+    },
+  ]
+)
+
+# Setup the Pampa job.
+# Reference: https://github.com/leandrosardi/pampa?tab=readme-ov-file#4-define-a-job
+# 
+BlackStack::Pampa.add_job({
+  :name => 'search_odd_numbers',
+
+  # Minimum number of tasks that a worker must have in queue.
+  # Default: 5
+  :queue_size => 5, 
+  
+  # Maximum number of minutes that a task should take to process.
+  # If a tasks didn't finish X minutes after it started, it is restarted and assigned to another worker.
+  # Default: 15
+  :max_job_duration_minutes => 15,  
+  
+  # Maximum number of times that a task can be restarted.
+  # Default: 3
+  :max_try_times => 3,
+
+  # Define the tasks table: each record is a task.
+  # The tasks table must have some specific fields for handling the tasks dispatching.
+  :table => :numbers, # Note, that we are sending a class object here
+  :field_primary_key => :value,
+  :field_id => :odd_checking_reservation_id,
+  :field_time => :odd_checking_reservation_time, 
+  :field_times => :odd_checking_reservation_times,
+  :field_start_time => :odd_checking_start_time,
+  :field_end_time => :odd_checking_end_time,
+  :field_success => :odd_checking_success,
+  :field_error_description => :odd_checking_error_description,
+
+  # Function to execute for each task.
+  :processing_function => Proc.new do |task, l, job, worker, *args|
+    l.logs 'Checking if '+task[:value].to_s+' is odd... '
+    if task[:value] % 2 == 0
+      task[:is_odd] = false
+      l.logf 'No.'.red
+    else
+      task[:is_odd] = true
+      l.logf 'Yes.'.green
+    end
+    DB[:numbers].where(:value=>task[:value]).update(:is_odd=>task[:is_odd])
+  end
+})
+=end
+
+=begin
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
   :vymeco_api_key => MYSAAS_API_KEY,
