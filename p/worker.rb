@@ -1,4 +1,3 @@
-require 'app/mysaas'
-require 'app/lib/stubs'
+require 'mysaas'
+require 'lib/stubs'
 require 'pampa/worker'
-
