@@ -43,9 +43,9 @@ end
 # if the node has a key, use it
 s = nil
 if node.ssh_private_key_file
-    s = "ssh -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
+    s = "ssh -o StrictHostKeyChecking=no -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 else
-    s = "sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
+    s = "sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh -o StrictHostKeyChecking=no #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 end
 
 puts "Command: #{s.blue}" if parser.value('show')
