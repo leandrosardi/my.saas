@@ -11,6 +11,7 @@ require 'simple_cloud_logging'
 require 'my-ruby-deployer'
 require 'zyte-client'
 require 'pampa'
+require 'adspower-client'
 #require_relative '../pampa/lib/pampa.rb'
 
 # DEPRECATED
