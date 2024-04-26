@@ -62,6 +62,13 @@ OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
 # Integration: AdsPower API key
 ADSPOWER_API_KEY = '***************'
 
+# assign one different AdsPower profile to each pampa worker.
+ADSPOWER_PROFILE_ID = {
+  'is101a.1' => 'jh5o4dt',
+  'is101a.2' => 'jh7a63x',
+  'is101b.1' => 'jh7ak66',
+  'is101b.2' => 'jh7an7e',
+}
 
 BlackStack::Funnel.set({
     # Goolge Analytics
