@@ -45,7 +45,7 @@ module BlackStack
                 return JSON.parse(res.body)
 
                 ## write response.body into a file
-                # File.open('response.body', 'w') { |file| file.write(res.body) }
+                # File.open('response.body.html', 'w') { |file| file.write(res.body) }
             rescue => e
                 return {
                     'status' => 'error',
