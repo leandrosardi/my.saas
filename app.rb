@@ -57,7 +57,7 @@ begin
 
     ret = 
     "<p>" + 
-    "<a class='simple' href='/welcome'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" + 
+    "<a class='simple' href='/'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     CGI.escapeHTML(name1)
 

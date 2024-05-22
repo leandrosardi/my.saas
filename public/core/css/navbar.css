@@ -1,3 +1,7 @@
+button.btn-link {
+	text-decoration:none;
+}
+
 .mynavbar {
 	overflow: hidden;
 	background-color: transparent;
