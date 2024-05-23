@@ -152,11 +152,11 @@ begin
   # Buffering some tables required in some screens.
   # 
   print 'Buffering timezone table... '
-  TIMEZONES = BlackStack::MySaaS::Timezone.all
+  TIMEZONES = BlackStack::MySaaS::Timezone.order(:offset, :short_description).all
   puts 'done'.green + " (#{TIMEZONES.size.to_s.blue} records)"
 
   print 'Buffering country table... '
-  COUNTRIES = BlackStack::MySaaS::Country.all
+  COUNTRIES = BlackStack::MySaaS::Country.order(:name).all
   puts 'done'.green + " (#{COUNTRIES.size.to_s.blue} records)"
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------

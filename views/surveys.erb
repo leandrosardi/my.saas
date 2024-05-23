@@ -1,0 +1,133 @@
+<%
+# define table screens and CRUD screens.
+BlackStack::CRUD.set({
+  # any object is related with a table.
+  # any table has the columns id, create_time, update_time, and delete_time.
+  :profile => {
+    # either :nav1, :nav2, :nav3, :nav4, :nav5 must be defined. Only one of them.
+    :title => "Profiles",
+
+    # Call the class-method `errors` of this class will be used to validate creation/update of a new object.
+    :class => 'Mass::Profile',
+    # All fields allow (optional) a parameter :required that may be true or false.
+    # All fields allow a parameter :description that must be a string.
+    # Types: :string, :text, :dropdown, :integer, :float, :boolean, :date, :time.
+    :fields => {
+      # string fields allow (optional) a parameter :length that may be a positive integer or :auto.
+      # string fields allow a parameter :regex that may be a string.
+      :name => { :type => :string, :length => 250, :regex => '^[a-zA-Z0-9\.\-\_ ]+$' },
+      :host => { :type => :string, :length => 250, :regex => '^[a-zA-Z0-9]+$' },
+      # dropdown fields require (mandatory) a parameter :options that may be an array of strings and colors.
+      :type => { :type => :dropdown, :options => [{ 
+          :description => 'LinkedIn', :value => 'linkedin', :color => :cyan
+        }, {
+          :description => 'Facebook', :value => 'facebook', :color => :blue 
+        }],  
+      },
+      # integer fields require paramters :min and :max.
+      :scraping_frequency => { :type => :integer, :min => 1, :max => 100 },
+      # float fields require paramters :min, :max and :decimals.
+      :scraping_delay => { :type => :float, :min => 0.1, :max => 10, :decimals => 1 },
+    },
+    # list of field to filter by.
+    # Call the class-method `filter` of this class will be used to filter the objects.
+    :filters => {
+      :fields => [:name, :host, :type],
+    },
+    :table => {
+      # if the table allows multi-selection of rows.
+      :multiselect => true,
+      # :none, :cells, :showups.
+      # :cells if the values in the cells will be auto-updated using AJAX.
+      # :showup if new records will be added to the table pushing down the old ones.
+      :auto_update => true,
+      # columns in the table
+      # any column allows the parameter :width that may be a positive integer or :auto.
+      # any column allows optional parameters: :color.
+      :columns => {
+        :name => { :width => :auto, :align => :left },
+        :host => { :width => 50, :align => :left },
+        :type => { :width => 100, :align => :center },
+      },
+    },
+    :crud_sections => {
+      :main => {
+        :title => nil, # nil means don't show any title
+        :fields => [:name, :host, :type],
+      },
+      :scraping => {
+        :title => "Scraping Configuration",
+        :fields => [:scraping_frequency, :scraping_delay],
+      },
+    },
+  },
+})
+
+h = BlackStack::CRUD.get(:profile)
+%>
+
+<!-- NavBar -->
+<!-- NavBar -->
+<!-- NavBar -->
+<div class="mynavbar2 mysticky">
+    <div class="row-fluid">	
+        <div class="span6">
+            <%=nav1(h[:title])%>
+        </div>
+
+        <div class="span6" align="right">
+            <button class='btn btn-blue' title="Click here to create a new profile."><i class='icon-plus'></i></button>
+            <button class='btn btn-red' title="Click delete all selected profiles."><i class='icon-trash'></i></button>
+            <a class='btn btn-gray' href='./'>Skip</a>
+        </div>
+    </div>
+</div>
+<!-- NavBar -->
+<!-- NavBar -->
+<!-- NavBar -->
+
+<!-- Filters -->
+<!-- Filters -->
+<!-- Filters -->
+<%
+if h[:filters]
+%>
+<section class="row-fluid box">
+    <h3>Filters</h3>
+    <%
+    h[:filters][:fields].each { |key|
+        field = h[:fields][key]
+        %>
+        <div class='span3'>
+            <label><%=field[:description]%></label>
+            <input type='text' class='span12' placeholder='Type here to filter by <%=field[:description]%>'>
+        </div>
+        <%
+    }
+    %>
+</section>
+<%
+end # if h[:filters]
+%>
+<!-- Filters -->
+<!-- Filters -->
+<!-- Filters -->
+
+<section class="row-fluid box">
+    <h1>Survey Screen</h1>
+    
+    <p>Complete this survey to help us to setup your account in a way that fir your needs perfectly!</p>
+
+    <div class='span12'>
+        <div class='span6'>
+            <h3>Who Completed the Survey?</h3>
+            <!-- TODO: Place the list of users beloinig this account here -->
+        </div>
+
+        <div class='span6'>
+            <h3>Survey</h3>
+            <!-- TODO: Place the survey form here -->
+        </div>
+    </div>
+</section>
+

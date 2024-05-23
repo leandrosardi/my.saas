@@ -33,7 +33,7 @@ msg = params[:msg]
 		<br/>
 		<br/>
 		<div class="alert alert-error">
-			<%=err.to_s.encode_html%>
+			<pre><%=err.to_s.encode_html%></pre>
 		</div>
 		<%
 		end # err
@@ -46,7 +46,7 @@ msg = params[:msg]
 		<br/>
 		<br/>
 		<div class="alert alert-success">
-			<%=msg.to_s%>
+			<pre><%=msg.to_s.encode_html%></pre>
 		</div>
 		<%
 		end # msg
