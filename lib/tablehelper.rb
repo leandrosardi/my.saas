@@ -49,7 +49,8 @@ module BlackStack
             h = {
                 :from_row => from_row,
                 :to_row => to_row,
-                :t => total_pages,
+                :total_rows => total_rows,
+                :total_pages => total_pages,
                 :p => page_number,
                 :objects => objects
 
