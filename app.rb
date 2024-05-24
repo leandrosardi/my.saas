@@ -153,7 +153,7 @@ begin
     def highlight(filter)
       x = self
       unless filter.to_s.empty?
-        a = x.scan(/#{filter}/i)
+        a = x.scan(/#{Regexp.escape(filter)}/i)
         a.each { |m|
             x = x.gsub(m, "<span style='background-color:yellow;'>#{m}</span>")
         }
