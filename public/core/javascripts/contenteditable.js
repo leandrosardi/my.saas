@@ -98,5 +98,28 @@ function init_contenteditable(url) {
         });
       }
     });
-}
+};
   
+function init_search(url) {
+    // when click on #search, redirect to /leads?q=...
+    // the value of q is in the input #q
+    // encode the value of q
+    $("#search").click(function() {
+      // get the value of the input #q
+      let q = $('#q').val();
+      // reload the same page (I don't know its URL a priori) with the q parameter
+      window.location.href = url + '?q=' + encodeURIComponent(q);
+    });
+
+    // when press enter on #q, redirect to /leads?q=...
+    // the value of q is in the input #q
+    // encode the value of q
+    $("#q").keypress(function(e) {
+      if (e.which == 13) {
+        // get the value of the input #q
+        let q = $('#q').val();
+        // redirect to /leads?q=...
+        window.location.href = url + '?q=' + encodeURIComponent(q);
+      }
+    });
+};
