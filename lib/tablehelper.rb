@@ -42,7 +42,9 @@ module BlackStack
             end
 
             a = a.limit(page_size, (page_number.to_i - 1) * page_size.to_i)
-            ids = a.all.map { |row| row[:id] }
+            all = a.all
+            raise "Error: the query did not the :id field required by TableHelper." if all[0] && all[0][:id].nil?
+            ids = all.map { |row| row[:id] }
             objects = cls.where(:id=>ids).all
 
             #
@@ -53,7 +55,6 @@ module BlackStack
                 :total_pages => total_pages,
                 :p => page_number,
                 :objects => objects
-
             }
 
             #
