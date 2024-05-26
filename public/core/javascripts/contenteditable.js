@@ -100,7 +100,10 @@ function init_contenteditable(url) {
     });
 };
   
-function init_search(url) {
+function init_search(url=null) {
+    if (url == null) {
+      url = window.location.href.split('?')[0]
+    }
     // when click on #search, redirect to /leads?q=...
     // the value of q is in the input #q
     // encode the value of q
