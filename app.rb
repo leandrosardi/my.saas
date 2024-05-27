@@ -159,6 +159,12 @@ begin
         }
       end # if 
       return x
+    end # def 
+
+    # remove empty lines and strip spaces
+    # reference: https://stackoverflow.com/questions/7339292/ruby-remove-empty-lines-from-string
+    def superstrip
+      self.gsub(/^$\n/, '').gsub(/\n/, '').gsub(/\r/, '').strip
     end # def
   end # class
 
