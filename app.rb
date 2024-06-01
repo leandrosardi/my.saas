@@ -148,26 +148,6 @@ begin
   end
   puts 'done'.green
   
-  class String
-    # add HTML code to highlight the keyword in yellow.
-    def highlight(filter)
-      x = self
-      unless filter.to_s.empty?
-        a = x.scan(/#{Regexp.escape(filter)}/i)
-        a.each { |m|
-            x = x.gsub(m, "<span style='background-color:yellow;'>#{m}</span>")
-        }
-      end # if 
-      return x
-    end # def 
-
-    # remove empty lines and strip spaces
-    # reference: https://stackoverflow.com/questions/7339292/ruby-remove-empty-lines-from-string
-    def superstrip
-      self.gsub(/^$\n/, '').gsub(/\n/, '').gsub(/\r/, '').strip
-    end # def
-  end # class
-
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Buffering some tables required in some screens.
   # 
