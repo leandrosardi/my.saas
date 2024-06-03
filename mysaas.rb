@@ -39,6 +39,7 @@ require 'net/imap'
 require 'csv'
 require 'sisimai'
 require 'down'
+require 'securerandom'
 
 require 'lib/controllers'
 require 'lib/emails'

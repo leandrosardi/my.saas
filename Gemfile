@@ -33,6 +33,7 @@ gem 'nokogiri', '~>1.13.8'
 gem 'shellwords', '~>0.1.0'
 gem 'postmark', '~>1.24.0'
 gem 'down', '~>5.4.1'
+gem 'securerandom', '~>0.3.1'
 
 # Required by extensions
 gem 'email_verifier', '~>0.1.0'
