@@ -650,6 +650,92 @@ theme = 'black-blue'
 	</style>
 
 	<script type="text/javascript">	
+		// images carousel functions
+		function update_numbers() {
+			img = $('#screenshot_modal_img');
+			var number = parseInt($(img).attr('data-number'));
+			var total = $(".screenshot").length;
+			$('#number').html(number+1);
+			$('#total').html(total);
+		}
+
+		function next_screenshot() {
+			img = $('#screenshot_modal_img');
+			var number = parseInt($(img).attr('data-number'));
+			var next_number = number + 1;
+			var total = $(".screenshot").length;
+			if (next_number >= total) {
+			next_number = 0;
+			}
+			// get the src of the next image
+			let q = '#screenshot-'+next_number.toString();
+			let src = $(q).attr('src');
+			$(img).attr('src', src);
+			$(img).attr('data-number', next_number);
+			// update the number
+			update_numbers();
+		}
+
+		function prev_screenshot() {
+			img = $('#screenshot_modal_img');
+			var number = parseInt($(img).attr('data-number'));
+			var prev_number = number - 1;
+			var total = $(".screenshot").length;
+			if (prev_number < 0) {
+			prev_number = total - 1;
+			}
+			// get the src of the next image
+			let q = '#screenshot-'+prev_number.toString();
+			let src = $(q).attr('src');
+			$(img).attr('src', src);
+			$(img).attr('data-number', prev_number);
+			// update the number
+			update_numbers();
+		}
+
+
+		// on click on .close, hide the screenshot modal
+		$("#screenshot_modal .close").click(function() {
+			$("#screenshot_modal").hide();
+		});
+
+		// on press escape, hide the screenshot modal
+		$(document).keyup(function(e) {
+			if (e.keyCode == 27) {
+			$("#screenshot_modal").hide();
+			}
+		});
+
+		// on click on the image, go to the next image
+		$("#screenshot_modal_img").click(function() {
+			next_screenshot();
+		});
+
+		// on click on the next button, go to the next image
+		$("#screenshot_modal .next").click(function() {
+			next_screenshot();
+		});
+
+		// on press the right arrow, go to the next image
+		$(document).keyup(function(e) {
+			if (e.keyCode == 39) {
+			next_screenshot();
+			}
+		});
+
+		// on click on the prev button, go to the prev image
+		$("#screenshot_modal .prev").click(function() {
+			prev_screenshot();
+		});
+
+		// on press the left arrow, go to the prev image
+		$(document).keyup(function(e) {
+			if (e.keyCode == 37) {
+			prev_screenshot();
+			}
+		});
+
+
 		// draw pagination function
 		// 
 		function drawPagination(o, current_page, total_pages, page_size=10)
