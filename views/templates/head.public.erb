@@ -256,6 +256,81 @@ theme = 'black-blue'
 	%>
 	<style>
 
+		// Modals to show pictures in carousel
+
+		img.screenshot {
+			margin-bottom: 10px;
+			border: 1px solid #ddd;
+			shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+			// link like mouse pointer
+			cursor: pointer;
+		}
+
+		div.screenshot-modal {
+			display: none;
+			position: fixed;
+			z-index: 100000000000;
+			
+			//top: 50px;
+			//left: 50px;
+			//right: 50px;
+			//bottom: 50px;
+
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 100%;
+
+			border: 5px solid #ddd;
+			//border-radius: 50px;
+			//width: 100%;
+			//height: 100%;
+		}
+
+		div.screenshot-modal img {
+			width: 100%;
+			height: 100%;
+		}
+
+		div.screenshot-modal button.close {
+			position: absolute;
+			top: 50px;
+			right: 50px;
+			//border-radius: 50px;
+			font-size: 50pt;
+			background-color: white;
+			z-index: 100000000001;
+			color: blue;
+			text-decoration: none;
+		}
+
+		div.screenshot-modal button.next {
+			position: absolute;
+			top: 50%;
+			right: 50px;
+			//border-radius: 50px;
+			font-size: 50pt;
+			background-color: white;
+			z-index: 100000000001;
+			color: blue;
+			text-decoration: none;
+		}
+
+		div.screenshot-modal button.prev {
+			position: absolute;
+			top: 50%;
+			left: 50px;
+			//border-radius: 50px;
+			font-size: 50pt;
+			background-color: white;
+			z-index: 100000000001;
+			color: blue;
+			text-decoration: none;
+		}
+
+
+		// Tables with clickeable rows to show details in the right-side bar
+
 		table tbody tr.clickeable td { 
 			cursor: pointer;
 		}
