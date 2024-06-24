@@ -650,6 +650,22 @@ theme = 'black-blue'
 	</style>
 
 	<script type="text/javascript">	
+		// clickeable rows
+		function on_click_tr_clickeable(o) {
+			var id = $(o).data("id");
+console.log('id: ' + id);
+			// if the row is not selected, then add the class selected
+			if ($(o).hasClass("selected") == false) {
+				$(o).addClass("selected");
+			}
+			// remove the class selected from all the other rows tr.clickeable.
+			$("tr.clickeable").each(function() {
+				if ($(this).data("id") != id) {
+					$(this).removeClass("selected");
+				}
+			});
+		}
+
 		// images carousel functions
 		function update_numbers() {
 			img = $('#screenshot_modal_img');
