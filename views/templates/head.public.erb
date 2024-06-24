@@ -255,6 +255,27 @@ theme = 'black-blue'
 	}
 	%>
 	<style>
+
+		table tbody tr.clickeable td { 
+			cursor: pointer;
+		}
+
+		table tbody tr.clickeable td:last-child { 
+			border-right: 5px dashed rgb(245,245,245);
+		}
+
+		table tbody tr.clickeable:hover td:last-child { 
+			border-right: 5px dashed rgb(255,175,175);
+		}
+
+		table tbody tr.clickeable:hover td { 
+			background-color: rgb(245,245,245);
+		}
+
+		table tbody tr.selected td:last-child { 
+			border-right: 5px dashed red;
+		}
+
 	/*
 		// dark-mode
 		body { background-color: black; color: #fff; }
