@@ -46,7 +46,7 @@ module BlackStack
                 end
 
                 # if exists params[name], then update the value of the preference
-                if !x.nil?
+                if !x.to_s.empty?
                     p.set_value(x)
                     p.save
                 end
@@ -54,6 +54,14 @@ module BlackStack
                 # return the value of the preference
                 p.get_value
             end # def preference 
+
+            def pref(
+                name:,
+                default:,
+                value: nil
+            )
+                self.preference(name, default, value)
+            end
 
             def self.login(h)
                 errors = []

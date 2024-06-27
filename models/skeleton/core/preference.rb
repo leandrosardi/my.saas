@@ -41,16 +41,16 @@ module BlackStack
 
             def set_value(x)
                 # if x is a string
-                if x.is_a?(String)
-                    self.value_string = x
-                elsif x.is_a?(Integer)
-                    self.value_int = x
-                elsif x.is_a?(Float)
-                    self.value_float = x
-                elsif x.is_a?(TrueClass) || x.is_a?(FalseClass)
-                    self.value_bool = x
+                if self.type == BlackStack::MySaaS::Preference::TYPE_STRING
+                    self.value_string = x.to_s
+                elsif self.type == BlackStack::MySaaS::Preference::TYPE_INT
+                    self.value_int = x.to_i
+                elsif self.type == BlackStack::MySaaS::Preference::TYPE_FLOAT
+                    self.value_float = x.to_f
+                elsif self.type == BlackStack::MySaaS::Preference::TYPE_BOOL
+                    self.value_bool = (x.to_s.downcase == 'true' || x.to_s.downcase == 'yes' || x.to_s.downcase == 'on')
                 else
-                    raise "Invalid `#{x.to_s}` value for preference #{self.name}. Expected String, Integer, Float, or Boolean."
+                    raise "Unknown preference type (#{self.type.to_s})."
                 end
             end
 
