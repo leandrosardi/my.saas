@@ -46,7 +46,7 @@ module BlackStack
                 end
 
                 # if exists params[name], then update the value of the preference
-                if !x.to_s.empty?
+                if !x.nil?
                     p.set_value(x)
                     p.save
                 end
