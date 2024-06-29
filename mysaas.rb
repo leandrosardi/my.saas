@@ -18,6 +18,7 @@ require 'adspower-client'
 #require 'workmesh'
 #require_relative '../../workmesh/lib/workmesh.rb'
 
+require 'openai' #, '~>6.3.1'
 require 'my-dropbox-api'
 #require_relative '../../my-dropbox-api/lib/my-dropbox-api.rb'
 
