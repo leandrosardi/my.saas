@@ -7,6 +7,8 @@ module BlackStack
         # - a: It is a Sequel dataset like `DB["SELECT name FROM users"]`
         # - p: Is the page number.
         # - z: Is the page size.
+        # - sort_column: Is the column to sort the dataset. Default: nil.
+        # - sort_order: Is the order to sort the dataset. Default: :asc.
         # - cls: Is the class of the objects that will be returned.
         #
         # Return a hash with the following keys:
@@ -15,7 +17,9 @@ module BlackStack
         # - t: The total number of pages in the dataset.
         # - p: The real page number you receive, in case the requested p is out of scope.
         # 
-        def self.page(a:, p:, z:, cls:)
+        def self.page(a:, p:, z:, sort_column: nil, sort_order: :asc, cls:)
+            raise "TableHelper error: the parameter `sort_order` allows the values:asc and :desc only." if sort_order != :asc && sort_order != :desc
+
             # pagination
             # `LIMIT #{page_size.to_s} OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}`
             # TODO: create re-utilizable functions for this.
@@ -40,6 +44,9 @@ module BlackStack
                 from_row = 0
                 to_row = 0
             end
+
+            a.order(sort_column) if sort_column && sort_order == :asc
+            a.order(sort_column.desc) if sort_column && sort_order == :desc
 
             a = a.limit(page_size, (page_number.to_i - 1) * page_size.to_i)
             all = a.all
