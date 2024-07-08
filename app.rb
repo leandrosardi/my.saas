@@ -574,27 +574,27 @@ begin
   # Standard MySaaS API
   #
   post "/api1.0/:object/page.json", :api_key => true do
-    erb :"/extensions/mass.subaccount/views/api1.0/page"
+    erb :"views/api1.0/page"
   end
 
   post "/api1.0/:object/count.json", :api_key => true do
-    erb :"/extensions/mass.subaccount/views/api1.0/count"
+    erb :"views/api1.0/count"
   end
 
   post "/api1.0/:object/get.json", :api_key => true do
-    erb :"/extensions/mass.subaccount/views/api1.0/get"
+    erb :"views/api1.0/get"
   end
 
   post "/api1.0/:object/insert.json", :api_key => true do
-    erb :"/extensions/mass.subaccount/views/api1.0/insert"
+    erb :"views/api1.0/insert"
   end
 
   post "/api1.0/:object/update.json", :api_key => true do
-    erb :"/extensions/mass.subaccount/views/api1.0/update"
+    erb :"views/api1.0/update"
   end
 
   post "/api1.0/:object/upsert.json", :api_key => true do
-    erb :"/extensions/mass.subaccount/views/api1.0/upsert"
+    erb :"views/api1.0/upsert"
   end
 
 
