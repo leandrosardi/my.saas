@@ -4,6 +4,7 @@ module BlackStack
         @@api_url = nil
         @@api_version = '1.0'
         @@api_port = nil
+        @@classes = {}
 
         def self.api_key
             @@api_key
@@ -21,7 +22,11 @@ module BlackStack
             @@api_port
         end # def self.api_port
 
-        def self.set(
+        def self.classes
+            @@classes
+        end # def self.classes
+
+        def self.set_client(
             api_key: ,
             api_url: ,
             api_version: '1.0',
@@ -31,14 +36,20 @@ module BlackStack
             @@api_url = api_url
             @@api_version = api_version
             @@api_port = api_port
-        end # def self.set
-        
+        end # def self.set_client
+
+        def self.set_server(
+            classes: {}
+        )
+            @@classes = classes
+        end # def self.set_server
+
         def self.post(
             endpoint: , 
             params: {}
         )
             begin
-                url = "#{@@api_url}:#{@@api_port}/api#{@@api_version}/mass/#{endpoint}.json"
+                url = "#{@@api_url}:#{@@api_port}/api#{@@api_version}/#{endpoint}.json"
                 params['api_key'] = @@api_key
                 res = BlackStack::Netting.call_post(url, params)
                 parsed = JSON.parse(res.body)

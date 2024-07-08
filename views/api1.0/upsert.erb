@@ -1,0 +1,13 @@
+<%
+begin
+    object = params[:object]
+    cls = BlackStack::API.classes[object.to_sym]
+    desc = @body['desc']
+    raise "desc is required" if desc.nil?
+    desc['id_account'] = @account.id 
+    @return_message['result'] = cls.upsert(desc).to_h
+rescue Exception => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

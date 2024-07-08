@@ -1,4 +1,4 @@
-﻿# MySaaS Configuration File.
+﻿A# MySaaS Configuration File.
 # Author: Leandro D. Sardi.
 # Date: Oct-2022.
 #
@@ -224,6 +224,25 @@ BlackStack::Notifications.set(
   :signature_picture_url => CS_HOME_WEBSITE + '/core/images/logo/sheldon.jpg',
   :signature_name => 'Sheldon Cooper',
   :signature_position => 'Founder & CEO',
+)
+
+# set standard API access points (count, get, insert, page, update, upsert) for some classes.
+#
+BlackStack::API.set_server(
+    classes: {
+        :lead => Mass::Lead,
+        :lead_data => Mass::LeadData,
+        :lead_tag => Mass::LeadTag,
+    }
+)
+
+# set api client, in case you run stub instances in the same machine.
+#
+BlackStack::API.set_client(
+    api_key: '4db9d88c-dee9-****-8d36-********',
+    api_url: 'http://127.0.0.1',
+    api_port: 3000,
+    api_version: '1.0'
 )
 =end
 
