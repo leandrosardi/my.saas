@@ -226,16 +226,6 @@ BlackStack::Notifications.set(
   :signature_position => 'Founder & CEO',
 )
 
-# set standard API access points (count, get, insert, page, update, upsert) for some classes.
-#
-BlackStack::API.set_server(
-    classes: {
-        :lead => Mass::Lead,
-        :lead_data => Mass::LeadData,
-        :lead_tag => Mass::LeadTag,
-    }
-)
-
 # set api client, in case you run stub instances in the same machine.
 #
 BlackStack::API.set_client(
