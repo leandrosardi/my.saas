@@ -1,4 +1,4 @@
-module Mass 
+module BlackStack 
     # Base class.
     # List of methods you have to overload if you develop a profile type.
     # 
