@@ -44,15 +44,18 @@ module BlackStack
                 from_row = 0
                 to_row = 0
             end
-
-            a.order(sort_column) if sort_column && sort_order == :asc
-            a.order(sort_column.desc) if sort_column && sort_order == :desc
+#binding.pry
+            a = DB["#{a.sql}\nORDER BY #{sort_column} ASC"] if sort_column && sort_order == :asc
+            a = DB["#{a.sql}\nORDER BY #{sort_column} DESC"] if sort_column && sort_order == :desc
 
             a = a.limit(page_size, (page_number.to_i - 1) * page_size.to_i)
             all = a.all
             raise "Error: the query did not the :id field required by TableHelper." if all[0] && all[0][:id].nil?
             ids = all.map { |row| row[:id] }
             objects = cls.where(:id=>ids).all
+
+            # sort the objects in the same order as the ids
+            objects = ids.map { |id| objects.find { |o| o.id == id } }
 
             #
             h = {
