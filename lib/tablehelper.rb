@@ -44,7 +44,7 @@ module BlackStack
                 from_row = 0
                 to_row = 0
             end
-#binding.pry
+            
             a = DB["#{a.sql}\nORDER BY #{sort_column} ASC"] if sort_column && sort_order == :asc
             a = DB["#{a.sql}\nORDER BY #{sort_column} DESC"] if sort_column && sort_order == :desc
 
