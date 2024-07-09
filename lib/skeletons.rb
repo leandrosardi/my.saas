@@ -249,23 +249,6 @@ module BlackStack
         end
     end # module Storage
 
-    module State
-        # return an array with the different type of states
-        def states
-            [:idle, :online, :starting, :stopping, :scraping_inbox, :scraping, :messaging, :scraping_connections]
-        end # def self.states
-        
-        # return an array with the color of differy type of states
-        def state_colors
-            [:black, :green, :cyan, :pink, :orange, :blue, :green, :orange]
-        end # def self.state_colors
-
-        # return position of the array self.states, with the key.to_sym value
-        def state_code(key)
-            self.states.index(key.to_sym)
-        end # def self.state_code
-    end # module State
-
     module Status
         # return an array with the different type of states
         # - :pending - it is waiting to be executed
