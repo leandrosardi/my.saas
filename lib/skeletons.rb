@@ -271,8 +271,20 @@ module BlackStack
         def status_code(key)
             self.statuses.index(key.to_sym)
         end # def self.access
-
     end # module Status
+
+    module DomainProtocol
+        # return an array with the different type of domain_protocols
+        # 
+        def domain_protocols
+            [:http, :https]
+        end # def self.domain_protocols
+        
+        # return position of the array self.domain_protocols, with the key.to_sym value
+        def domain_protocols_code(key)
+            self.domain_protocols.index(key.to_sym)
+        end # def self.domain_protocols_code
+    end # module DomainProtocol
 
     module Validation
         # normalize the values of the descriptor.
