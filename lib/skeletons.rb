@@ -395,6 +395,14 @@ module BlackStack
             return ret
         end # def linkedin_errors
 
+        # validate the values of some specific keys are valid tristates.
+        def tristate_errors(h={}, keys:)
+            ret = []
+            keys.each do |k|
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid tristate (#{BlackStack::Tristate.tristates.join(",")})." if BlackStack::Tristate.tristates.index(h[k.to_s].to_sym).nil?
+            end # keys.each
+            return ret
+        end # def linkedin_errors
 
         def normalize_facebook_url(url)
             # remove query string parameters
@@ -568,8 +576,12 @@ module BlackStack
     end # module Validation
 
     module Tristate
-        def tristates
+        def self.tristates
             [:any, :yes, :no]
+        end
+
+        def tristates
+            BlackStack::Tristate.tristates
         end
 
         def tristate_code(key)
