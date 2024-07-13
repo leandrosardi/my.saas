@@ -192,6 +192,7 @@ CS_HOME_PAGE_PORT = '3000'
 CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PAGE_PORT
 CS_HOME_LOGO = CS_HOME_WEBSITE + '/core/images/logo.png'
 CS_HOME_FAVICON = CS_HOME_WEBSITE + '/core/images/favicon.png'
+CS_HOME_TITLE = "My.SaaS - <Your Title Here>"
 
 # default timezone
 DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'

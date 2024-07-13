@@ -1,8 +1,10 @@
 <%
 email = session['email'].to_s
 %>
-<section class='row-fluid  signin-page' style='vertical-align: middle; height: 100%;' height='100%'>
-	<div class='span4 signin-page'>
+<section class='row-fluid  signin-page' style='vertical-align: middle; height: 100%;' height='100%'>	
+	<div class='span4 signin-page'></div>
+		
+	<div class='span4 signin-page' style='vertical-align: middle; height: 100%;' height='100%'>
 		<!-- Page content
 			================================================== -->
 		<div>				
@@ -10,16 +12,8 @@ email = session['email'].to_s
 				<a href='/'><img src='<%=CS_HOME_LOGO%>' height='100px' title='<%=APP_NAME%> logo' /></a>
 			</h1></span><br/>
 		</div>
-	</div>
-		
-	<div class='span1 signin-page'></div>
-		
-	<div class='span5 signin-page' style='vertical-align: middle; height: 100%;' height='100%'>
-		<center>
 
-		<br/>
-		<br/>
-
+		<left>
 		<form action="/login" method="post">	
 			<fieldset>
 				<div class="fields">
@@ -37,11 +31,14 @@ email = session['email'].to_s
 				<a href='./signup' class='btn btn-gray btn-block' tabindex="5"><b>Create a new <%=APP_NAME%> account</b></a>
 			</center>
 		</div>
-		
-		</center>
+		</left>
+
+		<br/>
+		<br/>
+		<br/>
 	</div>
 
-	<div class='span1'>
+	<div class='span4'>
 	</div>
 
 </section>
