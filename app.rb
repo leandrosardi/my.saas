@@ -71,7 +71,7 @@ begin
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
 
     "<p>" + 
-    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -83,7 +83,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -97,7 +97,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -113,7 +113,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
@@ -131,7 +131,7 @@ begin
     login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
-    "<a class='simple' href='/welcome'><b>#{user.account.name.encode_html}</b></a>" + 
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
     " <i class='icon-chevron-right'></i> " + 
     "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
     " <i class='icon-chevron-right'></i> " + 
