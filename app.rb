@@ -260,6 +260,7 @@ begin
     redirect "/500?#{s}"
   end
 
+  # use this modifier for internal pages, who cannot be shown if there IS NOT a logged-in user
   # condition: if there is not authenticated user on the platform, then redirect to the signup page 
   set(:auth) do |*roles|
     condition do
@@ -272,6 +273,18 @@ begin
       else
         @login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
+      end
+    end
+  end
+
+  # use this modifier for external pages, who cannot be shown if there IS a logged-in user
+  # condition: if there is not authenticated user on the platform, then redirect to the / page
+  set(:noauth) do |*roles|
+    condition do
+      if logged_in?
+        redirect "/"
+      elsif unavailable?
+        redirect "/unavailable"      
       end
     end
   end
@@ -363,7 +376,7 @@ begin
     erb :'views/demo', :layout => :'/views/layouts/public'
   end
 
-  get '/login', :agent => /(.*)/ do
+  get '/login', :noauth => true, :agent => /(.*)/ do
     erb :'views/login', :layout => :'/views/layouts/public'
   end
   post '/login' do
@@ -373,7 +386,7 @@ begin
     erb :'views/filter_login'
   end
 
-  get '/signup', :agent => /(.*)/ do
+  get '/signup', :noauth => true, :agent => /(.*)/ do
     erb :'views/signup', :layout => :'/views/layouts/public'
   end
   post '/signup' do
@@ -388,7 +401,7 @@ begin
     erb :'views/filter_logout'
   end
 
-  get '/recover', :agent => /(.*)/ do
+  get '/recover', :noauth => true, :agent => /(.*)/ do
     erb :'views/recover', :layout => :'/views/layouts/public'
   end
   post '/recover' do
