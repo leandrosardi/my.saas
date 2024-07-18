@@ -18,6 +18,9 @@ hostname = IO.popen(['hostname']).read.strip
 # run an extension as a service
 SERVICE_NAME = nil
 
+# choose a custom image to show when a page is loading, or when an AJAX content is loading
+LOADING_IMAGE_PATH = '/core/images/loading.png'
+
 # deployment routines will write in this file, in hard drive of the node where deploying.
 OUTPUT_FILE = '$HOME/deployment.log'
 
