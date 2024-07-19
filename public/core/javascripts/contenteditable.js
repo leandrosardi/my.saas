@@ -126,3 +126,10 @@ function init_search(url=null) {
       }
     });
 };
+
+function init_command_inputs() {
+    // cancel any forther event when click on input.command
+    $('.command').click(function() {
+      return false;
+    })
+};
