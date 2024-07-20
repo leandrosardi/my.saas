@@ -6,15 +6,15 @@ function focus_td(td) {
 
 function init_contenteditable(url) {
     // add an i element the top-right corner of content editable tds
-    $('td[contenteditable]').append('<i class="icon-pencil" style="padding-left:5px;opacity:0.25;"></i>');
+    $('*[contenteditable]').append('<i class="icon-pencil" style="padding-left:5px;opacity:0.25;"></i>');
 
     // when the content is changed, the i element is removed, and store original value on data-original-value
-    $('td[contenteditable]').on('click', function() {
+    $('*[contenteditable]').on('click', function() {
       focus_td(this);
     });
 
     // the the contenteditable lost focus, the i element is added again only if it doesn't exist
-    $('td[contenteditable]').on('blur', function() {
+    $('*[contenteditable]').on('blur', function() {
       i = $(this).find('i');
       if (i.length == 0) {
         $(this).append('<i class="icon-pencil" style="padding-left:5px;opacity:0.25;"></i>');
@@ -26,7 +26,7 @@ function init_contenteditable(url) {
     // when press on up arrow, focus the previous td element right above with the same value in the data-field attribute
     // when press on the right arrow, focus the next td element right which is contenteditable, skipping the tds in the middle who are not contenteditable
     // when press on the left arrow, focus the next td element left which is contenteditable, skipping the tds in the middle who are not contenteditable
-    $('td[contenteditable]').keyup(function(e) {
+    $('*[contenteditable]').keyup(function(e) {
       if (e.which == 27) {
         $(this).text($(this).attr('data-original-value'));
         $(this).blur();
@@ -63,7 +63,7 @@ function init_contenteditable(url) {
     });
 
     // when press enter on a contenteditable td, call ajax to update the field
-    $('td[contenteditable]').keypress(function(e) {
+    $('*[contenteditable]').keypress(function(e) {
       var td = this;
       if (e.which == 13) {
         // get the id of the lead
