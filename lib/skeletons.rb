@@ -289,7 +289,7 @@ module BlackStack
     end # module DomainProtocol
 
     module Validation
-        INDEED_COMPANY_PATTERN = /^https\:\/\/(www\.)\?indeed\.com\/cmp/
+        INDEED_COMPANY_PATTERN = /^https\:\/\/(www\.)?indeed\.com\/cmp\//
 
         # normalize the values of the descriptor.
         def normalize(h={})
@@ -401,13 +401,11 @@ module BlackStack
 
 
         def normalize_indeed_company_url(url)
-binding.pry
             url.split('?').first
         end
 
         # validate the values of some specific keys are valid Emails.
         def indeed_company_errors(h={}, keys:)
-binding.pry
             ret = []
             keys.each do |k|
                 url = h[k.to_s].nil? ? nil : self.normalize_indeed_company_url(h[k.to_s])
