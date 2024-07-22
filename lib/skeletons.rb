@@ -17,6 +17,8 @@ require 'models/skeleton/core/notificationclick'
 require 'models/skeleton/core/country'
 require 'models/skeleton/core/state'
 
+
+
 module BlackStack
     module InsertUpdate
         # return a Sequel dataset, based on some filters.
@@ -287,6 +289,8 @@ module BlackStack
     end # module DomainProtocol
 
     module Validation
+        INDEED_COMPANY_PATTERN = /^https\:\/\/(www\.)\?indeed\.com\/cmp/
+
         # normalize the values of the descriptor.
         def normalize(h={})
             h['id_account'] = h['id_account'].to_s.strip.downcase if h['id_account']
@@ -394,6 +398,25 @@ module BlackStack
             end # keys.each
             return ret
         end # def linkedin_errors
+
+
+        def normalize_indeed_company_url(url)
+binding.pry
+            url.split('?').first
+        end
+
+        # validate the values of some specific keys are valid Emails.
+        def indeed_company_errors(h={}, keys:)
+binding.pry
+            ret = []
+            keys.each do |k|
+                url = h[k.to_s].nil? ? nil : self.normalize_indeed_company_url(h[k.to_s])
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid Indeed URL." if url && url.to_s !~ INDEED_COMPANY_PATTERN
+            end # keys.each
+            return ret
+        end # def linkedin_errors
+
+
 
         # validate the values of some specific keys are valid tristates.
         def tristate_errors(h={}, keys:)

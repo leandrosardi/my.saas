@@ -131,5 +131,58 @@ module BlackStack
             self.class.upsert(self.desc)
         end
 
+
+        # return the HTML of a page downloaded by Zyte.
+        #
+        # Parameters:
+        # - url: the URL of the page to download.
+        # - api_key: the Zyte API key.
+        # - options: the options to pass to Zyte.
+        #
+        def zyte_html(url, api_key:, options:)
+            ret = nil
+            # getting the HTML
+            zyte = ZyteClient.new(key: api_key)
+            html = zyte.extract(url: url, options: options) 
+            # return the URL of the file in the cloud
+            return html
+        end # def zyte_html
+
+        # create a file in the cloud with the HTML of a page downloaded by Zyte.
+        # return the URL of the file.
+        #
+        # Parameters:
+        # - url: the URL of the page to download.
+        # - api_key: the Zyte API key.
+        # - options: the options to pass to Zyte.
+        # - dropbox_folder: the folder in the cloud where to store the file. If nil, it will use the self.desc['id_account'] value.
+        #
+        def zyte_snapshot(url, api_key:, options:, dropbox_folder:nil)
+            ret = nil
+            raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
+            dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
+            # build path to the local file in /tmp
+            id = SecureRandom.uuid
+            filename = "#{id}.html"
+            tmp_path = "/tmp/#{filename}"
+            # build path to the file in the cloud
+            year = Time.now.year.to_s.rjust(4,'0')
+            month = Time.now.month.to_s.rjust(2,'0')
+            dropbox_folder = "/massprospecting.bots/#{dropbox_folder}.#{year}.#{month}"
+            dropbox_path = "#{dropbox_folder}/#{filename}"
+            # getting the HTML
+            zyte = ZyteClient.new(key: api_key)
+            html = zyte.extract(url: url, options: options) 
+            # save the HTML in the local file in /tmp
+            File.open(tmp_path, 'w') { |file| file.write(html) }
+            # create the folder in the cloud and upload the file
+            BlackStack::DropBox.dropbox_create_folder(dropbox_folder)
+            BlackStack::DropBox.dropbox_upload_file(tmp_path, dropbox_path)
+            # delete the local file
+            File.delete(tmp_path)
+            # return the URL of the file in the cloud
+            return BlackStack::DropBox.get_file_url(dropbox_path)
+        end # def zyte_snapshot
+
     end # class Base
 end # module Mass
