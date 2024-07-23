@@ -29,7 +29,7 @@ module BlackStack
                 params: params
             )
             raise "Error calling account_value endpoint: #{ret['status']}" if ret['status'] != 'success'
-            return ret['results']
+            return ret['result']
         end # def self.base
 
 
