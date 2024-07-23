@@ -1,0 +1,9 @@
+<%
+begin
+    field = @body['field']
+    @return_message['result'] = @account[field.to_sym]
+rescue Exception => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

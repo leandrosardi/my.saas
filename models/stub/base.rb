@@ -19,7 +19,20 @@ module BlackStack
         def child_class_instance
             return self
         end
-         
+
+        def self.account_value(field:)
+            params = {}
+            params['field'] = field
+            # call the API
+            ret = BlackStack::API.post(
+                endpoint: "account_value",
+                params: params
+            )
+            raise "Error calling account_value endpoint: #{ret['status']}" if ret['status'] != 'success'
+            return ret['results']
+        end # def self.base
+
+
         # Get array of hash descriptor of profile.
         # 
         # Parameters: 
@@ -39,7 +52,7 @@ module BlackStack
                 endpoint: "#{self.object_name}/page",
                 params: params
             )
-            raise "Error: #{ret['status']}" if ret['status'] != 'success'
+            raise "Error calling page endpoint: #{ret['status']}" if ret['status'] != 'success'
             return ret['results'].map { |h| self.new(h).child_class_instance }
         end # def self.base
 
@@ -55,7 +68,7 @@ module BlackStack
                 endpoint: "#{self.object_name}/count",
                 params: params
             )
-            raise "Error: #{ret['status']}" if ret['status'] != 'success'
+            raise "Error calling count endpoint: #{ret['status']}" if ret['status'] != 'success'
             return ret['result'].to_i
         end # def self.count
 
@@ -72,7 +85,7 @@ module BlackStack
                 endpoint: "#{self.object_name}/get",
                 params: params
             )
-            raise "Error: #{ret['status']}" if ret['status'] != 'success'
+            raise "Error calling get endpoint: #{ret['status']}" if ret['status'] != 'success'
             return self.new(ret['result']).child_class_instance
         end # def self.get
 
@@ -86,7 +99,7 @@ module BlackStack
                 endpoint: "#{self.object_name}/update",
                 params: params
             )
-            raise "Error: #{ret['status']}" if ret['status'] != 'success'
+            raise "Error calling update endpoint: #{ret['status']}" if ret['status'] != 'success'
             return self.new(ret['result']).child_class_instance
         end # def self.update
 
@@ -106,7 +119,7 @@ module BlackStack
                 endpoint: "#{self.object_name}/insert",
                 params: params
             )
-            raise "Error: #{ret['status']}" if ret['status'] != 'success'
+            raise "Error calling insert endpoint: #{ret['status']}" if ret['status'] != 'success'
             return self.new(ret['result']).child_class_instance
         end # def self.insert
 
@@ -121,7 +134,7 @@ module BlackStack
                 endpoint: "#{self.object_name}/upsert",
                 params: params
             )
-            raise "Upserting Error: #{ret['status']}" if ret['status'] != 'success'
+            raise "Error calling upsert endpoint: #{ret['status']}" if ret['status'] != 'success'
             return self.new(ret['result']).child_class_instance
         end # def self.upsert
 

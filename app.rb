@@ -584,7 +584,14 @@ begin
     erb :'views/api1.0/ping'
   end
 
-  # Standard MySaaS API
+  # Standard MySaaS API - Getting account attribute
+  #
+  post '/api1.0/account_value.json', :api_key => true do
+    erb :'views/api1.0/account_value'
+  end
+
+
+  # Standard MySaaS API - Managing objects
   #
   post "/api1.0/:object/page.json", :api_key => true do
     erb :"views/api1.0/page"
