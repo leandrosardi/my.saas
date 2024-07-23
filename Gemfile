@@ -13,7 +13,7 @@ gem 'simple_cloud_logging', '~>1.2.2'
 gem 'simple_command_line_parser', '~>1.1.2'
 gem 'pampa', '~>2.0.34'
 gem 'my-dropbox-api', '~>1.0.2'
-gem 'zyte-client', '~>1.0.5'
+gem 'zyte-client', '~>1.0.6'
 
 # Other gems needed for running mysaas
 gem 'colorize', '~>0.8.1'

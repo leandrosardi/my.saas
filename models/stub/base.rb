@@ -139,11 +139,11 @@ module BlackStack
         # - api_key: the Zyte API key.
         # - options: the options to pass to Zyte.
         #
-        def zyte_html(url, api_key:, options:)
+        def zyte_html(url, api_key:, options:, data_filename:)
             ret = nil
             # getting the HTML
             zyte = ZyteClient.new(key: api_key)
-            html = zyte.extract(url: url, options: options) 
+            html = zyte.extract(url: url, options: options, data_filename: data_filename) 
             # return the URL of the file in the cloud
             return html
         end # def zyte_html
@@ -157,7 +157,7 @@ module BlackStack
         # - options: the options to pass to Zyte.
         # - dropbox_folder: the folder in the cloud where to store the file. If nil, it will use the self.desc['id_account'] value.
         #
-        def zyte_snapshot(url, api_key:, options:, dropbox_folder:nil)
+        def zyte_snapshot(url, api_key:, options:, data_filename:, dropbox_folder:nil)
             ret = nil
             raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
             dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
@@ -172,7 +172,7 @@ module BlackStack
             dropbox_path = "#{dropbox_folder}/#{filename}"
             # getting the HTML
             zyte = ZyteClient.new(key: api_key)
-            html = zyte.extract(url: url, options: options) 
+            html = zyte.extract(url: url, options: options, data_filename: data_filename) 
             # save the HTML in the local file in /tmp
             File.open(tmp_path, 'w') { |file| file.write(html) }
             # create the folder in the cloud and upload the file
