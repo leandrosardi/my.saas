@@ -35,7 +35,7 @@ node = BlackStack::Deployer.nodes.select { |n| n.name == parser.value('node') }.
 
 # exit if worker not found
 if node.nil?
-  puts "Node #{parser.value('node')} not found."
+  puts "Node #{parser.value('node')} not found.".red
   exit(0)
 end
 
@@ -45,7 +45,10 @@ s = nil
 if node.ssh_private_key_file
     s = "ssh -o StrictHostKeyChecking=no -i \"#{Shellwords.escape(node.ssh_private_key_file)}\" #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 else
-    s = "sshpass -p \"#{Shellwords.escape(node.ssh_password)}\" ssh -o StrictHostKeyChecking=no #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
+    # DEPRECATED: This is not working, because it is escaping the #
+    #escaped_password = Shellwords.escape(node.ssh_private_key_file)
+    escaped_password = node.ssh_password.gsub(/\$/, "\\$")
+    s = "sshpass -p \"#{escaped_password}\" ssh -o StrictHostKeyChecking=no #{node.ssh_username}@#{node.net_remote_ip} -p #{node.ssh_port}"
 end
 
 puts "Command: #{s.blue}" if parser.value('show')
