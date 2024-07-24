@@ -49,7 +49,7 @@ module BlackStack
 
             b = upsert_children
             o = self.new
-            o.id = guid
+            o.id = h['id'] || guid
             o.id_account = h['id_account']
             o.id_user = h['id_user']
             o.create_time = now
