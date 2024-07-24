@@ -6,11 +6,12 @@
 # Be sure this file is always included in the .gitignore.
 #
 # To save config.rb and other critical files, use the CLI
-# command `backup`. I will create a backup of the current
-# files into a cloud storage specified by you.
+# command `backup.rb`. It will create a backup of the current
+# files into a cloud storage specified in this file.
 #
 # Guidelines:
 # - Use $HOME instead of ~.
+#
 
 # Where am I running?
 hostname = IO.popen(['hostname']).read.strip
