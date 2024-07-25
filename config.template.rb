@@ -26,53 +26,38 @@ LOADING_IMAGE_PATH = '/core/images/loading.png'
 OUTPUT_FILE = '$HOME/deployment.log'
 
 # CODE_PATH may be different in production and development environments.
-CODE_PATH = '$RUBYLIB'
+CODE_PATH = '$HOME/code/my.saas'
 
 # Integration with TinyMCE
 # - Reference: https://www.tiny.cloud/docs/tinymce/latest/invalid-api-key
 #TINYMCE_API_KEY='<place your TinyMCE api key here>'
 
-# TODO: Generate a new API key for the mysaas's `su` user, and update it in your config.rb file.`
+# Integration with OpenAI
+# - Reference: https://platform.openai.com/docs/quickstart
+#OPENAI_API_KEY = '<place your OpenAI api key here>'
+#OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
+
+# Integration with AdsPower
+# - Reference: https://help.adspower.com/docs/api
+#ADSPOWER_API_KEY = '<place your AdsPower api key here>'
+
+# Integration: Zyte API key 
+# - Reference: https://docs.zyte.com/scrapy-cloud/usage/reference/http/index.html
+#ZYTE_API_KEY = '<place your Zyte api key here>'
+
+# my.saas api-key of the su user
+# default value is '4db9d88c-dee9-4b5a-8d36-134d38e9f763'.
+# it is recommended you change it in production, with the password of the su user too.
 MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
 
 # Integration: DropBox Access Token
-DROPBOX_REFRESH_TOKEN = 'h6wRt9et****-****BgDj'
+# - Reference: https://github.com/leandrosardi/my-dropbox-api
+#DROPBOX_REFRESH_TOKEN = '<place your DropBox refresh token here>'
 
-# Integration: Zyte API key 
-ZYTE_API_KEY = '************************0b818962'
-ZYTE_OPTIONS = {
-  "sessionContext": [
-    {
-      "name": "id",
-      "value": "2"
-    }
-  ],
-  "sessionContextParameters": {
-    "actions": [
-      {
-          "action": "waitForTimeout",
-          "timeout": 5,
-          "onError": "return"
-      }
-    ]
-  },            
-  "httpResponseBody": true
-}
+# Integration: Apollo
+# - Reference: https://knowledge.apollo.io/hc/en-us/articles/4415734629773-Configure-Access-to-the-Apollo-REST-API
+#APOLLO_API_KEY = '<place your Apollo api key here>'
 
-# Integration: OpenAI API key and model 
-OPENAI_API_KEY = '******'
-OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
-
-# Integration: AdsPower API key
-ADSPOWER_API_KEY = '***************'
-
-# assign one different AdsPower profile to each pampa worker.
-ADSPOWER_PROFILE_ID = {
-  'is101a.1' => 'jh5o4dt',
-  'is101a.2' => 'jh7a63x',
-  'is101b.1' => 'jh7ak66',
-  'is101b.2' => 'jh7an7e',
-}
 
 BlackStack::Funnel.set({
     # Goolge Analytics
