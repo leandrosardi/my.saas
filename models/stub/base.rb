@@ -169,10 +169,12 @@ module BlackStack
         # - api_key: the Zyte API key.
         # - options: the options to pass to Zyte.
         # - dropbox_folder: the folder in the cloud where to store the file. If nil, it will use the self.desc['id_account'] value.
-        # - min_html_length: the minimum length of the HTML to consider it valid.
         # - retry_times: the number of times to retry the download until the HTML is valid.
         #
-        def zyte_snapshot(url, api_key:, options:, data_filename:, dropbox_folder:nil, min_html_length: 10, retry_times: 3)
+        def zyte_snapshot(url, api_key:, options:, data_filename:, dropbox_folder:nil, retry_times: 3)
+            # "The garbage character must be due to the 520 error code which was caused on the second request."
+            garbage = "\x9E\xE9e"
+            
             ret = nil
             raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
             dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
@@ -188,8 +190,8 @@ module BlackStack
             # getting the HTML - Retry mechanism
             zyte = ZyteClient.new(key: api_key)
             try = 0
-            html = nil
-            while try < retry_times && html.to_s.length < min_html_length
+            html = garbage
+            while try < retry_times && html == garbage
                 html = zyte.extract(url: url, options: options, data_filename: data_filename) 
                 try += 1
             end
