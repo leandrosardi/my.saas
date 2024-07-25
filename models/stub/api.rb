@@ -59,7 +59,7 @@ module BlackStack
                 # File.open('response.body.html', 'w') { |file| file.write(res.body) }
             rescue => e
                 return {
-                    'status' => 'error',
+                    'status' => e.message,
                     'value' => e.to_console
                 }
             end
