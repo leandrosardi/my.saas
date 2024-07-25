@@ -120,7 +120,9 @@ else
 
     l.logs 'Loading checkpoint... '
     BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.lock")
-    l.logf "done".green + " (#{BlackStack::Deployer::DB::checkpoint.to_s})"
+    label = BlackStack::Deployer::DB::checkpoint.to_s.blue
+    label = 'no checkpoint'.yellow if label.to_s.empty?
+    l.logf "done".green + " (#{label})"
 
     l.logs 'Running database updates... '
     BlackStack::Deployer::DB::set_folder ('../sql')
@@ -131,11 +133,13 @@ else
     BlackStack::Extensions.extensions.each { |e|
       l.logs "Loading checkpoint for #{e.name.downcase.blue}... "
       BlackStack::Deployer::DB::load_checkpoint("./my-ruby-deployer.#{e.name.downcase}.lock")
-      l.logf "done".green + " (#{BlackStack::Deployer::DB::checkpoint.to_s})"
+      label = BlackStack::Deployer::DB::checkpoint.to_s.blue
+      label = 'no checkpoint'.yellow if label.to_s.empty?
+      l.logf "done".green + " (#{label})"
 
       l.logs "Running database updates for #{e.name.downcase.blue}... "
       BlackStack::Deployer::DB::set_folder ("../extensions/#{e.name.downcase}/sql")
-      BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.#{e.name.downcase}.lock")
+      BlackStack::Deployer::DB::deploy(true, "./my-ruby-deployer.#{e.name.downcase}.lock", l)
       l.logf 'done'.green
     }
 
