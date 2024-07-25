@@ -22,23 +22,30 @@ BlackStack::Deployer::add_routine({
       echo "Creating code folder..." >>'+OUTPUT_FILE+' 2>&1
       mkdir -p ~/code >>'+OUTPUT_FILE+' 2>&1
 
-      # backup old code folder
-      # TODO: activate this if you want to backup the code folder.
-      #echo "" >>'+OUTPUT_FILE+' 2>&1
-      #echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
-      #[ -d ~/code/%code_folder% ] && mv ~/code/%code_folder% ~/code/%code_folder%.%timestamp% >>'+OUTPUT_FILE+' 2>&1
-
-      # clone the project
-      echo "" >>'+OUTPUT_FILE+' 2>&1
-      echo "Cloning the project..." >>'+OUTPUT_FILE+' 2>&1
-      git clone https://%git_username%:%git_password%@github.com/%git_repository% ~/code/%code_folder% >>'+OUTPUT_FILE+' 2>&1
+      # clone the project if the folder does not exist
+      if [ ! -d ~/code/%code_folder% ] ; then
+          echo "" >>'+OUTPUT_FILE+' 2>&1
+          echo "Cloning the project..." >>'+OUTPUT_FILE+' 2>&1
+          git clone https://%git_username%:%git_password%@github.com/%git_repository% ~/code/%code_folder% >>'+OUTPUT_FILE+' 2>&1
+      fi
 
       # pull the last version of the source code
       echo "" >>'+OUTPUT_FILE+' 2>&1
       echo "Pulling the last version of the source code..." >>'+OUTPUT_FILE+' 2>&1
       cd ~/code/%code_folder%
       git config --global credential.helper store >>'+OUTPUT_FILE+' 2>&1
-      git fetch --all >>'+OUTPUT_FILE+' 2>&1
+      if ! git fetch --all >>'+OUTPUT_FILE+' 2>&1
+        echo "Fetch failed!"
+
+        # backup old code folder
+        # TODO: activate this if you want to backup the code folder.      
+        echo "" >>'+OUTPUT_FILE+' 2>&1
+        echo "Backup old code folder..." >>'+OUTPUT_FILE+' 2>&1
+        [ -d ~/code/%code_folder% ] && mv ~/code/%code_folder% ~/code/%code_folder%.%timestamp% >>'+OUTPUT_FILE+' 2>&1        
+
+        echo "Cloning the project..." >>'+OUTPUT_FILE+' 2>&1
+        git clone https://%git_username%:%git_password%@github.com/%git_repository% ~/code/%code_folder% >>'+OUTPUT_FILE+' 2>&1
+      fi
       git reset --hard origin/%git_branch% >>'+OUTPUT_FILE+' 2>&1
 
       # upload configuration file
