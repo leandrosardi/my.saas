@@ -1,5 +1,6 @@
 begin
   print 'Loading libraries... '
+  require 'colorize'
   require 'sinatra'
   require 'mysaas'
   require 'lib/stubs'

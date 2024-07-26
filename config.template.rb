@@ -13,6 +13,16 @@
 # - Use $HOME instead of ~.
 #
 
+# Setup logging options. 
+BlackStack::Logger.set(
+  min_size: 10*1024*1024, # 10MB
+  max_size: 20*1024*1024, # 20MB
+  show_nesting_level: false,
+  show_nesting_caller: false,
+  colorize: true,
+  nesting_assertion: true
+)
+
 # Where am I running?
 hostname = IO.popen(['hostname']).read.strip
 

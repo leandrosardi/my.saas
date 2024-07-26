@@ -1,13 +1,15 @@
-require 'blackstack-nodes'
-require 'blackstack-db'
-require 'blackstack-core'
-require 'blackstack-enrichment'
-
-#require_relative '../blackstack-nodes/lib/blackstack-nodes.rb'
-#require_relative '../blackstack-db/lib/blackstack-db.rb'
-
 require 'simple_command_line_parser'
 require 'simple_cloud_logging'
+require 'blackstack-core'
+
+require 'blackstack-nodes'
+require 'blackstack-db'
+#require_relative '../blackstack-db/lib/blackstack-db.rb'
+#require_relative '../blackstack-nodes/lib/blackstack-nodes.rb'
+
+# DEPRECATED
+#require 'blackstack-enrichment'
+
 require 'my-ruby-deployer'
 require 'zyte-client'
 require 'pampa'
