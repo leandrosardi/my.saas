@@ -232,7 +232,8 @@ BlackStack::API.set_client(
     api_key: '4db9d88c-dee9-****-8d36-********',
     api_url: 'http://127.0.0.1',
     api_port: 3000,
-    api_version: '1.0'
+    api_version: '1.0',
+    backtrace: BlackStack.sandbox?
 )
 =end
 
