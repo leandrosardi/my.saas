@@ -128,7 +128,7 @@ BlackStack::Debugging::set({
 #
 # TODO: Switch back to HTTPS when the emails.leads.uplaod.ingest process is migrated to DropBox for elastic storage.
 # 
-BlackStack::API::set_api_url({
+BlackStack::API::set_client({
   # IMPORTANT: It is strongly recommended that you 
   # use the api_key of an account with prisma role, 
   # and assigned to the central division too.
@@ -148,7 +148,6 @@ BlackStack::API::set_api_url({
   # 
   :api_domain => '127.0.0.1', 
   :api_port => '3000',
-  :api_less_secure_port => '3000',
 })
 
 # IMPORTANT NOTE: This value should have a format like FOO.COM. 

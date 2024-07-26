@@ -1,8 +1,5 @@
 require 'my-ruby-deployer'
 
-require 'models/stub/api'
-require 'models/stub/base'
-
 require 'models/stub/extensions/leftbaricon'
 require 'models/stub/extensions/dependency'
 require 'models/stub/extensions/extension'
