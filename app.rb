@@ -614,6 +614,10 @@ begin
     erb :"views/api1.0/update"
   end
 
+  post "/api1.0/:object/update_status.json", :api_key => true do
+    erb :"views/api1.0/update_status"
+  end
+
   post "/api1.0/:object/upsert.json", :api_key => true do
     erb :"views/api1.0/upsert"
   end
