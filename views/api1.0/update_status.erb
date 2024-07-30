@@ -8,6 +8,7 @@ begin
     o = cls.where(:id=>desc['id'], @account.id).first
     raise "id not found" if o.nil?
     o.status = class.status_code(desc['status'].to_sym)
+    o.error_description = desc['error_description']
     o.save
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
