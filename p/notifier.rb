@@ -63,12 +63,14 @@ while true
         end
 
     rescue SignalException, SystemExit, Interrupt
+        l.reset
         # note: this catches the CTRL+C signal.
         # note: this catches the `kill` command, ONLY if it has not the `-9` option.
-        l.logf 'Process Interrumpted.'
+        l.log 'Process Interrumpted.'
         exit(0)
     rescue => e
-        l.logf 'Fatal Error: '+e.to_console
+        l.reset
+        l.log 'Fatal Error: '+e.to_console
         
         l.logf 'Sleeping for 10 seconds... '
         sleep(10)
