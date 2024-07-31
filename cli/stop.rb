@@ -32,11 +32,18 @@ parser = BlackStack::SimpleCommandLineParser.new(
   }]
 )
 
-# TODO: each node should have its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
-BlackStack::Deployer.nodes.select { |n| 
-  n.name=~/#{parser.value('nodes')}/ && 
-  n.parameters[:dev].to_s != 'true' 
-}.each { |n|
+# if the user specified a list of nodes, bring only the nodes that match the regular expression, even if they are development nodes.
+# if the user did not specified a list of nodes, bring all production nodes only.
+
+if parser.value('nodes') == '.*'
+  l.log 'No nodes specified. Using the default value: .*'
+  nodes = BlackStack::Deployer.nodes.select { |n| n.parameters[:dev].to_s != 'true' }
+else
+  nodes = BlackStack::Deployer.nodes.select { |n| n.name=~/#{parser.value('nodes')}/ }
+end
+
+# each node has its routine, so deployer should run the assigned routine to each node, no matter of it is web or pampa.
+nodes.each { |n|
   l.logs "Node #{n.name.blue}... "
   n.connect
   n.stop(OUTPUT_FILE)
