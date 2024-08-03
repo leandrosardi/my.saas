@@ -2,8 +2,15 @@
 # signup new account
 @return_message = {}
 begin
+binding.pry
+	h = {
+		:companyname => 'foo',
+		:username => @body['name'],
+		:email => 'sarasa@sarasa.com', #@body['email'],
+		:password => @body['password']
+	}
 	# guardar el ID de intento de l en una variable de sesion
-	login = BlackStack::MySaaS::Account.signup(params, true)
+	login = BlackStack::MySaaS::Account.signup(h, false)
 	@return_message['status'] = 'success'
 rescue => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message

@@ -314,7 +314,8 @@ begin
       
       @return_message[:status] = 'success'
 
-      @body = JSON.parse(request.body.read)
+      # this is already proccessed in the :api_key condition
+      #@body = JSON.parse(request.body.read)
 
       validation_api_key = @body['api_key'].to_s.to_guid.downcase
 
