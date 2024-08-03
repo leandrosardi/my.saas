@@ -134,3 +134,41 @@ end
 def logged_in?
     !session['login.id'].nil?
 end
+
+
+class String
+    # add HTML code to highlight the keyword in yellow.
+    def highlight(filter)
+      x = self
+      unless filter.to_s.empty?
+        a = x.scan(/#{Regexp.escape(filter)}/i)
+        a.each { |m|
+            x = x.gsub(m, "<span style='background-color:yellow;'>#{m}</span>")
+        }
+      end # if 
+      return x
+    end # def 
+
+    # remove empty lines and strip spaces
+    # reference: https://stackoverflow.com/questions/7339292/ruby-remove-empty-lines-from-string
+    def superstrip
+      self.gsub(/^$\n/, '').gsub(/\n/, '').gsub(/\r/, '').strip
+    end # def
+
+    # blackstack-core .url? method is not working with URLs like this:
+    # https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCog_mVAC5GD0Nmeyo9KJBo7jAY5CM9EM8VfiGKB2BMdPnZ0PT6MRl9AE-o65LJrlSOzU&usqp=CAU
+    #
+    def valid_url?
+        self =~ /^http(s)?:\/\/[a-z0-9\-\._~:\/\?#\[\]@!\$&'\(\)\*\+,;=]+$/i
+    end
+
+    # 
+    def valid_filename?
+        self =~ /^file\:\/\//
+    end
+
+    # 
+    def valid_domain?
+        self =~ /^(http(s)?\:\/\/)?([a-z0-9\-\._]+\.)+[a-z]+(\/)?$/
+    end
+end # class
