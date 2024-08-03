@@ -2,12 +2,11 @@
 # signup new account
 @return_message = {}
 begin
-binding.pry
 	h = {
-		:companyname => 'foo',
-		:username => @body['name'],
-		:email => 'sarasa@sarasa.com', #@body['email'],
-		:password => @body['password']
+		:companyname => @body['companyname'],
+		:username => @body['username'],
+		:email => @body['email'],
+		:password => guid, # sub accounts are accessed from master only, so password is not needed
 	}
 	# guardar el ID de intento de l en una variable de sesion
 	login = BlackStack::MySaaS::Account.signup(h, false)
