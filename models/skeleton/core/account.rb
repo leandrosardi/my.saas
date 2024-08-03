@@ -90,7 +90,7 @@ module BlackStack
             # crear el cliente
             a = BlackStack::MySaaS::Account.new
             a.id = guid
-            a.id_account_owner = BlackStack::MySaaS::Account.where(:api_key=>BlackStack::API::api_key).first.id # TODO: getting the right owner when we develop domain aliasing
+            a.id_account_owner = BlackStack::MySaaS::Account.where(:api_key=>MYSAAS_API_KEY).first.id # TODO: getting the right owner when we develop domain aliasing
             a.name = companyname
             a.create_time = now
             a.id_timezone = t.id
