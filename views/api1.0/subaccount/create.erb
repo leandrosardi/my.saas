@@ -6,10 +6,9 @@ begin
 		:companyname => @body['companyname'],
 		:username => @body['username'],
 		:email => @body['email'],
-		:password => guid, # sub accounts are accessed from master only, so password is not needed
+		:password => @body['password']
 	}
-	# guardar el ID de intento de l en una variable de sesion
-	login = BlackStack::MySaaS::Account.signup(h, false)
+	BlackStack::MySaaS::Account.signup(h, false) # false: don't send notificaitons
 	@return_message['status'] = 'success'
 rescue => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
