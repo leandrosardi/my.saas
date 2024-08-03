@@ -14,6 +14,7 @@ require 'my-ruby-deployer'
 require 'zyte-client'
 require 'pampa'
 require 'adspower-client'
+require 'mass-client'
 #require_relative '../pampa/lib/pampa.rb'
 
 # DEPRECATED

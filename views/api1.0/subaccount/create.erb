@@ -8,7 +8,18 @@ begin
 		:email => @body['email'],
 		:password => @body['password']
 	}
-	BlackStack::MySaaS::Account.signup(h, false) # false: don't send notificaitons
+	login = BlackStack::MySaaS::Account.signup(h, false) # false: don't send notificaitons
+
+	if login.nil?
+		raise 'Account creation failed.'
+	end
+
+	if @body['api_key']
+		acc = login.user.account
+		acc.api_key = @body['api_key']
+		acc.save
+	end
+
 	@return_message['status'] = 'success'
 rescue => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
