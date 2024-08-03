@@ -1,0 +1,12 @@
+<% 
+# signup new account
+@return_message = {}
+begin
+	# guardar el ID de intento de l en una variable de sesion
+	login = BlackStack::MySaaS::Account.signup(params, true)
+	@return_message['status'] = 'success'
+rescue => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

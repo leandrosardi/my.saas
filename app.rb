@@ -306,6 +306,29 @@ begin
     end
   end
 
+  # condition: only super-user can access this access point
+  # use this condition right after :api_key
+  set(:su) do |*roles|
+    condition do
+      @return_message = {}
+      
+      @return_message[:status] = 'success'
+
+      @body = JSON.parse(request.body.read)
+
+      validation_api_key = @body['api_key'].to_s.to_guid.downcase
+
+      if validation_api_key != MYSAAS_API_KEY.to_s.to_guid.downcase
+        # libero recursos
+        DB.disconnect 
+        GC.start
+        @return_message[:status] = "api_key of the super-user only is allowed for this access point."
+        @return_message[:value] = ""
+        halt @return_message.to_json
+      end
+    end
+  end
+
   # condition: api_key parameter is required too for the access points
   set(:api_key) do |*roles|
     condition do
@@ -583,6 +606,16 @@ begin
   end
   post '/api1.0/ping.json', :api_key => true do
     erb :'views/api1.0/ping'
+  end
+
+  # Standard MySaaS API - Managing subaccounts
+  #
+  post "/api1.0/subaccount/create.json", :api_key => true, :su => true do
+    erb :"views/api1.0/subaccount/create"
+  end
+
+  post "/api1.0/subaccount/delete.json", :api_key => true, :su => true do
+    erb :"views/api1.0/subaccount/delete"
   end
 
   # Standard MySaaS API - Getting account attribute
