@@ -105,9 +105,9 @@ end
 def params_to_session(path=nil)
     params.each do |key, value|
       if path.nil?
-        session[key.to_s] = value if key != :password && key != :new_password
+        session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.#{key.to_s}"] = value if key != :password && key != :new_password
       else
-        session[path + '.' + key] = value if key != :password && key != :new_password
+        session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.#{path}.#{key.to_s}"] = value if key != :password && key != :new_password
       end
     end
 end
@@ -117,7 +117,7 @@ end
 # Otherwise, return the logged-in [user].
 def real_user
     login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
-    uid = !session['login.id_prisma_user'].nil? ? session['login.id_prisma_user'] : login.user.id
+    uid = login.user.id
     BlackStack::MySaaS::User.where(:id=>uid).first
 end # def real_user
   
@@ -133,6 +133,10 @@ end
   
 # Helper: return true if there is a user logged into
 def logged_in?
+puts
+puts '----'
+s = "#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"
+puts "#{s} = #{session[s]}"
     !session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"].nil?
 end
 
