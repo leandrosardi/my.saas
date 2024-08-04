@@ -105,9 +105,9 @@ end
 def params_to_session(path=nil)
     params.each do |key, value|
       if path.nil?
-        session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.#{key.to_s}"] = value if key != :password && key != :new_password
+        session["#{key.to_s}"] = value if key != :password && key != :new_password
       else
-        session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.#{path}.#{key.to_s}"] = value if key != :password && key != :new_password
+        session["#{path}.#{key.to_s}"] = value if key != :password && key != :new_password
       end
     end
 end
@@ -116,7 +116,7 @@ end
 # If this account is accessded by an operator, return the [user] object of such an operator.
 # Otherwise, return the logged-in [user].
 def real_user
-    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
     uid = login.user.id
     BlackStack::MySaaS::User.where(:id=>uid).first
 end # def real_user
@@ -133,7 +133,7 @@ end
   
 # Helper: return true if there is a user logged into
 def logged_in?
-    !session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"].nil?
+    !session["login.id"].nil?
 end
 
 
