@@ -13,7 +13,6 @@ redirect_on_error = "/login" if redirect_on_error.to_s.size == 0
 begin
 	# guardar el ID de intento de l en una variable de sesion
 	@login = BlackStack::MySaaS::User.login(params)
-binding.pry
 	session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"] = @login.id
 rescue => e
 	# libero recursos
