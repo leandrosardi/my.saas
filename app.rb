@@ -53,7 +53,7 @@ begin
   end
 
   def nav1(name1, beta=false)
-    login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
 
     ret = 
@@ -68,7 +68,7 @@ begin
   end
 
   def nav2(name1, url1, name2)
-    login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
 
     "<p>" + 
@@ -81,7 +81,7 @@ begin
   end
 
   def nav3(name1, url1, name2, url2, name3)
-    login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
     "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
@@ -95,7 +95,7 @@ begin
   end
 
   def nav4(name1, url1, name2, url2, name3, url3, name4)
-    login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
     "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
@@ -111,7 +111,7 @@ begin
   end
 
   def nav5(name1, url1, name2, url2, name3, url3, name4, url4, name5)
-    login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
     "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
@@ -129,7 +129,7 @@ begin
   end
 
   def nav6(name1, url1, name2, url2, name3, url3, name4, url4, name5, url5, name6)
-    login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+    login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
     user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
     "<p>" + 
     "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
@@ -272,7 +272,7 @@ begin
       elsif unavailable?
         redirect "/unavailable"      
       else
-        @login = BlackStack::MySaaS::Login.where(:id=>session['login.id']).first
+        @login = BlackStack::MySaaS::Login.where(:id=>session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"]).first
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
       end
     end
