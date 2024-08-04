@@ -19,7 +19,7 @@ redirect_on_error = "/signup" if redirect_on_error.to_s.size == 0
 begin
 	# guardar el ID de intento de l en una variable de sesion
 	@login = BlackStack::MySaaS::Account.signup(params, true)
-	session['login.id'] = @login.id
+	session["#{CS_HOME_WEBSITE}.login.id"] = @login.id
 rescue => e
 	# libero recursos
 	DB.disconnect
