@@ -133,10 +133,6 @@ end
   
 # Helper: return true if there is a user logged into
 def logged_in?
-puts
-puts '----'
-s = "#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"
-puts "#{s} = #{session[s]}"
     !session["#{CS_HOME_PAGE_PROTOCOL}.#{CS_HOME_PAGE_DOMAIN}.#{CS_HOME_PAGE_PORT}.login.id"].nil?
 end
 
