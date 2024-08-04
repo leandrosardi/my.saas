@@ -3,7 +3,7 @@
 @return_message = {}
 begin
 	email = @body['email']
-
+	
 	u = BlackStack::MySaaS::User.where(:email => email).first
 
 	raise "User #{email} not found." if u.nil?
@@ -13,7 +13,7 @@ begin
 		'username' => u.name,
 		'email' => u.email,
 		'password' => u.password,
-		'api_key' = u.account.api_key
+		'new_api_key' => u.account.api_key
 	}
 
 	@return_message['status'] = 'success'
