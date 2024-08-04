@@ -1,0 +1,24 @@
+<% 
+# signup new account
+@return_message = {}
+begin
+	email = @body['email']
+
+	u = BlackStack::MySaaS::User.where(:email => email).first
+
+	raise "User #{email} not found." if u.nil?
+
+	@return_message = {
+		'companyname' => u.account.name,
+		'username' => u.name,
+		'email' => u.email,
+		'password' => u.password,
+		'api_key' = u.account.api_key
+	}
+
+	@return_message['status'] = 'success'
+rescue => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

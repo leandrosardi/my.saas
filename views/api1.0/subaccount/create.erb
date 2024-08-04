@@ -2,11 +2,17 @@
 # signup new account
 @return_message = {}
 begin
+	companyname = @body['companyname']
+	username = @body['username']
+	email = @body['email']
+	password = @body['password']
+	new_api_key = @body['new_api_key']
+
 	h = {
-		:companyname => @body['companyname'],
-		:username => @body['username'],
-		:email => @body['email'],
-		:password => @body['password']
+		:companyname => companyname,
+		:username => username,
+		:email => email,
+		:password => password
 	}
 	login = BlackStack::MySaaS::Account.signup(h, false) # false: don't send notificaitons
 
@@ -14,9 +20,9 @@ begin
 		raise 'Account creation failed.'
 	end
 
-	if @body['api_key']
+	if new_api_key
 		acc = login.user.account
-		acc.api_key = @body['api_key']
+		acc.api_key = new_api_key
 		acc.save
 	end
 

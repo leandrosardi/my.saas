@@ -611,6 +611,10 @@ begin
 
   # Standard MySaaS API - Managing subaccounts
   #
+  post "/api1.0/subaccount/get.json", :api_key => true, :su => true do
+    erb :"views/api1.0/subaccount/get"
+  end
+
   post "/api1.0/subaccount/create.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/create"
   end
