@@ -58,6 +58,11 @@ CODE_PATH = '$HOME/code/my.saas'
 # my.saas api-key of the su user
 # default value is '4db9d88c-dee9-4b5a-8d36-134d38e9f763'.
 # it is recommended you change it in production, with the password of the su user too.
+#VYMECO_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763'
+
+# my.saas api-key of the su user
+# default value is '4db9d88c-dee9-4b5a-8d36-134d38e9f763'.
+# it is recommended you change it in production, with the password of the su user too.
 MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
 
 # Integration: DropBox Access Token
@@ -446,7 +451,7 @@ BlackStack::Pampa.add_job({
 =begin
 # Reference: https://github.com/leandrosardi/my-dropbox-api
 BlackStack::DropBox.set({
-  :vymeco_api_key => MYSAAS_API_KEY,
+  :vymeco_api_key => VYMECO_API_KEY,
   :dropbox_refresh_token => DROPBOX_REFRESH_TOKEN,
 })
 =end
