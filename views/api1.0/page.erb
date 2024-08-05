@@ -6,7 +6,12 @@ begin
     limit = @body['limit'].to_i    
     filters = @body['filters']
     
-    ds = cls.page(@account, page: page, limit: limit, filters: filters)
+    ds = nil
+    if @account.sysowner?
+        ds = cls.page(nil, page: page, limit: limit, filters: filters)
+    else
+        ds = cls.page(@account, page: page, limit: limit, filters: filters)
+    end
     
     #n = ds.count
     arr = ds.limit(limit).offset((page-1)*limit).order(:create_time).all

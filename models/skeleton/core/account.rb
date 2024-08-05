@@ -12,7 +12,7 @@ module BlackStack
         # return true if the api_key of this account matches with the api_key in the configuration file.
         def sysowner?
           return false if self.api_key.to_s.guid? == false
-          BlackStack::API.api_key.to_s.to_guid == self.api_key.to_s.to_guid
+          MYSAAS_API_KEY.to_s.to_guid == self.api_key.to_s.to_guid
         end
 
         # validate the parameters in the signup descriptor `h``.

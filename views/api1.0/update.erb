@@ -5,7 +5,12 @@ begin
     desc = @body['desc']
     raise "desc is required" if desc.nil?
     raise "id is required" if desc['id'].nil?
-    o = cls.where(:id=>desc['id'], :id_account=>@account.id).first
+    o = nil
+    if @account.sysowner?
+        o = cls.where(:id=>desc['id']).first
+    else
+        o = cls.where(:id=>desc['id'], :id_account=>@account.id).first
+    end
     raise "id not found" if o.nil?
     @return_message['result'] = o.update(desc).to_h
 rescue Exception => e

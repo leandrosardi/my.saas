@@ -2,7 +2,12 @@
 begin
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
-    n = cls.where(:id_account => @account.id, :delete_time => nil).count
+    n = nil
+    if @account.sysowner?
+        n = cls.where(:delete_time => nil).count
+    else
+        n = cls.where(:id_account => @account.id, :delete_time => nil).count
+    end
     @return_message['result'] = n
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
