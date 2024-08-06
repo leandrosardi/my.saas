@@ -7,7 +7,7 @@ begin
     if @account.sysowner?
         raise 'If you are the sysowner, the parameter id_account is mandatory for getting an account value.' if @body['id_account'].nil?
         a = BlackStack::MySaaS::Account.where(:id=>@body['id_account']).first
-        raise "Account (#{@body['id_account'].to_s}) not found."
+        raise "Account (#{@body['id_account'].to_s}) not found." if a.nil?
     # for non sysowner it is assigned to his account
     else # !@account.sysowner?
         a = @account.id
