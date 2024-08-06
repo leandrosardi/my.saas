@@ -4,7 +4,13 @@ begin
     cls = BlackStack::API.classes[object.to_sym]
     desc = @body['desc']
     raise "desc is required" if desc.nil?
-    desc['id_account'] = @account.id 
+    # sysowner must provide the id_account for insert operations
+    if @account.sysowner?
+        raise 'If you are the sysowner, the parameter id_account is mandatory for any insert operation.' if desc['id_account'].nil?
+    # for non sysowner it is assigned to his account
+    else # !@account.sysowner?
+        desc['id_account'] = @account.id
+    end
     @return_message['result'] = cls.insert(desc).to_h
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message

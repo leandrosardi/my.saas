@@ -1,7 +1,18 @@
 <%
 begin
     field = @body['field']
-    @return_message['result'] = @account[field.to_sym]
+
+    # sysowner must provide the id_account for getting an account value
+    a = nil
+    if @account.sysowner?
+        raise 'If you are the sysowner, the parameter id_account is mandatory for getting an account value.' if desc['id_account'].nil?
+        a = BlackStack::MySaaS::Account.where(:id=>desc['id_account']).first
+        raise "Account (#{desc['id_account'].to_s}) not found."
+    # for non sysowner it is assigned to his account
+    else # !@account.sysowner?
+        a = @account.id
+    end
+    @return_message['result'] = a[field.to_sym]
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
