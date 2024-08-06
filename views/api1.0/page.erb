@@ -9,9 +9,9 @@ begin
     # sysowner must provide the id_account for getting a page of results
     a = nil
     if @account.sysowner?
-        raise 'If you are the sysowner, the parameter id_account is mandatory for getting a page of results.' if desc['id_account'].nil?
-        a = BlackStack::MySaaS::Account.where(:id=>desc['id_account']).first
-        raise "Account (#{desc['id_account'].to_s}) not found."
+        raise 'If you are the sysowner, the parameter id_account is mandatory for getting a page of results.' if @body['id_account'].nil?
+        a = BlackStack::MySaaS::Account.where(:id=>@body['id_account']).first
+        raise "Account (#{@body['id_account'].to_s}) not found."
     # for non sysowner it is assigned to his account
     else # !@account.sysowner?
         a = @account.id
