@@ -23,14 +23,19 @@ module BlackStack
     module InsertUpdate
         # return a Sequel dataset, based on some filters.
         # this method is used by the API to get the data from the database remotely
-        def base_list(account, filters: {})
-            ds = self.where(:id_account => account.id, :delete_time => nil)
+        def base_list(account=nil, filters: {})
+            ds = nil
+            if account
+                ds = self.where(:id_account => account.id, :delete_time => nil)
+            else
+                ds = self.where(:delete_time => nil)
+            end
             return ds
         end
 
         # return a Sequel dataset, based on some filters and some pagination parameters.
         # this method is used by the API to get the data from the database remotely
-        def page(account, page:, limit:, filters: {})
+        def page(account=nil, page:, limit:, filters: {})
             ds = self.list(account, filters: filters)
             ds = ds.limit(limit).offset((page-1)*limit).order(:create_time)
             return ds
