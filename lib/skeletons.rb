@@ -507,7 +507,7 @@ module BlackStack
         def domain_errors(h={}, keys:)
             ret = []
             keys.each do |k|
-                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid domain." if h[k.to_s] && !h[k.to_s].to_s.valid_domain?
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid domain." if h[k.to_s] && !h[k.to_s].to_s.strip.downcase.valid_domain?
             end
             return ret
         end # def domain_errors
