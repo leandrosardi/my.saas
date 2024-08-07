@@ -10,7 +10,7 @@ begin
     # sysowner must provide the id_account for getting a page of results
     a = nil
     if @account.sysowner?
-        raise 'If you are the sysowner, either the parameter id_account is mandatory for getting a page of results, or you have to set the promiscuous to grab records of any account.' if @body['id_account'].nil?
+        raise 'If you are the sysowner, either the parameter id_account is mandatory for getting a page of results, or you have to set the promiscuous to grab records of any account.' if @body['id_account'].nil? && !promiscuous
         if !promiscuous
             a = BlackStack::MySaaS::Account.where(:id=>@body['id_account']).first
             raise "Account (#{@body['id_account'].to_s}) not found." if a.nil?
