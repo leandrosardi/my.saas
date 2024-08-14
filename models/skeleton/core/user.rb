@@ -86,7 +86,11 @@ module BlackStack
                 end
 
                 # reference: https://github.com/bcrypt-ruby/bcrypt-ruby#how-to-use-bcrypt-ruby-in-general
-                if !u.nil? && BCrypt::Password.new(u.password) != password
+                #
+                # And yes, the user can login with its password, or the crypted password too.
+                # This is required to re-connect subaccounts, with their original passwords.
+                #
+                if !u.nil? && BCrypt::Password.new(u.password) != password && u.password != password
                     # TODO: register failed login attempt
                     # TODO: validate number of login attempts last hour
                     errors << "Wrong passsword."
