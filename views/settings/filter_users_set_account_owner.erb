@@ -1,5 +1,6 @@
 <%
 begin
+	raise "Cannot change the owner of a subaccount." if SLAVE
 	@login.user.set_account_owner(params)
 rescue => e
 	redirect "/settings/users?err="+CGI::escape(e.message)
