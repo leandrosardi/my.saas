@@ -8,11 +8,20 @@ body {
 }
 
 h1.offer {
-    font-weight: normal; font-weight: bold; text-shadow: 4px 4px 5px rgb(200,200,200); font-size: 64px; color: red; padding-bottom: 25px;
+    font-weight: normal; 
+    font-weight: bold; 
+    text-shadow: 4px 4px 5px rgb(200,200,200); 
+    font-size: 64px; 
+    color: rgb(43, 3, 3); 
+    padding-bottom: 22px;
 }
 
 h3.offer {
-    font-weight: normal; font-weight: bold; text-shadow: 4px 4px 5px rgb(200,200,200); font-size: 36px;
+    font-weight: normal; 
+    font-weight: bold; 
+    text-shadow: 4px 4px 5px rgb(200,200,200);
+    color: rgb(60, 60, 60); 
+    font-size: 32px;
 }
 
 section.container {
