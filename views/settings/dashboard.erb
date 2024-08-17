@@ -50,10 +50,16 @@ BlackStack::Extensions.extensions.each { |ext|
 			<span style='font-size:10px;color:gray;'>Add new users. Remove existing users. Assign roles.</span>
 		</div>
 
+		<%
+		if !SLAVE
+		%>
 		<div class='span3'>
 			<a href='./apikey'>API Key</a><br/>
 			<span style='font-size:10px;color:gray;'>Generate or change your API key. Get access to API documentation.</span>
 		</div>
+		<%
+		end # if !SLAVE
+		%>
 	</section>
 	<!--
 	<section class="row-fluid">

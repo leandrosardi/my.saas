@@ -1,5 +1,7 @@
 <%
-redirect "#{MASTER_URL}/login" if SLAVE
+# add users to the sub-account is possilbe, but they should be able to login, reset password, etc.....
+# e.g.: a user may want to add his client to his sub-account.
+#redirect "#{MASTER_URL}/login" if SLAVE
 
 email = session['email'].to_s
 %>
@@ -25,6 +27,9 @@ email = session['email'].to_s
 				<button type="submit" class="btn btn-primary btn-block" tabindex="3"><b>Login</b></button>
 			</fieldset>
 		</form>
+		<%
+		if !SLAVE
+		%>
 		<div>
 			<span align='right'><a href='./recover' tabindex="4">Reset your password</a></span><br/>
 			<br/>
@@ -33,6 +38,9 @@ email = session['email'].to_s
 				<a href='./signup' class='btn btn-gray btn-block' tabindex="5"><b>Create a new <%=APP_NAME%> account</b></a>
 			</center>
 		</div>
+		<%
+		end # if SLAVE
+		%>
 		</left>
 
 		<br/>

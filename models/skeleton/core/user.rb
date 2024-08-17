@@ -124,6 +124,10 @@ module BlackStack
             def change_password(current_password, new_password_1, new_password_2)
                 errors = []
 
+                if SLAVE && self.account_owner?
+                    errors << "Owner of sub-accounts cannot change their password. Change your password in the main account, and access this sub-account from there."
+                end
+
                 # validate: current_password is required
                 if current_password.to_s.size==0
                     errors << "Current password is required." 

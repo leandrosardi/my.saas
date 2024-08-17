@@ -1,4 +1,6 @@
 <%
+redirect '/settings' if SLAVE
+
 user = @login.user
 account = user.account
 %>
