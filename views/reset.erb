@@ -1,6 +1,8 @@
 <%
 nid = params[:nid]
 
+redirect "#{MASTER_URL}/reset?nid=#{nid}" if SLAVE
+
 # validar que los parametros no esten vacios
 if nid.to_s.size==0
 	redirect "/recover?err=#{CGI::escape("Notification ID is Required.")}"

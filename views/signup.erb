@@ -1,4 +1,6 @@
 <%
+redirect "#{MASTER_URL}/signup" if SLAVE
+
 redirect = params[:redirect]
 if (redirect.to_s.size > 0)
 	session['redirect_on_success'] = redirect

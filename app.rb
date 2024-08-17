@@ -406,69 +406,43 @@ begin
     erb :'views/unavailable', :layout => :'/views/layouts/public'
   end
 
-  if SLAVE
-    get '/login', :noauth => true, :agent => /(.*)/ do
-      redirect "#{MASTER_URL}/login"
-    end
+  get '/login', :noauth => true, :agent => /(.*)/ do
+    erb :'views/login', :layout => :'/views/layouts/public'
+  end
+  post '/login' do
+    erb :'views/filter_login'
+  end
+  get '/filter_login' do
+    erb :'views/filter_login'
+  end
 
-    get '/signup', :noauth => true, :agent => /(.*)/ do
-      redirect "#{MASTER_URL}/signup"
-    end
+  get '/signup', :noauth => true, :agent => /(.*)/ do
+    erb :'views/signup', :layout => :'/views/layouts/public'
+  end
+  post '/signup' do
+    erb :'views/filter_signup'
+  end
 
-    get '/confirm/:nid' do
-      redirect "#{MASTER_URL}/confim/#{params[:nid]}"
-    end
+  get '/confirm/:nid' do
+    erb :'views/filter_confirm'
+  end
 
-    get '/logout' do
-      redirect "#{MASTER_URL}/logout"
-    end
+  get '/logout' do
+    erb :'views/filter_logout'
+  end
 
-    get '/recover', :noauth => true, :agent => /(.*)/ do
-      redirect "#{MASTER_URL}/recover"
-    end
+  get '/recover', :noauth => true, :agent => /(.*)/ do
+    erb :'views/recover', :layout => :'/views/layouts/public'
+  end
+  post '/recover' do
+    erb :'views/filter_recover'
+  end
 
-    get '/reset/:nid', :agent => /(.*)/ do
-      redirect "#{MASTER_URL}/reset/#{params[:nid]}"
-    end
-  else # !SLAVE
-    get '/login', :noauth => true, :agent => /(.*)/ do
-      erb :'views/login', :layout => :'/views/layouts/public'
-    end
-    post '/login' do
-      erb :'views/filter_login'
-    end
-    get '/filter_login' do
-      erb :'views/filter_login'
-    end
-
-    get '/signup', :noauth => true, :agent => /(.*)/ do
-      erb :'views/signup', :layout => :'/views/layouts/public'
-    end
-    post '/signup' do
-      erb :'views/filter_signup'
-    end
-
-    get '/confirm/:nid' do
-      erb :'views/filter_confirm'
-    end
-
-    get '/logout' do
-      erb :'views/filter_logout'
-    end
-
-    get '/recover', :noauth => true, :agent => /(.*)/ do
-      erb :'views/recover', :layout => :'/views/layouts/public'
-    end
-    post '/recover' do
-      erb :'views/filter_recover'
-    end
-
-    get '/reset/:nid', :agent => /(.*)/ do
-      erb :'views/reset', :layout => :'/views/layouts/public'
-    end
-    post '/reset' do
-      erb :'views/filter_reset'
-    end
+  get '/reset/:nid', :agent => /(.*)/ do
+    erb :'views/reset', :layout => :'/views/layouts/public'
+  end
+  post '/reset' do
+    erb :'views/filter_reset'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------

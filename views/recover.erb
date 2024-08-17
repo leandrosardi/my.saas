@@ -1,4 +1,6 @@
 <%
+redirect "#{MASTER_URL}/recover" if SLAVE
+
 if BlackStack::Funnel.recaptcha2_site_key
 %>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>

@@ -1,4 +1,5 @@
 <% 
 session["login.id"] = nil 
+redirect "#{MASTER_URL}/logout" if SLAVE
 redirect '/' # luego de desloguearme en la division, debo desloguearme en la central	
 %>
