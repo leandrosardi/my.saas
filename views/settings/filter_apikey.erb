@@ -1,9 +1,15 @@
 <%
-account = @login.user.account
+begin
+    raise "Changing the api-key of a subaccount is not allowed." if SLAVE
 
-# save
-account.api_key = guid.to_guid
-account.save
+    account = @login.user.account
 
-redirect "/settings/apikey?msg=#{CGI::escape("New API Key Created.")}"
+    # save
+    account.api_key = guid.to_guid
+    account.save
+
+    redirect "/settings/apikey?msg=#{CGI::escape("New API Key Created.")}"
+rescue => e
+    redirect "/settings?err=#{CGI::escape(e.message)}"
+end
 %>

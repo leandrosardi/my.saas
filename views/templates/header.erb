@@ -174,7 +174,17 @@ end
 										<a href="/settings/dashboard"><i class='icon-cog'></i> Settings</a>
 									</li>
 									<li>
-										<a href="/logout"><i class='icon-signout'></i>Sign Out</a>
+										<%
+										if SLAVE
+										%>
+											<a href="/logout"><i class='icon-signout'></i>Close</a>
+										<%
+										else
+										%>
+											<a href="/logout"><i class='icon-signout'></i>Sign Out</a>
+										<%
+										end
+										%>
 									</li>
 								</ul>
 							</li>
