@@ -45,7 +45,7 @@ CODE_PATH = '$HOME/code/my.saas'
 # Integration with OpenAI
 # - Reference: https://platform.openai.com/docs/quickstart
 #OPENAI_API_KEY = '<place your OpenAI api key here>'
-#OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
+OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
 
 # Integration with AdsPower
 # - Reference: https://help.adspower.com/docs/api
