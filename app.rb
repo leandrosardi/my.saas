@@ -610,6 +610,12 @@ begin
     erb :'views/api1.0/ping'
   end
 
+  # Standard MySaaS API - URL resolution for subaccounts
+  #
+  post "/api1.0/resolve/get.json", :api_key => true, :su => true do
+    erb :"views/api1.0/resolve/get"
+  end
+
   # Standard MySaaS API - Managing subaccounts
   #
   post "/api1.0/subaccount/get.json", :api_key => true, :su => true do

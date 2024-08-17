@@ -1,0 +1,20 @@
+<% 
+# get the node URL of a subaccount from its api_key
+@return_message = {}
+begin
+	api_key = @body['api_key']
+	
+	o = BlackStack::MySaaS::SubAccount.where(:api_key => api_key).first
+
+	raise "Sub-Account with API key #{api_key} not found." if o.nil?
+
+	@return_message = {
+		'url' => s.get_url,
+	}
+
+	@return_message['status'] = 'success'
+rescue => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>
