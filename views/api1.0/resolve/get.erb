@@ -3,13 +3,21 @@
 @return_message = {}
 begin
 	api_key = @body['api_key']
-	
-	o = BlackStack::MySaaS::SubAccount.where(:api_key => api_key).first
+	name = @body['name']
 
-	raise "Sub-Account with API key #{api_key} not found." if o.nil?
+	o = BlackStack::MySaaS::SubAccount.where(:id_account => @account.id, :name => name).first
+
+	raise "Sub-Account '#{name}' not found." if o.nil?
+
+	full_url = o.get_url
+	uri = URI.parse(full_url)
+	url = "#{uri.scheme}://#{uri.host}"
+	port = uri.port
 
 	@return_message = {
-		'url' => s.get_url,
+		'api_key' => o.api_key,
+		'url' => url,
+		'port' => port
 	}
 
 	@return_message['status'] = 'success'

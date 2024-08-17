@@ -612,7 +612,7 @@ begin
 
   # Standard MySaaS API - URL resolution for subaccounts
   #
-  post "/api1.0/resolve/get.json", :api_key => true, :su => true do
+  post "/api1.0/resolve/get.json", :api_key => true do
     erb :"views/api1.0/resolve/get"
   end
 
