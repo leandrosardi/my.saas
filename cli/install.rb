@@ -6,9 +6,8 @@
 # The computer where you run this script should be a fresh Ubuntu 20.04 with our [standard environment](https://github.com/leandrosardi/environment) installed.
 # 
 
-require 'simple_cloud_logging'
-require 'simple_command_line_parser'
-require 'highline'
+require 'mysaas'
+require 'lib/stubs'
 require 'config'
 
 parser = BlackStack::SimpleCommandLineParser.new(

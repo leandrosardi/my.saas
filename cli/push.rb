@@ -1,6 +1,5 @@
-require 'simple_cloud_logging'
-require 'simple_command_line_parser'
-require 'highline'
+require 'mysaas'
+require 'lib/stubs'
 require 'config'
 
 parser = BlackStack::SimpleCommandLineParser.new(

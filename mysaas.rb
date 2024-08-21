@@ -44,6 +44,7 @@ require 'csv'
 require 'sisimai'
 require 'down'
 require 'securerandom'
+require 'highline'
 
 require 'lib/controllers'
 require 'lib/emails'
