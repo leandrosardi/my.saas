@@ -32,6 +32,9 @@ hostname = IO.popen(['hostname']).read.strip
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 
+# max size allowed to upload from a form.
+MAX_FILE_SIZE = 10 # GBs
+
 =begin
 # components to deploy
 SLAVE = false
