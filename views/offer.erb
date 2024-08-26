@@ -1,99 +1,175 @@
 
 <%
+msg = params[:msg]
 free_url = BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')
-trial = !@login.user.account.disabled_trial
-trial_url_1 = '/settings/filter_create_invoice?item_number=leads.offer.1&n=1'
+plan_url_1 = '/settings/filter_create_invoice?item_number=growth-37-off&n=1'
+plan_url_2 = '/settings/filter_create_invoice?item_number=hypergrowth-51-off&n=1'
+plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed-33-off&n=1'
 %>
 
-<div class='titles'>
-	<center>
-		<h1 class='offer'>One Time Offer</h1>
-		<h3 class='offer'>Cold Emails Masterclass + 318 Verified Emails.</h3>
-	</center>
-</div>
+<style>
+	p.plan-offer {
+		vertical-align:middle;
+	}
 
-<br/>
+	p.plan-offer strike {
+		color:gray;
+		font-size:22px;
+	}
 
-<section class="row-fluid">
-	<div class='span2 plans'></div>
-	<div class='span4 plans'>
-		<div class="plan">
-			<h2 class="plan-title">
-			Free
-			</h2>
-			<p class="plan-price">
-				$0
-				<span class="plan-unit"></span>
-			</p>
-			<ul class="plan-features">
-				<li class="plan-feature" style='text-align:left;'>
-					<i class='icon-ok' style='color:green;text-align:center;'></i> 75 <span class="plan-feature-unit">lookups</span><br/>
-					<span class="plan-feature-name">One-Time.</span><br/>
-					<br/>
-					<i class='icon-remove' style='color:red;'></i><span class="plan-feature-unit"> Cold Emails</span> Masterclass<br/>
-					<span class="plan-feature-name">Low-Priority support.</span><br/>
-					<br/>
-					<i class='icon-remove' style='color:red;'></i> Dedicated<span class="plan-feature-unit"> Support</span><br/>
-					<span class="plan-feature-name">Low-Priority support.</span><br/>
-					<br/>
-					<i class='icon-remove' style='color:red;text-align:center;'></i> <span class="plan-feature-unit">Built-In</span> Email Verification<br/>
-					<span class="plan-feature-name">Built-In Email Verification. </span><br/>
-					<br/>
-					<i class='icon-remove' style='color:red;text-align:center;'></i> Direct Phone #s <br/>
-					<span class="plan-feature-name">Direct Phone Numbers Scraping.</span><br/>
-					<br/>
-					<i class='icon-remove' style='color:red;text-align:center;'></i> AI Scraping <br/>
-					<span class="plan-feature-name">AI Website Scraping.</span><br/>
-					<br/>
-					<i class='icon-remove' style='color:red;text-align:center;'></i> Credits <span class="plan-feature-unit">Roll Over</span><br/>
-					<span class="plan-feature-name">So long as you remain an active subscription.</span><br/>
-					<br/>
-				</li>
-			</ul>
-			<a href="<%=free_url%>" class="plan-button">Go Free</a>
+	p.plan-offer span.discount-rate {
+		padding:5px; 
+		font-size: 11px; 
+		line-height: 15px;
+	}
+
+	p.plan-offer span.discount-rate span {
+		font-size: 14px;
+	}
+
+</style>
+
+<section class="container">
+	<section class="row-fluid">
+		<div class='span12'>
+			<center>
+				<%
+				if msg
+				%>
+				<p style='font-size:22px;'><%=msg%></p>
+				<br/>
+				<%
+				end # if msg
+				%>
+
+				<h1 class='offer'>Simple pricing for everyone</h1>
+				<h3 class='offer'>Pricing built for businesses of all sizes. Always know what you’ll pay.</h3>
+			</center>
+		</div>
+	</section>
+
+	<section class="row-fluid">
+		<div class='span4 plans'>
+			<div class="plan">
+				<h2 class="plan-title">
+					<img src='/mass.account/images/growth.svg' width='46px' /> Growth
+				</h2>
+				<p class="plan-price plan-offer">
+					<strike>$27</strike> <span>$17</span> <span class='badge badge-blue discount-rate'>Life-Time<br/> <span>37% OFF</span></span>
+					<span class="plan-unit">per month</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:left;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 1 <span class="plan-feature-unit">slots for <b>RPA</b> profiles.</span><br/>
+						<span class="plan-feature-name">LinkedIn, Facebook, or Apollo.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10 <span class="plan-feature-unit">slots for <b>API</b> or <b>MTA</b> profiles.</span><br/>
+						<span class="plan-feature-name">GMail, Postmark, Reoon, or ZeroBounce.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Marketplace.<br/>
+						<span class="plan-feature-name"><b>Rent other people</b> profiles, email accounts and LTD services for a monthly fee in <b>our marketplace</b>.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Automation.<br/>
+						<span class="plan-feature-name"><b>Custom rules</b> for scraping, enriching and contacting leads. </span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10+ Integrations.<br/>
+						<br/>
+						<span class="plan-feature-name"><b>Scraping: </b> LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Enrichment: </b> Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Outreach: </b> LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<a href="<%=plan_url_1%>" class="plan-button">Start Growth</a>
 			</div>
 		</div>
 		<div class='span4 plans'>
 			<div class="plan plan-highlight">
-			<!--
-			<p class="plan-recommended">93% OFF</p>
-			-->
-			<h2 class="plan-title">
-				Premium
-			</h2>
-			<p class="plan-price">
-				$7 <span style='font-size:18px;color:gray;font-weight:normal;'><strike>$75</strike></span>
-				<span class="plan-unit">per month</span>
-			</p>
-			<ul class="plan-features">
-				<li class="plan-feature" style='text-align:left;'>
-					<i class='icon-ok' style='color:green;text-align:center;'></i> 318 <span class="plan-feature-unit">lookups / mo.</span><br/>
-					<span class="plan-feature-name"><b>0.022&#162;</b> per lookup.</span><br/>
-					<br/>
-					<i class='icon-ok' style='color:green;'></i><span class="plan-feature-unit"> Cold Emails</span> Masterclass<br/>
-					<span class="plan-feature-name">Low-Priority support.</span><br/>
-					<br/>
-					<i class='icon-ok' style='color:green;'></i> Dedicated<span class="plan-feature-unit"> Support</span><br/>
-					<span class="plan-feature-name">Low-Priority support.</span><br/>
-					<br/>
-					<i class='icon-ok' style='color:green;text-align:center;'></i> <span class="plan-feature-unit">Built-In</span> Email Verification<br/>
-					<span class="plan-feature-name">Built-In Email Verification.</span><br/>
-					<br/>
-					<i class='icon-ok' style='color:green;text-align:center;'></i> Direct Phone #s <span class='badge badge-blue'>+1&cent;</span> <br/>
-					<span class="plan-feature-name">Direct Phone Numbers Scraping.</span><br/>
-					<br/>
-					<i class='icon-ok' style='color:green;text-align:center;'></i> AI Scraping <span class='badge badge-blue'>+1&cent;</span> <br/>
-					<span class="plan-feature-name">AI Website Scraping.</span><br/>
-					<br/>
-					<i class='icon-ok' style='color:green;text-align:center;'></i> Credits <span class="plan-feature-unit">Roll Over</span><br/>
-					<span class="plan-feature-name">So long as you remain an active subscription.</span><br/>
-					<br/>
-				</li>
-			</ul>
-			<a href="<%=trial_url_1%>" class="plan-button">Go Premium</a>
+				<p class="plan-recommended">Most Popular</p>
+				<h2 class="plan-title">
+				<img src='/mass.account/images/hypergrowth.svg' width='46px' /> Hypergrowth
+				</h2>
+				<p class="plan-price plan-offer">
+					<strike>$97</strike> <span>$47</span> <span class='badge badge-blue discount-rate'>Life-Time<br/> <span>51% OFF</span></span>
+					<span class="plan-unit">per month</span>
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:left;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 5 <span class="plan-feature-unit">slots for <b>RPA</b> profiles.</span><br/>
+						<span class="plan-feature-name">LinkedIn, Facebook, Apollo.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 30 <span class="plan-feature-unit">slots for <b>API</b> or <b>MTA</b> profiles.</span><br/>
+						<span class="plan-feature-name">GMail, Postmark, Reoon, ZeroBounce.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Marketplace.<br/>
+						<span class="plan-feature-name"><b>Rent other people</b> profiles, email accounts and LTD services for a monthly fee in <b>our marketplace</b>.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Automation.<br/>
+						<span class="plan-feature-name"><b>Custom rules</b> for scraping, enriching and contacting leads. </span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10+ Integrations.<br/>
+						<br/>
+						<span class="plan-feature-name"><b>Scraping: </b> LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Enrichment: </b> Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Outreach: </b> LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<a href="<%=plan_url_2%>" class="plan-button">Start Hypergrowth</a>
 			</div>
 		</div>
-		<div class='span2 plans'></div>
+		<div class='span4 plans'>
+			<div class="plan">
+				<h2 class="plan-title">
+					<img src='/mass.account/images/light-speed.svg' width='46px' /> Light Speed
+				</h2>
+				<p class="plan-price plan-offer">
+					<strike>$297</strike> <span>$197</span> <span class='badge badge-blue discount-rate'>Life-Time<br/> <span>33% OFF</span></span>
+					<span class="plan-unit">per month</span>				
+				</p>
+				<ul class="plan-features">
+					<li class="plan-feature" style='text-align:left;'>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 20 <span class="plan-feature-unit">slots for <b>RPA</b> profiles.</span><br/>
+						<span class="plan-feature-name">LinkedIn, Facebook, Apollo.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 90 <span class="plan-feature-unit">slots for <b>API</b> or <b>MTA</b> profiles.</span><br/>
+						<span class="plan-feature-name">GMail, Postmark, Reoon, ZeroBounce.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Marketplace.<br/>
+						<span class="plan-feature-name"><b>Rent other people</b> profiles, email accounts and LTD services for a monthly fee in <b>our marketplace</b>.</span><br/>
+						<br/>
+
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Automation.<br/>
+						<span class="plan-feature-name"><b>Custom rules</b> for scraping, enriching and contacting leads. </span><br/>
+						<br/>
+						
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10+ Integrations.<br/>
+						<br/>
+						<span class="plan-feature-name"><b>Scraping: </b> LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Enrichment: </b> Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Outreach: </b> LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
+						<br/>
+					</li>
+				</ul>
+				<a href="<%=plan_url_3%>" class="plan-button">Start Light Speed</a>
+			</div>
+		</div>
 	</section>
 
 	<br/>
@@ -101,12 +177,11 @@ trial_url_1 = '/settings/filter_create_invoice?item_number=leads.offer.1&n=1'
 	<section class="row-fluid">
 		<div class='span2'></div>
 		<div class='span6' style='text-align:left;font-size:18px;line-height:25px;vertical-align:top;'>
-			<span>The <b>free plan</b> includes all the benefits of <b>FreeLeadsData</b>, except for <b>Email Verification</b> and <b>AI Scraping</b>.</span>
+			<span>A free plan is also available for you, including <b>3 API or MTA profiles</b> and <b>100 contacts</b>, <b>automation rules</b>, and access to the <b>marketplace</b>.</span>
 		</div>
-		<div class='span2' style='text-align:center;'>
+		<div class='span4' style='text-align:center;'>
 			<a class='btn btn-large btn-black' href='<%=free_url%>'>Choose Free Plan.</a>
 		</div>
-		<div class='span2'></div>
 	</section>
 
 </section>

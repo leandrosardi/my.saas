@@ -1,5 +1,6 @@
 
 <%
+msg = params[:msg]
 free_url = BlackStack::Funnel.url_to_go_free(@login, 'funnels.main')
 plan_url_1 = '/settings/filter_create_invoice?item_number=growth&n=1'
 plan_url_2 = '/settings/filter_create_invoice?item_number=hypergrowth&n=1'
@@ -10,6 +11,15 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 	<section class="row-fluid">
 		<div class='span12'>
 			<center>
+				<%
+				if msg
+				%>
+				<p style='font-size:22px;'><%=msg%></p>
+				<br/>
+				<%
+				end # if msg
+				%>
+
 				<h1 class='offer'>Simple pricing for everyone</h1>
 				<h3 class='offer'>Pricing built for businesses of all sizes. Always know what you’ll pay.</h3>
 			</center>
@@ -28,15 +38,15 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 				</p>
 				<ul class="plan-features">
 					<li class="plan-feature" style='text-align:left;'>
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 1 <span class="plan-feature-unit">RPA profile.</span><br/>
-						<span class="plan-feature-name">LinkedIn, Facebook, Apollo.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 1 <span class="plan-feature-unit">slots for <b>RPA</b> profiles.</span><br/>
+						<span class="plan-feature-name">LinkedIn, Facebook, or Apollo.</span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 10 <span class="plan-feature-unit">API or MTA profiles.</span><br/>
-						<span class="plan-feature-name">GMail, Postmark, Reoon, ZeroBounce.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10 <span class="plan-feature-unit">slots for <b>API</b> or <b>MTA</b> profiles.</span><br/>
+						<span class="plan-feature-name">GMail, Postmark, Reoon, or ZeroBounce.</span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> Done-For-You Outreach.<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Marketplace.<br/>
 						<span class="plan-feature-name"><b>Rent other people</b> profiles, email accounts and LTD services for a monthly fee in <b>our marketplace</b>.</span><br/>
 						<br/>
 
@@ -44,16 +54,13 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 						<span class="plan-feature-name"><b>Custom rules</b> for scraping, enriching and contacting leads. </span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 6 <span class="plan-feature-unit">Lead Sources.</span><br/>
-						<span class="plan-feature-name">LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10+ Integrations.<br/>
 						<br/>
-
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 2 <span class="plan-feature-unit">Leads Enrichments.</span><br/>
-						<span class="plan-feature-name">Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<span class="plan-feature-name"><b>Scraping: </b> LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
 						<br/>
-
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 4 <span class="plan-feature-unit">Outreach Channels.</span><br/>
-						<span class="plan-feature-name">LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
+						<span class="plan-feature-name"><b>Enrichment: </b> Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Outreach: </b> LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
 						<br/>
 					</li>
 				</ul>
@@ -72,15 +79,15 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 				</p>
 				<ul class="plan-features">
 					<li class="plan-feature" style='text-align:left;'>
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 5 <span class="plan-feature-unit">RPA profiles.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 5 <span class="plan-feature-unit">slots for <b>RPA</b> profiles.</span><br/>
 						<span class="plan-feature-name">LinkedIn, Facebook, Apollo.</span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 30 <span class="plan-feature-unit">API or MTA profiles.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 30 <span class="plan-feature-unit">slots for <b>API</b> or <b>MTA</b> profiles.</span><br/>
 						<span class="plan-feature-name">GMail, Postmark, Reoon, ZeroBounce.</span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> Done-For-You Outreach.<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Marketplace.<br/>
 						<span class="plan-feature-name"><b>Rent other people</b> profiles, email accounts and LTD services for a monthly fee in <b>our marketplace</b>.</span><br/>
 						<br/>
 
@@ -88,16 +95,13 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 						<span class="plan-feature-name"><b>Custom rules</b> for scraping, enriching and contacting leads. </span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 6 <span class="plan-feature-unit">Lead Sources.</span><br/>
-						<span class="plan-feature-name">LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10+ Integrations.<br/>
 						<br/>
-
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 2 <span class="plan-feature-unit">Leads Enrichments.</span><br/>
-						<span class="plan-feature-name">Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<span class="plan-feature-name"><b>Scraping: </b> LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
 						<br/>
-
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 4 <span class="plan-feature-unit">Outreach Channels.</span><br/>
-						<span class="plan-feature-name">LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
+						<span class="plan-feature-name"><b>Enrichment: </b> Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Outreach: </b> LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
 						<br/>
 					</li>
 				</ul>
@@ -115,15 +119,15 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 				</p>
 				<ul class="plan-features">
 					<li class="plan-feature" style='text-align:left;'>
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 20 <span class="plan-feature-unit">RPA profiles.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 20 <span class="plan-feature-unit">slots for <b>RPA</b> profiles.</span><br/>
 						<span class="plan-feature-name">LinkedIn, Facebook, Apollo.</span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 90 <span class="plan-feature-unit">API or MTA profiles.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 90 <span class="plan-feature-unit">slots for <b>API</b> or <b>MTA</b> profiles.</span><br/>
 						<span class="plan-feature-name">GMail, Postmark, Reoon, ZeroBounce.</span><br/>
 						<br/>
 
-						<i class='icon-ok' style='color:green;text-align:center;'></i> Done-For-You Outreach.<br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> Marketplace.<br/>
 						<span class="plan-feature-name"><b>Rent other people</b> profiles, email accounts and LTD services for a monthly fee in <b>our marketplace</b>.</span><br/>
 						<br/>
 
@@ -131,16 +135,13 @@ plan_url_3 = '/settings/filter_create_invoice?item_number=lightspeed&n=1'
 						<span class="plan-feature-name"><b>Custom rules</b> for scraping, enriching and contacting leads. </span><br/>
 						<br/>
 						
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 6 <span class="plan-feature-unit">Lead Sources.</span><br/>
-						<span class="plan-feature-name">LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
+						<i class='icon-ok' style='color:green;text-align:center;'></i> 10+ Integrations.<br/>
 						<br/>
-
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 2 <span class="plan-feature-unit">Leads Enrichments.</span><br/>
-						<span class="plan-feature-name">Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<span class="plan-feature-name"><b>Scraping: </b> LinkedIn Public Feed. Facebook Public Feed. Facebook Group Posts. Apollo. Indeed. Own Data Import.</span><br/>
 						<br/>
-
-						<i class='icon-ok' style='color:green;text-align:center;'></i> 4 <span class="plan-feature-unit">Outreach Channels.</span><br/>
-						<span class="plan-feature-name">LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
+						<span class="plan-feature-name"><b>Enrichment: </b> Find Emails from Name and Domain. Find Emails from Domain and Job Position.</span><br/>
+						<br/>
+						<span class="plan-feature-name"><b>Outreach: </b> LinkedIn. Facebook. Gmail / GSuite. PostMark.</span><br/>
 						<br/>
 					</li>
 				</ul>

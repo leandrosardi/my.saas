@@ -8,6 +8,52 @@
 
 ![Example of What Can You Create with My.SaaS](./docu/thumbnails/dashboard.png)
 
+## Getting Started
+
+On Ubuntu 20.04:
+
+1. Download **my.saas** installer:
+
+```
+wget https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh
+```
+
+2. Install **my.saas**:
+
+Switch to `root` and run this command:
+
+```
+bash install.ubuntu.20_04.sh <hostname> <password>
+```
+
+- A new user `blackstack` will be added to your operative system, with the password provided in the command line.
+
+- The `hostname` of your computer will be changed too.
+
+3. Install and run your first SaaS:
+
+```
+saas deploy ssh=blackstack@<password>@localhost:22
+```
+
+The following (and very simple architecture) has been installed in your computer:
+
+_(image)_
+
+4. Visit your SaaS at [http://127.0.0.1:3000](http://127.0.0.1:3000).
+
+_(image)_
+
+
+1. Deploy on Remote Nodes
+
+1. Define Infrastructure
+2. Define Architecture
+3. Define Offline Processes
+4. 
+
+------------------------------------------------------------------------
+
 **Outline:**
 
 Getting Started
