@@ -1,3 +1,10 @@
+
+## IMPORTANT: THIS FRAMEWORK IS STILL UNDER DEVELOPMENT
+
+
+---
+
+
 ![GitHub issues](https://img.shields.io/github/issues/leandrosardi/my.saas) ![GitHub](https://img.shields.io/github/license/leandrosardi/my.saas) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/leandrosardi/my.saas) ![GitHub last commit](https://img.shields.io/github/last-commit/leandrosardi/my.saas)
 
 ![logo](./public/core/images/logo.png)
@@ -10,9 +17,7 @@
 
 ## Getting Started
 
-On Ubuntu 20.04:
-
-1. Download **my.saas** installer:
+1. On Ubuntu 20.04, download the script for installing our **standard environment**:
 
 ```
 wget https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh
@@ -30,7 +35,9 @@ bash install.ubuntu.20_04.sh <hostname> <password>
 
 - The `hostname` of your computer will be changed too.
 
-3. Install and run your first SaaS:
+3. Switch user to `blackstack`.
+
+4. Install and run your first SaaS:
 
 ```
 saas deploy ssh=blackstack@<password>@localhost:22
@@ -40,17 +47,14 @@ The following (and very simple architecture) has been installed in your computer
 
 _(image)_
 
-4. Visit your SaaS at [http://127.0.0.1:3000](http://127.0.0.1:3000).
-
-_(image)_
+5. Visit your SaaS at [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
 
-1. Deploy on Remote Nodes
 
-1. Define Infrastructure
-2. Define Architecture
-3. Define Offline Processes
-4. 
+
+
+
+
 
 ------------------------------------------------------------------------
 
