@@ -50,8 +50,11 @@ _(image)_
 5. Visit your SaaS at [http://127.0.0.1:3000](http://127.0.0.1:3000).
 
 
+Recommended readings:
 
+- [References Architectures](/docu/00.reference-architectures.md).
 
+- [Command Line Interface](/docu/00.command-line-interface.md).
 
 
 
