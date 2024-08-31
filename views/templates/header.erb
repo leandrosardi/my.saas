@@ -83,7 +83,7 @@ end
 
 					<%
 					if BlackStack::Extensions.exists?('i2p')
-						BlackStack::I2P::services_descriptor.select { |h| h[:public] }.each { |h|
+						BlackStack::I2P::services_descriptor.select { |h| h[:show_in_top_bar] }.each { |h|
 						%>
 						<td align='left' style='text-align: left:' width='250px'>
 							<a href="/plans"> 
