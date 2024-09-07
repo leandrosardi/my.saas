@@ -130,7 +130,7 @@ module BlackStack
     def self.install(
       node_name,
       logger: nil,
-      bash_script_url: 'https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.sh'
+      bash_script_url: 'https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.simplified.sh'
     )
       l = logger || BlackStack::DummyLogger.new(nil)
 
@@ -161,10 +161,13 @@ module BlackStack
 
       # execute the script line by line
       bash_script.each_line { |line|
-        l.logs "#{line.blue}... "
+        line.strip!
+        next if line.empty?
+        next if line.start_with?('#')          
+        l.logs "#{line.blue}... "        
         line.gsub!('$1', new_hostname)
         line.gsub!('$2', new_ssh_username)
-        l.logf node.exec(line)
+        l.done(details: node.exec(line))
       }
 
       l.logs 'Disconnect from node demo-node... '

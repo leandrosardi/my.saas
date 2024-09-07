@@ -55,17 +55,26 @@ begin
     n = BlackStack::Deployment.get_node('demo-node')
     l.done
 
+      # switch user to root and create the node object
+    l.logs "Creating node object... "
+    new_ssh_username = n[:ssh_username]
+    new_hostname = n[:name]
+    n[:ssh_username] = 'root'
+    n[:ssh_password] = n[:ssh_root_password]
+    node = BlackStack::Infrastructure::Node.new(n)
+    l.done
+
     l.logs('Connect to node demo-node... ')
-    n.connect
+    node.connect
     l.done
     # => n.ssh
     
     l.logs 'Valid command: `hostname`... ' 
-    l.logf n.exec('hostname').blue
+    l.logf node.exec('hostname').blue
     # => 'dev1'
 
     l.logs 'Invalid command: `rm`... ' 
-    l.logf n.exec('rm').blue
+    l.logf node.exec('rm').blue
     # => 'dev1'
 
     l.logs 'Disconnect from node demo-node... '

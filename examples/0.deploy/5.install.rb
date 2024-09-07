@@ -12,12 +12,10 @@ require 'config'
 l = BlackStack::LocalLogger.new('deploy-examples.log')
 
 begin
-
     BlackStack::Deployment.install(
         'demo-node',
         logger: l
     )
-
 rescue => e
     l.error(e)
 end
