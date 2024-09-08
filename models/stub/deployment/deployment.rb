@@ -130,6 +130,7 @@ module BlackStack
     def self.install(
       node_name,
       logger: nil,
+      bash_script_filename: './install.ubuntu.20_04.simplified.sh',
       bash_script_url: 'https://raw.githubusercontent.com/leandrosardi/environment/main/sh/install.ubuntu.20_04.simplified.sh'
     )
       l = logger || BlackStack::DummyLogger.new(nil)
@@ -142,7 +143,8 @@ module BlackStack
 
       # download the file from the URL
       l.logs "Downloading bash script from #{bash_script_url.blue}... "
-      bash_script = Net::HTTP.get(URI(bash_script_url))
+      #bash_script = Net::HTTP.get(URI(bash_script_url))
+      bash_script = File.read(bash_script_filename)
       l.done(details: "#{bash_script.length} bytes downloaded")
 
       # switch user to root and create the node object
@@ -165,9 +167,13 @@ module BlackStack
         next if line.empty?
         next if line.start_with?('#')          
         l.logs "#{line.blue}... "        
-        line.gsub!('$1', new_hostname)
-        line.gsub!('$2', new_ssh_username)
-        l.done(details: node.exec(line))
+        begin
+          line.gsub!('$1', new_hostname)
+          line.gsub!('$2', new_ssh_username)
+          l.done(details: node.exec(line))
+        rescue => e
+          l.error(e)
+        end
       }
 
       l.logs 'Disconnect from node demo-node... '
