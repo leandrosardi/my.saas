@@ -5,7 +5,12 @@ begin
 	api_key = @body['api_key']
 	name = @body['name']
 
+	su = BlackStack::MySaaS::Account.where(:api_key => MYSAAS_API_KEY).first
+
 	o = BlackStack::MySaaS::SubAccount.where(:id_account => @account.id, :name => name).first
+
+	# if I am being called by the su, I can get any subaccount by its id
+	o = BlackStack::MySaaS::SubAccount.where(:id => name).first if o.nil? && su.id==@account.id
 
 	raise "Sub-Account '#{name}' not found." if o.nil?
 
