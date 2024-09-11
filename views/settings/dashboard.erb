@@ -28,6 +28,24 @@ BlackStack::Extensions.extensions.each { |ext|
 
 <br/>
 
+<style>
+div.settings-panel {
+	height: 200px;
+	position: relative;
+}
+
+div.settings-panel span {
+	font-size:10px;
+	color:gray;
+}
+
+div.settings-panel div {
+	position:absolute;
+	right:10px;
+	bottom:10px;
+}
+</style>
+
 <section class="container">
 	<section class="row-fluid">
 		<h4><i class='icon-cogs'></i> Account Settings</h4>
@@ -35,27 +53,31 @@ BlackStack::Extensions.extensions.each { |ext|
 	</section>
 
 	<section class="row-fluid">
-		<div class='span3'>
+		<div class='span3 box settings-panel'>
 			<a href='./account'>Account Information</a><br/>
 			<span style='font-size:10px;color:gray;'>Company name. Company time zone.</span>
+			<div><a class='btn btn-blue' href='./account'>Go <i class='icon-arrow-right'></i></a></div>
 		</div>
 
-		<div class='span3'>
+		<div class='span3 box settings-panel'>
 			<a href='./password'>Change Password</a><br/>
 			<span style='font-size:10px;color:gray;'>Update your password.</span>
+			<div><a class='btn btn-blue' href='./password'>Go <i class='icon-arrow-right'></i></a></div>
 		</div>
 
-		<div class='span3'>
+		<div class='span3 box settings-panel'>
 			<a href='./users'>Users</a><br/>
 			<span style='font-size:10px;color:gray;'>Add new users. Remove existing users. Assign roles.</span>
+			<div><a class='btn btn-blue' href='./users'>Go <i class='icon-arrow-right'></i></a></div>
 		</div>
 
 		<%
 		if !SLAVE
 		%>
-		<div class='span3'>
+		<div class='span3 box settings-panel'>
 			<a href='./apikey'>API Key</a><br/>
 			<span style='font-size:10px;color:gray;'>Generate or change your API key. Get access to API documentation.</span>
+			<div><a class='btn btn-blue' href='./apikey'>Go <i class='icon-arrow-right'></i></a></div>
 		</div>
 		<%
 		end # if !SLAVE
@@ -90,8 +112,10 @@ BlackStack::Extensions.extensions.each { |ext|
 					# if the screen has a `:section` key, then draw HTML for it
 					if screen.section == section
 						%>
-						<div class='span3'>
-							<a href='<%=screen.screen.to_s%>'><%=CGI.escapeHTML(screen.label.to_s)%></a><br/>
+						<div class='span3 box settings-panel'>
+							<a href='<%=screen.screen.to_s%>'><%=CGI.escapeHTML(screen.label.to_s.encode_html)%></a><br/>
+							<span><%=CGI.escapeHTML(screen.description.to_s.encode_html)%></span>
+							<div><a class='btn btn-blue' href='<%=screen.screen.to_s%>'>Go <i class='icon-arrow-right'></i></a></div>
 						</div>
 						<%
 					end

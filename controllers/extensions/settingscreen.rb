@@ -43,6 +43,7 @@ module BlackStack
                 self.section = h[:section]
                 self.label = h[:label]
                 self.screen = h[:screen].to_s
+                self.description = h[:description].to_s
             end # set
 
             # get a hash descriptor of the object
@@ -51,6 +52,7 @@ module BlackStack
                     :section => self.section,
                     :label => self.label,
                     :screen => self.screen.to_sym,
+                    :description => self.description.to_s,
                 }
             end # to_hash
         end # module SettingScreenModule
