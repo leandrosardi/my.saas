@@ -228,9 +228,15 @@ CREATE TABLE IF NOT EXISTS public."subscription" (
 );
 
 -- reference: https://github.com/MassProspecting/docs/issues/259
--- -1: manual payment
 -- 0: PayPal
+-- 1: manual payment
 alter table "subscription" add column if not exists "type" int not null default 0;  
+
+-- reference: https://github.com/MassProspecting/docs/issues/260
+-- cancelation requests
+alter table "subscription" add column if not exists "cancellation_requested" boolean not null default false;  
+alter table "subscription" add column if not exists "cancellation_request_time" timestamp null;  
+alter table "subscription" add column if not exists "cancellation_request_id_user" uuid null references "user"(id);  
 
 CREATE TABLE IF NOT EXISTS public.balance (
 	id uuid NOT NULL,

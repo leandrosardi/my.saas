@@ -53,31 +53,47 @@ div.settings-panel div {
 	</section>
 
 	<section class="row-fluid">
-		<div class='span3 box settings-panel'>
-			<a href='./account'>Account Information</a><br/>
+		<div class='span3 box'>
+		<a href='./account'>
+		<div class='settings-panel'>
+			Account Information<br/>
 			<span style='font-size:10px;color:gray;'>Company name. Company time zone.</span>
-			<div><a class='btn btn-blue' href='./account'>Go <i class='icon-arrow-right'></i></a></div>
+			<div><button class='btn btn-blue'>Go <i class='icon-arrow-right'></i></button></div>
+		</div>
+		</a>
 		</div>
 
-		<div class='span3 box settings-panel'>
-			<a href='./password'>Change Password</a><br/>
+		<div class='span3 box'>
+		<a href='./password'>
+		<div class='settings-panel'>
+			Change Password<br/>
 			<span style='font-size:10px;color:gray;'>Update your password.</span>
-			<div><a class='btn btn-blue' href='./password'>Go <i class='icon-arrow-right'></i></a></div>
+			<div><button class='btn btn-blue'>Go <i class='icon-arrow-right'></i></button></div>
+		</div>
+		</a>
 		</div>
 
-		<div class='span3 box settings-panel'>
-			<a href='./users'>Users</a><br/>
+		<div class='span3 box'>
+		<a href='./users'>
+		<div class='settings-panel'>
+			Users<br/>
 			<span style='font-size:10px;color:gray;'>Add new users. Remove existing users. Assign roles.</span>
-			<div><a class='btn btn-blue' href='./users'>Go <i class='icon-arrow-right'></i></a></div>
+			<div><button class='btn btn-blue'>Go <i class='icon-arrow-right'></i></button></div>
+		</div>
+		</a>
 		</div>
 
 		<%
 		if !SLAVE
 		%>
-		<div class='span3 box settings-panel'>
-			<a href='./apikey'>API Key</a><br/>
+		<div class='span3 box'>
+		<a href='./apikey'>
+		<div class='settings-panel'>
+			API Key<br/>
 			<span style='font-size:10px;color:gray;'>Generate or change your API key. Get access to API documentation.</span>
-			<div><a class='btn btn-blue' href='./apikey'>Go <i class='icon-arrow-right'></i></a></div>
+			<div><button class='btn btn-blue'>Go <i class='icon-arrow-right'></i></button></div>
+		</div>
+		</a>
 		</div>
 		<%
 		end # if !SLAVE
@@ -112,10 +128,14 @@ div.settings-panel div {
 					# if the screen has a `:section` key, then draw HTML for it
 					if screen.section == section
 						%>
-						<div class='span3 box settings-panel'>
-							<a href='<%=screen.screen.to_s%>'><%=CGI.escapeHTML(screen.label.to_s.encode_html)%></a><br/>
+						<div class='span3 box'>
+						<a href='<%=screen.screen.to_s%>'>
+						<div class='settings-panel'>
+							<%=CGI.escapeHTML(screen.label.to_s.encode_html)%><br/>
 							<span><%=CGI.escapeHTML(screen.description.to_s.encode_html)%></span>
-							<div><a class='btn btn-blue' href='<%=screen.screen.to_s%>'>Go <i class='icon-arrow-right'></i></a></div>
+							<div><button class='btn btn-blue'>Go <i class='icon-arrow-right'></i></button></div>
+						</div>
+						</a>
 						</div>
 						<%
 					end
