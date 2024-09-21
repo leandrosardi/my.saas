@@ -1,4 +1,3 @@
-require 'open3'
 require 'net/http'
 require 'timeout'
 require 'simple_command_line_parser'
@@ -8,7 +7,7 @@ require 'colorize'
 # Parsing command line parameters.
 # 
 parser = BlackStack::SimpleCommandLineParser.new(
-  :description => 'This command will launch a Sinatra-based BlackStack webserver in background, returning an exit code 0 if the async process started successfully or 1 of the async process failed to start.', 
+  :description => 'This command will launch a Sinatra-based BlackStack webserver in background, returning an exit code 0 if the async process started successfully or 1 if the async process failed to start.', 
   :configuration => [{
     :name=>'path', 
     :mandatory=>false, 
@@ -20,7 +19,7 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>false, 
     :description=>'Timeout in seconds to wait for the web server to start.', 
     :type=>BlackStack::SimpleCommandLineParser::INT,
-    :default => 10,
+    :default => 30,
   }, {
     :name=>'port', 
     :mandatory=>false, 
@@ -52,44 +51,73 @@ end
 
 # Define the command to run the web server
 cmd = "ruby #{parser.value('path')}/app-sync.rb port=#{parser.value('port')} config=#{parser.value('config')}"
-  
-# Run the command in the background
+
 STDOUT.puts "Running command: #{cmd}"
-stdin, stdout, stderr, wait_thr = Open3.popen3(cmd)
-    
+
+# Create pipes for stdout and stderr
+stdout_read, stdout_write = IO.pipe
+stderr_read, stderr_write = IO.pipe
+
+# Spawn the process with stdout and stderr redirected to the pipes
+pid = Process.spawn(cmd, out: stdout_write, err: stderr_write)
+
+# Close the write ends in the main process as they are now connected to the child process
+stdout_write.close
+stderr_write.close
+
+# Start threads to read from the pipes and forward to main stdout and stderr
+stdout_thread = Thread.new do
+  begin
+    stdout_read.each_line do |line|
+      STDOUT.puts "app-sync STDOUT: #{line}"
+    end
+  rescue IOError
+    # Handle IO errors if necessary
+  end
+end
+
+stderr_thread = Thread.new do
+  begin
+    stderr_read.each_line do |line|
+      STDERR.puts "app-sync STDERR: #{line.red}"
+    end
+  rescue IOError
+    # Handle IO errors if necessary
+  end
+end
+
 # Check if the server is responding
 success = false
 start_time = Time.now
 
-# Retry until the server is running or the timeout is reached
-STDOUT.puts "Waiting for web server to start... "
-while true do 
+STDOUT.puts "Waiting for web server to start..."
+
+loop do
   if server_running?(parser.value('port'))
-    puts "Web server started successfully"
+    elapsed_time = Time.now - start_time
+    STDOUT.puts "Web server started successfully in #{elapsed_time.round(2)} seconds".green
     success = true
     break
   else
-    # wait half a second before retrying
-    sleep 0.5 
-    # if current time - start time > timeout (in seconds), exit
-    break if Time.now - start_time > parser.value('timeout')
+    sleep 0.5
+    if Time.now - start_time > parser.value('timeout')
+      STDERR.puts "Timeout reached: Web server did not start within #{parser.value('timeout')} seconds".red
+      break
+    end
   end
 end
 
-STDOUT.puts "STDOUT: #{stdout.read}"
-STDERR.puts "STDERR: #{stderr.read}"
-
 if success
-  # Get the exit status of the process
-  exit_status = wait_thr.value.exitstatus
-  if exit_status == 0
-    STDOUT.puts "Web server started successfully.".green
-  else
-    STDERR.puts "Web server failed to start. Exit status: #{exit_status}".red
-  end
-  exit exit_status
+  # Detach the child process to let it run independently
+  Process.detach(pid)
+  exit 0
 else
-  STDERR.puts "Web server failed to start".red
-  Process.kill("TERM", wait_thr.pid) # Terminate the server process
+  # Attempt to kill the child process
+  begin
+    Process.kill("TERM", pid)
+    STDERR.puts "Terminated the web server process.".yellow
+  rescue Errno::ESRCH
+    STDERR.puts "Web server process already terminated.".yellow
+  end
   exit 1
 end
