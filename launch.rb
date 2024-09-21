@@ -44,7 +44,7 @@ def server_running?(port)
       response = Net::HTTP.get_response(uri)
       return response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
     end
-  rescue Errno::ECONNREFUSED, Timeout::Error
+  rescue Errno::ECONNREFUSED, Errno::EADDRNOTAVAIL, Timeout::Error
     return false
   end
 end
