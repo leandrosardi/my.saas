@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'net/http'
 require 'timeout'
 require 'simple_command_line_parser'
@@ -11,9 +12,9 @@ parser = BlackStack::SimpleCommandLineParser.new(
   :configuration => [{
     :name=>'path', 
     :mandatory=>false, 
-    :description=>'Folder where the script `app-sync.rb` is located.', 
+    :description=>'Folder where the script `app.rb` is located.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
-    :default => '$RUBYLIB',
+    :default => ENV['RUBYLIB'] || '.',  # Correctly expand the RUBYLIB environment variable
   }, {
     :name=>'timeout', 
     :mandatory=>false, 
@@ -69,7 +70,7 @@ stderr_write.close
 stdout_thread = Thread.new do
   begin
     stdout_read.each_line do |line|
-      STDOUT.puts "app-sync STDOUT: #{line}"
+      STDOUT.puts "app.rb STDOUT: #{line}"
     end
   rescue IOError
     # Handle IO errors if necessary
@@ -79,31 +80,83 @@ end
 stderr_thread = Thread.new do
   begin
     stderr_read.each_line do |line|
-      STDERR.puts "app-sync STDERR: #{line.red}"
+      STDERR.puts "app.rb STDERR: #{line.red}"
     end
   rescue IOError
     # Handle IO errors if necessary
   end
 end
 
+# Function to check if a process is still running
+def process_running?(pid)
+  begin
+    Process.getpgid(pid)
+    true
+  rescue Errno::ESRCH
+    false
+  end
+end
+
 # Check if the server is responding
 success = false
 start_time = Time.now
+timeout = parser.value('timeout')
+port = parser.value('port')
+
+#STDOUT.puts "Waiting for web server to start..."
+#sleep(10)
 
 STDOUT.puts "Waiting for web server to start..."
 
 loop do
-  if server_running?(parser.value('port'))
-    elapsed_time = Time.now - start_time
-    STDOUT.puts "Web server started successfully in #{elapsed_time.round(2)} seconds".green
-    success = true
-    break
-  else
-    sleep 0.5
-    if Time.now - start_time > parser.value('timeout')
-      STDERR.puts "Timeout reached: Web server did not start within #{parser.value('timeout')} seconds".red
+  # Check if the server is running
+  if server_running?(port)
+    # Verify that the child process is still running
+    if process_running?(pid)
+      elapsed_time = Time.now - start_time
+      STDOUT.puts "Web server started successfully in #{elapsed_time.round(2)} seconds".green
+      success = true
+      break
+    else
+      # Child process has exited despite the server being up
+      exit_code = nil
+      begin
+        Process.waitpid(pid)
+        exit_code = $?.exitstatus
+      rescue Errno::ECHILD
+        # No child process to wait for
+      end
+      STDERR.puts "Web server process exited unexpectedly with exit code: #{exit_code}".red
+      success = false
       break
     end
+  else
+    # Check if the child process has exited prematurely
+    begin
+      pid_status = Process.waitpid(pid, Process::WNOHANG)
+      if pid_status
+        # Child process has exited
+        exit_code = $?.exitstatus
+        STDERR.puts "Web server process exited with exit code: #{exit_code}".red
+        success = false
+        break
+      end
+    rescue Errno::ECHILD
+      # No child process exists
+      STDERR.puts "No child process found.".red
+      success = false
+      break
+    end
+
+    # Check for timeout
+    if Time.now - start_time > timeout
+      STDERR.puts "Timeout reached: Web server did not start within #{timeout} seconds".red
+      success = false
+      break
+    end
+
+    # Wait before the next check
+    sleep 0.5
   end
 end
 
@@ -112,12 +165,14 @@ if success
   Process.detach(pid)
   exit 0
 else
-  # Attempt to kill the child process
-  begin
-    Process.kill("TERM", pid)
-    STDERR.puts "Terminated the web server process.".yellow
-  rescue Errno::ESRCH
-    STDERR.puts "Web server process already terminated.".yellow
+  # Attempt to kill the child process if it's still running
+  if process_running?(pid)
+    begin
+      Process.kill("TERM", pid)
+      STDERR.puts "Terminated the web server process.".yellow
+    rescue Errno::ESRCH
+      STDERR.puts "Web server process already terminated.".yellow
+    end
   end
   exit 1
 end

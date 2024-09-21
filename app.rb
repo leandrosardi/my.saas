@@ -699,7 +699,14 @@ begin
   # DEPRECATED
   #BlackStack::Extensions.add_storage_subfolders
 
+rescue LoadError => e
+  STDERR.puts "Failed to load required file: #{e.message}".red
+  # You can add additional error handling here, such as exiting the script
+  exit 2
+
 rescue => e
-  puts e.to_console.red
+  STDERR.puts
+  #STDERR.puts '....................'
+  STDERR.puts e.to_console.red
   exit(1)
 end
