@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 require 'net/http'
 require 'timeout'
 require 'simple_command_line_parser'
@@ -20,7 +19,7 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>false, 
     :description=>'Timeout in seconds to wait for the web server to start.', 
     :type=>BlackStack::SimpleCommandLineParser::INT,
-    :default => 30,
+    :default => 10,
   }, {
     :name=>'port', 
     :mandatory=>false, 
@@ -51,7 +50,7 @@ def server_running?(port)
 end
 
 # Define the command to run the web server
-cmd = "ruby #{parser.value('path')}/app.rb port=#{parser.value('port')} config=#{parser.value('config')}"
+cmd = "cd #{parser.value('path')} && ruby app.rb port=#{parser.value('port')} config=#{parser.value('config')}"
 
 STDOUT.puts "Running command: #{cmd}"
 
@@ -70,7 +69,7 @@ stderr_write.close
 stdout_thread = Thread.new do
   begin
     stdout_read.each_line do |line|
-      STDOUT.puts "app.rb STDOUT: #{line}"
+      STDOUT.puts "app STDOUT: #{line}"
     end
   rescue IOError
     # Handle IO errors if necessary
@@ -80,83 +79,31 @@ end
 stderr_thread = Thread.new do
   begin
     stderr_read.each_line do |line|
-      STDERR.puts "app.rb STDERR: #{line.red}"
+      STDERR.puts "app STDERR: #{line}"
     end
   rescue IOError
     # Handle IO errors if necessary
   end
 end
 
-# Function to check if a process is still running
-def process_running?(pid)
-  begin
-    Process.getpgid(pid)
-    true
-  rescue Errno::ESRCH
-    false
-  end
-end
-
 # Check if the server is responding
 success = false
 start_time = Time.now
-timeout = parser.value('timeout')
-port = parser.value('port')
-
-#STDOUT.puts "Waiting for web server to start..."
-#sleep(10)
 
 STDOUT.puts "Waiting for web server to start..."
 
 loop do
-  # Check if the server is running
-  if server_running?(port)
-    # Verify that the child process is still running
-    if process_running?(pid)
-      elapsed_time = Time.now - start_time
-      STDOUT.puts "Web server started successfully in #{elapsed_time.round(2)} seconds".green
-      success = true
-      break
-    else
-      # Child process has exited despite the server being up
-      exit_code = nil
-      begin
-        Process.waitpid(pid)
-        exit_code = $?.exitstatus
-      rescue Errno::ECHILD
-        # No child process to wait for
-      end
-      STDERR.puts "Web server process exited unexpectedly with exit code: #{exit_code}".red
-      success = false
-      break
-    end
+  if server_running?(parser.value('port'))
+    elapsed_time = Time.now - start_time
+    STDOUT.puts "Web server started successfully in #{elapsed_time.round(2)} seconds".green
+    success = true
+    break
   else
-    # Check if the child process has exited prematurely
-    begin
-      pid_status = Process.waitpid(pid, Process::WNOHANG)
-      if pid_status
-        # Child process has exited
-        exit_code = $?.exitstatus
-        STDERR.puts "Web server process exited with exit code: #{exit_code}".red
-        success = false
-        break
-      end
-    rescue Errno::ECHILD
-      # No child process exists
-      STDERR.puts "No child process found.".red
-      success = false
-      break
-    end
-
-    # Check for timeout
-    if Time.now - start_time > timeout
-      STDERR.puts "Timeout reached: Web server did not start within #{timeout} seconds".red
-      success = false
-      break
-    end
-
-    # Wait before the next check
     sleep 0.5
+    if Time.now - start_time > parser.value('timeout')
+      STDOUT.puts "Timeout reached: Web server did not start within #{parser.value('timeout')} seconds".red
+      break
+    end
   end
 end
 
@@ -165,14 +112,12 @@ if success
   Process.detach(pid)
   exit 0
 else
-  # Attempt to kill the child process if it's still running
-  if process_running?(pid)
-    begin
-      Process.kill("TERM", pid)
-      STDERR.puts "Terminated the web server process.".yellow
-    rescue Errno::ESRCH
-      STDERR.puts "Web server process already terminated.".yellow
-    end
+  # Attempt to kill the child process
+  begin
+    Process.kill("TERM", pid)
+    STDOUT.puts "Terminated the web server process.".yellow
+  rescue Errno::ESRCH
+    STDOUT.puts "Web server process already terminated.".yellow
   end
   exit 1
 end
