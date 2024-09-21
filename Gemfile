@@ -17,6 +17,9 @@ gem 'zyte-client', '~>1.0.6'
 #gem 'mass-client', '~>1.0.12'
 
 # Other gems needed for running mysaas
+gem 'open3', '~>0.1.1'
+gem 'timeout', '~>0.4.1'
+gem 'net-http', '~>0.2.2'
 gem 'colorize', '~>0.8.1'
 gem 'mail', '~>2.7.1'
 gem 'pry', '~>0.14.1'

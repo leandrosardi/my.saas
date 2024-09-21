@@ -25,6 +25,7 @@ require 'openai' #, '~>6.3.1'
 require 'my-dropbox-api'
 #require_relative '../../my-dropbox-api/lib/my-dropbox-api.rb'
 
+require 'open3'
 require 'colorize'
 require 'pg'
 require 'sequel'
