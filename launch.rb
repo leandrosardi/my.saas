@@ -48,7 +48,7 @@ def server_running?(port)
 end
 
 # Define the command to run the web server
-cmd = "cd #{parser.value('path')} && ruby app.rb port=#{parser.value('port')} config=#{parser.value('config')} &"
+cmd = "cd #{parser.value('path')} && ruby app.rb port=#{parser.value('port')} config=#{parser.value('config')}"
 
 STDOUT.puts "Running command: #{cmd}"
 
@@ -57,11 +57,11 @@ stdout_read, stdout_write = IO.pipe
 stderr_read, stderr_write = IO.pipe
 
 # Spawn the process with stdout and stderr redirected to the pipes
-pid = Process.spawn(cmd, out: stdout_write, err: stderr_write)
+pid = Process.spawn(cmd, :out => stdout_write, :err => stderr_write, :pgroup => true, :in => :close)
 
 # Close the write ends in the main process as they are now connected to the child process
-#stdout_write.close
-#stderr_write.close
+stdout_write.close
+stderr_write.close
 
 # Start threads to read from the pipes and forward to main stdout and stderr
 stdout_thread = Thread.new do
@@ -110,8 +110,8 @@ stdout_read.close unless stdout_read.closed?
 stderr_read.close unless stderr_read.closed?
 
 # Wait for the threads to finish
-#stdout_thread.join
-#stderr_thread.join
+stdout_thread.join
+stderr_thread.join
 
 if success
   # Detach the child process to let it run independently
