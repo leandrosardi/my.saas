@@ -13,7 +13,7 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>false, 
     :description=>'Folder where the script `app-sync.rb` is located.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
-    :default => '.',
+    :default => '$RUBYLIB',
   }, {
     :name=>'timeout', 
     :mandatory=>false, 
@@ -50,7 +50,7 @@ def server_running?(port)
 end
 
 # Define the command to run the web server
-cmd = "ruby #{parser.value('path')}/app-sync.rb port=#{parser.value('port')} config=#{parser.value('config')}"
+cmd = "ruby #{parser.value('path')}/app.rb port=#{parser.value('port')} config=#{parser.value('config')}"
 
 STDOUT.puts "Running command: #{cmd}"
 
