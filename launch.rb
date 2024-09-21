@@ -3,9 +3,7 @@ require 'timeout'
 require 'simple_command_line_parser'
 require 'colorize'
 
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Parsing command line parameters.
-# 
 parser = BlackStack::SimpleCommandLineParser.new(
   :description => 'This command will launch a Sinatra-based BlackStack webserver in background, returning an exit code 0 if the async process started successfully or 1 if the async process failed to start.', 
   :configuration => [{
@@ -13,7 +11,7 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>false, 
     :description=>'Folder where the script `app.rb` is located.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
-    :default => ENV['RUBYLIB'] || '.',  # Correctly expand the RUBYLIB environment variable
+    :default => ENV['RUBYLIB'] || '.',
   }, {
     :name=>'timeout', 
     :mandatory=>false, 
@@ -106,6 +104,14 @@ loop do
     end
   end
 end
+
+# Close the read ends of the pipes to signal EOF to the threads
+stdout_read.close unless stdout_read.closed?
+stderr_read.close unless stderr_read.closed?
+
+# Wait for the threads to finish
+stdout_thread.join
+stderr_thread.join
 
 if success
   # Detach the child process to let it run independently
