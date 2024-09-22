@@ -178,9 +178,9 @@ begin
 
   '
 
-  #print "Saving PID... "
-  #File.open('./app.pid', 'w') { |f| f.write(Process.pid) }
-  #puts "done."
+  print "Saving PID... "
+  File.open('./app.pid', 'w') { |f| f.write(Process.pid) }
+  puts "done."
 
   print 'Loading extensions configuration... '
   # include the libraries of the extensions

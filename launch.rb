@@ -105,6 +105,11 @@ loop do
   end
 end
 
+# process ids
+STDOUT.puts "pid: #{pid}"
+app_pid = File.read("#{__dir__}/app.pid").to_i rescue nil
+STDOUT.puts "app_pid: #{app_pid}" if success
+
 # Close the read ends of the pipes to signal EOF to the threads
 stdout_read.close unless stdout_read.closed?
 stderr_read.close unless stderr_read.closed?
@@ -115,7 +120,8 @@ stderr_thread.join
 
 if success
   # Detach the child process to let it run independently
-  Process.detach(pid)
+  # Process.detach(pid)
+  # Process.detach(app_pid)
   exit 0
 else
   # Attempt to kill the child process
