@@ -1,75 +1,85 @@
-require 'net/http'
-require 'timeout'
-#require 'simple_command_line_parser'
 require 'colorize'
-#require 'pry'
-
-# Example: 
-# ```
-# ruby launch0.rb "cd /home/leandro/code1/master && export RUBYLIB=/home/leandro/code1/master && ruby ./extensions/i2p/p/ipn.rb"
-# ```
-
-=begin
-# Parsing command line parameters.
-parser = BlackStack::SimpleCommandLineParser.new(
-  :description => 'This command will launch a Sinatra-based BlackStack webserver in background, returning an exit code 0 if the async process started successfully or 1 if the async process failed to start.', 
-  :configuration => [{
-    :name=>'cmd', 
-    :mandatory=>true, 
-    :description=>'Command to run asynchroniously.', 
-    :type=>BlackStack::SimpleCommandLineParser::STRING,
-  }]
-)
-=end
 
 # Assign values to variables
-# TODO: Add support to simple_command_line_parser to detec a value between semicolos (") in order to pass a bash command as a parameter, and the timeout into another parameter
 cmd = ARGV.last
-timeout = 10
+timeout = 20
+
+stdout_file = "/tmp/launch0_stdout_#{Process.pid}.log"
+stderr_file = "/tmp/launch0_stderr_#{Process.pid}.log"
 
 STDOUT.puts "Running command: #{cmd}"
 
-# Spawn the process with stdout and stderr redirected to the pipes
-pid = Process.spawn(cmd, out: '/dev/null', err: '/dev/null', pgroup: true, in: :close)
+# Fork a child process
+pid = fork do
+  # In child process
 
-# Check if the process is alive after timeout
-STDOUT.puts 'Give it a time to the process to start... '
-success = false
-sleep timeout
+  # Start a new session to detach from the controlling terminal
+  Process.setsid
 
-begin
-  # Attempt to get the exit status without blocking
-  result = Process.waitpid(pid, Process::WNOHANG)
+  # Redirect stdin, stdout, and stderr
+  $stdin.reopen('/dev/null')
+  $stdout.reopen(stdout_file, 'w')
+  $stderr.reopen(stderr_file, 'w')
 
-  if result.nil?
-    # The process is still running
-    STDOUT.puts "Process #{pid} is still running after #{timeout} seconds.".green
-    STDOUT.puts "Process spawning success.".green
-    success = true
-  else
-    # The process has exited; get the exit status
-    exit_status = $?.exitstatus
-    STDERR.puts "Process #{pid} has exited with status #{exit_status}.".red
-  end
-rescue Errno::ECHILD
-  # No child process exists
-  STDERR.puts "Process #{pid} has already been reaped."
-  # Optionally, retrieve exit status if available
-  exit_status = $?.exitstatus
-  STDERR.puts "Exit status was #{exit_status}." if exit_status
+  # Execute the command
+  exec(cmd)
 end
 
+STDOUT.puts "Process PID: #{pid}"
+
+success = false
+
+STDOUT.puts 'Give it a time for the process to start...'
+
+# Tail the output file during the timeout
+stdout_tail_thread = Thread.new do
+  File.open(stdout_file, 'r') do |file|
+    file.seek(0, IO::SEEK_END) # Start at the end of the file
+    loop do
+      select([file])
+      line = file.gets
+      STDOUT.puts line if line
+    end
+  end
+end
+
+# Tail the output file during the timeout
+stderr_tail_thread = Thread.new do
+  File.open(stderr_file, 'r') do |file|
+    file.seek(0, IO::SEEK_END) # Start at the end of the file
+    loop do
+      select([file])
+      line = file.gets
+      STDERR.puts line.red if line
+    end
+  end
+end
+
+
+# Sleep for the timeout duration
+sleep timeout
+
+# Check if the process is still running
+begin
+  Process.getpgid(pid)
+  STDOUT.puts "Process #{pid} is still running after #{timeout} seconds.".green
+  STDOUT.puts "Process spawning success.".green
+  success = true
+rescue Errno::ESRCH
+  STDERR.puts "Process #{pid} has exited.".red
+end
+
+# Stop tailing the output file
+stdout_tail_thread.kill
+stdout_tail_thread.join
+
+stderr_tail_thread.kill
+stderr_tail_thread.join
+
 if success
-  # Detach the child process to let it run independently
-  Process.detach(pid)
+  # Parent process exits, child continues running independently
   exit 0
 else
-  # Attempt to kill the child process
-  begin
-    Process.kill("TERM", pid)
-    STDOUT.puts "Terminated the process.".yellow
-  rescue Errno::ESRCH
-    STDOUT.puts "Process already terminated.".yellow
-  end
+  # Process has exited; exit with failure code
   exit 1
 end
