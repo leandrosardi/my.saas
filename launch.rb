@@ -94,6 +94,7 @@ loop do
   if server_running?(parser.value('port'))
     elapsed_time = Time.now - start_time
     STDOUT.puts "Web server started successfully in #{elapsed_time.round(2)} seconds".green
+    STDOUT.puts "Process spawning success.".green
     success = true
     break
   else
