@@ -1,8 +1,9 @@
 require 'colorize'
+require 'pry'
 
 # Assign values to variables
 cmd = ARGV.last
-timeout = 20
+timeout = 10
 
 stdout_file = "/tmp/launch0_stdout_#{Process.pid}.log"
 stderr_file = "/tmp/launch0_stderr_#{Process.pid}.log"
@@ -55,16 +56,22 @@ stderr_tail_thread = Thread.new do
   end
 end
 
-
 # Sleep for the timeout duration
+STDOUT.puts "Wait #{timeout} seconds before checking if process #{pid} is still running."
 sleep timeout
 
 # Check if the process is still running
 begin
-  Process.getpgid(pid)
-  STDOUT.puts "Process #{pid} is still running after #{timeout} seconds.".green
-  STDOUT.puts "Process spawning success.".green
-  success = true
+  state = `ps -p #{pid} -o state=`.strip
+  if state.empty?
+    STDERR.puts "Process #{pid} has exited.".red
+  elsif state.include?('Z')
+    STDERR.puts "Process #{pid} is defunct (zombie).".red
+  else
+    STDOUT.puts "Process #{pid} is still running after #{timeout} seconds.".green
+    STDOUT.puts "Process spawning success.".green
+    success = true
+  end
 rescue Errno::ESRCH
   STDERR.puts "Process #{pid} has exited.".red
 end
