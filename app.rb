@@ -702,11 +702,9 @@ begin
 rescue LoadError => e
   STDERR.puts "Failed to load required file: #{e.message}".red
   # You can add additional error handling here, such as exiting the script
-  exit 2
+  exit(2)
 
 rescue => e
-  STDERR.puts
-  #STDERR.puts '....................'
   STDERR.puts e.to_console.red
   exit(1)
 end
