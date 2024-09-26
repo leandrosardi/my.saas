@@ -14,7 +14,7 @@ gem 'simple_command_line_parser', '~>1.1.2'
 gem 'pampa', '~>2.1.5'
 gem 'my-dropbox-api', '~>1.0.2'
 gem 'zyte-client', '~>1.0.6'
-#gem 'mass-client', '~>1.0.12'
+#gem 'mass-client', '~>1.0.19'
 
 # Other gems needed for running mysaas
 gem 'open3', '~>0.1.1'
