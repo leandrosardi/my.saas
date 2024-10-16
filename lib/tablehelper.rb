@@ -45,8 +45,14 @@ module BlackStack
                 to_row = 0
             end
             
-            a = DB["#{a.sql}\nORDER BY #{sort_column} ASC"] if sort_column && sort_order == :asc
-            a = DB["#{a.sql}\nORDER BY #{sort_column} DESC"] if sort_column && sort_order == :desc
+            if sort_column.is_a?(String) || sort_column.is_a?(Symbol)
+                a = DB["#{a.sql}\nORDER BY #{sort_column} ASC"] if sort_column && sort_order == :asc
+                a = DB["#{a.sql}\nORDER BY #{sort_column} DESC"] if sort_column && sort_order == :desc
+            elsif sort_column.is_a?(Array)
+                x = sort_column.map { |s| "#{s} ASC" }.join(',') if sort_column && sort_order == :asc
+                x = sort_column.map { |s| "#{s} DESC" }.join(',') if sort_column && sort_order == :desc
+                a = DB["#{a.sql}\nORDER BY #{x}"] 
+            end
 
             a = a.limit(page_size, (page_number.to_i - 1) * page_size.to_i)
             all = a.all
