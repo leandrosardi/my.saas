@@ -295,6 +295,7 @@ module BlackStack
 
     module Validation
         INDEED_COMPANY_PATTERN = /^https\:\/\/(www\.)?indeed\.com\/cmp\//
+        APOLLO_COMPANY_PATTERN = /^https\:\/\/app\.apollo\.io\/\#\/organizations\//
 
         # normalize the values of the descriptor.
         def normalize(h={})
@@ -409,7 +410,11 @@ module BlackStack
             url.split('?').first
         end
 
-        # validate the values of some specific keys are valid Emails.
+        def normalize_apollo_company_url(url)
+            url.split('?').first
+        end
+
+        # validate the values of some specific keys are valid Indeed company URL.
         def indeed_company_errors(h={}, keys:)
             ret = []
             keys.each do |k|
@@ -419,7 +424,15 @@ module BlackStack
             return ret
         end # def linkedin_errors
 
-
+        # validate the values of some specific keys are valid Apollo company URL.
+        def apollo_company_errors(h={}, keys:)
+            ret = []
+            keys.each do |k|
+                url = h[k.to_s].nil? ? nil : self.normalize_apollo_company_url(h[k.to_s])
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid Apollo URL." if url && url.to_s !~ APOLLO_COMPANY_PATTERN
+            end # keys.each
+            return ret
+        end # def linkedin_errors
 
         # validate the values of some specific keys are valid tristates.
         def tristate_errors(h={}, keys:)
