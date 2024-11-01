@@ -497,6 +497,11 @@ BlackStack::Pampa.add_job({
 
 =begin
 # Reference: https://github.com/leandrosardi/my-dropbox-api
+#
+# Dropbox will be deprecated in favor of AWS/S3.
+# Reference: https://github.com/MassProspecting/docs/issues/320
+#
+#
 BlackStack::DropBox.set({
   :vymeco_api_key => VYMECO_API_KEY,
   :dropbox_refresh_token => DROPBOX_REFRESH_TOKEN,
