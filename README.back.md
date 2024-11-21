@@ -115,7 +115,7 @@ Deploying
 Configuration
 
 - changing deloyment output file
-- changing `MYSAAS_API_KEY`
+- changing `SU_API_KEY`
 - setting `DROPBOX_REFRESH_TOKEN`
 
 ## 1. Features

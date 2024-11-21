@@ -319,7 +319,7 @@ begin
 
       validation_api_key = @body['api_key'].to_s.to_guid.downcase
 
-      if validation_api_key != MYSAAS_API_KEY.to_s.to_guid.downcase
+      if validation_api_key != SU_API_KEY.to_s.to_guid.downcase
         # libero recursos
         DB.disconnect 
         GC.start

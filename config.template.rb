@@ -110,7 +110,7 @@ OPENAI_MODEL = 'gpt-4-1106-preview' #'gpt-3.5-turbo-16k-0613'
 # my.saas api-key of the su user
 # default value is '4db9d88c-dee9-4b5a-8d36-134d38e9f763'.
 # it is recommended you change it in production, with the password of the su user too.
-MYSAAS_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
+SU_API_KEY = '4db9d88c-dee9-4b5a-8d36-134d38e9f763' 
 
 # Integration: DropBox Access Token
 # - Reference: https://github.com/leandrosardi/my-dropbox-api
@@ -194,7 +194,7 @@ BlackStack::API::set_client({
   # IMPORTANT: It is strongly recommended that you 
   # use the api_key of an account with prisma role, 
   # and assigned to the central division too.
-  :api_key => MYSAAS_API_KEY, 
+  :api_key => SU_API_KEY, 
   # IMPORTANT: It is stringly recommended that you 
   # write the URL of the central division here. 
   :api_protocol => 'http',
