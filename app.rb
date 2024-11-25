@@ -382,6 +382,16 @@ begin
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Demo Screens
+  get '/demo/unibox', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/unibox', :layout => :'/views/layouts/core'
+  end
+
+  get '/demo/table', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/table', :layout => :'/views/layouts/core'
+  end
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
 
   print 'Setting up entries of external pages... '
@@ -397,11 +407,7 @@ begin
   get '/500', :agent => /(.*)/ do
     erb :'views/500', :layout => :'/views/layouts/public'
   end
-
-  get '/demo' do
-    erb :'views/demo', :layout => :'/views/layouts/public'
-  end
-
+  
   get '/unavailable' do
     erb :'views/unavailable', :layout => :'/views/layouts/public'
   end
