@@ -106,9 +106,9 @@ $(document).ready(function () {
     tabContainer.querySelector(`#${tabId}`).classList.add("active");
   });
 
-  document
-    .getElementById("darkModeButton")
-    .addEventListener("click", function () {
+  let darkModeButton = document.getElementById("darkModeButton");
+  if (darkModeButton) {
+    darkModeButton.addEventListener("click", function () {
       document.body.classList.toggle("dark-mode");
 
       // Change the button text based on the mode
@@ -118,6 +118,7 @@ $(document).ready(function () {
         this.innerHTML = '<div class="ball"></div> Dark Mode'; // Ball is now inside the button while changing text
       }
     });
+  }
 
   $(".expand-pool2").on("click", function () {
     $(".pool2").addClass("expanded").removeClass("collapsed");
