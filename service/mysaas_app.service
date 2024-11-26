@@ -7,7 +7,7 @@ Type=simple
 User=!!ssh_username
 # Environment variable is now set in the wrapper script
 # Environment=RUBYLIB=/home/!!ssh_username/code1/!!
-ExecStart=/home/!!ssh_username/code1/!!code_folder/service/start_mysaas_app.sh
+ExecStart=/home/!!ssh_username/code1/!!code_folder/service/mysaas_app.sh
 Restart=on-failure
 RestartSec=5s
 
