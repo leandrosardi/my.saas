@@ -14,7 +14,7 @@ msg = params[:msg]
 <%= ERB.new(File.read(File.expand_path("views/templates/head.erb"))).result(binding) %>
 <!-- / Message and error alerts -->
 
-<body class="mysaas default-layout wysihtml5-supported" style>
+<body class="mysaas default-layout wysihtml5-supported" id="body-default">
 	<!-- Main navigation bar -->
 	<%= ERB.new(File.read(File.expand_path("views/templates/header.erb"))).result(binding) %>
 	<!-- / Main navigation bar -->
@@ -23,47 +23,10 @@ msg = params[:msg]
 	<!-- Left navigation panel -->
 	<%= ERB.new(File.read(File.expand_path("views/templates/leftbar.erb"))).result(binding) %>
 	<!-- / Left navigation panel -->
-	
-	<section class="row-fluid">
-		<div class='span12'>
-		<%
-		if !err.nil?
-		%>
-		<br/>
-		<br/>
-		<br/>
-		<div class="alert alert-error">
-			<pre><%=err.to_s.encode_html%></pre>
-		</div>
-		<%
-		end # err
-		%>
-						
-		<%
-		if !msg.nil?
-		%>
-		<br/>
-		<br/>
-		<br/>
-		<div class="alert alert-success">
-			<pre><%=msg.to_s.encode_html%></pre>
-		</div>
-		<%
-		end # msg
-		%>
-	</section>
-	
-	<!-- Page content -->
-	<section class="row-fluid" style='max-width:1024px;'>
 
-		<!-- Content here -->
-		<%=yield%>
-		<!-- / Content here -->
-		
-		<!-- Page footer -->
-		<%= ERB.new(File.read(File.expand_path("views/templates/footer.erb"))).result(binding) %>
-		<!-- / Page footer -->
-	</section>
-		
+	<!-- Content here -->
+	<%=yield%>
+	<!-- / Content here -->
+				
 </body>
 </html>

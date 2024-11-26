@@ -384,11 +384,11 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Demo Screens
   get '/demo/unibox', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/unibox', :layout => :'/views/layouts/core'
+    erb :'views/demo/unibox', :layout => :'/views/layouts/full'
   end
 
   get '/demo/table', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/table', :layout => :'/views/layouts/core'
+    erb :'views/demo/table', :layout => :'/views/layouts/full'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
