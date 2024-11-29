@@ -19,6 +19,9 @@ theme = 'default'
 	<script src="/core/javascripts/1.3.0/adminflare-demo-init.min.js" type="text/javascript"></script>
 
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 	
 	<script type="text/javascript">	
 		DEMO_CURRENT_THEME = "<%=theme%>";
@@ -33,7 +36,7 @@ theme = 'default'
 		// Include Style to Draw Plan Tables
 		document.write('<link href="/core/css/plantable.css" media="all" rel="stylesheet" type="text/css">');
 		// Include Style to Draw Landing Pages
-//		document.write('<link href="/core/css/landing.css" media="all" rel="stylesheet" type="text/css">');
+        // document.write('<link href="/core/css/landing.css" media="all" rel="stylesheet" type="text/css">');
 		// Include Awesomplete stylesheet
 		document.write('<link href="/core/css/awesomplete.css" media="all" rel="stylesheet" type="text/css">');
 		// Include FilterJS stylesheet
@@ -45,11 +48,12 @@ theme = 'default'
 		// Include Misc
 		document.write('<link href="/core/css/misc.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
 		// Include Table
-		document.write('<link href="/core/css/table.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
-		// Include Unibox
-		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+		// document.write('<link href="/core/css/table.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
 		// Include Index
 		document.write('<link href="/core/css/index.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+        // Include Unibox
+		// document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+		
 
 		// Include CSS files of extensions
 		<%
@@ -225,11 +229,11 @@ theme = 'default'
 	<script src="/core/javascripts/filters.min.js" type="text/javascript"></script>
 	<script src="/core/javascripts/images.min.js" type="text/javascript"></script>
 	<script src="/core/javascripts/tags.min.js" type="text/javascript"></script>
-	<script src="/core/javascripts/layout.js" type="text/javascript"></script>
-	<script src="/core/javascripts/table.js" type="text/javascript"></script>
-	<script src="/core/javascripts/unibox.js" type="text/javascript"></script>
+	<%# <script src="/core/javascripts/layout.js" type="text/javascript"></script> %>
+	<%# <script src="/core/javascripts/table.js" type="text/javascript"></script> %>
+	<%# <script src="/core/javascripts/unibox.js" type="text/javascript"></script> %>
 	<script src="/core/javascripts/misc.js" type="text/javascript"></script>
-	<script src="/core/javascripts/unibox.layout.js" type="text/javascript"></script>
+	<%# <script src="/core/javascripts/unibox.layout.js" type="text/javascript"></script> %>
 
 	<%
 	# if the constant TINYMCE_API_KEY is defined
@@ -258,377 +262,6 @@ theme = 'default'
 		}
 	}
 	%>
-	<style>
-		// Modals to show pictures in carousel
-		img.screenshot {
-			margin-bottom: 10px;
-			border: 1px solid #ddd;
-			shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
-			// link like mouse pointer
-			cursor: pointer;
-		}
-
-		div.screenshot-modal {
-			display: none;
-			position: fixed;
-			z-index: 100000000000;
-			
-			//top: 50px;
-			//left: 50px;
-			//right: 50px;
-			//bottom: 50px;
-
-			top: 0px;
-			left: 0px;
-			width: 100%;
-			height: 100%;
-
-			border: 5px solid #ddd;
-			//border-radius: 50px;
-			//width: 100%;
-			//height: 100%;
-		}
-
-		div.screenshot-modal img {
-			width: 100%;
-			height: 100%;
-		}
-
-		div.screenshot-modal button.close {
-			position: absolute;
-			top: 50px;
-			right: 50px;
-			//border-radius: 50px;
-			font-size: 50pt;
-			background-color: white;
-			z-index: 100000000001;
-			color: blue;
-			text-decoration: none;
-		}
-
-		div.screenshot-modal button.next {
-			position: absolute;
-			top: 50%;
-			right: 50px;
-			//border-radius: 50px;
-			font-size: 50pt;
-			background-color: white;
-			z-index: 100000000001;
-			color: blue;
-			text-decoration: none;
-		}
-
-		div.screenshot-modal button.prev {
-			position: absolute;
-			top: 50%;
-			left: 50px;
-			//border-radius: 50px;
-			font-size: 50pt;
-			background-color: white;
-			z-index: 100000000001;
-			color: blue;
-			text-decoration: none;
-		}
-
-
-		// Tables with clickeable rows to show details in the right-side bar
-
-		table tbody tr.clickeable td { 
-			cursor: pointer;
-		}
-
-		table tbody tr.clickeable td:last-child { 
-			border-right: 5px dashed rgb(245,245,245);
-		}
-
-		table tbody tr.clickeable:hover td:last-child { 
-			border-right: 5px dashed rgb(255,175,175);
-		}
-
-		table tbody tr.clickeable:hover td { 
-			background-color: rgb(245,245,245);
-		}
-
-		table tbody tr.selected td:last-child { 
-			border-right: 5px dashed red;
-		}
-
-		// general styles	
-		a {
-			text-decoration: none;
-		}
-
-		button.btn-link {
-			text-decoration:none;
-		}
-
-		img.avatar {
-			border-radius: 50%;
-		}
-
-		/* 
-		* Dark mode
-		*
-		*/
-		/*
-		body {
-			background-color: black;
-			border-color: black transparent;
-			border: 1px solid black;
-			padding-top: 0px;
-			padding-left: 0px;
-			margin-top: 35px;
-			margin-left: 85px;
-		}
-
-		section {
-			background-color: black;
-			border-color: black transparent;
-			border: 1px solid black;
-			//padding: 0px;
-			//margin: 0px;
-		}
-
-		div {
-			background-color: black;
-			border-color: black transparent;
-			border: 1px solid black;
-			//padding: 0px;
-			//margin: 0px;
-		}
-
-		table {
-			background-color: black;
-			border-color: black transparent;
-			border: 1px solid black;
-			padding: 0px;
-			margin: 0px;
-		}
-
-		tbody {
-			background-color: black;
-			border-color: black transparent;
-			border: 1px solid black;
-			padding: 0px;
-			margin: 0px;
-		}
-
-		thead {
-			background-color: black;
-			border-color: black transparent;
-			border: 1px solid black;
-			padding: 0px;
-			margin: 0px;
-		}
-		*/
-
-		/* 
-		* Dark mode
-		*
-		*/
-		section.dark {
-			background-color: black;
-			color: white;
-		}
-	
-		section.dark input {
-			background-color: black;
-			color: white;
-		}
-	
-		section.dark table tbody tr { 
-			background-color: black;
-			border: 2px none black;
-		}
-	
-		section.dark table tbody tr:hover { 
-			background-color: rgb(30,30,30);
-			border: 2px solid yellow;
-		}
-
-		/* 
-		* Style for fullscreen dashboard
-		*
-		*/
-		section.fullscreen {
-			position:absolute;
-			top:0;
-			left:0;
-			width:100%;
-			height:100%;
-			z-index:999999999;
-		}
-
-		section.maximizable div.controls {
-			position:relative;
-			width: 100%;
-		}
-
-		section.maximizable div.controls button {
-			position:absolute;
-			top:-25px;
-			right:-25px;
-		}
-
-		/*
-			if the section is in fullscreen mode, then the header of the table will be sticky to the top even if the table is scrolled down.
-			reference: https://csslayout.io/sticky-table-headers/
-		*/
-		section.fullscreen table thead {
-			position: sticky;
-			top: 0;
-			z-index: 9999999;
-			opacity: 1.0;
-			background-color: black;
-		}
-
-		/* 
-		* Style for scripts shown in both the responses and pipeline edition screen.
-		*
-		*/
-		pre {
-			mergin: 0px; 
-			padding: 0px; 
-			border:0px; 
-			background-color: transparent; 
-			font-size: 14px; 
-			font-name: Arial; 
-			color: rgb(64, 97, 140);
-		}
-
-		span.filesample {
-			font-size: 12px; 
-			font-name: Arial; 
-			color: rgb(64, 97, 140);
-			border: 1px rgb(175,175,175) solid;
-			border-radius: 5px;
-			background-color: rgb(235,235,235);
-			margin: 5px;
-			padding: 5px;
-
-		}
-
-		pre.filesample {
-			font-size: 12px; 
-			font-name: Arial; 
-			color: rgb(64, 97, 140);
-			border: 1px rgb(175,175,175) solid;
-			border-radius: 5px;
-			background-color: rgb(235,235,235);
-			margin: 5px;
-			padding: 5px;
-
-		}
-
-		/*
-		* Waiting GIF
-		* 
-		*/
-		div.wait {
-			position:   absolute;
-			z-index:    1000;
-			top:        0;
-			left:       0;
-			height:     100%;
-			width:      100%;
-			background: rgba( 255, 255, 255, .8 );
-		}
-
-		/*
-		 * Popups
-		 * 
-		 */
-		div.popup {
-			position:fixed;
-			top:0;
-			left:0;
-			width:100%;
-			height:100%;
-			z-index:99999;
-			background-color:white;
-			opacity: 0.22;
-			overflow-y:scroll;
-			display:none;
-		}
-
-		div.popup div.top-right-buttons {
-			position:absolute;
-			top:17px;
-			right:17px;
-		}
-
-		div.popup div.area {
-			position:relative;
-			top:15%;
-			left:15%;
-			width:70%;
-			height:70%;
-		}
-
-		div.popup div.area h1 {
-			margin-bottom:34px;
-		}
-		
-		/*
-		 * 
-		 */
-		span.yellow-backgrownd {
-			background-color: yellow;
-			color: black;
-		}
-	
-		div.fixed-position {
-			position: fixed;
-		}
-	
-		.same-line {
-			display: inline-block;
-		}
- 
-		.loading-container {
-			position: fixed;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			background-color: white;
-			opacity: 0.5;
-			text-align: center;
-			padding-top: 45vh;
-			display: none;
-			z-index: 9999;
-		}
-	
-		#loader {
-			//border: 16px solid #f3f3f3;
-			//border-radius: 50%;
-			//border-top: 16px solid #3498db;
-			width: 120px;
-			height: 120px;
-			-webkit-animation: spin 2s linear infinite;
-			/* Safari */
-			animation: spin 2s linear infinite;
-			position: relative;
-		}
-
-		#loader img {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
-
-		table.fix {
-			table-layout: fixed; 
-		}
-
-		table.fix td.fix {
-			white-space:nowrap;
-			overflow:hidden;
-			text-overflow:ellipsis;
-		}
-	</style>
 
 	<script type="text/javascript">	
 		// clickeable rows
