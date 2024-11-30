@@ -8,20 +8,20 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Parsing command line parameters.
-  # 
+  #
   print 'Parsing command line parameters... '
   parser = BlackStack::SimpleCommandLineParser.new(
-    :description => 'This command will launch a Sinatra-based BlackStack webserver.', 
+    :description => 'This command will launch a Sinatra-based BlackStack webserver.',
     :configuration => [{
-      :name=>'port', 
-      :mandatory=>false, 
-      :description=>'Listening port.', 
+      :name=>'port',
+      :mandatory=>false,
+      :description=>'Listening port.',
       :type=>BlackStack::SimpleCommandLineParser::INT,
       :default => 3000,
     }, {
-      :name=>'config', 
-      :mandatory=>false, 
-      :description=>'Name of the configuration file.', 
+      :name=>'config',
+      :mandatory=>false,
+      :description=>'Name of the configuration file.',
       :type=>BlackStack::SimpleCommandLineParser::STRING,
       :default => 'config',
     }]
@@ -54,104 +54,104 @@ begin
 
   def nav1(name1, beta=false)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
 
-    ret = 
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    ret =
+    "<p>" +
+    "<a class='simple' href='/'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
     CGI.escapeHTML(name1)
 
     ret += "  <span class='badge badge-mini badge-important'>beta</span>" if beta
-    
+
     ret += "</p>"
   end
 
   def nav2(name1, url1, name2)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
 
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     CGI.escapeHTML(name2) +
     "</p>"
   end
 
   def nav3(name1, url1, name2, url2, name3)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name3 +
     "</p>"
   end
 
   def nav4(name1, url1, name2, url2, name3, url3, name4)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name4 +
     "</p>"
   end
 
   def nav5(name1, url1, name2, url2, name3, url3, name4, url4, name5)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name5 +
     "</p>"
   end
 
   def nav6(name1, url1, name2, url2, name3, url3, name4, url4, name5, url5, name6)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url5}'>#{CGI.escapeHTML(name5)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url5}'>#{CGI.escapeHTML(name5)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name6 +
     "</p>"
   end
   puts 'done'.green
-  
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Buffering some tables required in some screens.
-  # 
+  #
   print 'Buffering timezone table... '
   TIMEZONES = BlackStack::MySaaS::Timezone.order(:offset, :short_description).all
   puts 'done'.green + " (#{TIMEZONES.size.to_s.blue} records)"
@@ -162,14 +162,14 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Run webserver.
-  # 
+  #
   puts '
 
-  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\   
-  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \  
-   \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\ 
-    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/ 
-                                                                      
+  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\
+  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \
+   \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\
+    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/
+
   Welcome to MySaaS '+MYSAAS_VERSION.green+'.
 
   ---> '+'https://github.com/leandrosardi/my.saas'.blue+' <---
@@ -196,7 +196,7 @@ begin
     require "extensions/#{e.name.downcase}/lib/skeletons"
   }
   puts 'done'.green
-  
+
   print 'Setting up Sinatra... '
   PORT = parser.value("port")
 
@@ -208,11 +208,11 @@ begin
 
   configure do
     enable :cross_origin
-  end  
+  end
 
   before do
-    headers 'Access-Control-Allow-Origin' => '*', 
-            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']  
+    headers 'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']
   end
 
   set :protection, false
@@ -247,22 +247,22 @@ begin
     s = "message=#{CGI.escape(env['sinatra.error'].to_s)}&"
     s += "backtrace_size=#{CGI.escape(env['sinatra.error'].backtrace.size.to_s)}&"
     i = 0
-    env['sinatra.error'].backtrace.each { |a| 
+    env['sinatra.error'].backtrace.each { |a|
       a = "backtrace[#{i.to_s}]=#{CGI.escape(a.to_s)}&"
-      and_more = "backtrace[#{i.to_s}]=..." 
+      and_more = "backtrace[#{i.to_s}]=..."
       if (s+a).size > max_lenght - and_more.size
         s += and_more
         break
       else
         s += a
       end
-      i += 1 
+      i += 1
     }
     redirect "/500?#{s}"
   end
 
   # use this modifier for internal pages, who cannot be shown if there IS NOT a logged-in user
-  # condition: if there is not authenticated user on the platform, then redirect to the signup page 
+  # condition: if there is not authenticated user on the platform, then redirect to the signup page
   set(:auth) do |*roles|
     condition do
       if !logged_in?
@@ -270,7 +270,7 @@ begin
         session['redirect_on_success'] = "#{request.path_info.to_s}?#{request.query_string.to_s}"
         redirect "/login"
       elsif unavailable?
-        redirect "/unavailable"      
+        redirect "/unavailable"
       else
         @login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
@@ -285,7 +285,7 @@ begin
       if logged_in?
         redirect "/"
       elsif unavailable?
-        redirect "/unavailable"      
+        redirect "/unavailable"
       end
     end
   end
@@ -311,7 +311,7 @@ begin
   set(:su) do |*roles|
     condition do
       @return_message = {}
-      
+
       @return_message[:status] = 'success'
 
       # this is already proccessed in the :api_key condition
@@ -321,7 +321,7 @@ begin
 
       if validation_api_key != SU_API_KEY.to_s.to_guid.downcase
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
         @return_message[:status] = "api_key of the super-user only is allowed for this access point."
         @return_message[:value] = ""
@@ -334,7 +334,7 @@ begin
   set(:api_key) do |*roles|
     condition do
       @return_message = {}
-      
+
       @return_message[:status] = 'success'
 
       # validate: the pages using the :api_key condition must work as post only.
@@ -348,7 +348,7 @@ begin
 
       if !@body.has_key?('api_key')
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
         @return_message[:status] = "api_key is required on #{@body.to_s}"
         @return_message[:value] = ""
@@ -357,25 +357,25 @@ begin
 
       if !@body['api_key'].guid?
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
-    
+
         @return_message[:status] = "Invalid api_key (#{@body['api_key']}))"
         @return_message[:value] = ""
-        halt @return_message.to_json      
+        halt @return_message.to_json
       end
-      
+
       validation_api_key = @body['api_key'].to_guid.downcase
 
       @account = BlackStack::MySaaS::Account.where(:api_key => validation_api_key).first
       if @account.nil?
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
-        #     
+        #
         @return_message[:status] = 'Api_key not found'
         @return_message[:value] = ""
-        halt @return_message.to_json        
+        halt @return_message.to_json
       end
     end
   end
@@ -383,11 +383,51 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Demo Screens
+  get '/demo/01_ayout', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/01_layout', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/02_selectorws', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/02_selectrows', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/03_tags', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/03_tags', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/04_profiles', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/04_profiles', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/05_editable', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/05_editable', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/06_images', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/06_images', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/07_filters', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/07_filters', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/08_data', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/08_data', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/09_reminders', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/09_reminders', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/09_reminders', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/09_reminders', :layout => :'/views/layouts/full'
+  end
+
   get '/demo/unibox', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/unibox', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/table', :auth => true, :agent => /(.*)/ do
+  get '/demo/tables', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/table', :layout => :'/views/layouts/full'
   end
 
@@ -407,7 +447,7 @@ begin
   get '/500', :agent => /(.*)/ do
     erb :'views/500', :layout => :'/views/layouts/public'
   end
-  
+
   get '/unavailable' do
     erb :'views/unavailable', :layout => :'/views/layouts/public'
   end
@@ -453,7 +493,7 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Funnel
-  # 
+  #
   get '/offer', :auth => true, :agent => /(.*)/ do
     erb :'views/offer', :layout => :'/views/layouts/public'
   end
@@ -536,9 +576,9 @@ begin
     erb :'views/settings/filter_account'
   end
 =begin
-  # 
+  #
   # UNDER CONSTRUCTION
-  # 
+  #
   # white label configuration
   get '/settings/whitelabel', :auth => true, :agent => /(.*)/ do
     erb :'views/settings/whitelabel', :layout => :'/views/layouts/core'
@@ -607,7 +647,7 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # API access points
   print 'Setting up entries of API access points... '
-  
+
   # ping
   get '/api1.0/ping.json', :api_key => true do
     erb :'views/api1.0/ping'
@@ -688,7 +728,7 @@ begin
   post '/api1.0/notifications/click.json' do
     erb :'views/api1.0/notifications/click'
   end
-    
+
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -699,7 +739,7 @@ begin
     require "extensions/#{e.name.downcase}/app.rb"
   }
   puts 'done'.green
-  
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # adding storage sub-folders
   # DEPRECATED
