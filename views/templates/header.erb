@@ -202,3 +202,30 @@ end
 		</div>
 	</div>
 </header>
+
+<%
+dark = @login.user.preference('dark', 'no', params[:dark])
+tab = @login.user.preference('tab', '1', params[:tab])
+pool1 = @login.user.preference('pool1', 'expanded', params[:pool1])
+pool2 = @login.user.preference('pool2', 'expanded', params[:pool2])
+pool3 = @login.user.preference('pool3', 'expanded', params[:pool3])
+%>
+
+<script>
+	function setDarkMode(enable) {
+		const body = document.body;
+		const button = document.getElementById("darkModeButton");
+	
+		if (enable) {
+			body.classList.add("dark-mode");
+			button.innerHTML = '<div class="ball"></div> Light Mode'; // Ball is now inside the button while changing text
+		} else {
+			body.classList.remove("dark-mode");
+			button.innerHTML = '<div class="ball"></div> Dark Mode'; // Ball is now inside the button while changing text
+		}
+	}
+
+	$(document).ready(function() {
+		setDarkMode('<%=dark%>' == 'yes');
+	});
+</script>
