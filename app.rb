@@ -383,7 +383,7 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Demo Screens
-  get '/demo/01_ayout', :auth => true, :agent => /(.*)/ do
+  get '/demo/01_layout', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/01_layout', :layout => :'/views/layouts/full'
   end
 
