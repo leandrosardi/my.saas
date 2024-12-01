@@ -19,6 +19,8 @@
               </button>
             </div>
             <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
               <ul>
                 <li><a href="/demo/01_layout">Demo 01: Layout</a></li>
                 <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
@@ -30,6 +32,8 @@
                 <li><a href="/demo/08_data">Demo 08: Data</a></li>
                 <li><a href="/demo/09_reminders">Demo 09: Reminders</a></li>
               </ul>
+            </div>
+            </section>
             </div>
           </div>
         </section>
@@ -53,16 +57,107 @@
               </button>
             </div>
 
-            <div id="list_div">
-              <section class="responsive-height-2" style="overflow: auto; max-height: fit-content;">
-                <div class="user_list">
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h3>URL Parameters</h3>
+                <section class='row-fluid'>
+                  <p><a href='http://127.0.0.1:3000/demo/01_layout?dark=yes'>Example: Setting dark-mode dynamically with <code>?dark=yes</code>.</a></p>
+                  <p><a href='http://127.0.0.1:3000/demo/01_layout?tab=tab2'>Example: Choosing the "Other Tab" tab with <code>?tab=tab2</code>.</a></p>
+                  <p><a href='http://127.0.0.1:3000/demo/01_layout?pool1=collapsed'>Example: Collapsing first panel with <code>?pool1=collapsed</code>.</a></p>
+                </section>
+
+                <h3>Dark Mode</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-black' onclick='setDarkMode(true);'>Set Dark-Mode ON</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-gray' onclick='setDarkMode(false);'>Set Dark-Mode OFF</button>
+                  </div>
+                </section>
+
+                <h3>Tabs</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='chooseTab("tab1");'>Choose "Documentation" Tab</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='chooseTab("tab2");'>Choose the "Other Tab"</button>
+                  </div>
+                </section>
+
+                <h3>Panels</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='togglePanel("pool1");'>Toggle Panel 1</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='togglePanel("pool3");'>Toggle Panel 3</button>
+                  </div>
+                </section>
+
+                <h3>Divs x 2</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    Panel 1
+                  </div>
+                  <div class='span6'>
+                    Panel 2
+                  </div>
+                </section>
+
+                <h3>Divs x 3</h3>
+                <section class='row-fluid'>
+                  <div class='span4'>
+                    Panel 1
+                  </div>
+                  <div class='span4'>
+                    Panel 2
+                  </div>
+                  <div class='span4'>
+                    Panel 3
+                  </div>
+                </section>
+
+                <h3>Boxes</h3>
+                <section class='row-fluid'>
+                  <div class='span6 box'>
+                    Box 1
+                  </div>
+                  <div class='span6 box'>
+                    Box 2
+                  </div>
+                </section>
+
+                <h3>Buttons</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-large'>Large Button</button><br/>
+                    <br/>
+                    <button class='btn btn-normal'>Normal Button</button><br/>
+                    <br/>
+                    <button class='btn btn-small'>Small Button</button><br/>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-blue'>Blue Button</button><br/>
+                    <br/>
+                    <button class='btn btn-red'>Red Button</button><br/>
+                    <br/>
+                    <button class='btn btn-green'>Green Button</button><br/>
+                  </div>
+                </section>
+
+              </div>
+            </section>
+          </div>
 
 
 
 
-                </div>
-              </section>
-            </div>
+
+
+
           </div>
         </section>
         <!-- Pool 3 -->
@@ -107,7 +202,7 @@ The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users wi
   
 - [Example: Setting dark-mode dynamically with `?dark=yes`](01_layout?dark=yes).
                 
-- [Example: Choosing filters tab with `?tab=tab2`](01_layout?tab=tab2).
+- [Example: Choosing the "Other Tab" tab with `?tab=tab2`](01_layout?tab=tab2).
 
 - [Example: Collapsing first panel with `?pool1=collapsed`](01_layout?pool1=collapsed)
 
@@ -119,6 +214,7 @@ You can setup the screen with JavaScript too.
 - `chooseTab("tab1");`
 - `closePanel("pool1");`
 - `openPanel("pool2");`
+- `togglePanel("pool2");`
 
 #### Remember User Preferences
 
