@@ -224,7 +224,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		};
 		
 		// Make the AJAX POST request to update the preference
-		fetch('/ajax/preference.json', {
+		fetch('/ajax/set_preference.json', {
 			method: 'POST',                      	// HTTP method
 			headers: {
 				'Content-Type': 'application/json' 	// Specify JSON content
@@ -242,17 +242,50 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			if (data.status !== 'success') {
 				// Handle application-level errors
 				console.error('Error updating preference:', data.status);
-				// Optionally, revert the dark mode toggle if the update fails
-				document.body.classList.toggle('dark-mode');
 			} else {
-				console.log('Preference updated successfully.');
+				//console.log('Preference updated successfully.');
 			}
 		})
 		.catch(error => {
 			// Handle fetch or parsing errors
 			console.error('There was a problem with the fetch operation:', error);
-			// Optionally, revert the dark mode toggle if the update fails
-			document.body.classList.toggle('dark-mode');
+		});
+	}
+
+	// update user preference via AJAX
+	function getPreference(name, default_value) {		
+		// Prepare the data to be sent in the request
+		const data = {
+			name: name,       		// Preference name
+			default: default_value	// Default value
+		};
+		
+		// Make the AJAX POST request to update the preference
+		fetch('/ajax/get_preference.json', {
+			method: 'POST',                      	// HTTP method
+			headers: {
+				'Content-Type': 'application/json' 	// Specify JSON content
+			},
+			body: JSON.stringify(data)           	// Convert data to JSON string
+		})
+		.then(response => {
+			if (!response.ok) {
+				// Handle HTTP errors
+				throw new Error(`Network response was not ok: ${response.statusText}`);
+			}
+			return response.json(); // Parse the JSON response
+		})
+		.then(data => {
+			if (data.status !== 'success') {
+				// Handle application-level errors
+				console.error('Error updating preference:', data.status);
+			} else {
+				return data.value;
+			}
+		})
+		.catch(error => {
+			// Handle fetch or parsing errors
+			console.error('There was a problem with the fetch operation:', error);
 		});
 	}
 

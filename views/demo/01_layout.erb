@@ -56,34 +56,10 @@
             <div id="list_div">
               <section class="responsive-height-2" style="overflow: auto; max-height: fit-content;">
                 <div class="user_list">
-                <%=@md.render('
-### Layout
-                
-Any internal scraeen of My.SaaS has 2 or 3 panels, like this page that you are reading now.
-                
-Find a live demo of a 2-panel screen [here](01a_2pools).
 
-Find a live demo of a 3-panel screen [here](01b_3pools).
-                
-#### URL Parameters
 
-The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users with the ability to customize their interface preferences dynamically. 
-  
-- [Example: Setting dark-mode dynamically with `?dark=yes`](01_layout?dark=yes).
-                
-- [Example: Choosing filters tab with `?tab=tab2`](01_layout?tab=tab2).
 
-- [Example: Collapsing first panel with `?pool1=collapsed`](01_layout?pool1=collapsed)
 
-#### JavaScript
-
-You can setup the screen with JavaScript too.
-
-- `setDarkMode(true);`
-- `chooseTab("tab1");`
-- `closePanel("pool1");`
-- `openPanel("pool2");`
-                ')%>   
                 </div>
               </section>
             </div>
@@ -112,44 +88,47 @@ You can setup the screen with JavaScript too.
                   <div class="tab-container">
                     <!-- Tab Buttons -->
                     <div class="tab-buttons">
-                      <button class="tab-button active" data-tab="tab1">Chats</button>
-                      <button class="tab-button" data-tab="tab2">Filters</button>
-                      <button class="tab-button" data-tab="tab3">Events</button>
-                      <button class="tab-button" data-tab="tab4">Insights</button>
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                      <button class="tab-button" data-tab="tab2">Other Tab</button>
                     </div>
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                        <p>
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
-                          Content for Chats. This is the first tab's content.
+                      <%=@md.render('                
+Any internal scraeen of My.SaaS has 2 or 3 panels, like this page that you are reading now.
+                
+Find a live demo of a 2-panel screen [here](01a_2pools).
+
+Find a live demo of a 3-panel screen [here](01b_3pools).
+                
+#### URL Parameters
+
+The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users with the ability to customize their interface preferences dynamically. 
+  
+- [Example: Setting dark-mode dynamically with `?dark=yes`](01_layout?dark=yes).
+                
+- [Example: Choosing filters tab with `?tab=tab2`](01_layout?tab=tab2).
+
+- [Example: Collapsing first panel with `?pool1=collapsed`](01_layout?pool1=collapsed)
+
+#### JavaScript
+
+You can setup the screen with JavaScript too.
+
+- `setDarkMode(true);`
+- `chooseTab("tab1");`
+- `closePanel("pool1");`
+- `openPanel("pool2");`
+
+#### Remember User Preferences
+
+You can get your SaaS to remember the preferences of the user.
+
+`setPreference("dark", "yes");`
 
 
-                        </p>
+----
+')%>   
                       </div>
                       <div id="tab2" class="tab-content">
                         <p>Content for Filters. This is the second tab's content.</p>

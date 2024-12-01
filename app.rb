@@ -438,8 +438,12 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Setup user preferences 
 
-  post '/ajax/preference.json', :auth => true, :agent => /(.*)/ do
-    erb :'views/ajax/preference'
+  post '/ajax/set_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/set_preference'
+  end
+
+  post '/ajax/get_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/get_preference'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
