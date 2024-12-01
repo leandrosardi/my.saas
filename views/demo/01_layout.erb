@@ -53,47 +53,39 @@
               </button>
             </div>
 
-            <div id="list_div" class="panel-content">
-              <%=@md.render('
-# Layout
+            <div id="list_div">
+              <section class="responsive-height-2" style="overflow: auto; max-height: fit-content;">
+                <div class="user_list">
+                <%=@md.render('
+### Layout
+                
+Any internal scraeen of My.SaaS has 2 or 3 panels, like this page that you are reading now.
+                
+Find a live demo of a 2-panel screen [here](01a_2pools).
 
-Any internal scraeen of My.SaaS has 2 or 3 panels.
-
-## Drawing 2 Panels
-
-Find a live demo [here](01a_2pools).
-
-```<section class="row-fluid">
-    <div class="container-fluid" style="padding-right: 0 !important;">
-      <div class="row">
-
-        <!-- Pool 2 -->
-        <section id="pool2" name="pool2" class="col-6 panel responsive-height-1">
-          <div id="panel2_panel" class="pool2-panel">
-          	Some content here
-          </div>
-        </section>
-        
-        <!-- Pool 3 -->
-        <section id="pool3" name="pool3" class="col-6 panel responsive-height-1">
-          <div id="panel3_panel" class="pool3-panel">
-          	Some content here
-          </div>
-        </section>
-
-      </div>
-    </div>
-</section>```
-
-## Drawing 3 Panels
+Find a live demo of a 3-panel screen [here](01b_3pools).
+                
+#### URL Parameters
 
 The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users with the ability to customize their interface preferences dynamically. 
-These settings enhance user experience by allowing personalization and ensuring that the application adapts to individual needs and device types. Understanding and utilizing these parameters can significantly improve the usability and responsiveness of your SaaS application.
+  
+- [Example: Setting dark-mode dynamically with `?dark=yes`](01_layout?dark=yes).
+                
+- [Example: Choosing filters tab with `?tab=tab2`](01_layout?tab=tab2).
 
+- [Example: Collapsing first panel with `?pool1=collapsed`](01_layout?pool1=collapsed)
 
+#### JavaScript
 
-')%>              
-              <p>---</p>            
+You can setup the screen with JavaScript too.
+
+- `setDarkMode(true);`
+- `chooseTab("tab1");`
+- `closePanel("pool1");`
+- `openPanel("pool2");`
+                ')%>   
+                </div>
+              </section>
             </div>
           </div>
         </section>
