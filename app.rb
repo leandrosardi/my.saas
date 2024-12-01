@@ -428,6 +428,13 @@ begin
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Setup user preferences 
+
+  post '/ajax/preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/preference'
+  end
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
 
   print 'Setting up entries of external pages... '
@@ -509,9 +516,6 @@ begin
 
   get '/welcome', :auth => true, :agent => /(.*)/ do
     erb :'views/welcome', :layout => :'/views/layouts/core'
-  end
-  get '/ajax/welcome', :auth => true, :agent => /(.*)/ do
-    erb :'views/ajax/welcome'
   end
 
   get '/new', :auth => true, :agent => /(.*)/ do

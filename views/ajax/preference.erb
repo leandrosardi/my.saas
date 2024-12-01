@@ -1,0 +1,17 @@
+<%
+return_message = {}
+begin
+    body = JSON.parse(request.body.read)
+    name = body['name']
+    default = body['default']
+    value = body['value']
+#binding.pry
+    @login.user.preference(name, default, value)
+
+    # return
+    return_message[:status] = 'success'
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>
