@@ -3,7 +3,7 @@ return_message = {}
 begin
     body = JSON.parse(request.body.read)
     name = body['name']
-    default = body['default']
+    default = '' #body['default']
 #binding.pry
     return_message[:value] = @login.user.preference(name, default, nil)
 
