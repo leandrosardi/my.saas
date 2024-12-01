@@ -62,8 +62,24 @@
               <div class="chat-messages">
                 <h2>Tags</h2>
 
-                ...
+                <div class='tags' data-id="lead-123">
+                  <!-- call tagsJs.draw -->
+                </div>
 
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
               </div>
             </section>
           </div>
@@ -114,3 +130,112 @@
       </div>
     </div>
 </section>
+
+<script>
+$(document).ready(function() {
+  parent1 = $('div.tags[data-id="lead-123"]');
+    
+  tagsJs.draw(parent1, {
+    text: '3 tags',
+    allow_creation: true,
+    allow_selection: true,
+
+    on_expand: function() {
+      console.log('on_expand parent1');
+    },
+    
+    on_create_tag: function(s) {
+      console.log('on_create_tag: ' + s);
+
+      // create the temporary tag
+      tagsJs.add_tag(parent1, {
+        id: s,
+        name: s,
+        color: 'gray',
+        checked: false              
+      });
+
+      // set the tag opacity in 0.5 to the temporary tag, not checked yet
+      tagsJs.set_tag_opacity(parent1, s, 0.5);
+
+      // do the AJAX call
+      $.ajax({
+          url: './assets/ajax/tags/create_and_add_tag.json',
+          type: 'POST',
+          data: {
+              id_lead: 'lead-123',
+              id_tag: s,
+          },
+          success: function(data) {
+              // parse JSON response
+              json = JSON.parse(data);
+              // validate json status
+              if (json.status != 'success') {
+                // set the tag opacity back in 1
+                tagsJs.set_tag_opacity(parent1, s, 1);
+
+                // I received the response, with the tag created with an ID
+                // Then, I remove the temporary tag
+                tagsJs.remove_tag(parent1, s);
+                // And create the final tag, with the right ID, checked.
+                tagsJs.add_tag(parent1, {
+                  id: json.id_tag,
+                  name: s,
+                  color: 'gray',
+                  checked: true              
+                });
+
+
+              } else {
+                console.log('AJAX Error: ' + json.status);
+                // if an error happened, remove the tag
+                tagsJs.remove_tag(parent1, s);
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('AJAX Error:', status, error);
+              // if an error happened, remove the tag
+              tagsJs.remove_tag(parent1, s);
+          }
+      });
+    },
+  });
+
+  tagsJs.add_tag(parent1, {
+    id: '1',
+    name: 'Tag1',
+    color: 'blue',
+    checked: true,
+    on_click_tag: function() {
+      console.log('on_click_tag: 1');
+      tagsJs.collapse(parent1);
+    },
+    on_select_tag: function() {
+      console.log('on_select_tag: 1');
+      tagsJs.check_tag(parent1, '1');
+    },
+    on_unselect_tag: function() {
+      console.log('on_unselect_tag: 1');
+      tagsJs.uncheck_tag(parent1, '1');
+    },
+  });
+
+  tagsJs.add_tag(parent1, {
+    id: '2',
+    name: 'Tag2',
+    color: '#00dd00',
+    checked: false
+  });
+
+  tagsJs.add_tag(parent1, {
+    id: '3',
+    name: 'Tag3',
+    color: 'rgb(255,0,0)',
+    checked: false
+  });
+
+  tagsJs.set_text(parent1, 'click to select tags');
+
+  tagsJs.set_tag_opacity(parent1, '2', 0.5);
+});
+</script>
