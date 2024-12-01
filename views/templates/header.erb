@@ -313,8 +313,9 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 		}
 
 		// in a mobile screen, only one panel can be shown at a time.
-	    const panel = document.getElementById(panelId);
-	    const pool1 = document.getElementById("pool1");
+	    let panel = document.getElementById(panelId);
+	    if (panel==null) panel = document.getElementById("pool2");
+		const pool1 = document.getElementById("pool1");
 		const pool2 = document.getElementById("pool2");
 		const pool3 = document.getElementById("pool3");
 
@@ -353,6 +354,8 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 
 		// Helper function to update icon classes
 		function updateIcon(button, showLeft) {
+			if (button==null) return;
+			
 			// behaviour is differnt into a mobile screen
 			if (window.matchMedia("(max-width: 768px)").matches) {
 				showLeft = !showLeft
@@ -393,7 +396,8 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 	// switch arrow buttons
 	function togglePanel(panelId, arrowID) {
 		const panel = document.getElementById(panelId);
-		const panelVisible = window.getComputedStyle(panel).display !== "none";
+		if (panel==null) return;
+		const panelVisible = panel.style.display !== "none";
 		if (!panelVisible) {
 			openPanel(panelId);
 		} else {
