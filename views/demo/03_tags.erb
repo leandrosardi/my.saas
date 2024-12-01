@@ -113,6 +113,98 @@
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
                       <%=@md.render('                
+**tags.min.js** is a JavaScript library that enables dynamic management of tags within web applications. 
+
+It allows users to add, remove, and select tags seamlessly, enhancing user interaction and data organization. 
+
+With customizable options and event callbacks, it simplifies the implementation of robust tagging systems.
+
+#### 1. Define a Parent Element
+
+A **parent element** is a `div` where the tag control will be rendered.
+
+```html
+<div class="tags" data-id="lead-123">
+	<!-- call tagsJs.draw -->
+</div>
+```
+
+#### 2. Draw the Tag Control
+
+```javascript
+var parent1 = $("div.tags[data-id="lead-123"]");
+
+tagsJs.draw(parent1, {
+	text: "3 tags will be added here by code",
+	allow_creation: true,
+	allow_selection: true
+});
+```
+
+**Notes:**
+
+- Use the `allow_creation` parameter to draw an input box and and **Add** button into the control.
+
+- Use the `allow_selection` parameter to draw a check-box with each tag that you will add further.
+
+#### 3. Add Tags by Code
+
+```javascript
+tagsJs.add_tag(parent1, {
+  // id is mandatory
+  id: "3",
+  // name is mandatory
+  name: "Tag3",
+  // checked is mandatory if `allow_selection` is activated
+  checked: false,
+  // color is optional - default: white
+  color: "rgb(255,0,0)"
+});
+```
+
+#### 4. Change Caption Dynamically
+
+Use JavaScript to change the caption of the dropdown menu:
+
+```javascript
+tagsJs.set_text(parent1, "3 tags have been added here by code");
+``` 
+
+#### 5. Change the Opacity of a Tag
+
+Use JavaScript to change the opacity of a tag dynamically:
+
+```javascript
+tagsJs.set_tag_opacity(parent1, "2", 0.5);
+``` 
+
+#### 6. Catch `on_expand` Event
+
+Adding a callback function to the `on_expand` event is useful when you want to load the list of tags with AJAX.
+
+Loading a the list of tags dynamically, when the dropdown is expaned, is mandatory if your screen is showing a large number of drop-down lists. 
+
+```javascript
+var parent1 = $("div.tags[data-id="lead-123"]");
+
+tagsJs.draw(parent1, {
+	text: "3 tags will be added here by code",
+	allow_creation: true,
+	allow_selection: true,
+	on_expand: function() {
+		console.log("on_expand parent1");
+		// Add your AJAX code here to load tags dynamically.
+	},
+});
+```
+
+###
+
+
+
+
+
+
 
 ----
 ')%>   
@@ -136,14 +228,14 @@ $(document).ready(function() {
   parent1 = $('div.tags[data-id="lead-123"]');
     
   tagsJs.draw(parent1, {
-    text: '3 tags',
+    text: '3 tags will be added here by code',
     allow_creation: true,
     allow_selection: true,
 
     on_expand: function() {
       console.log('on_expand parent1');
     },
-    
+
     on_create_tag: function(s) {
       console.log('on_create_tag: ' + s);
 
@@ -230,7 +322,7 @@ $(document).ready(function() {
   tagsJs.add_tag(parent1, {
     id: '3',
     name: 'Tag3',
-    color: 'rgb(255,0,0)',
+    //color: 'rgb(255,0,0)',
     checked: false
   });
 
