@@ -418,11 +418,7 @@ begin
   get '/demo/09_reminders', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/09_reminders', :layout => :'/views/layouts/full'
   end
-
-  get '/demo/09_reminders', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/09_reminders', :layout => :'/views/layouts/full'
-  end
-
+  
   get '/demo/unibox', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/unibox', :layout => :'/views/layouts/full'
   end
