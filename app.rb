@@ -273,7 +273,7 @@ begin
         redirect "/unavailable"
       else
         # rendered to convert markdown to html
-        @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+        @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, highlight: true)
         @login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
       end

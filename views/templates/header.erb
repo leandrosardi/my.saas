@@ -532,6 +532,9 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	// layout events: darkmode, collapse/expand panels, choose tab
 	$(document).ready(function() {
+		// initialize select-rows
+		selectRowsJs.init();
+
 		// setup preference dark mode
 		setDarkMode('<%=dark%>' == 'yes', false);
 
