@@ -272,6 +272,8 @@ begin
       elsif unavailable?
         redirect "/unavailable"
       else
+        # rendered to convert markdown to html
+        @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
         @login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
       end
@@ -385,6 +387,12 @@ begin
   # Demo Screens
   get '/demo/01_layout', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/01_layout', :layout => :'/views/layouts/full'
+  end
+  get '/demo/01a_2pools', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/01a_2pools', :layout => :'/views/layouts/full'
+  end
+  get '/demo/01b_3pools', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/01b_3pools', :layout => :'/views/layouts/full'
   end
 
   get '/demo/02_selectorws', :auth => true, :agent => /(.*)/ do
