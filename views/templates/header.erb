@@ -303,12 +303,34 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 		}
 	}
 
-	// expand/open a panel
+	// expand/open a panel.
+	// if it is a mobile screen, only one panel can be shown at a time.
 	function openPanel(panelId) {
 		let o = document.getElementById(panelId);
 		if (o) {
 			o.style.display = "block";
 			adjustLayout();
+		}
+
+		// in a mobile screen, only one panel can be shown at a time.
+	    const panel = document.getElementById(panelId);
+	    const pool1 = document.getElementById("pool1");
+		const pool2 = document.getElementById("pool2");
+		const pool3 = document.getElementById("pool3");
+
+		if (pool1 == null) {
+			if (window.matchMedia("(max-width: 768px)").matches) {
+				pool2.style.display = "none";
+				pool3.style.display = "none";
+				panel.style.display = "block";
+			}
+		} else {
+			if (window.matchMedia("(max-width: 768px)").matches) {
+				pool1.style.display = "none";
+				pool2.style.display = "none";
+				pool3.style.display = "none";		
+				panel.style.display = "block";
+			}
 		}
 	}
 
@@ -331,6 +353,11 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 
 		// Helper function to update icon classes
 		function updateIcon(button, showLeft) {
+			// behaviour is differnt into a mobile screen
+			if (window.matchMedia("(max-width: 768px)").matches) {
+				showLeft = !showLeft
+			}
+
 			const icon = button.querySelector('i');
 			if (icon) {
 				if (showLeft) {
@@ -366,59 +393,13 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 	// switch arrow buttons
 	function togglePanel(panelId, arrowID) {
 		const panel = document.getElementById(panelId);
-	    const pool1 = document.getElementById("pool1");
-		const pool2 = document.getElementById("pool2");
-		const pool3 = document.getElementById("pool3");
-
-		if (pool1 == null) {
-			if (window.matchMedia("(max-width: 768px)").matches) {
-				pool2.style.display = "none";
-				pool3.style.display = "none";
-				panel.style.display = "block";
-			} else {
-				const panelVisible = window.getComputedStyle(panel).display !== "none";
-				const arrowElement = document.getElementById(arrowID);
-
-				if (!panelVisible) {
-					panel.style.display = "block";
-				} else {
-					panel.style.display = "none";
-				}
-
-				if (arrowElement) {
-					if (arrowElement.innerHTML.includes("fa-arrow-right")) {
-						arrowElement.innerHTML = '<i class="fa-solid fa-arrow-left"></i>';
-					} else if (arrowElement.innerHTML.includes("fa-arrow-left")) {
-						arrowElement.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
-					}
-				}
-			}
+		const panelVisible = window.getComputedStyle(panel).display !== "none";
+		if (!panelVisible) {
+			openPanel(panelId);
 		} else {
-			if (window.matchMedia("(max-width: 768px)").matches) {
-				pool1.style.display = "none";
-				pool2.style.display = "none";
-				pool3.style.display = "none";
-		
-				panel.style.display = "block";
-			} else {
-				const panelVisible = window.getComputedStyle(panel).display !== "none";
-				const arrowElement = document.getElementById(arrowID);
-		
-				if (!panelVisible) {
-					panel.style.display = "block";
-				} else {
-					panel.style.display = "none";
-				}
-		
-				if (arrowElement) {
-					if (arrowElement.innerHTML.includes("fa-arrow-right")) {
-						arrowElement.innerHTML = '<i class="fa-solid fa-arrow-left"></i>';
-					} else if (arrowElement.innerHTML.includes("fa-arrow-left")) {
-						arrowElement.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
-					}
-				}
-			}
+			closePanel(panelId);
 		}
+		setButtons();
 		adjustLayout();
 	}
 	
@@ -469,7 +450,8 @@ pool3 = @login.user.preference("{path}_pool1", 'expanded', params[:pool3])
 		if ('<%=pool1%>' == 'expanded') { openPanel('pool1'); } else { closePanel('pool1'); }
 		if ('<%=pool2%>' == 'expanded') { openPanel('pool2'); } else { closePanel('pool2'); }
 		if ('<%=pool3%>' == 'expanded') { openPanel('pool3'); } else { closePanel('pool3'); }
-		setButtons();
+		//setButtons();
+		togglePanel('pool1');
 		adjustLayout();
 
 		// Check window size on load and resize
