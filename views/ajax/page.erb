@@ -1,0 +1,22 @@
+<%
+begin
+    object = params[:object]
+    cls = BlackStack::API.classes[object.to_sym]
+    page = @body['page'].to_i
+    limit = @body['limit'].to_i    
+    filters = @body['filters']
+    promiscuous = @body['promiscuous']
+    
+    # getting the dataset
+    ds = cls.page(@account, page: page, limit: limit, filters: filters)
+    
+    #n = ds.count
+    arr = ds.limit(limit).offset((page-1)*limit).order(:create_time).all
+
+    #@return_message['total'] = n
+    @return_message['results'] = arr.map { |o| o.to_h }
+rescue Exception => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

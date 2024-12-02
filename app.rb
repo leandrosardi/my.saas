@@ -272,9 +272,15 @@ begin
       elsif unavailable?
         redirect "/unavailable"
       else
+        # parameters into a JSON strucutre received by an AJAX end-point
+        @body = JSON.parse(request.body.read)
         # rendered to convert markdown to html
         @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, highlight: true)
+        # current logged-in user
         @login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
+        @user = @login.user
+        @account = @user.account
+        # current service switched into the SaaS
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
       end
     end
@@ -445,6 +451,14 @@ begin
   post '/ajax/get_preference.json', :auth => true, :agent => /(.*)/ do
     erb :'views/ajax/get_preference'
   end
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Objects management
+
+  post "/ajax/:object/count.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/count"
+  end
+
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
