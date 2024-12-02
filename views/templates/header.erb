@@ -12,7 +12,7 @@ end
 # get extension
 e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase && e.show_in_top_bar }.first
 if e.nil?
-	@service = nil 
+	@service = nil
 	e = nil
 end
 
@@ -20,7 +20,7 @@ end
 path = request.path.gsub('/', '_')
 dark = @login.user.preference('dark', 'no', params[:dark])
 
-# Get page layout preferences: tab number selected; and pool1, pool2, pool3 (expanded or colapsed) 
+# Get page layout preferences: tab number selected; and pool1, pool2, pool3 (expanded or colapsed)
 tab = @login.user.preference("#{path}_tab", '1', params[:tab])
 pool1 = @login.user.preference("#{path}_pool1", 'expanded', params[:pool1])
 pool2 = @login.user.preference("#{path}_pool2", 'expanded', params[:pool2])
@@ -47,13 +47,13 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			<table width='100%'>
 				<tr>
 					<td width='48px'><a class="logo" href="/dashboard" title='Home'><img alt="<%=CS_HOME_WEBSITE%>_logo" src="<%=CS_HOME_FAVICON%>" width='96px'></a></td>
-					
+
 					<td style="text-align: right" width="auto">
 						<button id="darkModeButton">
 						<div class="ball"></div> Dark Mode
 						</button>
 					</td>
-	
+
 
 					<td id='services'>
 						<span style='color: White;font-family: Arial;font-size: 12px;'>
@@ -66,7 +66,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 							<ul class="nav">
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-										<i class='icon-coffee'></i> <span id='service_name'><%=@service.to_s.capitalize.encode_html%> <i class="icon-chevron-down"></span></i>  
+										<i class='icon-coffee'></i> <span id='service_name'><%=@service.to_s.capitalize.encode_html%> <i class="icon-chevron-down"></span></i>
 									</a>
 									<ul class="dropdown-menu" style='width:250px;'>
 										<li><a href="/dashboard"><i class="icon-home"></i> Home</a></li>
@@ -95,7 +95,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 							<%
 							end # if BlackStack::Extensions::extensions.select { |e| e.show_in_top_bar == true && !e.services_section.nil? }.size > 0
 							%>
-						</span>					
+						</span>
 					</td>
 
 					<%
@@ -103,16 +103,16 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 						BlackStack::I2P::services_descriptor.select { |h| h[:show_in_top_bar] }.each { |h|
 						%>
 						<td align='left' style='text-align: left:' width='250px'>
-							<a href="/plans"> 
+							<a href="/plans">
 								<span>
 									<%
 									if h[:mode] == BlackStack::I2P::MODE_CREDITS
 									%>
-									<span id='credits' class='label label-blue'><%=account.credits(h[:code]).to_i.to_label%></span> <span style='color:white;'><%=h[:unit_name].to_s%></span> 
+									<span id='credits' class='label label-blue'><%=account.credits(h[:code]).to_i.to_label%></span> <span style='color:white;'><%=h[:unit_name].to_s%></span>
 									<%
 									elsif h[:mode] == BlackStack::I2P::MODE_AMOUNT
 									%>
-									<span id='amount' class='label label-blue'>$<%=account.balance(h[:code]).to_f.round(2).to_label%></span> <span style='color:white;'></span> 
+									<span id='amount' class='label label-blue'>$<%=account.balance(h[:code]).to_f.round(2).to_label%></span> <span style='color:white;'></span>
 									<%
 									end # if h[:mode] == BlackStack::I2P::MODE_AMOUNT
 									%>
@@ -124,7 +124,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 						}
 					end
 					%>
-					
+
 					<td align='right' style='text-align: right;' width='auto' >
 						<%
 						# Badge: SysOwner
@@ -149,7 +149,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 							end
 						end
 						%>
-	
+
 						<a href="mailto:<%=HELPDESK_EMAIL%>?subject=I Need Help" style='color:white;'>
 							<span>
 								<span class='badge badge-blue'><i class="icon-question"></i> <span id='email_support'>Email Support</span></span>
@@ -157,7 +157,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 						</a>
 					</td>
 
-					<td align='right' style='text-align: right:' width='54px'>			
+					<td align='right' style='text-align: right:' width='54px'>
 						<ul class="nav pull-right">
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle usermenu" data-toggle="dropdown">
@@ -169,7 +169,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 								<ul class="dropdown-menu">
 									<li class="nav-header">User Details</li>
 									<li><a><b>Email:</b> <%=user.email.encode_html%></a></li>
-									<li><a><b>Company:</b> <%=account.name.to_s.encode_html%></a></li>								
+									<li><a><b>Company:</b> <%=account.name.to_s.encode_html%></a></li>
 									<%
 									if !e.nil? # I am in a service
 										%>
@@ -184,7 +184,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 											<%
 										}
 									end
-									%>					
+									%>
 									<li class="divider"></li>
 									<li class="nav-header">Options</li>
 									<li>
@@ -214,14 +214,22 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 </header>
 
 <script>
+	// Modern JavaScript environments (Node.js and browsers) provide the crypto API for generating random values, which you can use to implement a UUID generator.
+	// The GUID generated using either method below is a UUID version 4, which matches PostgreSQL's default format for UUID types. It is a 128-bit value formatted as xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
+	function generateGUID() {
+	  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+	    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+	  );
+	}
+
 	// update user preference via AJAX
-	function setPreference(name, value) {		
+	function setPreference(name, value) {
 		// Prepare the data to be sent in the request
 		const data = {
 			name: name,       		// Preference name
 			value: value        	// New value ('yes' or 'no')
 		};
-		
+
 		// Make the AJAX POST request to update the preference
 		fetch('/ajax/set_preference.json', {
 			method: 'POST',                      	// HTTP method
@@ -252,12 +260,12 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	}
 
 	// update user preference via AJAX
-	function getPreference(name) {		
+	function getPreference(name) {
 		// Prepare the data to be sent in the request
 		const data = {
 			name: name       		// Preference name
 		};
-		
+
 		// Make the AJAX POST request to update the preference
 		fetch('/ajax/get_preference.json', {
 			method: 'POST',                      	// HTTP method
@@ -414,7 +422,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			if (window.matchMedia("(max-width: 768px)").matches) {
 				pool1.style.display = "none";
 				pool2.style.display = "none";
-				pool3.style.display = "none";		
+				pool3.style.display = "none";
 				panel.style.display = "block";
 			}
 		}
@@ -440,7 +448,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		// Helper function to update icon classes
 		function updateIcon(button, showLeft) {
 			if (button==null) return;
-			
+
 			// behaviour is differnt into a mobile screen
 			if (window.matchMedia("(max-width: 768px)").matches) {
 				showLeft = !showLeft
@@ -477,7 +485,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			updateIcon(btn3, !isPool3Visible);
 		}
 	}
-	
+
 	// switch arrow buttons
 	function togglePanel(panelId, arrowID) {
 		const panel = document.getElementById(panelId);
@@ -491,28 +499,28 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		setButtons();
 		adjustLayout();
 	}
-	
+
 	// Unselect all the tabs and content divs.
 	// Select the right tab and content div.
 	function chooseTab(tabId, set_preference=true) {
 		// save preference
 		if (set_preference) setPreference('<%=path%>_tab', tabId);
-		
+
 		// Select the button with the specific data-tab attribute
 		var $button = $(`button[data-tab='${tabId}']`);
-		
+
 		// Find the closest ancestor with the class 'tab-container'
 		var $tabContainer = $button.closest(".tab-container");
-		
+
 		// Unselect all tab buttons by removing the 'active' class
 		$tabContainer.find(".tab-button").removeClass("active");
-		
+
 		// Select the clicked tab button by adding the 'active' class
 		$button.addClass("active");
-		
+
 		// Hide all tab content sections by removing the 'active' class
 		$tabContainer.find(".tab-content").removeClass("active");
-		
+
 		// Show the corresponding tab content by adding the 'active' class
 		$tabContainer.find(`#${tabId}`).addClass("active");
 	}
@@ -571,7 +579,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			}
 		});
 
-		// 
+		//
 		$(".tab-button").click(function () {
 			const button = this;
 			const tabId = button.getAttribute("data-tab");

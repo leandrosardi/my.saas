@@ -112,10 +112,10 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('                
-**tags.min.js** is a JavaScript library that enables dynamic management of tags within web applications. 
+                      <%=@md.render('
+**tags.min.js** is a JavaScript library that enables dynamic management of tags within web applications.
 
-It allows users to add, remove, and select tags seamlessly, enhancing user interaction and data organization. 
+It allows users to add, remove, and select tags seamlessly, enhancing user interaction and data organization.
 
 With customizable options and event callbacks, it simplifies the implementation of robust tagging systems.
 
@@ -168,7 +168,7 @@ Use JavaScript to change the caption of the dropdown menu:
 
 ```javascript
 tagsJs.set_text(parent1, "3 tags have been added here by code");
-``` 
+```
 
 #### 5. Change the Opacity of a Tag
 
@@ -176,21 +176,22 @@ Use JavaScript to change the opacity of a tag dynamically:
 
 ```javascript
 tagsJs.set_tag_opacity(parent1, "2", 0.5);
-``` 
+```
 
 #### 6. Catch `on_expand` Event
 
+The event `on_expand` is raised when the user opens the dropdown list.
+
 Adding a callback function to the `on_expand` event is useful when you want to load the list of tags with AJAX.
 
-Loading a the list of tags dynamically, when the dropdown is expaned, is mandatory if your screen is showing a large number of drop-down lists. 
+Loading a the list of tags dynamically, when the dropdown is expaned, is mandatory if your screen is showing a large number of drop-down lists.
 
 ```javascript
 var parent1 = $("div.tags[data-id="lead-123"]");
 
 tagsJs.draw(parent1, {
 	text: "3 tags will be added here by code",
-	allow_creation: true,
-	allow_selection: true,
+	...
 	on_expand: function() {
 		console.log("on_expand parent1");
 		// Add your AJAX code here to load tags dynamically.
@@ -198,16 +199,131 @@ tagsJs.draw(parent1, {
 });
 ```
 
-###
+#### 7. Catch `on_create_tag` Event
 
+The event `on_create_tag` is raised when the user clicks on the `Add` button.
 
+Adding a callback function to the `on_create_tag` event is useful when you want to call an AJAX end-point for registering the new tag in your database.
 
+```javascript
+tagsJs.draw(parent1, {
+	text: "3 tags will be added here by code",
+	...
+	on_create_tag: function(s) {
+		console.log("on_create_tag parent1");
 
+		// generate a GUID
+		new_id = generateGUID();
+
+		// create the temporary tag
+		tagsJs.add_tag(parent1, {
+			id: new_id,
+			name: s,
+			color: "gray",
+			checked: true
+		});
+
+		// set the tag opacity in 0.5 to the temporary tag, while AJAX registering
+		tagsJs.set_tag_opacity(parent1, new_id, 0.5);
+
+		// do the AJAX call
+		$.ajax({
+				url: "<your ajax end point here>",
+				type: "POST",
+				data: {
+						id: new_id,
+						value: s,
+				},
+				success: function(data) {
+						json = JSON.parse(data);
+						if (json.status != "success") {
+							tagsJs.set_tag_opacity(parent1, new_id, 1);
+						} else {
+							console.log("AJAX Error: " + json.status);
+							// if an error happened, remove the tag
+							tagsJs.remove_tag(parent1, s);
+						}
+				},
+				error: function(xhr, status, error) {
+						console.error("AJAX Error:", status, error);
+						// if an error happened, remove the tag
+						tagsJs.remove_tag(parent1, s);
+				}
+		});
+	},
+});
+```
+
+#### 8. Catch `on_click_tag` Event
+
+The event `on_click_tag` is raised when the user clicks on a tag.
+
+Adding a callback function to the `on_click_tag` event is useful when you are using the **tags** component for single selection (with no checkboxes - `allow_selection: false`).
+
+Adding a callback function to the `on_click_tag` event is useful when you want to call an AJAX end-point for registering the tag selection.
+
+```javascript
+tagsJs.add_tag(parent1, {
+	id: '1',
+	name: 'Tag1',
+	...
+	on_click_tag: function() {
+		console.log('on_click_tag: 1');
+		tagsJs.collapse(parent1);
+	}
+});
+```
+
+#### 9. Catch `on_select_tag` Event
+
+The event `on_select_tag` is raised when the user clicks on a tag.
+
+Adding a callback function to the `on_select_tag` event is useful when you are using the **tags** component for multiple selection (with checkboxes - `allow_selection: true`).
+
+Adding a callback function to the `on_select_tag` event is useful when you want to call an AJAX end-point for registering the tag selection.
+
+```javascript
+tagsJs.add_tag(parent1, {
+	id: '1',
+	name: 'Tag1',
+	...
+	on_select_tag: function() {
+		console.log('on_select_tag: 1');
+		tagsJs.check_tag(parent1, '1');
+	}
+});
+```
+
+#### 10. Catch `on_unselect_tag` Event
+
+The event `on_select_tag` is raised when the user clicks on a tag.
+
+Adding a callback function to the `on_select_tag` event is useful when you are using the **tags** component for multiple selection (with checkboxes - `allow_selection: true`).
+
+Adding a callback function to the `on_select_tag` event is useful when you want to call an AJAX end-point for registering the tag deselection.
+
+```javascript
+tagsJs.add_tag(parent1, {
+	id: '1',
+	name: 'Tag1',
+	...
+	on_unselect_tag: function() {
+		console.log('on_unselect_tag: 1');
+		tagsJs.uncheck_tag(parent1, '1');
+	}
+});
+```
+
+#### 11. Other Methods
+
+- `tagsJs.collapse(parent1);`
+- `tagsJs.check_tag(parent1, '1');`
+- `tagsJs.uncheck_tag(parent1, '1');`
 
 
 
 ----
-')%>   
+')%>
                       </div>
                     </div>
                   </div>
@@ -226,7 +342,7 @@ tagsJs.draw(parent1, {
 <script>
 $(document).ready(function() {
   parent1 = $('div.tags[data-id="lead-123"]');
-    
+
   tagsJs.draw(parent1, {
     text: '3 tags will be added here by code',
     allow_creation: true,
@@ -244,7 +360,7 @@ $(document).ready(function() {
         id: s,
         name: s,
         color: 'gray',
-        checked: false              
+        checked: false
       });
 
       // set the tag opacity in 0.5 to the temporary tag, not checked yet
@@ -274,7 +390,7 @@ $(document).ready(function() {
                   id: json.id_tag,
                   name: s,
                   color: 'gray',
-                  checked: true              
+                  checked: true
                 });
 
 
