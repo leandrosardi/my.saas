@@ -62,9 +62,72 @@
               <div class="chat-messages">
                 <h2>Tags</h2>
 
-                <div class='tags' data-id="lead-123">
-                  <!-- call tagsJs.draw -->
-                </div>
+								<p><b>tags.min.js</b> is a JavaScript library that enables dynamic management of tags within web applications.</p>
+								<br/>
+
+								<h4>Single Tag Selection List</h4>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<p>Good if user has to pick one tag only.</p>
+										<p>Click it to expand the dropdown list.</p>
+		                <div class='tags' id='tag1' name='tag1' data-id="tag1">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+									<div class='span6'>
+										<p>Open the dropdown list manually before click on this button, band it will closed by code when you close this popup.</p>
+										<button class='btn btn-blue' onclick='tagsJs.collapse($("#tag1"));'>Close DropDown List by Code</button>
+										</br></br>
+										<button class='btn btn-blue' onclick='tagsJs.add_tag($("#tag1"), {
+											id: "4",
+											name: "Tag4",
+											color: "orange"
+										});'>Add Tag4</button>
+										<button class='btn btn-blue' onclick='tagsJs.set_text($("#tag1"), "new button text");'>Change Button Text</button>
+										</br></br>
+										<button class='btn btn-blue' onclick='tagsJs.set_tag_opacity($("#tag1"), "1", 0.5); alert("Open the dropdown list and see the tag1.")'>Change Opacity Of Tag1</button>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Event <code>on_expand</code></h4>
+										<p>This will fire a popup when you expand the dropdown list.</p>
+		                <div class='tags' id='tag2' name='tag2' data-id="tag2">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Event <code>on_click_tag</code></h4>
+										<p>Click it to expand the dropdown list.</p>
+		                <div class='tags' id='tag3' name='tag3' data-id="tag3">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Event <code>on_create_tag</code></h4>
+										<p>This will fire a popup when you expand the dropdown list.</p>
+		                <div class='tags' id='tag4' name='tag4' data-id="tag4">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Events <code>on_select_tag</code> and <code>on_unselect_tag</code></h4>
+										<p>This will fire a popup when you expand the dropdown list.</p>
+		                <div class='tags' id='tag5' name='tag5' data-id="tag5">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
 
 
                 <br/>
@@ -124,7 +187,7 @@ With customizable options and event callbacks, it simplifies the implementation 
 A **parent element** is a `div` where the tag control will be rendered.
 
 ```html
-<div class="tags" data-id="lead-123">
+<div class="tags" data-id="tag1">
 	<!-- call tagsJs.draw -->
 </div>
 ```
@@ -132,7 +195,7 @@ A **parent element** is a `div` where the tag control will be rendered.
 #### 2. Draw the Tag Control
 
 ```javascript
-var parent1 = $("div.tags[data-id="lead-123"]");
+var parent1 = $("div.tags[data-id="tag1"]");
 
 tagsJs.draw(parent1, {
 	text: "3 tags will be added here by code",
@@ -187,7 +250,7 @@ Adding a callback function to the `on_expand` event is useful when you want to l
 Loading a the list of tags dynamically, when the dropdown is expaned, is mandatory if your screen is showing a large number of drop-down lists.
 
 ```javascript
-var parent1 = $("div.tags[data-id="lead-123"]");
+var parent1 = $("div.tags[data-id="tag1"]");
 
 tagsJs.draw(parent1, {
 	text: "3 tags will be added here by code",
@@ -341,72 +404,13 @@ tagsJs.add_tag(parent1, {
 
 <script>
 $(document).ready(function() {
-  parent1 = $('div.tags[data-id="lead-123"]');
+  var parent1 = $(`div.tags[data-id="tag1"]`);
+	var parent2 = $(`div.tags[data-id="tag2"]`);
+	var parent3 = $(`div.tags[data-id="tag3"]`);
 
+	// tag1
   tagsJs.draw(parent1, {
-    text: '3 tags will be added here by code',
-    allow_creation: true,
-    allow_selection: true,
-
-    on_expand: function() {
-      console.log('on_expand parent1');
-    },
-
-    on_create_tag: function(s) {
-      console.log('on_create_tag: ' + s);
-
-      // create the temporary tag
-      tagsJs.add_tag(parent1, {
-        id: s,
-        name: s,
-        color: 'gray',
-        checked: false
-      });
-
-      // set the tag opacity in 0.5 to the temporary tag, not checked yet
-      tagsJs.set_tag_opacity(parent1, s, 0.5);
-
-      // do the AJAX call
-      $.ajax({
-          url: './assets/ajax/tags/create_and_add_tag.json',
-          type: 'POST',
-          data: {
-              id_lead: 'lead-123',
-              id_tag: s,
-          },
-          success: function(data) {
-              // parse JSON response
-              json = JSON.parse(data);
-              // validate json status
-              if (json.status != 'success') {
-                // set the tag opacity back in 1
-                tagsJs.set_tag_opacity(parent1, s, 1);
-
-                // I received the response, with the tag created with an ID
-                // Then, I remove the temporary tag
-                tagsJs.remove_tag(parent1, s);
-                // And create the final tag, with the right ID, checked.
-                tagsJs.add_tag(parent1, {
-                  id: json.id_tag,
-                  name: s,
-                  color: 'gray',
-                  checked: true
-                });
-
-
-              } else {
-                console.log('AJAX Error: ' + json.status);
-                // if an error happened, remove the tag
-                tagsJs.remove_tag(parent1, s);
-              }
-          },
-          error: function(xhr, status, error) {
-              console.error('AJAX Error:', status, error);
-              // if an error happened, remove the tag
-              tagsJs.remove_tag(parent1, s);
-          }
-      });
-    },
+    text: '3 tags will be added here by code'
   });
 
   tagsJs.add_tag(parent1, {
@@ -414,18 +418,6 @@ $(document).ready(function() {
     name: 'Tag1',
     color: 'blue',
     checked: true,
-    on_click_tag: function() {
-      console.log('on_click_tag: 1');
-      tagsJs.collapse(parent1);
-    },
-    on_select_tag: function() {
-      console.log('on_select_tag: 1');
-      tagsJs.check_tag(parent1, '1');
-    },
-    on_unselect_tag: function() {
-      console.log('on_unselect_tag: 1');
-      tagsJs.uncheck_tag(parent1, '1');
-    },
   });
 
   tagsJs.add_tag(parent1, {
@@ -442,8 +434,34 @@ $(document).ready(function() {
     checked: false
   });
 
-  tagsJs.set_text(parent1, 'click to select tags');
+	// tag2
+  tagsJs.draw(parent2, {
+    text: 'Alert when you open this list.',
+		on_expand: function() {
+			alert('You opened the dropdown list.');
+		}
+  });
 
-  tagsJs.set_tag_opacity(parent1, '2', 0.5);
+  tagsJs.add_tag(parent2, {
+    id: '1',
+    name: 'Tag1',
+    color: 'blue',
+    checked: true,
+  });
+
+  tagsJs.add_tag(parent2, {
+    id: '2',
+    name: 'Tag2',
+    color: '#00dd00',
+    checked: false
+  });
+
+  tagsJs.add_tag(parent2, {
+    id: '3',
+    name: 'Tag3',
+    //color: 'rgb(255,0,0)',
+    checked: false
+  });
+
 });
 </script>
