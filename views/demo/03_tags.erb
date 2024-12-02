@@ -264,11 +264,11 @@ Adding a callback function to the `on_click_tag` event is useful when you want t
 
 ```javascript
 tagsJs.add_tag(parent1, {
-	id: '1',
-	name: 'Tag1',
+	id: "1",
+	name: "Tag1",
 	...
 	on_click_tag: function() {
-		console.log('on_click_tag: 1');
+		console.log("on_click_tag: 1");
 		tagsJs.collapse(parent1);
 	}
 });
@@ -284,12 +284,12 @@ Adding a callback function to the `on_select_tag` event is useful when you want 
 
 ```javascript
 tagsJs.add_tag(parent1, {
-	id: '1',
-	name: 'Tag1',
+	id: "1",
+	name: "Tag1",
 	...
 	on_select_tag: function() {
-		console.log('on_select_tag: 1');
-		tagsJs.check_tag(parent1, '1');
+		console.log("on_select_tag: 1");
+		tagsJs.check_tag(parent1, "1");
 	}
 });
 ```
@@ -304,12 +304,12 @@ Adding a callback function to the `on_select_tag` event is useful when you want 
 
 ```javascript
 tagsJs.add_tag(parent1, {
-	id: '1',
-	name: 'Tag1',
+	id: "1",
+	name: "Tag1",
 	...
 	on_unselect_tag: function() {
-		console.log('on_unselect_tag: 1');
-		tagsJs.uncheck_tag(parent1, '1');
+		console.log("on_unselect_tag: 1");
+		tagsJs.uncheck_tag(parent1, "1");
 	}
 });
 ```
@@ -317,8 +317,8 @@ tagsJs.add_tag(parent1, {
 #### 11. Other Methods
 
 - `tagsJs.collapse(parent1);`
-- `tagsJs.check_tag(parent1, '1');`
-- `tagsJs.uncheck_tag(parent1, '1');`
+- `tagsJs.check_tag(parent1, "1");`
+- `tagsJs.uncheck_tag(parent1, "1");`
 
 
 
