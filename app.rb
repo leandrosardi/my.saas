@@ -455,11 +455,34 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Objects management
 
+  post "/ajax/:object/page.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/page"
+  end
+
   post "/ajax/:object/count.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/count"
   end
 
+  post "/ajax/:object/get.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/get"
+  end
 
+  post "/ajax/:object/insert.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/insert"
+  end
+
+  post "/ajax/:object/update.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/update"
+  end
+
+  post "/ajax/:object/update_status.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/update_status"
+  end
+
+  post "/ajax/:object/upsert.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/upsert"
+  end
+  
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
 
