@@ -196,6 +196,8 @@ $(document).ready(function() {
 	});
 
 	// initialize multiple cuntent-editable fields
-	init_contenteditable('/ajax/account/update_field.json');
+	init_contenteditable(function(id, field, value) {
+		alert(`cell edition!\nid:${id}\nfield:${field}\nvalue:${value}\n\nDo an AJAX call to update your database.`);
+	});
 });
 </script>

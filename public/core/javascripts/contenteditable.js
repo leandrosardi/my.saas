@@ -4,7 +4,7 @@ function focus_td(td) {
     $(td).attr('data-original-value', $(td).text());
 }
 
-function init_contenteditable(url) {
+function init_contenteditable(f) {
     // add an i element the top-right corner of content editable tds
     $('*[contenteditable]').append('<i class="icon-pencil" style="padding-left:5px;opacity:0.25;"></i>');
 
@@ -20,7 +20,7 @@ function init_contenteditable(url) {
         $(this).append('<i class="icon-pencil" style="padding-left:5px;opacity:0.25;"></i>');
       }
     });
-    
+
     // when press escape on a contenteditable td, the content is restored to the original value, quit focos on such a td elemenft too.
     // when press on down arrow, focus the next td element right below with the same value in the data-field attribute
     // when press on up arrow, focus the previous td element right above with the same value in the data-field attribute
@@ -47,7 +47,7 @@ function init_contenteditable(url) {
         let next = $(this).next();
         while (next.length > 0 && !next.is('[contenteditable]')) {
           next = next.next();
-        } 
+        }
         if (next.length > 0) {
           focus_td(next);
         }
@@ -72,34 +72,12 @@ function init_contenteditable(url) {
         let field = $(this).attr('data-field');
         // get the new value
         let value = $(this).text();
-        // call ajax to update the field
-        $.ajax({
-          url: url,
-          type: 'POST',
-          data: {
-            id: id,
-            field: field,
-            value: value
-          },
-          success: function(data) {
-            // get the json response
-            let response = JSON.parse(data);
-            if (response.status == 'success') {
-              // update the field with the new value
-              $(td).text(value);
-              $(td).blur();
-            } else {
-              alert('An error occured while updating the field:' + field + '. Error: ' + response.status);
-            }
-          },
-          error: function(data) {
-            alert('Unknown error occured while updating the field:' + field + '.');
-          },
-        });
+        // callback function to update the field
+        f(id, field, value);
       }
     });
 };
-  
+
 function init_search(url=null) {
     if (url == null) {
       url = window.location.href.split('?')[0]
