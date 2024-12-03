@@ -1,10 +1,9 @@
 <%
 return_message = {}
 begin
-    body = JSON.parse(request.body.read)
-    name = body['name']
-    default = '' #body['default']
-    value = body['value']
+    name = @body['name']
+    default = '' #@body['default']
+    value = @body['value']
 #binding.pry
     @login.user.preference(name, default, value)
 

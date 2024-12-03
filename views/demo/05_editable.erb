@@ -62,7 +62,34 @@
               <div class="chat-messages">
                 <h2>Editable</h2>
 
-                ...
+								<h4>Single Tag Selection List</h4>
+
+								<section class='row-fluid'>
+									<div class='span6'>
+										<div id='myEditable'> </div>
+									</div>
+									<div class='span6'>
+
+									</div>
+								</section>
+
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+
 
               </div>
             </section>
@@ -96,10 +123,10 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('                
+                      <%=@md.render("
 
-----
-')%>   
+---
+")%>
                       </div>
                     </div>
                   </div>
@@ -114,3 +141,17 @@
       </div>
     </div>
 </section>
+
+<script>
+var ctx = $('#myEditable');
+
+$(document).ready(function() {
+	editablesJs.draw( ctx, {
+		value: 'Hola Mundo!',
+		placeholder: 'Write some text here.',
+		onsave: function() {
+			alert('Do an AJAX to save the new value here.');
+		},
+	});
+});
+</script>
