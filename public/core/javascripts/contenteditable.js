@@ -38,22 +38,22 @@ function init_contenteditable(f) {
       if (e.which == 13) {
         // stop event propagation
         e.stopPropagation();
-      } else if (e.which == 27) {
+      } else if (e.which == 27) { // escaoe
         $(this).text($(this).attr('data-original-value'));
         $(this).blur();
-      } else if (e.which == 40) {
+      } else if (e.which == 40) { // down arrow
         let field = $(this).attr('data-field');
         let next = $(this).closest('tr').next().find('td[data-field="'+field+'"]');
         if (next.length > 0) {
           focus_td(next);
         }
-      } else if (e.which == 38) {
+      } else if (e.which == 38) { // up arrow
         let field = $(this).attr('data-field');
         let prev = $(this).closest('tr').prev().find('td[data-field="'+field+'"]');
         if (prev.length > 0) {
           focus_td(prev);
         }
-      } else if (e.which == 39) {
+      } else if (e.which == 39) { // right arrow
         // focus the next td element left which is contenteditable, skipping the tds in the middle who are not contenteditable
         let next = $(this).next();
         while (next.length > 0 && !next.is('[contenteditable]')) {
@@ -62,7 +62,7 @@ function init_contenteditable(f) {
         if (next.length > 0) {
           focus_td(next);
         }
-      } else if (e.which == 37) {
+      } else if (e.which == 37) { // left arrow
         let prev = $(this).prev();
         while (prev.length > 0 && !prev.is('[contenteditable]')) {
           prev = prev.prev();

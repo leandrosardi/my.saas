@@ -92,12 +92,12 @@
                       i = i + 1
                     %>
                     <tr>
-                      <td data-label="Name">
-												<span data-id="<%=a.id%>" data-field="name" contenteditable="">
+                      <td data-label="Name" data-id="<%=a.id%>" data-field="name" contenteditable>
 													<%=a.name.encode_html%>
-												</span>
 											</td>
-                      <td data-label="Time Zone">UTC-5</td>
+                      <td data-label="Time Zone" data-id="<%=a.id%>" data-field="timezone" contenteditable>
+												UTC-5
+											</td>
                       <td data-label="Job Title">Software Engineer</td>
                       <td data-label="Company">TechCorp</td>
                       <td data-label="Social">
