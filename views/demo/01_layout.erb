@@ -26,11 +26,12 @@
                 <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
                 <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
                 <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
-                <li><a href="/demo/05_editable">Demo 05: Editable</a></li>
-                <li><a href="/demo/06_images">Demo 06: Images</a></li>
-                <li><a href="/demo/07_filters">Demo 07: Filters</a></li>
-                <li><a href="/demo/08_data">Demo 08: Data</a></li>
-                <li><a href="/demo/09_reminders">Demo 09: Reminders</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
               </ul>
             </div>
             </section>
@@ -209,19 +210,19 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('                
+                      <%=@md.render('
 Any internal scraeen of My.SaaS has 2 or 3 panels, like this page that you are reading now.
-                
+
 Find a live demo of a 2-panel screen [here](01a_2pools).
 
 Find a live demo of a 3-panel screen [here](01b_3pools).
-                
+
 #### URL Parameters
 
-The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users with the ability to customize their interface preferences dynamically. 
-  
+The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users with the ability to customize their interface preferences dynamically.
+
 - [Example: Setting dark-mode dynamically with `?dark=yes`](01_layout?dark=yes).
-                
+
 - [Example: Choosing the "Other Tab" tab with `?tab=tab2`](01_layout?tab=tab2).
 
 - [Example: Collapsing first panel with `?pool1=collapsed`](01_layout?pool1=collapsed)
@@ -250,7 +251,7 @@ You can get the value of any preference too:
 
 
 ----
-')%>   
+')%>
                       </div>
                       <div id="tab2" class="tab-content">
                         <p>Content for any other tab that you want to place here.</p>

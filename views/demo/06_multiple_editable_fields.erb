@@ -22,15 +22,16 @@
             <section class="list">
             <div class="chat-messages">
               <ul>
-                <li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
                 <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
                 <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
                 <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
-                <li><a href="/demo/05_editable">Demo 05: Editable</a></li>
-                <li><a href="/demo/06_images">Demo 06: Images</a></li>
-                <li><a href="/demo/07_filters">Demo 07: Filters</a></li>
-                <li><a href="/demo/08_data">Demo 08: Data</a></li>
-                <li><a href="/demo/09_reminders">Demo 09: Reminders</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
               </ul>
             </div>
             </section>
@@ -60,20 +61,7 @@
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Editable</h2>
-
-								<h4>Single Editable Field</h4>
-
-								<section class='row-fluid'>
-									<div class='span6 editable-area'>
-										<div id='myEditable'> </div>
-									</div>
-									<div class='span6'>
-
-									</div>
-								</section>
-
-								<h4>Multiple Editable Fields</h4>
+                <h2>Multiple Editable Fields</h2>
 
 								<table class="table table-bordered table-condensed fix" width="3000px;">
                   <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
@@ -164,6 +152,60 @@
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
                       <%=@md.render("
+The **editables.min.js** library is a lightweight JavaScript solution designed for dynamic content editing on web applications.
+
+It offers two main features:
+
+1. **single-editable fields**, which allow developers to toggle between read-only and editable modes for individual elements with ease; and
+
+2. **multiple-editable fields**, which provide a structured way to edit data in tables using contenteditable cells.
+
+Both features include seamless event handling for saving or canceling changes, ensuring a smooth user experience. The library is highly customizable, enabling developers to integrate editable functionality with minimal effort.
+
+Ideal for real-time data updates, it simplifies content management workflows.
+
+---
+
+The **multiple-editable-fields** library enables the creation of editable tables with dynamic cells. It simplifies handling user input by using `contenteditable` elements and event listeners to update table data in real-time.
+
+####1. Draw a Table with Attributes
+
+Define an HTML table with `td` elements that include the attributes `data-label`, `data-id`, `data-field`, and the `contenteditable` attribute. Here's an example:
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Time Zone</th>
+      <th>Job Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td data-label=\"Name\" data-id=\"1\" data-field=\"name\" contenteditable>John Doe</td>
+      <td data-label=\"Time Zone\" data-id=\"1\" data-field=\"timezone\" contenteditable>UTC-5</td>
+      <td data-label=\"Job Title\" data-id=\"1\" data-field=\"job\" contenteditable>Software Engineer</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+####2. Initialize Editable `td` Elements
+
+Use the `init_contenteditable` function to initialize the `contenteditable` elements. Provide a callback to handle the updated data when the user presses Enter:
+
+```javascript
+init_contenteditable(function(id, field, value) {
+    console.log(`ID: ${id}, Field: ${field}, New Value: ${value}`);
+    alert('Value updated!');
+});
+```
+
+This function binds event listeners to the table cells for smooth interaction and updates.
+
+
+
 
 ---
 ")%>
@@ -186,18 +228,10 @@
 var ctx = $('#myEditable');
 
 $(document).ready(function() {
-	// initialize single cuntent-editable field
-	editablesJs.draw( ctx, {
-		value: 'Hola Mundo!',
-		placeholder: 'Write some text here.',
-		onsave: function() {
-			alert('Do an AJAX to save the new value here.');
-		},
-	});
-
 	// initialize multiple cuntent-editable fields
 	init_contenteditable(function(id, field, value) {
-		alert(`cell edition!\nid:${id}\nfield:${field}\nvalue:${value}\n\nDo an AJAX call to update your database.`);
+		//alert(`cell edition!\nid:${id}\nfield:${field}\nvalue:${value}\n\nDo an AJAX call to update your database.`);
+		console.log(`cell edition!\nid:${id}\nfield:${field}\nvalue:${value}\n\nDo an AJAX call to update your database.`);
 	});
 });
 </script>

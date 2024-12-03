@@ -426,24 +426,28 @@ begin
     erb :'views/demo/04_profiles', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/05_editable', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/05_editable', :layout => :'/views/layouts/full'
+  get '/demo/05_single_editable_fields', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/05_single_editable_fields', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/06_images', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/06_images', :layout => :'/views/layouts/full'
+  get '/demo/06_multiple_editable_fields', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/06_multiple_editable_fields', :layout => :'/views/layouts/full'
   end
 
   get '/demo/07_filters', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/07_filters', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/08_data', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/08_data', :layout => :'/views/layouts/full'
+  get '/demo/08_images', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/08_images', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/09_reminders', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/09_reminders', :layout => :'/views/layouts/full'
+  get '/demo/09_data', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/09_data', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/10_reminders', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/10_reminders', :layout => :'/views/layouts/full'
   end
 
   get '/demo/unibox', :auth => true, :agent => /(.*)/ do

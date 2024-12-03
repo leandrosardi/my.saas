@@ -35,7 +35,7 @@ function init_contenteditable(f) {
     $('*[contenteditable]').keydown(function(e) {
       if (e.which == 13) {
         // stop event propagation
-        e.stopPropagation();
+        //e.stopPropagation();
       }
     });
 
@@ -79,9 +79,22 @@ function init_contenteditable(f) {
         var caretOffset = getCaretCharacterOffsetWithin(element);
         return caretOffset === 0;
       }
+
+      // get the id of the lead
+      let id = $(this).attr('data-id');
+      // get the field name
+      let field = $(this).attr('data-field');
+      // get the new value
+      let value = $(this).text().trim();
+
       if (e.which == 13) {
         // stop event propagation
         e.stopPropagation();
+        this.innerText = value;
+        this.focus();
+        this.blur();
+        // callback function to update the field
+        f(id, field, value);
       } else if (e.which == 27) { // escape
         $(this).text($(this).attr('data-original-value'));
         $(this).blur();
@@ -89,12 +102,28 @@ function init_contenteditable(f) {
         let field = $(this).attr('data-field');
         let next = $(this).closest('tr').next().find('td[data-field="'+field+'"]');
         if (next.length > 0) {
+          // stop event propagation
+          e.stopPropagation();
+          this.innerText = value;
+          this.focus();
+          this.blur();
+          // callback function to update the field
+          f(id, field, value);
+
           focus_td(next);
         }
       } else if (e.which == 38) { // up arrow
         let field = $(this).attr('data-field');
         let prev = $(this).closest('tr').prev().find('td[data-field="'+field+'"]');
         if (prev.length > 0) {
+          // stop event propagation
+          e.stopPropagation();
+          this.innerText = value;
+          this.focus();
+          this.blur();
+          // callback function to update the field
+          f(id, field, value);
+
           focus_td(prev);
         }
       } else if (e.which == 39) { // right arrow
@@ -104,6 +133,14 @@ function init_contenteditable(f) {
             next = next.next();
           }
           if (next.length > 0) {
+            // stop event propagation
+            e.stopPropagation();
+            this.innerText = value;
+            this.focus();
+            this.blur();
+            // callback function to update the field
+            f(id, field, value);
+
             focus_td(next, false);
           }
         }
@@ -114,29 +151,17 @@ function init_contenteditable(f) {
             prev = prev.prev();
           }
           if (prev.length > 0) {
+            // stop event propagation
+            e.stopPropagation();
+            this.innerText = value;
+            this.focus();
+            this.blur();
+            // callback function to update the field
+            f(id, field, value);
+
             focus_td(prev, true);
           }
         }
-      }
-    });
-
-    // when press enter on a contenteditable td, call ajax to update the field
-    $('*[contenteditable]').keypress(function(e) {
-      var td = this;
-      if (e.which == 13) {
-        // get the id of the lead
-        let id = $(this).attr('data-id');
-        // get the field name
-        let field = $(this).attr('data-field');
-        // get the new value
-        let value = $(this).text().trim();
-        // stop event propagation
-        //e.stopPropagation();
-        this.innerText = value;
-        this.focus();
-        this.blur();
-        // callback function to update the field
-        f(id, field, value);
       }
     });
 };

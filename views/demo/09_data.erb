@@ -44,10 +44,7 @@
             <div id="pool2_header" name="pool2_header" class="panel2-header">
               <div class="header-info">
                 <div>
-                  <span class="user-name">Live Demo</span> |
-                  <span class="user-message">
-                    Selected IDs: <input type='text' class='input input-small' name='ids' id='ids' value='' />
-                  </span>
+                  <span class="user-name">Live Demo</span>
                 </div>
               </div>
               <button class="close-btn" onclick="closePanel('pool2')">
@@ -63,45 +60,11 @@
 
             <div id="list_div" class="panel-content">
             <section class="list">
-              <div class="user-list">
-                <table class="table table-bordered table-condensed fix" width="3000px;">
-                  <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
-                    <tr>
-                      <th style="width:50px;">
-                        <input type="checkbox" class="checkbox select-all-rows" data-input-id="ids" data-rows-group-id="users">
-                      </th>
-                      <th style="width:150px;">Name</th>
-                      <th style="width:150px;">Time Zone</th>
-                      <th style="width:150px;">Job Title</th>
-                      <th style="width:250px;">Company</th>
-                      <th style="width:150px;">Social</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <%
-                    i = 0
-                    while i<100
-                      i = i + 1
-                    %>
-                    <tr>
-                      <td>
-                        <input type="checkbox" class="checkbox select-row" id="<%=i%>" data-id="<%=i%>" data-rows-group-id="users">
-                      </td>
-                      <td data-label="Name">John Doe <%=i%></td>
-                      <td data-label="Time Zone">UTC-5</td>
-                      <td data-label="Job Title">Software Engineer</td>
-                      <td data-label="Company">TechCorp</td>
-                      <td data-label="Social">
-                        <button class="btn btn-link"><i class="icon icon-linkedin"></i></button>
-                        <button class="btn btn-link"><i class="icon icon-facebook"></i></button>
-                        <button class="btn btn-link"><i class="icon icon-envelope"></i></button>
-                      </td>
-                    </tr>
-                    <%
-                    end # while
-                    %>
-                  </tbody>
-                </table>
+              <div class="chat-messages">
+                <h2>Data</h2>
+
+                ...
+
               </div>
             </section>
           </div>
@@ -135,48 +98,6 @@
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
                       <%=@md.render('
-**selectrows.min.js** is a JavaScript library that manages row selection within tables using checkboxes.
-
-It provides "select all" functionality, handles grouped selections, and updates input fields with the IDs of selected rows.
-
-This enhances user interaction and streamlines data handling on web pages.
-
-
-#### 1. Setting Up Your Input
-
-You need an input box where the IDs of the selected rows will be placed.
-Typically, such an input is `hidden`.
-
-`<input type="hidden" class="input input-small" name="ids" id="ids" value='' />`
-
-Every time you check or uncheck a row, such an input box will be updated.
-
-#### 2. Set a Select-All CheckBox
-
-Into a `th` element, create a checkbox with class `select-al-rows`:
-
-```html
-<table class="table table-bordered table-condensed fix" width="3000px;">
-  <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
-    <tr>
-      <th style="width:50px;">
-        <input type="checkbox" class="checkbox select-all-rows" data-input-id="ids" data-rows-group-id="users">
-      </th>
-```
-
-- The value of `data-input-id` is the id of the input box where to store the IDs of the selected rows.
-
-- The value of `data-rows-group-id` is important if you want to manage more than one table, with more than one group of checkboxes.
-
-#### 3. Set a CheckBox on Each Row
-
-On each row of your table, you have to define a checkbox class `select-row` and a unique ID.
-
-```html
-<input type="checkbox" class="checkbox select-row" id="..." data-id="..." data-rows-group-id="users">
-```
-
-
 
 ----
 ')%>
