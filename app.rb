@@ -273,7 +273,12 @@ begin
         redirect "/unavailable"
       else
         # parameters into a JSON strucutre received by an AJAX end-point
-        @body = JSON.parse(request.body.read)
+        @body = nil
+        begin
+          @body = JSON.parse(request.body.read)
+        rescue
+          # request.body.read has not a valid json syntax
+        end
         # rendered to convert markdown to html
         @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, highlight: true)
         # current logged-in user
@@ -391,6 +396,14 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Demo Screens
+
+  get "/demo" do
+    redirect '/demo/01_layout'
+  end
+  get "/demo/" do
+    redirect '/demo/01_layout'
+  end
+
   get '/demo/01_layout', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/01_layout', :layout => :'/views/layouts/full'
   end
@@ -432,7 +445,7 @@ begin
   get '/demo/09_reminders', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/09_reminders', :layout => :'/views/layouts/full'
   end
-  
+
   get '/demo/unibox', :auth => true, :agent => /(.*)/ do
     erb :'views/demo/unibox', :layout => :'/views/layouts/full'
   end
@@ -442,7 +455,7 @@ begin
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Setup user preferences 
+  # Setup user preferences
 
   post '/ajax/set_preference.json', :auth => true, :agent => /(.*)/ do
     erb :'views/ajax/set_preference'
@@ -482,7 +495,7 @@ begin
   post "/ajax/:object/upsert.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/upsert"
   end
-  
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
 
