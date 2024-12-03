@@ -63,7 +63,15 @@
               <div class="chat-messages">
                 <h2>Data</h2>
 
-                ...
+								<div class='data' data-id="lead-123">
+	                <!-- call dataJs.draw -->
+	              </div>
+
+								<section class="span11 box">
+	                <div id='myItems' style='width:100%;'> </div>
+	                <div id='myButtons' style='width:100%;'> </div>
+	              </section>
+
 
               </div>
             </section>
@@ -97,10 +105,186 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('
+                      <%=@md.render("The **data.min.js** library provides a robust and flexible framework for dynamically managing data components in web applications.
+
+It offers support for adding, removing, and manipulating data items with features like strikethrough, opacity, and event handling.
+
+This library simplifies the creation of interactive data management interfaces.
+
+####1. Define a Parent Element
+
+Define two parent elements: one for buttons and one for items, where the data controls will be rendered:
+
+```html
+<div id=\"myButtons\"></div>
+<div id=\"myItems\"></div>
+```
+
+####2. Draw a Data Control
+
+Use the `dataJs.draw` function to create a data control by linking the buttons and items components:
+
+```javascript
+var parent_buttons = $('#myButtons');
+var parent_items = $('#myItems');
+dataJs.draw(parent_buttons, parent_items, {
+    id: '1234',
+    caption: 'Add Contact Information',
+    trash_enabled: true,
+    copy_enabled: true,
+    strikethrough_enabled: true,
+    buttons: [], // Define data types here
+    items: [] // Define initial items here
+});
+```
+
+####3. Define Data Types
+
+Data types are defined in the `buttons` array. Each type specifies its behavior and representation:
+
+```javascript
+buttons: [
+    {
+        code: '1',
+        name: 'email',
+        icon: 'envelope',
+        link: 'mailto',
+        title: 'Add an Email Address'
+    },
+    {
+        code: '2',
+        name: 'phone',
+        icon: 'phone',
+        link: 'tel',
+        title: 'Add a Phone Number'
+    }
+]
+```
+
+####4. Add Buttons by Code
+
+Add new buttons dynamically using the `add_button` method:
+
+```javascript
+dataJs.add_button(parent_buttons, {
+    code: '3',
+    name: 'linkedin',
+    icon: 'linkedin',
+    title: 'Add LinkedIn URL'
+});
+```
+
+####5. Add Items by Code
+
+Add data items programmatically using the `add_item` method:
+
+```javascript
+dataJs.add_item(parent_items, {
+    id: 'a',
+    button_code: '1',
+    value: 'user@example.com',
+    strikethrough: false
+});
+```
+
+####6. Remove Item by Code
+
+Remove specific items by their ID using the `remove_item` method:
+
+```javascript
+dataJs.remove_item(parent_items, 'a');
+```
+
+####7. Set Item Opacity
+
+Change the opacity of an item programmatically:
+
+```javascript
+dataJs.set_item_opacity(parent_items, 'a', 0.5);
+```
+
+####8. Remove all Items by Code
+
+Remove all items from the control:
+
+```javascript
+dataJs.remove_all(parent_items);
+```
+
+####9. Set Item Strikethrough by Code
+
+Enable or disable strikethrough for an item:
+
+```javascript
+dataJs.set_strikethrough(parent_items, 'a', true);
+```
+
+####10. Get if Item has a Strikethrough
+
+Check if an item has strikethrough enabled:
+
+```javascript
+var isStrikethrough = dataJs.is_strikethrough(parent_items, 'a');
+console.log(isStrikethrough);
+```
+
+####11. Show Up Form by Code
+
+Display the form for adding data programmatically:
+
+```javascript
+dataJs.show_form(parent_buttons, '1');
+```
+
+####12. Hide Form by Code
+
+Hide the data form programmatically:
+
+```javascript
+dataJs.hide_form(parent_buttons);
+```
+
+####13. Catch Event `on_add_item`
+
+Handle the `on_add_item` event to perform actions when a new item is added:
+
+```javascript
+dataJs.draw(parent_buttons, parent_items, {
+    on_add_item: function(type, value) {
+        console.log('Added item:', type, value);
+    }
+});
+```
+
+####14. Catch Event `on_remove_item`
+
+Handle the `on_remove_item` event when an item is removed:
+
+```javascript
+dataJs.draw(parent_buttons, parent_items, {
+    on_remove_item: function(id) {
+        console.log('Removed item ID:', id);
+    }
+});
+```
+
+####15. Catch Event `on_strikethrough_item`
+
+Handle the `on_strikethrough_item` event when an item's strikethrough status is toggled:
+
+```javascript
+dataJs.draw(parent_buttons, parent_items, {
+    on_strikethrough_item: function(id) {
+        console.log('Toggled strikethrough for item ID:', id);
+    }
+});
+```
+
+
+
 
 ----
-')%>
+")%>
                       </div>
                     </div>
                   </div>
@@ -115,3 +299,73 @@
       </div>
     </div>
 </section>
+
+
+<script>
+  $(document).ready(function() {
+
+      var parent_buttons = $('#myButtons');
+      var parent_items = $('#myItems');
+
+      dataJs.draw(parent_buttons, parent_items, {
+				id: '1234',
+				caption: 'Add Contact Information',
+				trash_enabled: true, // default: false
+				copy_enabled: true, // default: false
+				strikethrough_enabled: true, // default: false
+				buttons: [{
+					code: '1',
+					name: 'email',
+					icon: 'envelope',
+					//link: 'mailto', // default: null
+					title: 'Add an Email Address',
+					placeholder: 'Write an email address here...'
+				}, {
+					code: '2',
+					name: 'phone',
+					icon: 'phone',
+					link: 'tel',
+					title: 'Add a Phone Number',
+					placeholder: 'Write a phone number here...'
+				}, {
+					code: '3',
+					name: 'linkedin',
+					icon: 'linkedin',
+					link: 'https',
+					title: 'Add a LinkedIn URL',
+					placeholder: 'Write the LinkedIn URL here...'
+				}, {
+					code: '4',
+					name: 'facebook',
+					icon: 'facebook',
+					link: 'https',
+					title: 'Add the Facebook URL',
+					placeholder: 'Write the Facebook URL here...'
+				}],
+
+
+				items: [{
+					id: 'a',
+					button_code: '1',
+					value: 'leandro@connectionsphere.com',
+					strikethrough: true
+				}, {
+					id: 'b',
+					button_code: '2',
+					value: '555 555-5555',
+					strikethrough: false
+				}],
+        /*
+				on_add_item: function(type, value) {
+					// call ajax before the a new data item is added to the list.
+				},
+				on_remove_item: function(id) {
+					// call ajax before the a data item is remobved from the list.
+				},
+				on_strikethrough_item: function(id) {
+					// call ajax before set strikethrough to a data.
+				},
+        */
+			});
+  }); // end of document.ready
+</script>
