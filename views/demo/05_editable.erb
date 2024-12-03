@@ -62,16 +62,56 @@
               <div class="chat-messages">
                 <h2>Editable</h2>
 
-								<h4>Single Tag Selection List</h4>
+								<h4>Single Editable Field</h4>
 
 								<section class='row-fluid'>
-									<div class='span6'>
+									<div class='span6 editable-area'>
 										<div id='myEditable'> </div>
 									</div>
 									<div class='span6'>
 
 									</div>
 								</section>
+
+								<h4>Multiple Editable Fields</h4>
+
+								<table class="table table-bordered table-condensed fix" width="3000px;">
+                  <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
+                    <tr>
+                      <th style="width:150px;">Name</th>
+                      <th style="width:150px;">Time Zone</th>
+                      <th style="width:150px;">Job Title</th>
+                      <th style="width:250px;">Company</th>
+                      <th style="width:150px;">Social</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%
+                    i = 0
+                    BlackStack::MySaaS::Account.all { |a|
+                      i = i + 1
+                    %>
+                    <tr>
+                      <td data-label="Name">
+												<span data-id="<%=a.id%>" data-field="name" contenteditable="">
+													<%=a.name.encode_html%>
+												</span>
+											</td>
+                      <td data-label="Time Zone">UTC-5</td>
+                      <td data-label="Job Title">Software Engineer</td>
+                      <td data-label="Company">TechCorp</td>
+                      <td data-label="Social">
+                        <button class="btn btn-link"><i class="icon icon-linkedin"></i></button>
+                        <button class="btn btn-link"><i class="icon icon-facebook"></i></button>
+                        <button class="btn btn-link"><i class="icon icon-envelope"></i></button>
+                      </td>
+                    </tr>
+                    <%
+										} # while
+                    %>
+                  </tbody>
+                </table>
+
 
 								<br/>
 								<br/>
@@ -146,6 +186,7 @@
 var ctx = $('#myEditable');
 
 $(document).ready(function() {
+	// initialize single cuntent-editable field
 	editablesJs.draw( ctx, {
 		value: 'Hola Mundo!',
 		placeholder: 'Write some text here.',
@@ -153,5 +194,8 @@ $(document).ready(function() {
 			alert('Do an AJAX to save the new value here.');
 		},
 	});
+
+	// initialize multiple cuntent-editable fields
+	init_contenteditable('/ajax/account/update_field.json');
 });
 </script>
