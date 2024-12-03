@@ -1,0 +1,11 @@
+<%
+begin
+    object = params[:object]
+    cls = BlackStack::API.classes[object.to_sym]
+    n = cls.where(:id_account => @account.id, :delete_time => nil).count
+    @return_message['result'] = n
+rescue Exception => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

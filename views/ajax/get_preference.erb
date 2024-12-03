@@ -1,0 +1,15 @@
+<%
+return_message = {}
+begin
+    name = @body['name']
+    default = '' #body['default']
+    return_message[:value] = @login.user.preference(name, default, nil)
+
+    # return
+    return_message[:status] = 'success'
+
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

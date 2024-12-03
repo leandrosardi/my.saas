@@ -1,0 +1,615 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Data</h2>
+
+								<div class='data' data-id="lead-123">
+	                <!-- call dataJs.draw -->
+	              </div>
+
+								<section class="row-fluid">
+	                <div id='myItems' style='width:100%;'> </div>
+	                <div id='myButtons' style='width:100%;'> </div>
+	              </section>
+
+								<div id="addItemsSection" class="row-fluid" style="margin-top: 20px;">
+								    <h4>Add Items by Code</h4>
+								    <button id="addEmailItem" class="btn btn-success">Add Email Item</button>
+								    <button id="addPhoneItem" class="btn btn-success">Add Phone Item</button>
+								</div>
+
+								<div id="removeItemsSection" class="row-fluid" style="margin-top: 20px;">
+								    <h4>Remove Items by Code</h4>
+								    <button id="removeFirstItem" class="btn btn-danger">Remove First Item</button>
+								    <button id="removeLastItem" class="btn btn-danger">Remove Last Item</button>
+								</div>
+
+								<div id="setItemOpacitySection" class="row-fluid" style="margin-top: 20px;">
+								    <h4>Set Item Opacity by Code</h4>
+								    <label for="itemOpacityInput">Enter Item ID:</label>
+								    <input type="text" value='a' id="itemOpacityInput" placeholder="Enter Item ID" class="form-control" style="width: 300px; display: inline-block; margin-right: 10px;">
+								    <label for="opacityValue">Opacity (0.0 to 1.0):</label>
+								    <input type="number" value='0.5' id="opacityValue" min="0" max="1" step="0.1" placeholder="1.0" class="form-control" style="width: 100px; display: inline-block; margin-right: 10px;">
+								    <button id="setOpacityButton" class="btn btn-primary">Set Opacity</button>
+								</div>
+
+								<div id="removeAllItemsSection" class="row-fluid" style="margin-top: 20px;">
+								    <h3>Remove All Items by Code</h3>
+								    <button id="removeAllItemsButton" class="btn btn-danger">Remove All Items</button>
+								</div>
+
+								<!-- Set Item Strikethrough by Code -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Set Item Strikethrough by Code</h4>
+						        <input type="text" id="strikethroughItemId" placeholder="Enter Item ID" class="form-control" />
+						        <button id="setStrikethroughButton" class="btn btn-primary">Set Strikethrough</button>
+						        <button id="removeStrikethroughButton" class="btn btn-secondary">Remove Strikethrough</button>
+						    </div>
+
+						    <!-- Get if Item has a Strikethrough -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Get if Item has a Strikethrough</h4>
+						        <input value='a' type="text" id="checkStrikethroughItemId" placeholder="Enter Item ID" class="form-control" />
+						        <button id="checkStrikethroughButton" class="btn btn-info">Check Strikethrough</button>
+						    </div>
+
+						    <!-- Show Up Form by Code -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Show Up Form by Code</h4>
+						        <button id="showFormButton" class="btn btn-success">Show Form</button>
+						    </div>
+
+						    <!-- Hide Form by Code -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Hide Form by Code</h4>
+						        <button id="hideFormButton" class="btn btn-danger">Hide Form</button>
+						    </div>
+
+						    <!-- Catch Event on_add_item -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Catch Event: on_add_item</h4>
+						        <button id="simulateAddItemButton" class="btn btn-warning">Simulate Add Item</button>
+						    </div>
+
+						    <!-- Catch Event on_remove_item -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Catch Event: on_remove_item</h4>
+						        <button id="simulateRemoveItemButton" class="btn btn-warning">Simulate Remove Item</button>
+						    </div>
+
+						    <!-- Catch Event on_strikethrough_item -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Catch Event: on_strikethrough_item</h4>
+						        <button id="simulateStrikethroughItemButton" class="btn btn-warning">Simulate Strikethrough Item</button>
+						    </div>
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **data.min.js** library provides a robust and flexible framework for dynamically managing data components in web applications.
+
+It offers support for adding, removing, and manipulating data items with features like strikethrough, opacity, and event handling.
+
+This library simplifies the creation of interactive data management interfaces.
+
+####1. Define a Parent Element
+
+Define two parent elements: one for buttons and one for items, where the data controls will be rendered:
+
+```html
+<div id=\"myButtons\"></div>
+<div id=\"myItems\"></div>
+```
+
+####2. Draw a Data Control
+
+Use the `dataJs.draw` function to create a data control by linking the buttons and items components:
+
+```javascript
+var parent_buttons = $('#myButtons');
+var parent_items = $('#myItems');
+dataJs.draw(parent_buttons, parent_items, {
+    id: '1234',
+    caption: 'Add Contact Information',
+    trash_enabled: true,
+    copy_enabled: true,
+    strikethrough_enabled: true,
+    buttons: [], // Define data types here
+    items: [] // Define initial items here
+});
+```
+
+####3. Define Data Types
+
+Data types are defined in the `buttons` array. Each type specifies its behavior and representation:
+
+```javascript
+buttons: [
+    {
+        code: '1',
+        name: 'email',
+        icon: 'envelope',
+        link: 'mailto',
+        title: 'Add an Email Address'
+    },
+    {
+        code: '2',
+        name: 'phone',
+        icon: 'phone',
+        link: 'tel',
+        title: 'Add a Phone Number'
+    }
+]
+```
+
+####4. Add Items by Code
+
+Add data items programmatically using the `add_item` method:
+
+```javascript
+dataJs.add_item(parent_items, {
+    id: 'a',
+    button_code: '1',
+    value: 'user@example.com',
+    strikethrough: false
+});
+```
+
+####5. Remove Item by Code
+
+Remove specific items by their ID using the `remove_item` method:
+
+```javascript
+dataJs.remove_item(parent_items, 'a');
+```
+
+####6. Set Item Opacity
+
+Change the opacity of an item programmatically:
+
+```javascript
+dataJs.set_item_opacity(parent_items, 'a', 0.5);
+```
+
+####7. Remove all Items by Code
+
+Remove all items from the control:
+
+```javascript
+dataJs.remove_all(parent_items);
+```
+
+####8. Set Item Strikethrough by Code
+
+Enable or disable strikethrough for an item:
+
+```javascript
+dataJs.set_strikethrough(parent_items, 'a', true);
+```
+
+####9. Get if Item has a Strikethrough
+
+Check if an item has strikethrough enabled:
+
+```javascript
+var isStrikethrough = dataJs.is_strikethrough(parent_items, 'a');
+console.log(isStrikethrough);
+```
+
+####10. Show Up Form by Code
+
+Display the form for adding data programmatically:
+
+```javascript
+dataJs.show_form(parent_buttons, '1');
+```
+
+####11. Hide Form by Code
+
+Hide the data form programmatically:
+
+```javascript
+dataJs.hide_form(parent_buttons);
+```
+
+####12. Catch Event `on_add_item`
+
+Handle the `on_add_item` event to perform actions when a new item is added:
+
+```javascript
+dataJs.draw(parent_buttons, parent_items, {
+    on_add_item: function(type, value) {
+        console.log('Added item:', type, value);
+    }
+});
+```
+
+####13. Catch Event `on_remove_item`
+
+Handle the `on_remove_item` event when an item is removed:
+
+```javascript
+dataJs.draw(parent_buttons, parent_items, {
+    on_remove_item: function(id) {
+        console.log('Removed item ID:', id);
+    }
+});
+```
+
+####14. Catch Event `on_strikethrough_item`
+
+Handle the `on_strikethrough_item` event when an item's strikethrough status is toggled:
+
+```javascript
+dataJs.draw(parent_buttons, parent_items, {
+    on_strikethrough_item: function(id) {
+        console.log('Toggled strikethrough for item ID:', id);
+    }
+});
+```
+
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+
+<script>
+  $(document).ready(function() {
+
+      var parent_buttons = $('#myButtons');
+      var parent_items = $('#myItems');
+
+      dataJs.draw(parent_buttons, parent_items, {
+				id: '1234',
+				caption: 'Add Contact Information',
+				trash_enabled: true, // default: false
+				copy_enabled: true, // default: false
+				strikethrough_enabled: true, // default: false
+				buttons: [{
+					code: '1',
+					name: 'email',
+					icon: 'envelope',
+					//link: 'mailto', // default: null
+					title: 'Add an Email Address',
+					placeholder: 'Write an email address here...'
+				}, {
+					code: '2',
+					name: 'phone',
+					icon: 'phone',
+					link: 'tel',
+					title: 'Add a Phone Number',
+					placeholder: 'Write a phone number here...'
+				}, {
+					code: '3',
+					name: 'linkedin',
+					icon: 'linkedin',
+					link: 'https',
+					title: 'Add a LinkedIn URL',
+					placeholder: 'Write the LinkedIn URL here...'
+				}, {
+					code: '4',
+					name: 'facebook',
+					icon: 'facebook',
+					link: 'https',
+					title: 'Add the Facebook URL',
+					placeholder: 'Write the Facebook URL here...'
+				}],
+
+
+				items: [{
+					id: 'a',
+					button_code: '1',
+					value: 'leandro@connectionsphere.com',
+					strikethrough: true
+				}, {
+					id: 'b',
+					button_code: '2',
+					value: '555 555-5555',
+					strikethrough: false
+				}],
+        /*
+				on_add_item: function(type, value) {
+					// call ajax before the a new data item is added to the list.
+				},
+				on_remove_item: function(id) {
+					// call ajax before the a data item is remobved from the list.
+				},
+				on_strikethrough_item: function(id) {
+					// call ajax before set strikethrough to a data.
+				},
+        */
+			});
+
+			// Add Email Item by Code
+	    $('#addEmailItem').click(function () {
+	        dataJs.add_item(parent_items[0], {
+	            id: dataJs.uuidv4(),
+	            button_code: '1', // Code for Email button
+	            value: 'example@domain.com', // Example email
+	            strikethrough: false // Item is not strikethrough
+	        });
+	        alert('Email item added!');
+	    });
+
+	    // Add Phone Item by Code
+	    $('#addPhoneItem').click(function () {
+	        dataJs.add_item(parent_items[0], {
+	            id: dataJs.uuidv4(),
+	            button_code: '2', // Code for Phone button
+	            value: '123-456-7890', // Example phone number
+	            strikethrough: false // Item is not strikethrough
+	        });
+	        alert('Phone item added!');
+	    });
+
+			// Remove the first item by code
+	    $('#removeFirstItem').click(function () {
+	        // Find the first item in the list
+	        var firstItem = $(parent_items).find('tr.contact-info-item').first();
+	        if (firstItem.length > 0) {
+	            var itemId = firstItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('First item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+	    // Remove the last item by code
+	    $('#removeLastItem').click(function () {
+	        // Find the last item in the list
+	        var lastItem = $(parent_items).find('tr.contact-info-item').last();
+	        if (lastItem.length > 0) {
+	            var itemId = lastItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('Last item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+
+			// Remove the first item by code
+	    $('#removeFirstItem').click(function () {
+	        // Find the first item in the list
+	        var firstItem = $(parent_items).find('tr.contact-info-item').first();
+	        if (firstItem.length > 0) {
+	            var itemId = firstItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('First item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+	    // Remove the last item by code
+	    $('#removeLastItem').click(function () {
+	        // Find the last item in the list
+	        var lastItem = $(parent_items).find('tr.contact-info-item').last();
+	        if (lastItem.length > 0) {
+	            var itemId = lastItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('Last item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+
+			// Set opacity for a specific item
+			    $('#setOpacityButton').click(function () {
+			        // Get the item ID and opacity value from the inputs
+			        var itemId = $('#itemOpacityInput').val().trim();
+			        var opacityValue = parseFloat($('#opacityValue').val());
+
+			        // Validate the inputs
+			        if (!itemId) {
+			            alert('Please enter a valid Item ID.');
+			            return;
+			        }
+			        if (isNaN(opacityValue) || opacityValue < 0 || opacityValue > 1) {
+			            alert('Please enter a valid opacity value (0.0 to 1.0).');
+			            return;
+			        }
+
+			        // Check if the item exists
+			        var item = $(parent_items).find("tr.contact-info-item[data-id-item='" + itemId + "']");
+			        if (item.length > 0) {
+			            // Set the opacity using dataJs
+			            dataJs.set_item_opacity(parent_items[0], itemId, opacityValue);
+			            alert(`Opacity for item "${itemId}" set to ${opacityValue}.`);
+			        } else {
+			            alert(`Item with ID "${itemId}" not found.`);
+			        }
+			    });
+
+					// Remove all items on button click
+			    $('#removeAllItemsButton').click(function () {
+			        // Confirm the removal action
+			        if (confirm('Are you sure you want to remove all items? This action cannot be undone.')) {
+			            // Use the dataJs method to remove all items
+			            dataJs.remove_all(parent_items[0]);
+
+			            // Notify the user
+			            alert('All items have been removed.');
+			        }
+			    });
+
+
+					// Set Item Strikethrough by Code
+			    $('#setStrikethroughButton').click(function () {
+			        var itemId = $('#strikethroughItemId').val();
+			        dataJs.set_strikethrough(parent_items[0], itemId, true);
+			        alert('Strikethrough applied to item: ' + itemId);
+			    });
+
+			    $('#removeStrikethroughButton').click(function () {
+			        var itemId = $('#strikethroughItemId').val();
+			        dataJs.set_strikethrough(parent_items[0], itemId, false);
+			        alert('Strikethrough removed from item: ' + itemId);
+			    });
+
+			    // Get if Item has a Strikethrough
+			    $('#checkStrikethroughButton').click(function () {
+			        var itemId = $('#checkStrikethroughItemId').val();
+			        var isStrikethrough = dataJs.is_strikethrough(parent_items[0], itemId);
+			        alert('Item ' + itemId + ' has strikethrough: ' + isStrikethrough);
+			    });
+
+			    // Show Up Form by Code
+			    $('#showFormButton').click(function () {
+			        dataJs.show_form(parent_buttons[0], '1'); // Example button type code
+			        alert('Form displayed.');
+			    });
+
+			    // Hide Form by Code
+			    $('#hideFormButton').click(function () {
+			        dataJs.hide_form(parent_buttons[0]);
+			        alert('Form hidden.');
+			    });
+
+			    // Catch Event on_add_item
+			    dataJs.events['myItems.on_add_item'] = function (type, value) {
+			        console.log('Item added:', { type, value });
+			        alert('Item added with type: ' + type + ' and value: ' + value);
+			    };
+
+			    $('#simulateAddItemButton').click(function () {
+			        var simulatedItem = { id: 'simulated', button_code: '1', value: 'Simulated Value' };
+			        dataJs.add_item(parent_items[0], simulatedItem);
+			        alert('Simulated item added.');
+			    });
+
+			    // Catch Event on_remove_item
+			    dataJs.events['myItems.on_remove_item'] = function (itemId) {
+			        console.log('Item removed:', itemId);
+			        alert('Item removed with ID: ' + itemId);
+			    };
+
+			    $('#simulateRemoveItemButton').click(function () {
+			        var itemId = 'simulated'; // Example ID
+			        dataJs.remove_item(parent_items[0], itemId);
+			        alert('Simulated item removed.');
+			    });
+
+			    // Catch Event on_strikethrough_item
+			    dataJs.events['myItems.on_strikethrough_item'] = function (itemId) {
+			        console.log('Item strikethrough toggled:', itemId);
+			        alert('Strikethrough toggled for item with ID: ' + itemId);
+			    };
+
+			    $('#simulateStrikethroughItemButton').click(function () {
+			        var itemId = 'simulated'; // Example ID
+			        var isStrikethrough = dataJs.is_strikethrough(parent_items[0], itemId);
+			        dataJs.set_strikethrough(parent_items[0], itemId, !isStrikethrough);
+			        alert('Simulated strikethrough toggled.');
+			    });
+
+
+  }); // end of document.ready
+</script>

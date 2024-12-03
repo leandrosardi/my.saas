@@ -1,0 +1,440 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Filters</h2>
+
+										<h4>
+											Draw A Simple Filter
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='job_title'></div>
+											<div class="span6">
+												<pre>
+var job_title = document.getElementById('job_title');
+filtersJs.draw(job_title, {
+	label: 'Job Positions',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Manage List of Allowed Values
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='location2'></div>
+											<div class="span6">
+												<pre>
+var location2 = document.getElementById('location2');
+filtersJs.draw(location2, {
+	label: 'Locations',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: false,
+	allowed_values: [
+		'Argentina',
+		'Pakistan',
+		'United States'
+	],
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Catch <code>on_add_value</code> Event
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='industry'></div>
+											<div class="span6">
+												<pre>
+var industry = document.getElementById('industry');
+filtersJs.draw(industry, {
+	label: 'Industries',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+	on_add_value: function(value) {
+			alert("You added: " + value);
+		},
+		on_remove_value: function(value) {
+			alert("You removed: " + value);
+		},
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Add Values by Code
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='currentconfig'></div>
+											<div class="span6">
+												<pre>
+var currentconfig = document.getElementById('currentconfig');
+filtersJs.draw(currentconfig, {
+	label: 'Your Current Configuration',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+// adding values by code doesn't trigger events.
+filtersJs.addValue(currentconfig, 'Argentina', true);
+filtersJs.addValue(currentconfig, 'United Kingdom', false);
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Get Values by Code <input id="clicktogetvalues" type="button" value="Click to Show Values" />
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='getvalues'></div>
+											<div class="span6">
+												<pre>
+var getvalues = document.getElementById('getvalues');
+filtersJs.draw(getvalues, {
+	label: 'Click the button below to get the list of values on this filter',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+$('#clicktogetvalues').click(function() {
+	alert('Positive Values:'+filtersJs.getPositiveValues(getvalues));
+	alert('Negative Values:'+filtersJs.getNegativeValues(getvalues));
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Remove Values by Code <input id="clicktoremoveuk" type="button" value="Click to Remove United Kingdom" />
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='removeuk'></div>
+											<div class="span6">
+												<pre>
+var removeuk = document.getElementById('removeuk');
+filtersJs.draw(removeuk, {
+	label: 'Remove Values',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+// adding values by code doesn't trigger events.
+filtersJs.addValue(removeuk, 'Argentina', true);
+filtersJs.addValue(removeuk, 'United Kingdom', false);
+// removing values by code doesn't trigger events.
+$('#clicktoremoveuk').click(function() {
+filtersJs.removeValue(removeuk, 'United Kingdom');
+});
+											</pre>
+										</div>
+									</section>
+
+
+
+
+                ---
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("
+The **filters.min.js** is a JavaScript library for creating dynamic filtering widgets in web applications. It allows users to add, remove, and manage keywords (tags) with positive or negative connotations. This library provides customizable options, event handling, and a clean API for interacting with filter data, making it ideal for search, categorization, or data filtering tasks.
+
+####1. Define a Parent Element
+
+Define a parent element where the filter widget will be rendered. For example:
+
+```html
+<div id=\"job_title\"></div>
+```
+
+####2. Draw A Simple Filter
+
+Use the `filtersJs.draw` function to create a simple filter with positive and negative keyword support:
+
+```javascript
+var job_title = document.getElementById('job_title');
+filtersJs.draw(job_title, {
+    label: 'Job Positions',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+```
+
+####3. Manage List of Allowed Values
+
+To restrict input to a predefined list of values, use the `allowed_values` property:
+
+```javascript
+var location2 = document.getElementById('location2');
+filtersJs.draw(location2, {
+    label: 'Locations',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: false,
+    allowed_values: [
+        'Argentina',
+        'Pakistan',
+        'United States'
+    ],
+});
+```
+
+####4. Catch `on_add_value` Event
+
+You can catch events when a value is added or removed using the `on_add_value` and `on_remove_value` callbacks:
+
+```javascript
+var industry = document.getElementById('industry');
+filtersJs.draw(industry, {
+    label: 'Industries',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+    on_add_value: function(value) {
+        alert(\"You added: \" + value);
+    },
+    on_remove_value: function(value) {
+        alert(\"You removed: \" + value);
+    },
+});
+```
+
+####5. Add Values by Code
+
+Values can also be added programmatically using the `addValue` method. Note that this doesn't trigger events:
+
+```javascript
+var currentconfig = document.getElementById('currentconfig');
+filtersJs.draw(currentconfig, {
+    label: 'Your Current Configuration',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+filtersJs.addValue(currentconfig, 'Argentina', true);
+filtersJs.addValue(currentconfig, 'United Kingdom', false);
+```
+
+####6. Get Values by Code
+
+Retrieve the list of positive or negative values using `getPositiveValues` and `getNegativeValues` methods:
+
+```javascript
+var getvalues = document.getElementById('getvalues');
+filtersJs.draw(getvalues, {
+    label: 'Get Filter Values',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+var positiveValues = filtersJs.getPositiveValues(getvalues);
+var negativeValues = filtersJs.getNegativeValues(getvalues);
+console.log(\"Positive Values:\", positiveValues);
+console.log(\"Negative Values:\", negativeValues);
+```
+
+####7. Remove Values by Code
+
+You can also remove values programmatically using the `removeValue` method:
+
+```javascript
+var removeuk = document.getElementById('removeuk');
+filtersJs.draw(removeuk, {
+    label: 'Remove Values',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+filtersJs.addValue(removeuk, 'Argentina', true);
+filtersJs.addValue(removeuk, 'United Kingdom', false);
+filtersJs.removeValue(removeuk, 'United Kingdom');
+```
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+	$(document).ready(function() {
+
+		// simple filter
+		var job_title = document.getElementById('job_title');
+		filtersJs.draw(job_title, {
+			label: 'Job Positions',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+
+		// list of allowed values
+		var location2 = document.getElementById('location2');
+		filtersJs.draw(location2, {
+			label: 'Locations',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: false,
+			allowed_values: [
+				'Argentina',
+				'Pakistan',
+				'United States'
+			],
+		});
+
+		// catch events
+		var industry = document.getElementById('industry');
+		filtersJs.draw(industry, {
+			label: 'Industries',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+			on_add_value: function(value) {
+				alert("You added: " + value);
+			},
+			on_remove_value: function(value) {
+				alert("You removed: " + value);
+			},
+		});
+
+		// load existing configuration
+		var currentconfig = document.getElementById('currentconfig');
+		filtersJs.draw(currentconfig, {
+			label: 'Your Current Configuration',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+		// adding values by code doesn't trigger events.
+		filtersJs.addValue(currentconfig, 'Argentina', true);
+		filtersJs.addValue(currentconfig, 'United Kingdom', false);
+
+		// get values by code
+		var getvalues = document.getElementById('getvalues');
+		filtersJs.draw(getvalues, {
+			label: 'Click the button below to get the list of values on this filter',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+		$('#clicktogetvalues').click(function() {
+			alert('Positive Values:'+filtersJs.getPositiveValues(getvalues));
+			alert('Negative Values:'+filtersJs.getNegativeValues(getvalues));
+		});
+
+		// remove united kingdom by code
+		var removeuk = document.getElementById('removeuk');
+		filtersJs.draw(removeuk, {
+			label: 'Remove Values',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+		// adding values by code doesn't trigger events.
+		filtersJs.addValue(removeuk, 'Argentina', true);
+		filtersJs.addValue(removeuk, 'United Kingdom', false);
+		// removing values by code doesn't trigger events.
+		$('#clicktoremoveuk').click(function() {
+			filtersJs.removeValue(removeuk, 'United Kingdom');
+		});
+	});
+</script>

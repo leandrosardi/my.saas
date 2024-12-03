@@ -1,0 +1,237 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Multiple Editable Fields</h2>
+
+								<table class="table table-bordered table-condensed fix" width="3000px;">
+                  <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
+                    <tr>
+                      <th style="width:150px;">Name</th>
+                      <th style="width:150px;">Time Zone</th>
+                      <th style="width:150px;">Job Title</th>
+                      <th style="width:250px;">Company</th>
+                      <th style="width:150px;">Social</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%
+                    i = 0
+                    BlackStack::MySaaS::Account.all { |a|
+                      i = i + 1
+                    %>
+                    <tr>
+                      <td data-label="Name" data-id="<%=a.id%>" data-field="name" contenteditable>
+													<%=a.name.encode_html%>
+											</td>
+                      <td data-label="Time Zone" data-id="<%=a.id%>" data-field="timezone" contenteditable>
+												UTC-5
+											</td>
+                      <td data-label="Job Title">Software Engineer</td>
+                      <td data-label="Company">TechCorp</td>
+                      <td data-label="Social">
+                        <button class="btn btn-link"><i class="icon icon-linkedin"></i></button>
+                        <button class="btn btn-link"><i class="icon icon-facebook"></i></button>
+                        <button class="btn btn-link"><i class="icon icon-envelope"></i></button>
+                      </td>
+                    </tr>
+                    <%
+										} # while
+                    %>
+                  </tbody>
+                </table>
+
+
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("
+The **editables.min.js** library is a lightweight JavaScript solution designed for dynamic content editing on web applications.
+
+It offers two main features:
+
+1. **single-editable fields**, which allow developers to toggle between read-only and editable modes for individual elements with ease; and
+
+2. **multiple-editable fields**, which provide a structured way to edit data in tables using contenteditable cells.
+
+Both features include seamless event handling for saving or canceling changes, ensuring a smooth user experience. The library is highly customizable, enabling developers to integrate editable functionality with minimal effort.
+
+Ideal for real-time data updates, it simplifies content management workflows.
+
+---
+
+The **multiple-editable-fields** library enables the creation of editable tables with dynamic cells. It simplifies handling user input by using `contenteditable` elements and event listeners to update table data in real-time.
+
+####1. Draw a Table with Attributes
+
+Define an HTML table with `td` elements that include the attributes `data-label`, `data-id`, `data-field`, and the `contenteditable` attribute. Here's an example:
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Time Zone</th>
+      <th>Job Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td data-label=\"Name\" data-id=\"1\" data-field=\"name\" contenteditable>John Doe</td>
+      <td data-label=\"Time Zone\" data-id=\"1\" data-field=\"timezone\" contenteditable>UTC-5</td>
+      <td data-label=\"Job Title\" data-id=\"1\" data-field=\"job\" contenteditable>Software Engineer</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+####2. Initialize Editable `td` Elements
+
+Use the `init_contenteditable` function to initialize the `contenteditable` elements. Provide a callback to handle the updated data when the user presses Enter:
+
+```javascript
+init_contenteditable(function(id, field, value) {
+    console.log(`ID: ${id}, Field: ${field}, New Value: ${value}`);
+    alert('Value updated!');
+});
+```
+
+This function binds event listeners to the table cells for smooth interaction and updates.
+
+
+
+
+---
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+var ctx = $('#myEditable');
+
+$(document).ready(function() {
+	// initialize multiple cuntent-editable fields
+	init_contenteditable(function(id, field, value) {
+		alert(`cell edition!\nid:${id}\nfield:${field}\nvalue:${value}\n\nDo an AJAX call to update your database.`);
+		//console.log(`cell edition!\nid:${id}\nfield:${field}\nvalue:${value}\n\nDo an AJAX call to update your database.`);
+	});
+});
+</script>

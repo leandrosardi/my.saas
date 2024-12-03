@@ -1,0 +1,217 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Images</h2>
+
+									<section class="row-fluid">
+										<div id='myImages1' name='myImages1' data-id="myImages1" class="span6">
+			                <!-- add images here using imagesJs -->
+			                <!-- attribute data-id is required if you manage many different lists of images -->
+			              </div>
+
+										<div class='span6'>
+											<p><b>Hint:</b> Click on one picture to maximize it.</p>
+											<br/>
+											<br/>
+											<pre>
+$(document).ready(function() {
+	var parent = $('#myImages1');
+	imagesJs.draw(parent, {
+	  urls: [
+	    'https://...',
+			...
+	  ]
+	});
+}); // end of document.ready
+											</pre>
+										</div>
+
+									</section>
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **images.min.js** library is a lightweight tool for managing image series with interactive features like viewing, navigation, and maximizing images.
+
+It allows developers to create dynamic image carousels, supporting functionalities such as navigating through images, displaying metadata, and enhancing the user experience with modals for viewing images in full-screen mode.
+
+####1. Define a Parent Element
+
+Define a parent element where the images will be rendered. Ensure the element includes a `data-id` attribute for proper identification:
+
+```html
+<div id=\"myImages1\" data-id=\"myImages1\"></div>
+```
+
+####2. Draw An Image Series
+
+Use the `imagesJs.draw` function to display a series of images. Provide an array of URLs to populate the image series dynamically:
+
+```javascript
+var parent = $('#myImages1');
+imagesJs.draw(parent, {
+    urls: [
+        'https://example.com/image1.jpg',
+        'https://example.com/image2.jpg',
+        'https://example.com/image3.jpg'
+    ]
+});
+```
+
+This will render the images in the specified parent element.
+
+####3. Maximize an Image
+
+Clicking on an image triggers the maximization functionality. The `images.min.js` library automatically creates a modal for viewing images in full screen. Additional controls such as \"Next,\" \"Previous,\" and \"Close\" buttons are included for navigation:
+
+```javascript
+$(\".screenshot\").click(function() {
+    $(\"#screenshot_modal\").show(); // Open modal on image click
+});
+```
+
+Keyboard shortcuts:
+- **Escape:** Close the modal
+- **Left Arrow:** View the previous image
+- **Right Arrow:** View the next image
+
+The modal also updates the image index (`#number`) and total count (`#total`) dynamically.
+
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+  $(document).ready(function() {
+      var parent = $('#myImages1');
+      imagesJs.draw(parent, {
+        urls: [
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/e994185e-34a3-460d-91fd-ae3a50c67c8c.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/723a4a1e-81fa-4f59-8a78-3cd0c6f1bd0f.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/f7c6df73-9325-4945-97b5-577b667c377e.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/653cd6a0-c7fe-4574-a9c2-68537873e70d.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/b41b1019-5973-43a0-9a2c-3f5733dcbc88.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/4f0e90cb-6a19-4d79-ae21-c19e7cc46612.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/d22194d3-b9a9-496c-aaa7-4e873e1805d0.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/78a50af1-001f-4d10-b340-0e5bb7b2b0bb.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/395e0c8f-221d-4d51-99f1-4a7c2650c29a.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/b593e972-00cc-4f24-8530-50327f2a8823.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/4e6ef8e5-2350-4790-b7fb-a9a32e965d34.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/274df36e-f8ef-4527-9d7f-6a515088bb07.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/b1d84141-1356-418d-b39e-a2c3648c63b2.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/5f5c0aac-a3c2-4f1a-bb7a-e581af444f34.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/329c5eda-8248-45ce-9800-6eb506dfb90c.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/abe464a5-7d44-446d-a76b-f359102a6c2e.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/ccad1d61-6593-4ef7-b324-7c3f0e6022e7.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/7cb51fa3-8561-41ba-a6c8-6b3bee301ad9.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/a60caa6f-9dfe-4750-a876-68f80822b0c3.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/fa3042b6-c21f-47a5-849f-6025d829843a.jpg',
+          'https://massprospecting.s3.amazonaws.com/87a65cf4-c11d-4700-b266-58361ca14b8e/8480fb41-3105-4b65-b75f-3e73e3a3ef51.jpg',
+        ]
+      });
+  }); // end of document.ready
+</script>
