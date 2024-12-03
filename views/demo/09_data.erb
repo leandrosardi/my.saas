@@ -93,7 +93,55 @@
 								    <button id="setOpacityButton" class="btn btn-primary">Set Opacity</button>
 								</div>
 
+								<div id="removeAllItemsSection" class="row-fluid" style="margin-top: 20px;">
+								    <h3>Remove All Items by Code</h3>
+								    <button id="removeAllItemsButton" class="btn btn-danger">Remove All Items</button>
+								</div>
 
+								<!-- Set Item Strikethrough by Code -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Set Item Strikethrough by Code</h4>
+						        <input type="text" id="strikethroughItemId" placeholder="Enter Item ID" class="form-control" />
+						        <button id="setStrikethroughButton" class="btn btn-primary">Set Strikethrough</button>
+						        <button id="removeStrikethroughButton" class="btn btn-secondary">Remove Strikethrough</button>
+						    </div>
+
+						    <!-- Get if Item has a Strikethrough -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Get if Item has a Strikethrough</h4>
+						        <input value='a' type="text" id="checkStrikethroughItemId" placeholder="Enter Item ID" class="form-control" />
+						        <button id="checkStrikethroughButton" class="btn btn-info">Check Strikethrough</button>
+						    </div>
+
+						    <!-- Show Up Form by Code -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Show Up Form by Code</h4>
+						        <button id="showFormButton" class="btn btn-success">Show Form</button>
+						    </div>
+
+						    <!-- Hide Form by Code -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Hide Form by Code</h4>
+						        <button id="hideFormButton" class="btn btn-danger">Hide Form</button>
+						    </div>
+
+						    <!-- Catch Event on_add_item -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Catch Event: on_add_item</h4>
+						        <button id="simulateAddItemButton" class="btn btn-warning">Simulate Add Item</button>
+						    </div>
+
+						    <!-- Catch Event on_remove_item -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Catch Event: on_remove_item</h4>
+						        <button id="simulateRemoveItemButton" class="btn btn-warning">Simulate Remove Item</button>
+						    </div>
+
+						    <!-- Catch Event on_strikethrough_item -->
+						    <div class="row-fluid" style="margin-bottom: 10px;">
+						        <h4>Catch Event: on_strikethrough_item</h4>
+						        <button id="simulateStrikethroughItemButton" class="btn btn-warning">Simulate Strikethrough Item</button>
+						    </div>
 
               </div>
             </section>
@@ -183,9 +231,7 @@ buttons: [
 ]
 ```
 
----
-
-####5. Add Items by Code
+####4. Add Items by Code
 
 Add data items programmatically using the `add_item` method:
 
@@ -198,7 +244,7 @@ dataJs.add_item(parent_items, {
 });
 ```
 
-####6. Remove Item by Code
+####5. Remove Item by Code
 
 Remove specific items by their ID using the `remove_item` method:
 
@@ -206,7 +252,7 @@ Remove specific items by their ID using the `remove_item` method:
 dataJs.remove_item(parent_items, 'a');
 ```
 
-####7. Set Item Opacity
+####6. Set Item Opacity
 
 Change the opacity of an item programmatically:
 
@@ -214,7 +260,7 @@ Change the opacity of an item programmatically:
 dataJs.set_item_opacity(parent_items, 'a', 0.5);
 ```
 
-####8. Remove all Items by Code
+####7. Remove all Items by Code
 
 Remove all items from the control:
 
@@ -222,7 +268,7 @@ Remove all items from the control:
 dataJs.remove_all(parent_items);
 ```
 
-####9. Set Item Strikethrough by Code
+####8. Set Item Strikethrough by Code
 
 Enable or disable strikethrough for an item:
 
@@ -230,7 +276,7 @@ Enable or disable strikethrough for an item:
 dataJs.set_strikethrough(parent_items, 'a', true);
 ```
 
-####10. Get if Item has a Strikethrough
+####9. Get if Item has a Strikethrough
 
 Check if an item has strikethrough enabled:
 
@@ -239,7 +285,7 @@ var isStrikethrough = dataJs.is_strikethrough(parent_items, 'a');
 console.log(isStrikethrough);
 ```
 
-####11. Show Up Form by Code
+####10. Show Up Form by Code
 
 Display the form for adding data programmatically:
 
@@ -247,7 +293,7 @@ Display the form for adding data programmatically:
 dataJs.show_form(parent_buttons, '1');
 ```
 
-####12. Hide Form by Code
+####11. Hide Form by Code
 
 Hide the data form programmatically:
 
@@ -255,7 +301,7 @@ Hide the data form programmatically:
 dataJs.hide_form(parent_buttons);
 ```
 
-####13. Catch Event `on_add_item`
+####12. Catch Event `on_add_item`
 
 Handle the `on_add_item` event to perform actions when a new item is added:
 
@@ -267,7 +313,7 @@ dataJs.draw(parent_buttons, parent_items, {
 });
 ```
 
-####14. Catch Event `on_remove_item`
+####13. Catch Event `on_remove_item`
 
 Handle the `on_remove_item` event when an item is removed:
 
@@ -279,7 +325,7 @@ dataJs.draw(parent_buttons, parent_items, {
 });
 ```
 
-####15. Catch Event `on_strikethrough_item`
+####14. Catch Event `on_strikethrough_item`
 
 Handle the `on_strikethrough_item` event when an item's strikethrough status is toggled:
 
@@ -480,6 +526,88 @@ dataJs.draw(parent_buttons, parent_items, {
 			        } else {
 			            alert(`Item with ID "${itemId}" not found.`);
 			        }
+			    });
+
+					// Remove all items on button click
+			    $('#removeAllItemsButton').click(function () {
+			        // Confirm the removal action
+			        if (confirm('Are you sure you want to remove all items? This action cannot be undone.')) {
+			            // Use the dataJs method to remove all items
+			            dataJs.remove_all(parent_items[0]);
+
+			            // Notify the user
+			            alert('All items have been removed.');
+			        }
+			    });
+
+
+					// Set Item Strikethrough by Code
+			    $('#setStrikethroughButton').click(function () {
+			        var itemId = $('#strikethroughItemId').val();
+			        dataJs.set_strikethrough(parent_items[0], itemId, true);
+			        alert('Strikethrough applied to item: ' + itemId);
+			    });
+
+			    $('#removeStrikethroughButton').click(function () {
+			        var itemId = $('#strikethroughItemId').val();
+			        dataJs.set_strikethrough(parent_items[0], itemId, false);
+			        alert('Strikethrough removed from item: ' + itemId);
+			    });
+
+			    // Get if Item has a Strikethrough
+			    $('#checkStrikethroughButton').click(function () {
+			        var itemId = $('#checkStrikethroughItemId').val();
+			        var isStrikethrough = dataJs.is_strikethrough(parent_items[0], itemId);
+			        alert('Item ' + itemId + ' has strikethrough: ' + isStrikethrough);
+			    });
+
+			    // Show Up Form by Code
+			    $('#showFormButton').click(function () {
+			        dataJs.show_form(parent_buttons[0], '1'); // Example button type code
+			        alert('Form displayed.');
+			    });
+
+			    // Hide Form by Code
+			    $('#hideFormButton').click(function () {
+			        dataJs.hide_form(parent_buttons[0]);
+			        alert('Form hidden.');
+			    });
+
+			    // Catch Event on_add_item
+			    dataJs.events['myItems.on_add_item'] = function (type, value) {
+			        console.log('Item added:', { type, value });
+			        alert('Item added with type: ' + type + ' and value: ' + value);
+			    };
+
+			    $('#simulateAddItemButton').click(function () {
+			        var simulatedItem = { id: 'simulated', button_code: '1', value: 'Simulated Value' };
+			        dataJs.add_item(parent_items[0], simulatedItem);
+			        alert('Simulated item added.');
+			    });
+
+			    // Catch Event on_remove_item
+			    dataJs.events['myItems.on_remove_item'] = function (itemId) {
+			        console.log('Item removed:', itemId);
+			        alert('Item removed with ID: ' + itemId);
+			    };
+
+			    $('#simulateRemoveItemButton').click(function () {
+			        var itemId = 'simulated'; // Example ID
+			        dataJs.remove_item(parent_items[0], itemId);
+			        alert('Simulated item removed.');
+			    });
+
+			    // Catch Event on_strikethrough_item
+			    dataJs.events['myItems.on_strikethrough_item'] = function (itemId) {
+			        console.log('Item strikethrough toggled:', itemId);
+			        alert('Strikethrough toggled for item with ID: ' + itemId);
+			    };
+
+			    $('#simulateStrikethroughItemButton').click(function () {
+			        var itemId = 'simulated'; // Example ID
+			        var isStrikethrough = dataJs.is_strikethrough(parent_items[0], itemId);
+			        dataJs.set_strikethrough(parent_items[0], itemId, !isStrikethrough);
+			        alert('Simulated strikethrough toggled.');
 			    });
 
 
