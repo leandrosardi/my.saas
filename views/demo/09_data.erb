@@ -67,25 +67,25 @@
 	                <!-- call dataJs.draw -->
 	              </div>
 
-								<section class="span11 box">
+								<section class="row-fluid box">
 	                <div id='myItems' style='width:100%;'> </div>
 	                <div id='myButtons' style='width:100%;'> </div>
 	              </section>
 
-								<div id="addItemsSection" style="margin-top: 20px;">
-								    <h3>Add Items by Code</h3>
+								<div id="addItemsSection" class="row-fluid" style="margin-top: 20px;">
+								    <h4>Add Items by Code</h4>
 								    <button id="addEmailItem" class="btn btn-success">Add Email Item</button>
 								    <button id="addPhoneItem" class="btn btn-success">Add Phone Item</button>
 								</div>
 
-								<div id="removeItemsSection" style="margin-top: 20px;">
-								    <h3>Remove Items by Code</h3>
+								<div id="removeItemsSection" class="row-fluid" style="margin-top: 20px;">
+								    <h4>Remove Items by Code</h4>
 								    <button id="removeFirstItem" class="btn btn-danger">Remove First Item</button>
 								    <button id="removeLastItem" class="btn btn-danger">Remove Last Item</button>
 								</div>
 
-								<div id="setItemOpacitySection" style="margin-top: 20px;">
-								    <h3>Set Item Opacity by Code</h3>
+								<div id="setItemOpacitySection" class="row-fluid" style="margin-top: 20px;">
+								    <h4>Set Item Opacity by Code</h4>
 								    <label for="itemOpacityInput">Enter Item ID:</label>
 								    <input type="text" value='a' id="itemOpacityInput" placeholder="Enter Item ID" class="form-control" style="width: 300px; display: inline-block; margin-right: 10px;">
 								    <label for="opacityValue">Opacity (0.0 to 1.0):</label>
@@ -482,6 +482,6 @@ dataJs.draw(parent_buttons, parent_items, {
 			        }
 			    });
 
-			
+
   }); // end of document.ready
 </script>
