@@ -72,6 +72,28 @@
 	                <div id='myButtons' style='width:100%;'> </div>
 	              </section>
 
+								<div id="addItemsSection" style="margin-top: 20px;">
+								    <h3>Add Items by Code</h3>
+								    <button id="addEmailItem" class="btn btn-success">Add Email Item</button>
+								    <button id="addPhoneItem" class="btn btn-success">Add Phone Item</button>
+								</div>
+
+								<div id="removeItemsSection" style="margin-top: 20px;">
+								    <h3>Remove Items by Code</h3>
+								    <button id="removeFirstItem" class="btn btn-danger">Remove First Item</button>
+								    <button id="removeLastItem" class="btn btn-danger">Remove Last Item</button>
+								</div>
+
+								<div id="setItemOpacitySection" style="margin-top: 20px;">
+								    <h3>Set Item Opacity by Code</h3>
+								    <label for="itemOpacityInput">Enter Item ID:</label>
+								    <input type="text" value='a' id="itemOpacityInput" placeholder="Enter Item ID" class="form-control" style="width: 300px; display: inline-block; margin-right: 10px;">
+								    <label for="opacityValue">Opacity (0.0 to 1.0):</label>
+								    <input type="number" value='0.5' id="opacityValue" min="0" max="1" step="0.1" placeholder="1.0" class="form-control" style="width: 100px; display: inline-block; margin-right: 10px;">
+								    <button id="setOpacityButton" class="btn btn-primary">Set Opacity</button>
+								</div>
+
+
 
               </div>
             </section>
@@ -161,18 +183,7 @@ buttons: [
 ]
 ```
 
-####4. Add Buttons by Code
-
-Add new buttons dynamically using the `add_button` method:
-
-```javascript
-dataJs.add_button(parent_buttons, {
-    code: '3',
-    name: 'linkedin',
-    icon: 'linkedin',
-    title: 'Add LinkedIn URL'
-});
-```
+---
 
 ####5. Add Items by Code
 
@@ -367,5 +378,110 @@ dataJs.draw(parent_buttons, parent_items, {
 				},
         */
 			});
+
+			// Add Email Item by Code
+	    $('#addEmailItem').click(function () {
+	        dataJs.add_item(parent_items[0], {
+	            id: dataJs.uuidv4(),
+	            button_code: '1', // Code for Email button
+	            value: 'example@domain.com', // Example email
+	            strikethrough: false // Item is not strikethrough
+	        });
+	        alert('Email item added!');
+	    });
+
+	    // Add Phone Item by Code
+	    $('#addPhoneItem').click(function () {
+	        dataJs.add_item(parent_items[0], {
+	            id: dataJs.uuidv4(),
+	            button_code: '2', // Code for Phone button
+	            value: '123-456-7890', // Example phone number
+	            strikethrough: false // Item is not strikethrough
+	        });
+	        alert('Phone item added!');
+	    });
+
+			// Remove the first item by code
+	    $('#removeFirstItem').click(function () {
+	        // Find the first item in the list
+	        var firstItem = $(parent_items).find('tr.contact-info-item').first();
+	        if (firstItem.length > 0) {
+	            var itemId = firstItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('First item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+	    // Remove the last item by code
+	    $('#removeLastItem').click(function () {
+	        // Find the last item in the list
+	        var lastItem = $(parent_items).find('tr.contact-info-item').last();
+	        if (lastItem.length > 0) {
+	            var itemId = lastItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('Last item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+
+			// Remove the first item by code
+	    $('#removeFirstItem').click(function () {
+	        // Find the first item in the list
+	        var firstItem = $(parent_items).find('tr.contact-info-item').first();
+	        if (firstItem.length > 0) {
+	            var itemId = firstItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('First item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+	    // Remove the last item by code
+	    $('#removeLastItem').click(function () {
+	        // Find the last item in the list
+	        var lastItem = $(parent_items).find('tr.contact-info-item').last();
+	        if (lastItem.length > 0) {
+	            var itemId = lastItem.attr('data-id-item');
+	            dataJs.remove_item(parent_items[0], itemId);
+	            alert('Last item removed!');
+	        } else {
+	            alert('No items to remove.');
+	        }
+	    });
+
+
+			// Set opacity for a specific item
+			    $('#setOpacityButton').click(function () {
+			        // Get the item ID and opacity value from the inputs
+			        var itemId = $('#itemOpacityInput').val().trim();
+			        var opacityValue = parseFloat($('#opacityValue').val());
+
+			        // Validate the inputs
+			        if (!itemId) {
+			            alert('Please enter a valid Item ID.');
+			            return;
+			        }
+			        if (isNaN(opacityValue) || opacityValue < 0 || opacityValue > 1) {
+			            alert('Please enter a valid opacity value (0.0 to 1.0).');
+			            return;
+			        }
+
+			        // Check if the item exists
+			        var item = $(parent_items).find("tr.contact-info-item[data-id-item='" + itemId + "']");
+			        if (item.length > 0) {
+			            // Set the opacity using dataJs
+			            dataJs.set_item_opacity(parent_items[0], itemId, opacityValue);
+			            alert(`Opacity for item "${itemId}" set to ${opacityValue}.`);
+			        } else {
+			            alert(`Item with ID "${itemId}" not found.`);
+			        }
+			    });
+
+			
   }); // end of document.ready
 </script>
