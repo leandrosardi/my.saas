@@ -63,7 +63,143 @@
               <div class="chat-messages">
                 <h2>Filters</h2>
 
-                ...
+										<h4>
+											Draw A Simple Filter
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='job_title'></div>
+											<div class="span6">
+												<pre>
+var job_title = document.getElementById('job_title');
+filtersJs.draw(job_title, {
+	label: 'Job Positions',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Manage List of Allowed Values
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='location2'></div>
+											<div class="span6">
+												<pre>
+var location2 = document.getElementById('location2');
+filtersJs.draw(location2, {
+	label: 'Locations',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: false,
+	allowed_values: [
+		'Argentina',
+		'Pakistan',
+		'United States'
+	],
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Catch <code>on_add_value</code> Event
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='industry'></div>
+											<div class="span6">
+												<pre>
+var industry = document.getElementById('industry');
+filtersJs.draw(industry, {
+	label: 'Industries',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+	on_add_value: function(value) {
+			alert("You added: " + value);
+		},
+		on_remove_value: function(value) {
+			alert("You removed: " + value);
+		},
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Add Values by Code
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='currentconfig'></div>
+											<div class="span6">
+												<pre>
+var currentconfig = document.getElementById('currentconfig');
+filtersJs.draw(currentconfig, {
+	label: 'Your Current Configuration',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+// adding values by code doesn't trigger events.
+filtersJs.addValue(currentconfig, 'Argentina', true);
+filtersJs.addValue(currentconfig, 'United Kingdom', false);
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Get Values by Code <input id="clicktogetvalues" type="button" value="Click to Show Values" />
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='getvalues'></div>
+											<div class="span6">
+												<pre>
+var getvalues = document.getElementById('getvalues');
+filtersJs.draw(getvalues, {
+	label: 'Click the button below to get the list of values on this filter',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+$('#clicktogetvalues').click(function() {
+	alert('Positive Values:'+filtersJs.getPositiveValues(getvalues));
+	alert('Negative Values:'+filtersJs.getNegativeValues(getvalues));
+});
+												</pre>
+											</div>
+										</section>
+
+										<h4>
+											Remove Values by Code <input id="clicktoremoveuk" type="button" value="Click to Remove United Kingdom" />
+										</h4>
+
+										<section class='row-fluid'>
+											<div class="span5" id='removeuk'></div>
+											<div class="span6">
+												<pre>
+var removeuk = document.getElementById('removeuk');
+filtersJs.draw(removeuk, {
+	label: 'Remove Values',
+	allowed_positive_keywords: true,
+	allowed_negative_keywords: true,
+});
+// adding values by code doesn't trigger events.
+filtersJs.addValue(removeuk, 'Argentina', true);
+filtersJs.addValue(removeuk, 'United Kingdom', false);
+// removing values by code doesn't trigger events.
+$('#clicktoremoveuk').click(function() {
+filtersJs.removeValue(removeuk, 'United Kingdom');
+});
+											</pre>
+										</div>
+									</section>
+
+
+
+
+                ---
 
               </div>
             </section>
@@ -97,10 +233,119 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('
+                      <%=@md.render("
+The **filters.min.js** is a JavaScript library for creating dynamic filtering widgets in web applications. It allows users to add, remove, and manage keywords (tags) with positive or negative connotations. This library provides customizable options, event handling, and a clean API for interacting with filter data, making it ideal for search, categorization, or data filtering tasks.
+
+####1. Define a Parent Element
+
+Define a parent element where the filter widget will be rendered. For example:
+
+```html
+<div id=\"job_title\"></div>
+```
+
+####2. Draw A Simple Filter
+
+Use the `filtersJs.draw` function to create a simple filter with positive and negative keyword support:
+
+```javascript
+var job_title = document.getElementById('job_title');
+filtersJs.draw(job_title, {
+    label: 'Job Positions',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+```
+
+####3. Manage List of Allowed Values
+
+To restrict input to a predefined list of values, use the `allowed_values` property:
+
+```javascript
+var location2 = document.getElementById('location2');
+filtersJs.draw(location2, {
+    label: 'Locations',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: false,
+    allowed_values: [
+        'Argentina',
+        'Pakistan',
+        'United States'
+    ],
+});
+```
+
+####4. Catch `on_add_value` Event
+
+You can catch events when a value is added or removed using the `on_add_value` and `on_remove_value` callbacks:
+
+```javascript
+var industry = document.getElementById('industry');
+filtersJs.draw(industry, {
+    label: 'Industries',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+    on_add_value: function(value) {
+        alert(\"You added: \" + value);
+    },
+    on_remove_value: function(value) {
+        alert(\"You removed: \" + value);
+    },
+});
+```
+
+####5. Add Values by Code
+
+Values can also be added programmatically using the `addValue` method. Note that this doesn't trigger events:
+
+```javascript
+var currentconfig = document.getElementById('currentconfig');
+filtersJs.draw(currentconfig, {
+    label: 'Your Current Configuration',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+filtersJs.addValue(currentconfig, 'Argentina', true);
+filtersJs.addValue(currentconfig, 'United Kingdom', false);
+```
+
+####6. Get Values by Code
+
+Retrieve the list of positive or negative values using `getPositiveValues` and `getNegativeValues` methods:
+
+```javascript
+var getvalues = document.getElementById('getvalues');
+filtersJs.draw(getvalues, {
+    label: 'Get Filter Values',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+var positiveValues = filtersJs.getPositiveValues(getvalues);
+var negativeValues = filtersJs.getNegativeValues(getvalues);
+console.log(\"Positive Values:\", positiveValues);
+console.log(\"Negative Values:\", negativeValues);
+```
+
+####7. Remove Values by Code
+
+You can also remove values programmatically using the `removeValue` method:
+
+```javascript
+var removeuk = document.getElementById('removeuk');
+filtersJs.draw(removeuk, {
+    label: 'Remove Values',
+    allowed_positive_keywords: true,
+    allowed_negative_keywords: true,
+});
+filtersJs.addValue(removeuk, 'Argentina', true);
+filtersJs.addValue(removeuk, 'United Kingdom', false);
+filtersJs.removeValue(removeuk, 'United Kingdom');
+```
+
+
 
 ----
-')%>
+")%>
                       </div>
                     </div>
                   </div>
@@ -115,3 +360,81 @@
       </div>
     </div>
 </section>
+
+<script>
+	$(document).ready(function() {
+
+		// simple filter
+		var job_title = document.getElementById('job_title');
+		filtersJs.draw(job_title, {
+			label: 'Job Positions',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+
+		// list of allowed values
+		var location2 = document.getElementById('location2');
+		filtersJs.draw(location2, {
+			label: 'Locations',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: false,
+			allowed_values: [
+				'Argentina',
+				'Pakistan',
+				'United States'
+			],
+		});
+
+		// catch events
+		var industry = document.getElementById('industry');
+		filtersJs.draw(industry, {
+			label: 'Industries',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+			on_add_value: function(value) {
+				alert("You added: " + value);
+			},
+			on_remove_value: function(value) {
+				alert("You removed: " + value);
+			},
+		});
+
+		// load existing configuration
+		var currentconfig = document.getElementById('currentconfig');
+		filtersJs.draw(currentconfig, {
+			label: 'Your Current Configuration',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+		// adding values by code doesn't trigger events.
+		filtersJs.addValue(currentconfig, 'Argentina', true);
+		filtersJs.addValue(currentconfig, 'United Kingdom', false);
+
+		// get values by code
+		var getvalues = document.getElementById('getvalues');
+		filtersJs.draw(getvalues, {
+			label: 'Click the button below to get the list of values on this filter',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+		$('#clicktogetvalues').click(function() {
+			alert('Positive Values:'+filtersJs.getPositiveValues(getvalues));
+			alert('Negative Values:'+filtersJs.getNegativeValues(getvalues));
+		});
+
+		// remove united kingdom by code
+		var removeuk = document.getElementById('removeuk');
+		filtersJs.draw(removeuk, {
+			label: 'Remove Values',
+			allowed_positive_keywords: true,
+			allowed_negative_keywords: true,
+		});
+		// adding values by code doesn't trigger events.
+		filtersJs.addValue(removeuk, 'Argentina', true);
+		filtersJs.addValue(removeuk, 'United Kingdom', false);
+		// removing values by code doesn't trigger events.
+		$('#clicktoremoveuk').click(function() {
+			filtersJs.removeValue(removeuk, 'United Kingdom');
+		});
+	});
+</script>
