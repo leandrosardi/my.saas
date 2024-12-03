@@ -21,13 +21,24 @@ function init_contenteditable(f) {
       }
     });
 
+    //
+    $('*[contenteditable]').keydown(function(e) {
+      if (e.which == 13) {
+        // stop event propagation
+        e.stopPropagation();
+      }
+    });
+
     // when press escape on a contenteditable td, the content is restored to the original value, quit focos on such a td elemenft too.
     // when press on down arrow, focus the next td element right below with the same value in the data-field attribute
     // when press on up arrow, focus the previous td element right above with the same value in the data-field attribute
     // when press on the right arrow, focus the next td element right which is contenteditable, skipping the tds in the middle who are not contenteditable
     // when press on the left arrow, focus the next td element left which is contenteditable, skipping the tds in the middle who are not contenteditable
     $('*[contenteditable]').keyup(function(e) {
-      if (e.which == 27) {
+      if (e.which == 13) {
+        // stop event propagation
+        e.stopPropagation();
+      } else if (e.which == 27) {
         $(this).text($(this).attr('data-original-value'));
         $(this).blur();
       } else if (e.which == 40) {
@@ -71,7 +82,12 @@ function init_contenteditable(f) {
         // get the field name
         let field = $(this).attr('data-field');
         // get the new value
-        let value = $(this).text();
+        let value = $(this).text().trim();
+        // stop event propagation
+        //e.stopPropagation();
+        this.innerText = value;
+        this.focus();
+        this.blur();
         // callback function to update the field
         f(id, field, value);
       }
