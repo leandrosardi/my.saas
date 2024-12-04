@@ -22,7 +22,7 @@
             <section class="list">
             <div class="chat-messages">
               <ul>
-								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/01_layout">Demo 01: Layout</a></li>
                 <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
                 <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
                 <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
@@ -32,7 +32,7 @@
                 <li><a href="/demo/08_images">Demo 08: Images</a></li>
                 <li><a href="/demo/09_data">Demo 09: Data</a></li>
                 <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
-								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
 								<li><a href="/demo/12_table">Demo 12: Table</a></li>
 								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
 								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
@@ -67,16 +67,11 @@
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Reminders</h2>
+                <h2>Pagination</h2>
 
-								<div class='data' data-id="lead-123">
-	                <!-- call dataJs.draw -->
-	              </div>
-
-	              <section class="span11">
-	                <div id='myItems' style='width:100%;'> </div>
-	                <div id='myButtons' style='width:100%;'> </div>
-	              </section>
+								<div id='pagination' name='pagination' class='pagination'>
+									<!-- pagination component will be rendered here -->
+								</div>
 
               </div>
             </section>
@@ -110,79 +105,33 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render("The **data.min.js** library is a versatile tool not only for managing data items but also for organizing reminders.
+                      <%=@md.render("The **pagination.min.js** library, while primarily designed for managing pagination controls, is versatile enough to be adapted for other purposes like managing reminders.
 
-It provides functionalities like adding, removing, and editing reminders with additional features such as strikethrough and date handling.
+By dynamically generating navigable UI components, it can provide an intuitive interface for navigating through a list of reminders.
 
-Developers can define reminders with custom dates, text fields, or even multi-line descriptions, making it highly adaptable for personal and professional use cases.
+The library's ability to display active, disabled, and ellipsis-separated pages makes it an excellent tool for handling large datasets, such as reminder lists, effectively.
 
-####1. Define a Parent Element
+#### 1. Define a Parent Element
 
-Define two parent elements: one for buttons and one for items where the data controls will be rendered:
+To use `pagination.min.js`, start by defining a container element in your HTML where the pagination control will be rendered. This element acts as the parent container for the dynamically generated pagination UI.
 
 ```html
-<div id=\"reminderButtons\"></div>
-<div id=\"reminderItems\"></div>
+<div id=\"pagination-container\" class=\"pagination\"></div>
 ```
 
-####2. Draw a Data Control
+#### 2. Draw a Pagination Control
 
-Use the `dataJs.draw` function to create a control for managing reminders:
+Invoke the `drawPagination` function within a JavaScript script block or external script. Pass the parent element, the current page number, and the total number of pages (or reminders) to generate the pagination.
 
 ```javascript
-var parent_buttons = $('#reminderButtons');
-var parent_items = $('#reminderItems');
-
-dataJs.draw(parent_buttons, parent_items, {
-    id: 'reminder-123',
-    caption: 'Add Reminder',
-    trash_enabled: true,
-    copy_enabled: false,
-    strikethrough_enabled: true,
-    calendar: true, // Enables date input
-    buttons: [
-        {
-            code: '1',
-            name: 'task',
-            icon: 'calendar',
-            title: 'Add a Task'
-        },
-        {
-            code: '2',
-            name: 'event',
-            icon: 'clock',
-            title: 'Add an Event'
-        }
-    ],
-    items: []
+$(document).ready(function() {
+    let currentPage = 1; // The current page number
+    let totalReminders = 100; // Total number of reminders
+    drawPagination($(\"#pagination-container\"), currentPage, totalReminders);
 });
 ```
 
-####3. Allowing Date Field
-
-Enable date input for reminders by setting the `calendar` property to `true`. This will render a date picker field in the form:
-
-```javascript
-dataJs.draw(parent_buttons, parent_items, {
-    calendar: true
-});
-```
-
-####4. Switching Input Field into a TextArea
-
-If the reminders require multi-line descriptions, enable a `textarea` instead of a single-line input field by setting the `textarea` property to `true`:
-
-```javascript
-dataJs.draw(parent_buttons, parent_items, {
-    textarea: true
-});
-```
-
-This allows users to input detailed descriptions for their reminders using a text area.
-
-
-
-
+The function will dynamically populate the `pagination-container` with navigation controls for browsing through the reminders.
 
 
 
@@ -204,54 +153,9 @@ This allows users to input detailed descriptions for their reminders using a tex
 </section>
 
 <script>
-  $(document).ready(function() {
-
-      var parent_buttons = $('#myButtons');
-      var parent_items = $('#myItems');
-
-      dataJs.draw(parent_buttons, parent_items, {
-				id: '1234',
-				caption: 'Add Contact Information',
-        textarea: true,
-        calendar: true,
-        show_date: true,
-				trash_enabled: true, // default: false
-				copy_enabled: false, // default: false
-				strikethrough_enabled: true, // default: false
-				buttons: [{
-					code: '1',
-					name: 'reminder',
-					icon: 'calendar',
-					//link: 'mailto', // default: null
-					title: 'Add a Reminder',
-					placeholder: 'Write a note and date...'
-				}],
-
-				items: [{
-					id: 'a',
-					button_code: '1',
-					value: 'Call the lead for his BirthDay!',
-          date: '2025-01-01',
-					strikethrough: true
-				}, {
-					id: 'b',
-					button_code: '1',
-					value: '555 555-5555',
-					value: 'Send an offer!',
-          date: '2025-01-03',
-					strikethrough: false
-				}],
-        /*
-				on_add_item: function(type, value) {
-					// call ajax before the a new data item is added to the list.
-				},
-				on_remove_item: function(id) {
-					// call ajax before the a data item is remobved from the list.
-				},
-				on_strikethrough_item: function(id) {
-					// call ajax before set strikethrough to a data.
-				},
-        */
-			});
-  }); // end of document.ready
+	$(document).ready(function() {
+		let page_number = 2;
+		let page_count = 50;
+		drawPagination($(".pagination"), page_number, page_count);
+	});
 </script>

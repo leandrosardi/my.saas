@@ -372,7 +372,7 @@ theme = 'default'
 
 		// draw pagination function
 		//
-		function drawPagination(o, current_page, total_pages, page_size=10)
+		function drawPagination(o, current_page, total_pages) //, page_size=10)
 		{
 			url = '?p='; // url to get the next page
 
@@ -414,10 +414,12 @@ theme = 'default'
 			}
 			u.append(i);
 
+			/*
+			 * DEPRECATED BY NOW
+			 *
 			// create a drodown list with different page sizes
 			li = $('<li><span style="margin-left:25px;"><i class="icon-caret-right"></i> <b>Page Size:</b></span> <select id="page-size" class="form-control" style="width: 100px;"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></li>');
 			u.append(li);
-
 			// set the current page size in the dropdown list
 			$('#page-size').val( page_size );
 
@@ -427,6 +429,7 @@ theme = 'default'
 				page_size = $(this).val();
 				window.location.href = window.location.href.split('?')[0] + '?z=' + page_size;
 			});
+			*/
 		}
 	</script>
 
