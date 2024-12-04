@@ -450,13 +450,17 @@ begin
     erb :'views/demo/10_reminders', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/unibox', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/unibox', :layout => :'/views/layouts/full'
+  get '/demo/11_unibox', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/11_unibox', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/tables', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/table', :layout => :'/views/layouts/full'
+  get '/demo/12_ajax', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/12_ajax', :layout => :'/views/layouts/full'
   end
+
+  #get '/demo/tables', :auth => true, :agent => /(.*)/ do
+  #  erb :'views/demo/table', :layout => :'/views/layouts/full'
+  #end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Setup user preferences
