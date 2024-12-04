@@ -4,7 +4,6 @@ return_message['status'] = 'success'
 begin
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
-binding.pry
     desc = @body
     raise "desc is required" if desc.nil?
     desc['id_account'] = @account.id

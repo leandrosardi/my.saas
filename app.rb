@@ -499,11 +499,7 @@ begin
   post "/ajax/:object/update.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/update"
   end
-
-  post "/ajax/:object/update_status.json", :auth => true, :agent => /(.*)/ do
-    erb :"views/ajax/update_status"
-  end
-
+  
   post "/ajax/:object/upsert.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/upsert"
   end

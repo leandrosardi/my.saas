@@ -12,6 +12,7 @@ begin
         o = cls.where(:id=>desc['id'], :id_account=>@account.id).first
     end
     raise "id not found" if o.nil?
+    desc['id_account'] = @account.id
     @return_message['result'] = o.update(desc).to_h
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
