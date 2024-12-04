@@ -194,12 +194,12 @@ theme = 'default'
 				element.attachEvent('on' + eventName, fn);
 		}
 
-		function showWait(s) {
+		function showWait(s='') {
 			$("#wait").show();
 			$("#wait-caption").text(s);
 		}
 
-		function hideWait(s) {
+		function hideWait() {
 			$("#wait").hide();
 		}
 

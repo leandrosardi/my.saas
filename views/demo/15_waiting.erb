@@ -67,9 +67,9 @@
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Title</h2>
+                <h2>Waiting</h2>
 
-                ...
+                <button id='waiting' name='waiting' class='btn btn-large btn-blue'>Click to Activate Waiting GIF for 5 Seconds</button>
 
               </div>
             </section>
@@ -103,10 +103,40 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('
+                      <%=@md.render("The **waiting.min.js** library provides a simple way to show and hide waiting indicators (e.g., loading GIFs) in a web application.
+
+It offers two core functions: `showWait` to display the waiting overlay with an optional caption and `hideWait` to hide it.
+
+This library is particularly useful for indicating background processing or loading states. Developers can integrate it seamlessly into their UI to improve user experience during delays.
+
+With minimal code, you can create visually appealing and functional waiting indicators.
+
+#### 1. Activate Waiting
+
+To activate the waiting indicator, use the `showWait` function. You can pass an optional string parameter to display a caption.
+
+```javascript
+// Show the waiting indicator with a custom message
+showWait('Please wait while the process completes...');
+```
+
+In your HTML, ensure that the element with the `id=\"wait\"` is styled and ready to display the waiting state.
+
+#### 2. Deactivate Waiting
+
+To deactivate the waiting indicator, use the `hideWait` function. This function will hide the `#wait` element from the user's view.
+
+```javascript
+// Hide the waiting indicator
+hideWait();
+```
+
+You can integrate these functions with events, such as button clicks or AJAX calls, to dynamically control the waiting indicator.
+
+
 
 ----
-')%>
+")%>
                       </div>
                     </div>
                   </div>
@@ -121,3 +151,16 @@
       </div>
     </div>
 </section>
+
+<script>
+$(document).ready(function() {
+	$("#waiting").click(function() {
+		// show ajax wait
+		showWait('This Waiting GIF will dissapear in 5 seconds!');
+
+		setTimeout(function() {
+			hideWait();
+		}, 5000);
+	});
+});
+</script>
