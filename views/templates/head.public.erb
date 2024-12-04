@@ -221,6 +221,7 @@ theme = 'default'
 		    var closeButton = document.createElement('span');
 		    closeButton.innerHTML = '&times;';
 		    closeButton.style.position = 'absolute';
+				closeButton.style.color = 'black'
 		    closeButton.style.right = '15px';
 		    closeButton.style.top = '15px';
 		    closeButton.style.cursor = 'pointer';
@@ -274,6 +275,12 @@ theme = 'default'
 
 		    // Append the container to the body
 		    document.body.appendChild(container);
+
+				$(document).keyup(function(e) {
+					if (e.keyCode == 27) { // esca[e]
+						container.remove();
+					}
+				});
 
 				// If remove_seconds is not -1, set a timeout to hide the alert
 		    if (remove_seconds !== -1) {
