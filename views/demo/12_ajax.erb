@@ -61,16 +61,7 @@
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Reminders</h2>
-
-								<div class='data' data-id="lead-123">
-	                <!-- call dataJs.draw -->
-	              </div>
-
-	              <section class="span11">
-	                <div id='myItems' style='width:100%;'> </div>
-	                <div id='myButtons' style='width:100%;'> </div>
-	              </section>
+                <h2>AJAX</h2>
 
               </div>
             </section>
@@ -104,76 +95,7 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render("The **data.min.js** library is a versatile tool not only for managing data items but also for organizing reminders.
-
-It provides functionalities like adding, removing, and editing reminders with additional features such as strikethrough and date handling.
-
-Developers can define reminders with custom dates, text fields, or even multi-line descriptions, making it highly adaptable for personal and professional use cases.
-
-####1. Define a Parent Element
-
-Define two parent elements: one for buttons and one for items where the data controls will be rendered:
-
-```html
-<div id=\"reminderButtons\"></div>
-<div id=\"reminderItems\"></div>
-```
-
-####2. Draw a Data Control
-
-Use the `dataJs.draw` function to create a control for managing reminders:
-
-```javascript
-var parent_buttons = $('#reminderButtons');
-var parent_items = $('#reminderItems');
-
-dataJs.draw(parent_buttons, parent_items, {
-    id: 'reminder-123',
-    caption: 'Add Reminder',
-    trash_enabled: true,
-    copy_enabled: false,
-    strikethrough_enabled: true,
-    calendar: true, // Enables date input
-    buttons: [
-        {
-            code: '1',
-            name: 'task',
-            icon: 'calendar',
-            title: 'Add a Task'
-        },
-        {
-            code: '2',
-            name: 'event',
-            icon: 'clock',
-            title: 'Add an Event'
-        }
-    ],
-    items: []
-});
-```
-
-####3. Allowing Date Field
-
-Enable date input for reminders by setting the `calendar` property to `true`. This will render a date picker field in the form:
-
-```javascript
-dataJs.draw(parent_buttons, parent_items, {
-    calendar: true
-});
-```
-
-####4. Switching Input Field into a TextArea
-
-If the reminders require multi-line descriptions, enable a `textarea` instead of a single-line input field by setting the `textarea` property to `true`:
-
-```javascript
-dataJs.draw(parent_buttons, parent_items, {
-    textarea: true
-});
-```
-
-This allows users to input detailed descriptions for their reminders using a text area.
-
+                      <%=@md.render("
 
 
 
