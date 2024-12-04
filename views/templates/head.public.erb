@@ -203,9 +203,15 @@ theme = 'default'
 			$("#wait").hide();
 		}
 
+		// close any existing alert
+		function close_alerts() {
+			$('.mysaas-alert').remove();
+		}
+
 		function draw_alert(title, background_color='green', border_color='green', success_lines = [], error_lines = [], remove_seconds = -1) {
 		    // Create the container div
 		    var container = document.createElement('div');
+				container.className = 'mysaas-alert'
 		    container.style.position = 'fixed';
 		    container.style.bottom = '0';
 		    container.style.left = '0';
@@ -262,6 +268,7 @@ theme = 'default'
 		    error_lines.forEach(function(line) {
 		        var li = document.createElement('li');
 		        li.style.marginBottom = '5px';
+						li.style.color = 'black';
 		        var icon = document.createElement('i');
 		        icon.className = 'icon-remove';
 		        icon.style.color = 'black';

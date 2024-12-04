@@ -81,6 +81,9 @@
 									<div class='span6'>
 										<p>Disaper Alerts After <input type='number' id='disapear_seconds' name='disapear_seconds' class='input input-mini' value='-1' /> Seconds</p>
 										<p>* Set -1 to don't disapear alerts automatically.</p>
+										<br/>
+										<br/>
+										<button class='btn btn-black' id='close-alerts' name='close-alerts'>Close all Alerts</button>
 									</div>
 
               </div>
@@ -161,6 +164,20 @@ draw_info_alert('Info!', ['This is a test message'], [], 5);
 
 You can close the alerts with the cross-icon in the top-right corner of the alert, or you can press `escape` in your keyboard.
 
+#### 6. Close All alerts
+
+If you call the `draw_foo_alert` many time, then many alerts will be opened, one over other.
+
+You can close all together.
+
+```JavaScript
+close_alerts();
+```
+
+
+
+
+
 ----
 ")%>
                       </div>
@@ -197,6 +214,10 @@ $(document).ready(function() {
 		let title = 'Example Alert'
 		let i = parseInt($('#disapear_seconds').val());
 		draw_info_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
+
+	$('#close-alerts').click(function() {
+		close_alerts();
 	});
 });
 </script>
