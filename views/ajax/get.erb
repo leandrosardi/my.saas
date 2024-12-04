@@ -1,4 +1,6 @@
 <%
+return_message = {}
+return_message['status'] = 'success'
 begin
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
@@ -10,9 +12,9 @@ begin
     o = cls.where(:id_account => @account.id, :id => id, :delete_time => nil).first
 
     raise "#{object.to_s} not found" if o.nil?
-    @return_message['result'] = o.to_h
+    return_message['result'] = o.to_h
 rescue Exception => e
-    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+    return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
-return @return_message.to_json
+return return_message.to_json
 %>

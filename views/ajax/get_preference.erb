@@ -1,13 +1,18 @@
 <%
 return_message = {}
+return_message['status'] = 'success'
 begin
     name = @body['name']
     default = '' #body['default']
     return_message[:value] = @login.user.preference(name, default, nil)
+=begin
+    o = BlackStack::MySaaS::Preference.where(
+      :id_user=>@user.id,
+      :name=>name
+    ).first
 
-    # return
-    return_message[:status] = 'success'
-
+    return_message[:value] = o.nil? ? nil : o.value_string
+=end
 rescue => e
     return_message[:status] = e.to_console
 end

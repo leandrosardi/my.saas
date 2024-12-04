@@ -1,3 +1,13 @@
+
+<style>
+.console {
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: black;
+}
+</style>
+
 <script type="text/javascript">
     // Include Unibox
 		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
@@ -63,6 +73,25 @@
               <div class="chat-messages">
                 <h2>AJAX</h2>
 
+                <div class="row-fluid">
+                  <h4 for="url">URL:</h4>
+                  <input type="text" id="url" placeholder="Enter API endpoint" class='input input-block-level console' value='/ajax/ping.json'>
+                </div>
+
+                <div class="row-fluid">
+                  <h4 for="params">Parameters (JSON format):</h4>
+                  <textarea id="params" placeholder='{"key": "value"}' class='input input-block-level console' rows=7>{}</textarea>
+                </div>
+
+                <div class="row-fluid">
+                  <button id="submit" class='btn btn-blue btn-normal'>Send AJAX Request</button>
+                </div>
+
+                <div class="row-fluid">
+                  <h4>Response:</h4>
+                  <textarea id="response" class='input input-block-level console' rows=14 readonly></textarea>
+                </div>
+
               </div>
             </section>
           </div>
@@ -96,6 +125,81 @@
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
                       <%=@md.render("
+This document provides instructions on how to use this AJAX Demo Screen and guidelines for writing proper AJAX calls in your projects.
+
+####1. How to Use the AJAX Demo Screen
+
+1. **Open the Demo Screen**: Launch the demo screen in your browser.
+2. **Input URL**:
+   - Locate the `URL` field.
+   - Enter the endpoint URL for the API you want to call.
+3. **Input Parameters**:
+   - In the `Parameters` textarea, input the request body in JSON format.
+   - Example:
+     ```json
+     {
+         \"key\": \"value\"
+     }
+     ```
+4. **Send the Request**:
+   - Click the `Send AJAX Request` button.
+5. **View the Response**:
+   - The `Response` textarea will display the server's response.
+   - Successful responses are displayed in **green**, while errors are displayed in **red**.
+
+####2. Writing a Proper AJAX Call
+
+Follow these steps to write a proper AJAX call:
+
+##### Define the URL and Parameters
+   - Ensure the API endpoint URL is correct.
+   - Prepare the request parameters in JSON format.
+
+##### Use the AJAX Call Template
+Use the following template for making AJAX calls with jQuery:
+
+```javascript
+$.ajax({
+    method: \"POST\", // Change to GET, PUT, DELETE as needed
+    url: \"<your-api-url>\",
+    data: JSON.stringify({
+        \"key\": \"value\"
+    }),
+    contentType: \"application/json\", // Use appropriate Content-Type
+    success: function(response) {
+        console.log(\"Response:\", response);
+        // Handle success
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.error(\"Error:\", textStatus, errorThrown, jqXHR.responseText);
+        // Handle errors
+    }
+});
+```
+
+##### Handle Responses
+- **Success**:
+  - Process the response returned by the server.
+  - Parse JSON if needed.
+- **Error**:
+  - Log the error and provide feedback to the user.
+  - Use `jqXHR` properties to get detailed error information.
+
+---
+
+##### Debugging Tips
+- Check the **Network Tab** in browser developer tools to inspect requests and responses.
+- Ensure the `Content-Type` header matches the data format (e.g., `application/json` for JSON).
+- Validate API URLs and server-side response formats.
+
+---
+
+##### Notes
+- Always sanitize user input to avoid injection attacks.
+- Use `try-catch` blocks to handle JSON parsing errors.
+
+By following these instructions, you can efficiently debug and test AJAX calls using the demo screen and implement robust AJAX logic in your applications.
+
 
 
 
@@ -120,54 +224,79 @@
 </section>
 
 <script>
-  $(document).ready(function() {
+    $(document).ready(function() {
+        //a = getPreference('demo.ajax.url');
+        getPreference('demo.ajax.url').then(value => { if (value) $('#url').val(value) });
+        getPreference('demo.ajax.params').then(value => { if (value) $('#params').val(value) });
 
-      var parent_buttons = $('#myButtons');
-      var parent_items = $('#myItems');
+        // Capture the keypress event on #url
+        $('#url').on('keyup', function () {
+            // Get the current value of #url and pass it to setPreference
+            const value = $(this).val();
+            setPreference('demo.ajax.url', value);
+        });
 
-      dataJs.draw(parent_buttons, parent_items, {
-				id: '1234',
-				caption: 'Add Contact Information',
-        textarea: true,
-        calendar: true,
-        show_date: true,
-				trash_enabled: true, // default: false
-				copy_enabled: false, // default: false
-				strikethrough_enabled: true, // default: false
-				buttons: [{
-					code: '1',
-					name: 'reminder',
-					icon: 'calendar',
-					//link: 'mailto', // default: null
-					title: 'Add a Reminder',
-					placeholder: 'Write a note and date...'
-				}],
+        // Capture the keypress event on #url
+        $('#params').on('keyup', function () {
+            // Get the current value of #url and pass it to setPreference
+            const value = $(this).val();
+            setPreference('demo.ajax.params', value);
+        });
 
-				items: [{
-					id: 'a',
-					button_code: '1',
-					value: 'Call the lead for his BirthDay!',
-          date: '2025-01-01',
-					strikethrough: true
-				}, {
-					id: 'b',
-					button_code: '1',
-					value: '555 555-5555',
-					value: 'Send an offer!',
-          date: '2025-01-03',
-					strikethrough: false
-				}],
-        /*
-				on_add_item: function(type, value) {
-					// call ajax before the a new data item is added to the list.
-				},
-				on_remove_item: function(id) {
-					// call ajax before the a data item is remobved from the list.
-				},
-				on_strikethrough_item: function(id) {
-					// call ajax before set strikethrough to a data.
-				},
-        */
-			});
-  }); // end of document.ready
+        $('#submit').on('click', function() {
+            let url = $('#url').val();
+            let params = $('#params').val();
+            try {
+                // Attempt to parse the parameters to JSON
+                params = JSON.parse(params);
+            } catch (e) {
+                $('#response').css('color', 'red').val('Invalid JSON in parameters.');
+                return;
+            }
+
+            // Make the AJAX POST request to update the preference
+        		fetch(url, {
+        			method: 'POST',                      	// HTTP method
+        			headers: {
+        				'Content-Type': 'application/json' 	// Specify JSON content
+        			},
+        			body: JSON.stringify(params)           	// Convert data to JSON string
+        		})
+        		.then(response => {
+        			if (!response.ok) {
+        				// Handle HTTP errors
+        				$('#response').css('color', 'red').val(`Network response was not ok: ${response.statusText}`);
+        			}
+        			return response.json(); // Parse the JSON response
+        		})
+        		.then(data => {
+              s = JSON.stringify(data, null, 2);
+        			if (data.status == 'success') {
+        				// Handle application-level errors
+        				$('#response').css('color', 'green').val(s);
+        			} else {
+        				$('#response').css('color', 'red').val(s);
+        			}
+        		})
+        		.catch(error => {
+              console.error('Fetch operation failed:', error); // Log detailed error for debugging
+
+              let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+              // Check if the error has a status and body
+              if (error.status && error.body) {
+                  // If the response body is an object, stringify it for readability
+                  const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+                  errorMessage = `Error ${error.status}: ${responseBody}`;
+              } else if (error.message) {
+                  // Fallback to the error message
+                  errorMessage = `Error: ${error.message}`;
+              }
+
+              // Update the UI with the detailed error message
+              // Adjust the method based on the type of element
+              $('#response').css('color', 'red').val(errorMessage);
+            });
+        });
+    });
 </script>

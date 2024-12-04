@@ -2,9 +2,10 @@
 begin
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
-    page = @body['page'].to_i
-    limit = @body['limit'].to_i    
-    filters = @body['filters']
+    page = (@body['page'] || 1).to_i
+    limit = (@body['limit'] || 25).to_i
+    filters = @body['filters'] || {}
+    order = @body['order'] || 'id'
     promiscuous = @body['promiscuous']
 
     # sysowner must provide the id_account for getting a page of results
@@ -21,11 +22,13 @@ begin
     end
 
     # getting the dataset
-    ds = cls.page(a, page: page, limit: limit, filters: filters)
-    
-    #n = ds.count
-    arr = ds.limit(limit).offset((page-1)*limit).order(:create_time).all
+    ds = cls.page(@account, page: page, limit: limit, filters: filters)
+    ds = ds.order(order.to_sym)
+    ds = ds.limit(limit).offset((page-1)*limit)
 
+    #n = ds.count
+    arr = ds.all
+    
     #@return_message['total'] = n
     @return_message['results'] = arr.map { |o| o.to_h }
 rescue Exception => e

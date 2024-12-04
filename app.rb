@@ -465,6 +465,10 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Setup user preferences
 
+  post '/ajax/ping.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/ping'
+  end
+
   post '/ajax/set_preference.json', :auth => true, :agent => /(.*)/ do
     erb :'views/ajax/set_preference'
   end

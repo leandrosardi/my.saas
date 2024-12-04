@@ -261,38 +261,44 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	// update user preference via AJAX
 	function getPreference(name) {
-		// Prepare the data to be sent in the request
-		const data = {
-			name: name       		// Preference name
-		};
+	    // Prepare the data to be sent in the request
+	    const data = {
+	        name: name // Preference name
+	    };
 
-		// Make the AJAX POST request to update the preference
-		fetch('/ajax/get_preference.json', {
-			method: 'POST',                      	// HTTP method
-			headers: {
-				'Content-Type': 'application/json' 	// Specify JSON content
-			},
-			body: JSON.stringify(data)           	// Convert data to JSON string
-		})
-		.then(response => {
-			if (!response.ok) {
-				// Handle HTTP errors
-				throw new Error(`Network response was not ok: ${response.statusText}`);
-			}
-			return response.json(); // Parse the JSON response
-		})
-		.then(data => {
-			if (data.status !== 'success') {
-				// Handle application-level errors
-				console.error('Error updating preference:', data.status);
-			} else {
-				return data.value;
-			}
-		})
-		.catch(error => {
-			// Handle fetch or parsing errors
-			console.error('There was a problem with the fetch operation:', error);
-		});
+	    // Return the Promise from fetch
+	    return fetch('/ajax/get_preference.json', {
+	        method: 'POST', // HTTP method
+	        headers: {
+	            'Content-Type': 'application/json' // Specify JSON content
+	        },
+	        body: JSON.stringify(data) // Convert data to JSON string
+	    })
+	    .then(response => {
+	        if (!response.ok) {
+	            // Handle HTTP errors
+	            //console.log('Error0');
+	            throw new Error(`Network response was not ok: ${response.statusText}`);
+	        }
+	        return response.json(); // Parse the JSON response
+	    })
+	    .then(data => {
+	        if (data.status !== 'success') {
+	            // Handle application-level errors
+	            //console.log('Error2');
+	            console.error('Error updating preference:', data.status);
+	            throw new Error(`Error updating preference: ${data.status}`);
+	        } else {
+	            //console.log('Success0:' + data.value);
+	            return data.value; // Return the value
+	        }
+	    })
+	    .catch(error => {
+	        // Handle fetch or parsing errors
+	        //console.log('Error3');
+	        console.error('There was a problem with the fetch operation:', error);
+	        throw error; // Rethrow the error for the caller to handle
+	    });
 	}
 
 	// activate / deactivate dark-mode.

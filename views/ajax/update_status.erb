@@ -1,4 +1,6 @@
 <%
+return_message = {}
+return_message['status'] = 'success'
 begin
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
@@ -11,7 +13,7 @@ begin
     o.error_description = desc['error_description']
     o.save
 rescue Exception => e
-    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+    return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
-return @return_message.to_json
+return return_message.to_json
 %>
