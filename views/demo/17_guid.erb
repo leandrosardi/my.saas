@@ -122,8 +122,10 @@ To generate a GUID, use the `generateGUID` function provided by the library. Thi
 
 Example:
 ```javascript
+
 let new_guid = generateGUID();
 console.log(new_guid); // Outputs something like: '123e4567-e89b-12d3-a456-426614174000'
+
 ```
 
 ##### Demo Screen
@@ -136,7 +138,9 @@ console.log(new_guid); // Outputs something like: '123e4567-e89b-12d3-a456-42661
 GUIDs can be used as unique identifiers when inserting records into a database using AJAX calls.
 
 Example:
+
 ```javascript
+
 let new_guid = generateGUID();
 
 callx({
@@ -153,6 +157,7 @@ callx({
         console.error('Failed to insert record:', error);
     }
 });
+
 ```
 
 By using `guid.min.js.js`, you ensure that each record has a globally unique identifier, avoiding conflicts in distributed systems or concurrent operations.
