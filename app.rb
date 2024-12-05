@@ -478,6 +478,9 @@ begin
     erb :'views/demo/17_guid', :layout => :'/views/layouts/full'
   end
 
+  get '/demo/18_gpt', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/18_gpt', :layout => :'/views/layouts/full'
+  end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Setup user preferences

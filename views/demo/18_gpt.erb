@@ -1,0 +1,91 @@
+<section class="row-fluid">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+        <div class="row">
+
+            <!-- Left Panel -->
+            <section id="pool1" name="pool1" class="col-6 panel responsive-height-1">
+                <div id="panel1_panel" class="pool1-panel">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Profile</th>
+                                    <th>Time Zone</th>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>John Doe</td>
+                                    <td>UTC-5</td>
+                                    <td>Software Engineer</td>
+                                    <td>TechCorp</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">Edit</button>
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jane Smith</td>
+                                    <td>UTC+1</td>
+                                    <td>Product Manager</td>
+                                    <td>BizGroup</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">Edit</button>
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel -->
+            <section id="pool2" name="pool2" class="col-6 panel responsive-height-1">
+                <div id="panel2_panel" class="pool2-panel">
+                    <h2>Reminders</h2>
+                    <div id="reminderButtons"></div>
+                    <div id="reminderItems"></div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function() {
+        var parent_buttons = $('#reminderButtons');
+        var parent_items = $('#reminderItems');
+
+        dataJs.draw(parent_buttons, parent_items, {
+            id: 'reminders-control',
+            caption: 'Add Reminder',
+            textarea: true,
+            calendar: true,
+            trash_enabled: true,
+            strikethrough_enabled: true,
+            buttons: [
+                {
+                    code: '1',
+                    name: 'Task',
+                    icon: 'calendar',
+                    title: 'Add a Task'
+                },
+                {
+                    code: '2',
+                    name: 'Event',
+                    icon: 'clock',
+                    title: 'Add an Event'
+                }
+            ],
+            items: []
+        });
+    });
+</script>
