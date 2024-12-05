@@ -1,0 +1,308 @@
+
+<style>
+.console {
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: black;
+}
+</style>
+
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>AJAX</h2>
+
+                <div class="row-fluid">
+                  <h4 for="url">URL:</h4>
+                  <input type="text" id="url" placeholder="Enter API endpoint" class='input input-block-level console' value='/ajax/ping.json'>
+                </div>
+
+                <div class="row-fluid">
+                  <h4 for="params">Parameters (JSON format):</h4>
+                  <textarea id="params" placeholder='{"key": "value"}' class='input input-block-level console' rows=7>{}</textarea>
+                </div>
+
+                <div class="row-fluid">
+                  <button id="submit" class='btn btn-blue btn-normal'>Send AJAX Request</button>
+                </div>
+
+                <div class="row-fluid">
+                  <h4>Response:</h4>
+                  <textarea id="response" class='input input-block-level console' rows=14 readonly></textarea>
+                </div>
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("
+This document provides instructions on how to use this AJAX Demo Screen and guidelines for writing proper AJAX calls in your projects.
+
+####1. How to Use the AJAX Demo Screen
+
+1. **Open the Demo Screen**: Launch the demo screen in your browser.
+2. **Input URL**:
+   - Locate the `URL` field.
+   - Enter the endpoint URL for the API you want to call.
+3. **Input Parameters**:
+   - In the `Parameters` textarea, input the request body in JSON format.
+   - Example:
+     ```json
+     {
+         \"key\": \"value\"
+     }
+     ```
+4. **Send the Request**:
+   - Click the `Send AJAX Request` button.
+5. **View the Response**:
+   - The `Response` textarea will display the server's response.
+   - Successful responses are displayed in **green**, while errors are displayed in **red**.
+
+####2. Writing a Proper AJAX Call
+
+Follow these steps to write a proper AJAX call:
+
+##### Define the URL and Parameters
+   - Ensure the API endpoint URL is correct.
+   - Prepare the request parameters in JSON format.
+
+##### Use the AJAX Call Template
+Use the following template for making AJAX calls with jQuery:
+
+```javascript
+$.ajax({
+    method: \"POST\", // Change to GET, PUT, DELETE as needed
+    url: \"<your-api-url>\",
+    data: JSON.stringify({
+        \"key\": \"value\"
+    }),
+    contentType: \"application/json\", // Use appropriate Content-Type
+    success: function(response) {
+        console.log(\"Response:\", response);
+        // Handle success
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.error(\"Error:\", textStatus, errorThrown, jqXHR.responseText);
+        // Handle errors
+    }
+});
+```
+
+##### Handle Responses
+- **Success**:
+  - Process the response returned by the server.
+  - Parse JSON if needed.
+- **Error**:
+  - Log the error and provide feedback to the user.
+  - Use `jqXHR` properties to get detailed error information.
+
+---
+
+##### Debugging Tips
+- Check the **Network Tab** in browser developer tools to inspect requests and responses.
+- Ensure the `Content-Type` header matches the data format (e.g., `application/json` for JSON).
+- Validate API URLs and server-side response formats.
+
+---
+
+##### Notes
+- Always sanitize user input to avoid injection attacks.
+- Use `try-catch` blocks to handle JSON parsing errors.
+
+By following these instructions, you can efficiently debug and test AJAX calls using the demo screen and implement robust AJAX logic in your applications.
+
+
+
+
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function() {
+        //a = getPreference('demo.ajax.url');
+        getPreference('demo.ajax.url').then(value => { if (value) $('#url').val(value) });
+        getPreference('demo.ajax.params').then(value => { if (value) $('#params').val(value) });
+
+        // Capture the keypress event on #url
+        $('#url').on('keyup', function () {
+            // Get the current value of #url and pass it to setPreference
+            const value = $(this).val();
+            setPreference('demo.ajax.url', value);
+        });
+
+        // Capture the keypress event on #url
+        $('#params').on('keyup', function () {
+            // Get the current value of #url and pass it to setPreference
+            const value = $(this).val();
+            setPreference('demo.ajax.params', value);
+        });
+
+        $('#submit').on('click', function() {
+            let url = $('#url').val();
+            let params = $('#params').val();
+            try {
+                // Attempt to parse the parameters to JSON
+                params = JSON.parse(params);
+            } catch (e) {
+                $('#response').css('color', 'red').val('Invalid JSON in parameters.');
+                return;
+            }
+
+            // Make the AJAX POST request to update the preference
+        		fetch(url, {
+        			method: 'POST',                      	// HTTP method
+        			headers: {
+        				'Content-Type': 'application/json' 	// Specify JSON content
+        			},
+        			body: JSON.stringify(params)           	// Convert data to JSON string
+        		})
+        		.then(response => {
+        			if (!response.ok) {
+        				// Handle HTTP errors
+        				$('#response').css('color', 'red').val(`Network response was not ok: ${response.statusText}`);
+        			}
+        			return response.json(); // Parse the JSON response
+        		})
+        		.then(data => {
+              s = JSON.stringify(data, null, 2);
+        			if (data.status == 'success') {
+        				// Handle application-level errors
+        				$('#response').css('color', 'green').val(s);
+        			} else {
+        				$('#response').css('color', 'red').val(s);
+        			}
+        		})
+        		.catch(error => {
+              console.error('Fetch operation failed:', error); // Log detailed error for debugging
+
+              let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+              // Check if the error has a status and body
+              if (error.status && error.body) {
+                  // If the response body is an object, stringify it for readability
+                  const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+                  errorMessage = `Error ${error.status}: ${responseBody}`;
+              } else if (error.message) {
+                  // Fallback to the error message
+                  errorMessage = `Error: ${error.message}`;
+              }
+
+              // Update the UI with the detailed error message
+              // Adjust the method based on the type of element
+              $('#response').css('color', 'red').val(errorMessage);
+            });
+        });
+    });
+</script>

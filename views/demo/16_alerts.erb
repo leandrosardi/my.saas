@@ -32,7 +32,7 @@
                 <li><a href="/demo/08_images">Demo 08: Images</a></li>
                 <li><a href="/demo/09_data">Demo 09: Data</a></li>
                 <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
-								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
 								<li><a href="/demo/12_table">Demo 12: Table</a></li>
 								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
 								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
@@ -67,16 +67,24 @@
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Reminders</h2>
+                <h2>Alerts</h2>
 
-								<div class='data' data-id="lead-123">
-	                <!-- call dataJs.draw -->
-	              </div>
-
-	              <section class="span11">
-	                <div id='myItems' style='width:100%;'> </div>
-	                <div id='myButtons' style='width:100%;'> </div>
-	              </section>
+								<section class='row-fluid'>
+									<div class='span6'>
+		                <button id='show_success_alert' name='show_success_alert' class='btn btn-large btn-green'>Click to Show a Success Alert</button><br/>
+										<br/>
+										<button id='show_error_alert' name='show_error_alert' class='btn btn-large btn-red'>Click to Show an Error Alert</button><br/>
+										<br/>
+										<button id='show_info_alert' name='show_info_alert' class='btn btn-large btn-blue'>Click to Show an Info Alert</button><br/>
+										<br/>
+									</div>
+									<div class='span6'>
+										<p>Disaper Alerts After <input type='number' id='disapear_seconds' name='disapear_seconds' class='input input-mini' value='-1' /> Seconds</p>
+										<p>* Set -1 to don't disapear alerts automatically.</p>
+										<br/>
+										<br/>
+										<button class='btn btn-black' id='close-alerts' name='close-alerts'>Close all Alerts</button>
+									</div>
 
               </div>
             </section>
@@ -110,77 +118,61 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render("The **data.min.js** library is a versatile tool not only for managing data items but also for organizing reminders.
+                      <%=@md.render("The **alerts.min.js.js** library is a lightweight JavaScript utility for creating customizable alert messages on a webpage.
 
-It provides functionalities like adding, removing, and editing reminders with additional features such as strikethrough and date handling.
+It supports success, error, and informational alerts with optional auto-dismiss functionality.
 
-Developers can define reminders with custom dates, text fields, or even multi-line descriptions, making it highly adaptable for personal and professional use cases.
+Each alert is visually distinct, can display lists of success and error messages, and includes a close button for manual dismissal.
 
-####1. Define a Parent Element
+Developers can easily integrate it into their projects to provide feedback to users. Alerts are positioned at the bottom of the page and have adjustable opacity for a non-intrusive user experience.
 
-Define two parent elements: one for buttons and one for items where the data controls will be rendered:
+#### 1. Show success, error, and info alerts
 
-```html
-<div id=\"reminderButtons\"></div>
-<div id=\"reminderItems\"></div>
-```
+Use the library to show alerts of different types by calling:
+- `draw_success_alert(title, success_lines, error_lines, remove_seconds)`
+- `draw_error_alert(title, success_lines, error_lines, remove_seconds)`
+- `draw_info_alert(title, success_lines, error_lines, remove_seconds)`
 
-####2. Draw a Data Control
+#### 2. Add a list of success points
 
-Use the `dataJs.draw` function to create a control for managing reminders:
+The `success_lines` parameter accepts an array of strings representing positive feedback messages.
 
+Example:
 ```javascript
-var parent_buttons = $('#reminderButtons');
-var parent_items = $('#reminderItems');
-
-dataJs.draw(parent_buttons, parent_items, {
-    id: 'reminder-123',
-    caption: 'Add Reminder',
-    trash_enabled: true,
-    copy_enabled: false,
-    strikethrough_enabled: true,
-    calendar: true, // Enables date input
-    buttons: [
-        {
-            code: '1',
-            name: 'task',
-            icon: 'calendar',
-            title: 'Add a Task'
-        },
-        {
-            code: '2',
-            name: 'event',
-            icon: 'clock',
-            title: 'Add an Event'
-        }
-    ],
-    items: []
-});
+draw_success_alert('Success!', ['Task completed', 'All checks passed']);
 ```
 
-####3. Allowing Date Field
+#### 3. Add a list of error points
 
-Enable date input for reminders by setting the `calendar` property to `true`. This will render a date picker field in the form:
+The `error_lines` parameter accepts an array of strings representing error feedback messages.
 
+Example:
 ```javascript
-dataJs.draw(parent_buttons, parent_items, {
-    calendar: true
-});
+draw_error_alert('Error!', [], ['An error occurred', 'Retry required']);
 ```
 
-####4. Switching Input Field into a TextArea
+#### 4. Disappearing Alerts Automatically
 
-If the reminders require multi-line descriptions, enable a `textarea` instead of a single-line input field by setting the `textarea` property to `true`:
+The `remove_seconds` parameter defines how long (in seconds) the alert will stay visible before automatically disappearing. Set `-1` to disable auto-dismiss.
 
+Example:
 ```javascript
-dataJs.draw(parent_buttons, parent_items, {
-    textarea: true
-});
+draw_info_alert('Info!', ['This is a test message'], [], 5);
 ```
 
-This allows users to input detailed descriptions for their reminders using a text area.
+#### 5. Closing Alerts Manually
 
+You can close the alerts with the cross-icon in the top-right corner of the alert, or you can press `escape` in your keyboard.
 
+#### 6. Close All alerts
+
+If you call the `draw_foo_alert` many time, then many alerts will be opened, one over other.
+
+You can close all together.
+
+```JavaScript
+close_alerts();
+```
 
 
 
@@ -204,54 +196,28 @@ This allows users to input detailed descriptions for their reminders using a tex
 </section>
 
 <script>
-  $(document).ready(function() {
+$(document).ready(function() {
 
-      var parent_buttons = $('#myButtons');
-      var parent_items = $('#myItems');
+	$("#show_success_alert").click(function() {
+		let title = 'Example Alert'
+		let i = parseInt($('#disapear_seconds').val());
+		draw_success_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
 
-      dataJs.draw(parent_buttons, parent_items, {
-				id: '1234',
-				caption: 'Add Contact Information',
-        textarea: true,
-        calendar: true,
-        show_date: true,
-				trash_enabled: true, // default: false
-				copy_enabled: false, // default: false
-				strikethrough_enabled: true, // default: false
-				buttons: [{
-					code: '1',
-					name: 'reminder',
-					icon: 'calendar',
-					//link: 'mailto', // default: null
-					title: 'Add a Reminder',
-					placeholder: 'Write a note and date...'
-				}],
+	$("#show_error_alert").click(function() {
+		let title = 'Example Alert'
+		let i = parseInt($('#disapear_seconds').val());
+		draw_error_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
 
-				items: [{
-					id: 'a',
-					button_code: '1',
-					value: 'Call the lead for his BirthDay!',
-          date: '2025-01-01',
-					strikethrough: true
-				}, {
-					id: 'b',
-					button_code: '1',
-					value: '555 555-5555',
-					value: 'Send an offer!',
-          date: '2025-01-03',
-					strikethrough: false
-				}],
-        /*
-				on_add_item: function(type, value) {
-					// call ajax before the a new data item is added to the list.
-				},
-				on_remove_item: function(id) {
-					// call ajax before the a data item is remobved from the list.
-				},
-				on_strikethrough_item: function(id) {
-					// call ajax before set strikethrough to a data.
-				},
-        */
-			});
-  }); // end of document.ready
+	$("#show_info_alert").click(function() {
+		let title = 'Example Alert'
+		let i = parseInt($('#disapear_seconds').val());
+		draw_info_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
+
+	$('#close-alerts').click(function() {
+		close_alerts();
+	});
+});
 </script>

@@ -194,13 +194,119 @@ theme = 'default'
 				element.attachEvent('on' + eventName, fn);
 		}
 
-		function showWait(s) {
+		function showWait(s='') {
 			$("#wait").show();
 			$("#wait-caption").text(s);
 		}
 
-		function hideWait(s) {
+		function hideWait() {
 			$("#wait").hide();
+		}
+
+		// close any existing alert
+		function close_alerts() {
+			$('.mysaas-alert').remove();
+		}
+
+		function draw_alert(title, background_color='green', border_color='green', success_lines = [], error_lines = [], remove_seconds = -1) {
+		    // Create the container div
+		    var container = document.createElement('div');
+				container.className = 'mysaas-alert'
+		    container.style.position = 'fixed';
+		    container.style.bottom = '0';
+		    container.style.left = '0';
+		    container.style.width = '100%';
+		    container.style.backgroundColor = background_color;
+		    container.style.borderTop = '1px solid ' + border_color;
+		    container.style.padding = '15px';
+		    container.style.boxSizing = 'border-box';
+		    container.style.zIndex = '9999'; // Ensure it's on top
+		    container.style.opacity = '0.65'; // Semi-transparent
+
+		    // Create a close button
+		    var closeButton = document.createElement('span');
+		    closeButton.innerHTML = '&times;';
+		    closeButton.style.position = 'absolute';
+				closeButton.style.color = 'black'
+		    closeButton.style.right = '15px';
+		    closeButton.style.top = '15px';
+		    closeButton.style.cursor = 'pointer';
+		    closeButton.style.fontSize = '20px';
+		    closeButton.onclick = function() {
+		        document.body.removeChild(container);
+		    };
+		    container.appendChild(closeButton);
+
+		    // Create the title
+		    var titleElement = document.createElement('h3');
+		    titleElement.textContent = title;
+		    titleElement.style.margin = '0 0 10px 0';
+				titleElement.style.color = 'black';
+		    container.appendChild(titleElement);
+
+		    // Create the list
+		    var list = document.createElement('ul');
+		    list.style.listStyle = 'none';
+		    list.style.padding = '0';
+		    list.style.margin = '0';
+
+		    // For each success_line, create the li element
+		    success_lines.forEach(function(line) {
+		        var li = document.createElement('li');
+		        li.style.marginBottom = '5px';
+						li.style.color = 'black';
+		        var icon = document.createElement('i');
+		        icon.className = 'icon-ok';
+		        icon.style.color = 'black';
+		        icon.style.marginRight = '5px';
+		        li.appendChild(icon);
+		        li.appendChild(document.createTextNode(line));
+		        list.appendChild(li);
+		    });
+
+		    // For each error_line, create the li element
+		    error_lines.forEach(function(line) {
+		        var li = document.createElement('li');
+		        li.style.marginBottom = '5px';
+						li.style.color = 'black';
+		        var icon = document.createElement('i');
+		        icon.className = 'icon-remove';
+		        icon.style.color = 'black';
+		        icon.style.marginRight = '5px';
+		        li.appendChild(icon);
+		        li.appendChild(document.createTextNode(line));
+		        list.appendChild(li);
+		    });
+
+		    container.appendChild(list);
+
+		    // Append the container to the body
+		    document.body.appendChild(container);
+
+				$(document).keyup(function(e) {
+					if (e.keyCode == 27) { // esca[e]
+						container.remove();
+					}
+				});
+
+				// If remove_seconds is not -1, set a timeout to hide the alert
+		    if (remove_seconds !== -1) {
+		        setTimeout(function() {
+		            container.remove();
+		        }, remove_seconds * 1000);
+		    }
+		}
+
+		function draw_success_alert(title, success_lines = [], error_lines = [], remove_seconds = -1) {
+			draw_alert(title, 'rgb(160,255,160)', 'green', success_lines, error_lines, remove_seconds);
+		}
+
+		function draw_error_alert(title, success_lines = [], error_lines = [], remove_seconds = -1) {
+			draw_alert(title, 'rgb(255,160,190)', 'red', success_lines, error_lines, remove_seconds);
+		}
+
+		function draw_info_alert(title, success_lines = [], error_lines = [], remove_seconds = -1) {
+			draw_alert(title, 'rgb(160,210,255)', 'blue', success_lines, error_lines, remove_seconds);
 		}
 
 		function semiTransparentLinks() {
@@ -372,7 +478,7 @@ theme = 'default'
 
 		// draw pagination function
 		//
-		function drawPagination(o, current_page, total_pages, page_size=10)
+		function drawPagination(o, current_page, total_pages) //, page_size=10)
 		{
 			url = '?p='; // url to get the next page
 
@@ -414,10 +520,12 @@ theme = 'default'
 			}
 			u.append(i);
 
+			/*
+			 * DEPRECATED BY NOW
+			 *
 			// create a drodown list with different page sizes
 			li = $('<li><span style="margin-left:25px;"><i class="icon-caret-right"></i> <b>Page Size:</b></span> <select id="page-size" class="form-control" style="width: 100px;"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></li>');
 			u.append(li);
-
 			// set the current page size in the dropdown list
 			$('#page-size').val( page_size );
 
@@ -427,6 +535,7 @@ theme = 'default'
 				page_size = $(this).val();
 				window.location.href = window.location.href.split('?')[0] + '?z=' + page_size;
 			});
+			*/
 		}
 	</script>
 

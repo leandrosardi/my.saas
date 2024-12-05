@@ -450,16 +450,36 @@ begin
     erb :'views/demo/10_reminders', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/unibox', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/unibox', :layout => :'/views/layouts/full'
+  get '/demo/11_chat', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/11_chat', :layout => :'/views/layouts/full'
   end
 
-  get '/demo/tables', :auth => true, :agent => /(.*)/ do
-    erb :'views/demo/table', :layout => :'/views/layouts/full'
+  get '/demo/12_table', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/12_table', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/13_ajax', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/13_ajax', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/14_pagination', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/14_pagination', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/15_waiting', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/15_waiting', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/16_alerts', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/16_alerts', :layout => :'/views/layouts/full'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Setup user preferences
+
+  post '/ajax/ping.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/ping'
+  end
 
   post '/ajax/set_preference.json', :auth => true, :agent => /(.*)/ do
     erb :'views/ajax/set_preference'
@@ -490,10 +510,6 @@ begin
 
   post "/ajax/:object/update.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/update"
-  end
-
-  post "/ajax/:object/update_status.json", :auth => true, :agent => /(.*)/ do
-    erb :"views/ajax/update_status"
   end
 
   post "/ajax/:object/upsert.json", :auth => true, :agent => /(.*)/ do
