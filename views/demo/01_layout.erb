@@ -249,10 +249,29 @@ Using Javascript, you can get your SaaS to remember the preferences of the user.
 
 `setPreference("dark", "yes");`
 
-You can get the value of any preference too:
+Getting the value of a preference is a bit more complicated.
 
-`setPreference("dark");`
+When you bring a value from the database through an AJAX call, you have to use the .then function in order to catch the AJAX response properly.
+This is because AJAX is an asyncronious call, and functions calls are not.
 
+Example:
+
+```javascript
+getPreference(\"demo.ajax.url\").then(value => { if (value) $(\"#url\").val(value) });
+```
+
+The call to `setPreference` is more easy. But keep in mind that the database update may happen after the function returned the control to your code:
+
+Example:
+
+```
+// Capture the keypress event on #url
+$(\"#url\").on(\"keyup\", function () {
+	// Get the current value of #url and pass it to setPreference
+  const value = $(this).val();
+  setPreference(\"demo.ajax.url\", value);
+});
+```
 
 
 
