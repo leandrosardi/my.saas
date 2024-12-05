@@ -100,7 +100,7 @@
 								</div>
 
 								<div id="removeAllItemsSection" class="row-fluid" style="margin-top: 20px;">
-								    <h3>Remove All Items by Code</h3>
+								    <h4>Remove All Items by Code</h4>
 								    <button id="removeAllItemsButton" class="btn btn-danger">Remove All Items</button>
 								</div>
 
@@ -434,7 +434,7 @@ dataJs.draw(parent_buttons, parent_items, {
 			// Add Email Item by Code
 	    $('#addEmailItem').click(function () {
 	        dataJs.add_item(parent_items[0], {
-	            id: dataJs.uuidv4(),
+	            id: generateGUID(),
 	            button_code: '1', // Code for Email button
 	            value: 'example@domain.com', // Example email
 	            strikethrough: false // Item is not strikethrough
@@ -445,7 +445,7 @@ dataJs.draw(parent_buttons, parent_items, {
 	    // Add Phone Item by Code
 	    $('#addPhoneItem').click(function () {
 	        dataJs.add_item(parent_items[0], {
-	            id: dataJs.uuidv4(),
+	            id: generateGUID(),
 	            button_code: '2', // Code for Phone button
 	            value: '123-456-7890', // Example phone number
 	            strikethrough: false // Item is not strikethrough
