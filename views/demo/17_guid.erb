@@ -38,7 +38,7 @@
 								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
 								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
 								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
-<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+								<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
               </ul>
             </div>
             </section>
@@ -68,9 +68,11 @@
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Waiting</h2>
+                <h2>PostgreSQL-Friendy GUIDs</h2>
 
-                <button id='waiting' name='waiting' class='btn btn-large btn-blue'>Click to Activate Waiting GIF for 5 Seconds</button>
+                <input class='input input-block-level' id='guid' name='guid' />
+								<br/>
+								<button class='btn btn-large btn-blue' id='generate' name='generate'>Generate PostgreSQL-Friendly GUID</button>
 
               </div>
             </section>
@@ -104,35 +106,60 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render("The **waiting.min.js** library provides a simple way to show and hide waiting indicators (e.g., loading GIFs) in a web application.
+                      <%=@md.render("The **guid.min.js.js** library is a lightweight JavaScript utility for generating PostgreSQL-friendly GUIDs (Globally Unique Identifiers).
 
-It offers two core functions: `showWait` to display the waiting overlay with an optional caption and `hideWait` to hide it.
+It generates UUID version 4 values, which are 128-bit identifiers formatted as `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.
 
-This library is particularly useful for indicating background processing or loading states. Developers can integrate it seamlessly into their UI to improve user experience during delays.
+These identifiers are ideal for unique keys in databases and distributed systems.
 
-With minimal code, you can create visually appealing and functional waiting indicators.
+The library uses modern JavaScript `crypto` APIs for secure and random value generation.
 
-#### 1. Activate Waiting
+GUIDs produced by this library are compliant with PostgreSQL's default UUID type.
 
-To activate the waiting indicator, use the `showWait` function. You can pass an optional string parameter to display a caption.
+#### 1. How to Generate a GUID
 
+To generate a GUID, use the `generateGUID` function provided by the library. This function creates a new GUID in the UUID version 4 format.
+
+Example:
 ```javascript
-// Show the waiting indicator with a custom message
-showWait('Please wait while the process completes...');
+let new_guid = generateGUID();
+console.log(new_guid); // Outputs something like: '123e4567-e89b-12d3-a456-426614174000'
 ```
 
-In your HTML, ensure that the element with the `id=\"wait\"` is styled and ready to display the waiting state.
+##### Demo Screen
+1. Open the demo screen in `demo.html`.
+2. Click the **Generate PostgreSQL-Friendly GUID** button.
+3. The generated GUID will appear in the input field.
 
-#### 2. Deactivate Waiting
+#### 2. Using GUIDs to Insert Records from AJAX Calls
 
-To deactivate the waiting indicator, use the `hideWait` function. This function will hide the `#wait` element from the user's view.
+GUIDs can be used as unique identifiers when inserting records into a database using AJAX calls.
 
+Example:
 ```javascript
-// Hide the waiting indicator
-hideWait();
+let new_guid = generateGUID();
+
+callx({
+    url: '/ajax/insert.json',
+    params: {
+        id: new_guid,       // Use the GUID as a unique identifier
+        name: 'Example Name',
+        description: 'Example Description'
+    },
+    on_success: function(data) {
+        console.log('Record inserted successfully:', data);
+    },
+    on_error: function(error) {
+        console.error('Failed to insert record:', error);
+    }
+});
 ```
 
-You can integrate these functions with events, such as button clicks or AJAX calls, to dynamically control the waiting indicator.
+By using `guid.min.js.js`, you ensure that each record has a globally unique identifier, avoiding conflicts in distributed systems or concurrent operations.
+
+
+
+
 
 
 
@@ -154,14 +181,11 @@ You can integrate these functions with events, such as button clicks or AJAX cal
 </section>
 
 <script>
-$(document).ready(function() {
-	$("#waiting").click(function() {
-		// show ajax wait
-		showWait('This Waiting GIF will dissapear in 5 seconds!');
+	$(document).ready(function() {
+		let new_guid = generateGUID();
 
-		setTimeout(function() {
-			hideWait();
-		}, 5000);
+		$('#generate').click(function() {
+			$('#guid').val(new_guid);
+		});
 	});
-});
 </script>

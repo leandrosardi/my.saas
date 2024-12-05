@@ -474,6 +474,11 @@ begin
     erb :'views/demo/16_alerts', :layout => :'/views/layouts/full'
   end
 
+  get '/demo/17_guid', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/17_guid', :layout => :'/views/layouts/full'
+  end
+
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Setup user preferences
 
