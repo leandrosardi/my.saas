@@ -260,49 +260,22 @@ By following these instructions, you can efficiently debug and test AJAX calls u
                 return;
             }
 
-            // Make the AJAX POST request to update the preference
-        		fetch(url, {
-        			method: 'POST',                      	// HTTP method
-        			headers: {
-        				'Content-Type': 'application/json' 	// Specify JSON content
-        			},
-        			body: JSON.stringify(params)           	// Convert data to JSON string
-        		})
-        		.then(response => {
-        			if (!response.ok) {
-        				// Handle HTTP errors
-        				$('#response').css('color', 'red').val(`Network response was not ok: ${response.statusText}`);
-        			}
-        			return response.json(); // Parse the JSON response
-        		})
-        		.then(data => {
-              s = JSON.stringify(data, null, 2);
-        			if (data.status == 'success') {
-        				// Handle application-level errors
-        				$('#response').css('color', 'green').val(s);
-        			} else {
-        				$('#response').css('color', 'red').val(s);
-        			}
-        		})
-        		.catch(error => {
-              console.error('Fetch operation failed:', error); // Log detailed error for debugging
-
-              let errorMessage = 'An unexpected error occurred. Please try again later.';
-
-              // Check if the error has a status and body
-              if (error.status && error.body) {
-                  // If the response body is an object, stringify it for readability
-                  const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
-                  errorMessage = `Error ${error.status}: ${responseBody}`;
-              } else if (error.message) {
-                  // Fallback to the error message
-                  errorMessage = `Error: ${error.message}`;
-              }
-
-              // Update the UI with the detailed error message
-              // Adjust the method based on the type of element
-              $('#response').css('color', 'red').val(errorMessage);
+            // call the access point.
+            callx({
+              url: url,
+              params: params,
+              alerts_delay: 3, // seconds
+              on_success: function(json) {
+                let s = JSON.stringify(json, null, 2);
+                $('#response').css('color', 'green').val(s);
+              },
+              on_error: function(json) {
+                let s = JSON.stringify(json, null, 2);
+                $('#response').css('color', 'red').val(s);
+              },
             });
+
+
         });
     });
 </script>

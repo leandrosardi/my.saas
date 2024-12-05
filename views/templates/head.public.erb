@@ -221,7 +221,7 @@ theme = 'default'
 		    container.style.padding = '15px';
 		    container.style.boxSizing = 'border-box';
 		    container.style.zIndex = '9999'; // Ensure it's on top
-		    container.style.opacity = '0.65'; // Semi-transparent
+		    container.style.opacity = '0.85'; // Semi-transparent
 
 		    // Create a close button
 		    var closeButton = document.createElement('span');
@@ -475,6 +475,66 @@ theme = 'default'
 			}
 		});
 
+
+		// Make a POST request to and ajax end-point.
+		function callx(h) {
+      let url = h.url;
+      let params = h.params;
+      let on_error = h.on_error;
+      let on_success = h.on_success;
+      let alerts_delay = h.alerts_delay;
+
+      if (alerts_delay == null) alerts_delay = -1;
+
+      fetch(url, {
+        method: 'POST',                      	// HTTP method
+        headers: {
+          'Content-Type': 'application/json' 	// Specify JSON content
+        },
+        body: JSON.stringify(params)           	// Convert data to JSON string
+      })
+      .then(response => {
+        if (!response.ok) {
+          // Handle HTTP errors
+          draw_error_alert("Operation Error", [], [`Network response from ${url} was not ok: ${response.statusText}`], alerts_delay);
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then(data => {
+        s = JSON.stringify(data, null, 2);
+        if (data.status == 'success') {
+          // Handle application-level errors
+          if (on_success != null) {
+            on_success(data);
+          } else {
+            draw_success_alert("Operation Success", [], [`End-point ${url} returned successfully.`], alerts_delay);
+          }
+        } else {
+          if (on_error != null) {
+              on_error(data);
+          } else {
+            draw_error_alert("Operation Error", [], [`End-point ${url} returned an error: ${s}`], alerts_delay);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Fetch operation failed:', error); // Log detailed error for debugging
+
+        let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+        // Check if the error has a status and body
+        if (error.status && error.body) {
+            // If the response body is an object, stringify it for readability
+            const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+            errorMessage = `Error ${error.status}: ${responseBody}`;
+        } else if (error.message) {
+            // Fallback to the error message
+            errorMessage = `Error: ${error.message}`;
+        }
+
+        draw_error_alert("Operation Error", [], [`Fetch error on end-point ${url}: ${errorMessage}`], alerts_delay);
+      });
+    }
 
 		// draw pagination function
 		//
