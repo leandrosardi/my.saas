@@ -130,81 +130,92 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render("
-This document provides instructions on how to use this AJAX Demo Screen and guidelines for writing proper AJAX calls in your projects.
+                      <%=@md.render("The **callx.min.js** library is a lightweight JavaScript utility for making AJAX POST requests easily.
 
-####1. How to Use the AJAX Demo Screen
+It allows developers to interact with API endpoints while handling success and error responses gracefully.
 
-1. **Open the Demo Screen**: Launch the demo screen in your browser.
-2. **Input URL**:
-   - Locate the `URL` field.
-   - Enter the endpoint URL for the API you want to call.
-3. **Input Parameters**:
-   - In the `Parameters` textarea, input the request body in JSON format.
-   - Example:
-     ```json
-     {
-         \"key\": \"value\"
-     }
-     ```
-4. **Send the Request**:
-   - Click the `Send AJAX Request` button.
-5. **View the Response**:
-   - The `Response` textarea will display the server's response.
-   - Successful responses are displayed in **green**, while errors are displayed in **red**.
+The library integrates with custom alert systems to notify users of operation results.
 
-####2. Writing a Proper AJAX Call
+It provides event callbacks for `on_success` and `on_error` events to execute additional code as needed.
 
-Follow these steps to write a proper AJAX call:
+Its chaining capability also enables multiple sequential AJAX requests.
 
-##### Define the URL and Parameters
-   - Ensure the API endpoint URL is correct.
-   - Prepare the request parameters in JSON format.
+#### 1. How to Use the AJAX Demo Screen
 
-##### Use the AJAX Call Template
-Use the following template for making AJAX calls with jQuery:
+The AJAX demo screen in the `demo.html` file demonstrates how to send POST requests using the `callx` library. Here's how to use it:
+1. Enter the API endpoint URL in the **URL** input field.
+2. Specify the JSON-formatted parameters in the **Parameters** textarea.
+3. Click the **Send AJAX Request** button to send the request.
+4. The response will be displayed in the **Response** textarea.
 
+#### 2. Writing a Proper AJAX Call With `callx`
+
+To use the `callx` library, pass an object containing the following parameters:
+- `url`: The endpoint URL.
+- `params`: A JavaScript object with the request parameters.
+- `alerts_delay`: (Optional) Delay in seconds before alert auto-dismiss.
+- `on_success`: Callback function for successful responses.
+- `on_error`: Callback function for error responses.
+
+Example:
 ```javascript
-$.ajax({
-    method: \"POST\", // Change to GET, PUT, DELETE as needed
-    url: \"<your-api-url>\",
-    data: JSON.stringify({
-        \"key\": \"value\"
-    }),
-    contentType: \"application/json\", // Use appropriate Content-Type
-    success: function(response) {
-        console.log(\"Response:\", response);
-        // Handle success
+callx({
+    url: '/ajax/example.json',
+    params: { key: 'value' },
+    alerts_delay: 5,
+    on_success: function(data) {
+        console.log('Success:', data);
     },
-    error: function(jqXHR, textStatus, errorThrown) {
-        console.error(\"Error:\", textStatus, errorThrown, jqXHR.responseText);
-        // Handle errors
+    on_error: function(error) {
+        console.error('Error:', error);
     }
 });
 ```
 
-##### Handle Responses
-- **Success**:
-  - Process the response returned by the server.
-  - Parse JSON if needed.
-- **Error**:
-  - Log the error and provide feedback to the user.
-  - Use `jqXHR` properties to get detailed error information.
+#### 3. Catch `on_success` Event
 
----
+The `on_success` callback executes when the API returns a successful response (`status: 'success'`).
+Example:
+```javascript
+callx({
+    url: '/ajax/example.json',
+    on_success: function(data) {
+        console.log('Operation succeeded:', data);
+    }
+});
+```
 
-##### Debugging Tips
-- Check the **Network Tab** in browser developer tools to inspect requests and responses.
-- Ensure the `Content-Type` header matches the data format (e.g., `application/json` for JSON).
-- Validate API URLs and server-side response formats.
+#### 4. Catch `on_error` Event
 
----
+The `on_error` callback executes when the API returns an error or the request fails.
+Example:
+```javascript
+callx({
+    url: '/ajax/example.json',
+    on_error: function(error) {
+        console.error('Operation failed:', error);
+    }
+});
+```
 
-##### Notes
-- Always sanitize user input to avoid injection attacks.
-- Use `try-catch` blocks to handle JSON parsing errors.
+#### 5. Concatenated Calls
 
-By following these instructions, you can efficiently debug and test AJAX calls using the demo screen and implement robust AJAX logic in your applications.
+The library allows sequential AJAX requests by chaining `callx` calls inside `on_success` handlers.
+Example:
+```javascript
+callx({
+    url: '/ajax/first.json',
+    on_success: function(firstResponse) {
+        console.log('First response:', firstResponse);
+        callx({
+            url: '/ajax/second.json',
+            on_success: function(secondResponse) {
+                console.log('Second response:', secondResponse);
+            }
+        });
+    }
+});
+```
 
 
 
@@ -275,6 +286,21 @@ By following these instructions, you can efficiently debug and test AJAX calls u
               },
             });
 
+            // Example: How to run many AJAX calls one after other.
+            // first ajax
+            callx({
+              url: '/ajax/tag/count.json',
+              on_success: function(json) {
+                console.log(`There are ${json.result} tags.`);
+                // run another AJAX after the first one returned successfully.
+                callx({
+                  url: '/ajax/lead/count.json',
+                  on_success: function(json) {
+                    console.log(`There are ${json.result} leads.`);
+                  }
+                });
+              }
+            });
 
         });
     });
