@@ -314,6 +314,7 @@ module BlackStack
         # return an array of error messages if there are keys now allowed
         def key_errors(h={}, allowed_keys:)
             allowed_keys += [:id_account, :id_user, :id, :create_time, :update_time, :delete_time]
+            allowed_keys += [:backtrace] # reserved key backtrace is to request the end points to return the full error backtrace
             ret = []
             h.keys.each do |k|
                 ret << "The key '#{k}' is not allowed in #{self.name.gsub('Mass::', '')}." if !allowed_keys.map { |s| s.to_s }.include?(k.to_s)
