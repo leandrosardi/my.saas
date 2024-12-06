@@ -554,6 +554,18 @@ module BlackStack
             return ret
         end # def float_errors
 
+        # validate the values of some specific keys are valid dates.
+        def date_errors(h={}, keys:)
+            ret = []
+            keys.each do |k|
+              if h[k.to_s]
+                is_valid_date = Date.parse(h[k.to_s]) rescue false
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a date." if !is_valid_date
+              end
+            end
+            return ret
+        end # def date_errors
+
         # validate the values of some specific keys are valid booleans.
         def boolean_errors(h={}, keys:)
             ret = []
