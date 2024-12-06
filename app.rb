@@ -520,6 +520,10 @@ begin
     erb :"views/ajax/update"
   end
 
+  post "/ajax/:object/delete.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/delete"
+  end
+
   post "/ajax/:object/upsert.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/upsert"
   end
@@ -793,6 +797,10 @@ begin
 
   post "/api1.0/:object/update.json", :api_key => true do
     erb :"views/api1.0/update"
+  end
+
+  post "/api1.0/:object/delete.json", :api_key => true do
+    erb :"views/api1.0/delete"
   end
 
   post "/api1.0/:object/update_status.json", :api_key => true do
