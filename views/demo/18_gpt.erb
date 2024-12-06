@@ -1,18 +1,29 @@
+<script type="text/javascript">
+    // Include required CSS
+    document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
 <section class="row-fluid">
     <div class="container-fluid" style="padding-right: 0 !important;">
         <div class="row">
 
-            <!-- Left Panel -->
-            <section id="pool1" name="pool1" class="col-6 panel responsive-height-1">
-                <div id="panel1_panel" class="pool1-panel">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
+            <!-- Pool 2 -->
+            <section id="pool2" name="pool2" class="col-6 panel responsive-height-1">
+                <div id="panel2_panel" class="pool2-panel">
+                    <div id="pool2_header" name="pool2_header" class="panel2-header">
+                        <h2>pool2 here!</h2>
+                        <button class="close-btn" onclick="closePanel('pool2')">
+                            <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="panel-content">
+                        <!-- Table Content -->
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Profile</th>
-                                    <th>Time Zone</th>
-                                    <th>Job Title</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
                                     <th>Company</th>
                                     <th>Actions</th>
                                 </tr>
@@ -21,23 +32,21 @@
                                 <tr>
                                     <td>1</td>
                                     <td>John Doe</td>
-                                    <td>UTC-5</td>
                                     <td>Software Engineer</td>
                                     <td>TechCorp</td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                        <button class="btn btn-primary">Edit</button>
+                                        <button class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
                                     <td>Jane Smith</td>
-                                    <td>UTC+1</td>
-                                    <td>Product Manager</td>
-                                    <td>BizGroup</td>
+                                    <td>Project Manager</td>
+                                    <td>Innovate LLC</td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                        <button class="btn btn-primary">Edit</button>
+                                        <button class="btn btn-danger">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -46,12 +55,20 @@
                 </div>
             </section>
 
-            <!-- Right Panel -->
-            <section id="pool2" name="pool2" class="col-6 panel responsive-height-1">
-                <div id="panel2_panel" class="pool2-panel">
-                    <h2>Reminders</h2>
-                    <div id="reminderButtons"></div>
-                    <div id="reminderItems"></div>
+            <!-- Pool 3 -->
+            <section id="pool3" name="pool3" class="col-6 panel responsive-height-1">
+                <div id="panel3_panel" class="pool3-panel">
+                    <div id="pool3_header" name="pool3_header" class="panel2-header">
+                        <h2>pool3 here!</h2>
+                        <button class="close-btn" onclick="closePanel('pool3')">
+                            <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="panel-content">
+                        <!-- Reminders Control -->
+                        <div id="reminderButtons"></div>
+                        <div id="reminderItems"></div>
+                    </div>
                 </div>
             </section>
 
@@ -60,32 +77,28 @@
 </section>
 
 <script>
-    $(document).ready(function() {
-        var parent_buttons = $('#reminderButtons');
-        var parent_items = $('#reminderItems');
+    $(document).ready(function () {
+        var parentButtons = $('#reminderButtons');
+        var parentItems = $('#reminderItems');
 
-        dataJs.draw(parent_buttons, parent_items, {
+        dataJs.draw(parentButtons, parentItems, {
             id: 'reminders-control',
             caption: 'Add Reminder',
             textarea: true,
             calendar: true,
+            show_date: true,
             trash_enabled: true,
             strikethrough_enabled: true,
-            buttons: [
-                {
-                    code: '1',
-                    name: 'Task',
-                    icon: 'calendar',
-                    title: 'Add a Task'
-                },
-                {
-                    code: '2',
-                    name: 'Event',
-                    icon: 'clock',
-                    title: 'Add an Event'
-                }
-            ],
-            items: []
+            buttons: [{
+                code: '1',
+                name: 'task',
+                icon: 'calendar',
+                title: 'Add a Task'
+            }],
+            items: [
+                { id: '1', button_code: '1', value: 'Team meeting', date: '2024-12-10', strikethrough: false },
+                { id: '2', button_code: '1', value: 'Submit report', date: '2024-12-12', strikethrough: false }
+            ]
         });
     });
 </script>
