@@ -12,7 +12,7 @@ begin
 #binding.pry
     # getting the dataset
     ds = cls.page(@account, page: page, limit: limit, filters: filters)
-    return_message['count'] = cls.count
+    return_message['count'] = cls.count(@account, filters: filters)
     ds = asc ? ds.order(order.to_sym) : ds.order(Sequel.desc(order.to_sym))
     ds = ds.limit(limit).offset((page-1)*limit)
 
