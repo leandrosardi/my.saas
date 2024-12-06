@@ -99,16 +99,6 @@ module BlackStack
                 l.logf 'done'.green
             end
         end # def insert_update_many
-
-
-        # Mark a record as deleted
-        # return the object
-        def delete(h={})
-            o = self.find(h)
-            o.delete_time = now() if o
-            return o
-        end # def self.upsert
-
     end
 
     module Serialize

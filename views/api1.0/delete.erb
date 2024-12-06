@@ -13,7 +13,9 @@ begin
     end
     raise "id not found" if o.nil?
     desc['id_account'] = @account.id
-    @return_message['result'] = o.delete(desc).to_h
+    o.delete_time = now()
+    o.save
+    @return_message['result'] = o.to_h
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
