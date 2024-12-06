@@ -273,6 +273,7 @@ callx({
             }
 
             // call the access point.
+            showWait();
             callx({
               url: url,
               params: params,
@@ -280,13 +281,15 @@ callx({
               on_success: function(json) {
                 let s = JSON.stringify(json, null, 2);
                 $('#response').css('color', 'green').val(s);
+                hideWait();
               },
               on_error: function(json) {
                 let s = JSON.stringify(json, null, 2);
                 $('#response').css('color', 'red').val(s);
+                hideWait();
               },
             });
-
+/*
             // Example: How to run many AJAX calls one after other.
             // first ajax
             callx({
@@ -302,7 +305,7 @@ callx({
                 });
               }
             });
-
+*/
         });
     });
 </script>
