@@ -35,6 +35,13 @@ module BlackStack
 
         # return a Sequel dataset, based on some filters and some pagination parameters.
         # this method is used by the API to get the data from the database remotely
+        def count(account=nil, filters: {})
+            ds = self.list(account, filters: filters).count
+            return ds
+        end
+
+        # return a Sequel dataset, based on some filters and some pagination parameters.
+        # this method is used by the API to get the data from the database remotely
         def page(account=nil, page:, limit:, filters: {})
             ds = self.list(account, filters: filters)
             ds = ds.limit(limit).offset((page-1)*limit).order(:create_time)
@@ -42,10 +49,10 @@ module BlackStack
         end
 
         # insert a record
-        # 
+        #
         # parameters:
         # - upsert_children: call upsert on children objects, or call insert on children objects
-        # 
+        #
         # return the object
         def insert(h={}, upsert_children: true)
             h = self.normalize(h)
@@ -64,10 +71,10 @@ module BlackStack
         end
 
         # insert or update a record
-        # 
+        #
         # parameters:
         # - upsert_children: call upsert on children objects, or call insert on children objects
-        # 
+        #
         # return the object
         def upsert(h={}, upsert_children: true)
             o = self.find(h)
@@ -87,7 +94,7 @@ module BlackStack
             i = 0
             a.each do |h|
                 i += 1
-                l.logs "Processing record #{i}/#{a.size}... " 
+                l.logs "Processing record #{i}/#{a.size}... "
                 self.upsert(h)
                 l.logf 'done'.green
             end
@@ -96,24 +103,24 @@ module BlackStack
 
     module Serialize
         # update a record
-        # 
+        #
         # parameters:
         # - upsert_children: call upsert on children objects, or call insert on children objects.
         # - manage_done_time: if this is moving fom the status :pending to another status at first time, set the done_time.
-        # 
+        #
         # return the object
         def base_update(h={}, upsert_children: true, manage_done_time: false)
             h = self.class.normalize(h)
             errors = self.class.errors(h)
             raise errors.join("\n") if errors.size > 0
-            
+
             # if this is moving fom the status :pending to another status at first time, set the done_time
             if manage_done_time
-                if self.status == self.class.status_code(:pending) && !h['status'].to_s.empty? && h['status'].to_sym != :pending && self.done_time.nil? 
+                if self.status == self.class.status_code(:pending) && !h['status'].to_s.empty? && h['status'].to_sym != :pending && self.done_time.nil?
                     self.done_time = now
                 end
             end
-            
+
             return self
         end
 
@@ -174,7 +181,7 @@ module BlackStack
         end
 
         # Return a hash with 25 RGB values
-        # Each color must support black text inside. 
+        # Each color must support black text inside.
         # So, avoid dark colors.
         def pallette
             {
@@ -195,7 +202,7 @@ module BlackStack
                 :light_blue => [173, 216, 230],
                 :light_green => [144, 238, 144],
                 :light_red => [255, 182, 193],
-                :black => [0, 0, 0],            
+                :black => [0, 0, 0],
             }
         end # def pallette
 
@@ -230,7 +237,7 @@ module BlackStack
         # - filename: the name of the file to store in Dropbox.
         # - dropbox_folder: the name of the folder in Dropbox where the file will be stored. E.g.: "channels/#{account.id}".
         # - downloadeable: if true, the returnled URL will allow the download of the file. If false, the URL will show the file in the browser.
-        # 
+        #
         def store(url:, filename:, dropbox_folder:, downloadeable: false)
             tempfile = nil
             if url =~ /^http(s)?\:\/\//
@@ -264,11 +271,11 @@ module BlackStack
         # - :failed - it was executed with errors
         # - :aborted - it started but it was aborted because filters didn't pass
         # - :canceled - it was canceled by the user
-        # 
+        #
         def statuses
             [:pending, :running, :performed, :failed, :aborted, :canceled]
         end # def self.accesses
-        
+
         # return an array with the color of differy type of status
         def status_colors
             [:gray, :blue, :green, :red, :black, :black]
@@ -282,11 +289,11 @@ module BlackStack
 
     module DomainProtocol
         # return an array with the different type of domain_protocols
-        # 
+        #
         def domain_protocols
             [:http, :https]
         end # def self.domain_protocols
-        
+
         # return position of the array self.domain_protocols, with the key.to_sym value
         def domain_protocols_code(key)
             self.domain_protocols.index(key.to_sym)
@@ -306,7 +313,8 @@ module BlackStack
 
         # return an array of error messages if there are keys now allowed
         def key_errors(h={}, allowed_keys:)
-            allowed_keys += [:id_account, :id_user, :id, :create_time, :update_time, :delete_time] 
+            allowed_keys += [:id_account, :id_user, :id, :create_time, :update_time, :delete_time]
+            allowed_keys += [:backtrace] # reserved key backtrace is to request the end points to return the full error backtrace
             ret = []
             h.keys.each do |k|
                 ret << "The key '#{k}' is not allowed in #{self.name.gsub('Mass::', '')}." if !allowed_keys.map { |s| s.to_s }.include?(k.to_s)
@@ -547,6 +555,18 @@ module BlackStack
             return ret
         end # def float_errors
 
+        # validate the values of some specific keys are valid dates.
+        def date_errors(h={}, keys:)
+            ret = []
+            keys.each do |k|
+              if h[k.to_s]
+                is_valid_date = Date.parse(h[k.to_s]) rescue false
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a date." if !is_valid_date
+              end
+            end
+            return ret
+        end # def date_errors
+
         # validate the values of some specific keys are valid booleans.
         def boolean_errors(h={}, keys:)
             ret = []
@@ -555,7 +575,7 @@ module BlackStack
             end
             return ret
         end # def boolean_errors
-        
+
 
         # return an array of error messages regarding the ownership of the object.
         def ownership_errors(h={})
@@ -582,7 +602,7 @@ module BlackStack
         # - the name must be unique.
         # - the name must be a string.
         # - the name must be less than 255 characters.
-        # 
+        #
         def naming_errors(h={})
             h = self.normalize(h)
             ret = []
@@ -592,7 +612,7 @@ module BlackStack
 =begin
             # name must be unique
             ret << "Name is unique and already exists a #{self.name.gsub('Mass::', '')} with the same name." if h['name'] && h['id'].nil? && self.where(
-                :id_account => h['id_account'], 
+                :id_account => h['id_account'],
                 :name => h['name'].to_s
             ).first
             ret << "Name is unique and already exists a #{self.name.gsub('Mass::', '')} with the same name." if h['name'] && h['id'] && self.where(Sequel.lit("
@@ -628,4 +648,4 @@ module BlackStack
         end
     end
 
-end 
+end

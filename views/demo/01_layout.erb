@@ -38,6 +38,7 @@
 								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
 								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
 								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
               </ul>
             </div>
             </section>
@@ -216,48 +217,194 @@
                     <!-- Tab Contents -->
                     <div class="tab-contents">
                       <div id="tab1" class="tab-content active">
-                      <%=@md.render('
-Any internal scraeen of My.SaaS has 2 or 3 panels, like this page that you are reading now.
+                      <%=@md.render("The **layout.js** is a JavaScript library designed for creating responsive dashboard layouts with either 2 or 3 vertical panels.
 
-Find a live demo of a 2-panel screen [here](01a_2pools).
+These panels, also known as \"pools,\" can dynamically adjust their widths and visibility based on the screen size and user preferences.
 
-Find a live demo of a 3-panel screen [here](01b_3pools).
+The library also includes features for user preference management, dark mode toggling, and panel interactions such as collapsing or expanding.
 
-#### URL Parameters
+#### 1. How to Create a 2-Panel Screen
 
-The URL parameters `dark`, `tab`, `pool1`, `pool2`, and `pool3` provide users with the ability to customize their interface preferences dynamically.
+To create a 2-panel screen, follow these steps:
 
-- [Example: Setting dark-mode dynamically with `?dark=yes`](01_layout?dark=yes).
+1. Add two `<section>` elements with the IDs `pool2` and `pool3` inside your HTML structure.
+2. Each pool should include a header with a title and buttons for maximizing, minimizing, or toggling visibility.
+3. Example:
 
-- [Example: Choosing the "Other Tab" tab with `?tab=tab2`](01_layout?tab=tab2).
+```html
+<section id=\"pool2\" name=\"pool2\" class=\"col-6 panel responsive-height-1\">
+  <div id=\"pool2_header\" name=\"pool2_header\" class=\"panel-header\">
+    <div class=\"header-info\">
+      <span class=\"user-name\">Pool 2 Title</span>
+    </div>
+    <button class=\"close-btn\" onclick=\"closePanel('pool2')\">
+      <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>
+    </button>
+    <button id=\"arrow-right-2\" class=\"arrow\" onclick=\"togglePanel('pool3', 'arrow-right-2')\">
+      <i class=\"fa-solid fa-arrow-right\"></i>
+    </button>
+  </div>
+  <div id=\"list_div\" class=\"panel-content\">
+  <section class=\"list\">
+  <div class=\"chat-messages\">
+    <!-- Content for Pool 2 -->
+  </div>
+  </section>
+  </div>
+</section>
 
-- [Example: Collapsing first panel with `?pool1=collapsed`](01_layout?pool1=collapsed)
+<section id=\"pool3\" name=\"pool3\" class=\"col-6 panel responsive-height-1\">
+  <div id=\"pool3_header\" name=\"pool3_header\" class=\"panel-header\">
+    <div class=\"header-info\">
+      <span class=\"user-name\">Pool 3 Title</span>
+    </div>
+    <button class=\"close-btn\" onclick=\"closePanel('pool3')\">
+      <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>
+    </button>
+    <button id=\"arrow-left-2\" class=\"arrow-left\" onclick=\"togglePanel('pool2', 'arrow-left-2')\">
+      <i class=\"fa-solid fa-arrow-left\"></i>
+    </button>
+  </div>
+  <div id=\"list_div\" class=\"panel-content\">
+  <section class=\"list\">
+  <div class=\"chat-messages\">
+    <!-- Content for Pool 3 -->
+  </div>
+  </section>
+  </div>
+</section>
+```
 
-#### JavaScript
+#### 2. How to Create a 3-Panel Screen
 
-You can setup the screen with JavaScript too.
+For a 3-panel screen:
 
-- `setDarkMode(true);`
-- `chooseTab("tab1");`
-- `closePanel("pool1");`
-- `openPanel("pool2");`
-- `togglePanel("pool2");`
+1. Add three `<section>` elements with IDs `pool1`, `pool2`, and `pool3`.
+2. Include headers for each pool with titles and buttons to maximize, minimize, or toggle panels.
+3. Example:
 
-#### Remember User Preferences
+```html
+<section id=\"pool1\" name=\"pool1\" class=\"col-6 panel responsive-height-1\">
+  <div id=\"pool1_header\" name=\"pool1_header\" class=\"panel-header\">
+    <h2>Pool 1 Title</h2>
+    <button class=\"close-btn\" onclick=\"closePanel('pool1')\">
+      <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>
+    </button>
+    <button id=\"arrow-right-1\" class=\"arrow\" onclick=\"togglePanel('pool2', 'arrow-right-1')\">
+      <i class=\"fa-solid fa-arrow-right\"></i>
+    </button>
+  </div>
+  <div id=\"list_div\" class=\"panel-content\">
+  <section class=\"list\">
+  <div class=\"chat-messages\">
+    <!-- Content for Pool 1 -->
+  </div>
+  </section>
+  </div>
+</section>
+```
 
-Using Javascript, you can get your SaaS to remember the preferences of the user.
+Repeat similar structures for `pool2` and `pool3`.
 
-`setPreference("dark", "yes");`
+#### 3. URL Parameters
 
-You can get the value of any preference too:
+- `dark`: Toggles dark mode (`yes` for enabled, `no` for disabled).
+- `tab`: Specifies the active tab by its ID.
+- `pool1`, `pool2`, `pool3`: Define the state of each pool (`expanded` or `collapsed`).
 
-`setPreference("dark");`
+Example: `?dark=yes&tab=2&pool1=expanded&pool2=collapsed&pool3=expanded`
+
+#### 4. Function: `setDarkMode`
+
+##### Description:
+Toggles dark mode and optionally updates user preferences.
+
+##### Syntax:
+```javascript
+setDarkMode(enable, set_preference=true);
+```
+
+- `enable`: `true` to enable dark mode, `false` to disable it.
+- `set_preference`: Whether to save the preference (`true` by default).
+
+#### 5. Function: `chooseTab`
+
+##### Description:
+Selects a tab and updates the content area.
+
+##### Syntax:
+```javascript
+chooseTab(tabId, set_preference=true);
+```
+
+- `tabId`: The ID of the tab to activate.
+- `set_preference`: Whether to save the preference.
+
+#### 6. Function: `closePanel`
+
+##### Description:
+Closes (hides) a panel and adjusts the layout.
+
+##### Syntax:
+```javascript
+closePanel(panelId, set_preference=true);
+```
+
+- `panelId`: ID of the panel to close.
+- `set_preference`: Whether to save the preference.
+
+#### 7. Function: `openPanel`
+
+##### Description:
+Opens (shows) a panel and adjusts the layout.
+
+##### Syntax:
+```javascript
+openPanel(panelId, set_preference=true);
+```
+
+- `panelId`: ID of the panel to open.
+- `set_preference`: Whether to save the preference.
+
+#### 8. Function: `togglePanel`
+
+##### Description:
+Toggles the visibility of a panel and adjusts the layout.
+
+##### Syntax:
+```javascript
+togglePanel(panelId, arrowID);
+```
+
+- `panelId`: ID of the panel to toggle.
+- `arrowID`: ID of the arrow button controlling the panel.
+
+#### 9. Save User Preferences with `setPreference`
+
+##### Example:
+```javascript
+setPreference(\"dark\", \"yes\"); // Save dark mode preference
+setPreference(\"pool1\", \"collapsed\"); // Save panel state
+```
+
+#### 10. Load User Preferences with `getPreference`
+
+##### Example:
+```javascript
+getPreference(\"dark\").then(value => {
+  if (value === \"yes\") {
+    setDarkMode(true, false);
+  }
+});
+```
 
 
 
 
-----
-')%>
+
+
+---
+")%>
                       </div>
                       <div id="tab2" class="tab-content">
                         <p>Content for any other tab that you want to place here.</p>
