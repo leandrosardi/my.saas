@@ -1,0 +1,31 @@
+<%
+return_message = {}
+return_message['status'] = 'success'
+begin
+    N = 25
+    preferences = @body['preferences']
+
+    raise "preferences is required" if preferences.nil?
+    raise "preferences must be an array" unless preferences.is_a?(Array) 
+    raise "preferences cannot contains more than #{N} elements" if preferences.size > N
+
+    preferences.each { |h| 
+        name = h['name']
+        default = h['default']
+        raise "name must be a String" unless name.is_a?(String)
+        raise "default cannot be nil" if default.nil?
+        raise "value and default must be of the same type" unless value.class == default.class    
+    }
+
+    return_message[:values] = {}
+    preferences.each { |h|
+        name = h['name']
+        default = h['default']
+        value = @login.user.preference(key.to_s, nil, nil)
+        return_message[:values][key.to_s] = value
+    }
+rescue => e
+    return_message[:status] = e.to_console
+end
+return return_message.to_json
+%>

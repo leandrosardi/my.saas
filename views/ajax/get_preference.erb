@@ -3,16 +3,13 @@ return_message = {}
 return_message['status'] = 'success'
 begin
     name = @body['name']
-    default = '' #body['default']
-    return_message[:value] = @login.user.preference(name, default, nil)
-=begin
-    o = BlackStack::MySaaS::Preference.where(
-      :id_user=>@user.id,
-      :name=>name
-    ).first
+    default = body['default']
 
-    return_message[:value] = o.nil? ? nil : o.value_string
-=end
+    raise "name must be a String" unless name.is_a?(String)
+    raise "default cannot be nil" if default.nil?
+    raise "value and default must be of the same type" unless value.class == default.class    
+
+    return_message[:value] = @login.user.preference(name, default, nil)
 rescue => e
     return_message[:status] = e.to_console
 end
