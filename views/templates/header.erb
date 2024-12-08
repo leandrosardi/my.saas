@@ -309,7 +309,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		const button = document.getElementById("darkModeButton");
 
 		// save preference
-		if (set_preference) setPreference('dark', enable ? 'yes' : 'no');
+		if (set_preference) setPreference('dark', 'yes', enable ? 'yes' : 'no');
 
 		// change screen
 		if (enable) {
@@ -390,7 +390,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	// collapse/close a panael
 	function closePanel(panelId, set_preference=true) {
 		// save preference
-		if (set_preference) setPreference('<%=path%>_'+panelId, 'colapsed');
+		if (set_preference) setPreference('<%=path%>_'+panelId, 'expanded', 'colapsed');
 
 		//
 		let o = document.getElementById(panelId);
@@ -404,7 +404,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	// if it is a mobile screen, only one panel can be shown at a time.
 	function openPanel(panelId, set_preference=true) {
 		// save preference
-		if (set_preference) setPreference('<%=path%>_'+panelId, 'expanded');
+		if (set_preference) setPreference('<%=path%>_'+panelId, 'expanded', 'expanded');
 
 		//
 		let o = document.getElementById(panelId);
@@ -512,7 +512,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	// Select the right tab and content div.
 	function chooseTab(tabId, set_preference=true) {
 		// save preference
-		if (set_preference) setPreference('<%=path%>_tab', tabId);
+		if (set_preference) setPreference('<%=path%>_tab', '', tabId);
 
 		// Select the button with the specific data-tab attribute
 		var $button = $(`button[data-tab='${tabId}']`);
