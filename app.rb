@@ -675,7 +675,7 @@ begin
     redirect '/settings/dashboard'
   end
   get '/settings/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/dashboard', :layout => :'/views/layouts/core'
+    erb :'views/settings/dashboard', :layout => :'/views/layouts/classic'
   end
 
   # account information

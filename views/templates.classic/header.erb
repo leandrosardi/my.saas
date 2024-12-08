@@ -1,0 +1,197 @@
+<%
+require "digest/md5"
+login = @login
+user = login.user
+
+if BlackStack::Extensions.exists?(:i2p)
+	account = BlackStack::I2P::Account.where(:id=>user.id_account).first
+else
+	account = BlackStack::MySaaS::Account.where(:id=>user.id_account).first
+end
+
+# get extension
+e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase && e.show_in_top_bar }.first
+if e.nil?
+	@service = nil 
+	e = nil
+end
+%>
+
+<div id='wait' name='wait' style='display: none; position: fixed; z-index: 1000000; top: 0; left: 0; height: 100%; width: 100%; background: rgba( 255, 255, 255, .8 ) 50% 50% no-repeat;'>
+	<br/>
+	<br/>
+	<br/>
+	<div id='loader-div'>
+		<div id='loader' style='margin: 0 auto'>
+			<img src='<%=LOADING_IMAGE_PATH%>' />
+		</div>
+	</div>
+	<br/>
+	<br/>
+	<center><span id='wait-caption' name='wait-caption' style='font-size: 24;text-align: center;'></span></center>
+</div>
+
+<header class="navbar navbar-fixed-top" id="main-navbar">
+	<div class="navbar-inner">
+		<div class="container">
+			<table width='100%'>
+				<tr>
+					<td width='48px'><a class="logo" href="/dashboard" title='Home'><img alt="<%=CS_HOME_WEBSITE%>_logo" src="<%=CS_HOME_FAVICON%>" width='96px'></a></td>
+					
+					<td id='services'>
+						<span style='color: White;font-family: Arial;font-size: 12px;'>
+							<%
+							services = BlackStack::Extensions::extensions.select { |e| e.show_in_top_bar == true && !e.services_section.nil? }
+							sections = services.map { |e| e.services_section }.uniq.sort
+							# show list of services, only if there are more than 1 service configured.
+							if services.size > 1
+							%>
+							<ul class="nav">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<i class='icon-coffee'></i> <span id='service_name'><%=@service.to_s.capitalize.encode_html%> <i class="icon-chevron-down"></span></i>  
+									</a>
+									<ul class="dropdown-menu" style='width:250px;'>
+										<li><a href="/dashboard"><i class="icon-home"></i> Home</a></li>
+										<%
+										# getting full list of sections
+										sections.each { |section|
+											%>
+											<li class="nav-header"><i class="icon-coffee"></i> <%=section.encode_html%></li>
+											<%
+											BlackStack::Extensions::extensions.select { |e| e.show_in_top_bar == true && e.services_section == section }.each do |e|
+												%>
+												<li>
+													<a href="/<%=e.name.downcase.encode_html%>?service=<%=e.name.downcase.encode_html%>">
+														<%=e.name.capitalize.encode_html%>
+														<br/>
+														<span style='font-size: 10px;color:gray;'><%=e.description.encode_html%></span>
+													</a>
+												</li>
+												<%
+											end # each
+										}
+										%>
+									</ul>
+								</li>
+							</ul>
+							<%
+							end # if BlackStack::Extensions::extensions.select { |e| e.show_in_top_bar == true && !e.services_section.nil? }.size > 0
+							%>
+						</span>					
+					</td>
+
+					<%
+					if BlackStack::Extensions.exists?('i2p')
+						BlackStack::I2P::services_descriptor.select { |h| h[:show_in_top_bar] }.each { |h|
+						%>
+						<td align='left' style='text-align: left:' width='250px'>
+							<a href="/plans"> 
+								<span>
+									<%
+									if h[:mode] == BlackStack::I2P::MODE_CREDITS
+									%>
+									<span id='credits' class='label label-blue'><%=account.credits(h[:code]).to_i.to_label%></span> <span style='color:white;'><%=h[:unit_name].to_s%></span> 
+									<%
+									elsif h[:mode] == BlackStack::I2P::MODE_AMOUNT
+									%>
+									<span id='amount' class='label label-blue'>$<%=account.balance(h[:code]).to_f.round(2).to_label%></span> <span style='color:white;'></span> 
+									<%
+									end # if h[:mode] == BlackStack::I2P::MODE_AMOUNT
+									%>
+								</span>
+							</a>
+							<a href="/plans" class='btn btn-mini btn-green' style='margin-top:0;'><i class='icon-plus'></i></a>
+						</td>
+						<%
+						}
+					end
+					%>
+					
+					<td align='right' style='text-align: right;' width='auto' >
+						<%
+						# Badge: SysOwner
+						if !account.api_key.nil?
+							if account.sysowner?
+							%>
+							<span class='badge badge-pink' title='SYSOWNER: You Are Running the Webserver using this API-KEY for validating the API-CALLs.'><i class='icon-key'></i> SysOwner</span>
+							<%
+							end # if BlackStack::MySaaS::api_key.to_guid == account.api_key.to_guid
+						end # if !account.api_key.nil?
+
+						# Badge: Premium Account
+						if BlackStack::Extensions.exists?(:i2p)
+							if account.premium?
+								%>
+								<span class='badge badge-green' title='You paid for credits.'><i class='icon-star'></i> Premium</span>
+								<%
+							else
+								%>
+								<span class='badge badge-gray' title='Subscribe a Plan & Unlock Premium Features.'><a href='/plans' style='color:black;'><i class='icon-star'></i> Free Accoount</a></span>
+								<%
+							end
+						end
+						%>
+	
+						<a href="mailto:<%=HELPDESK_EMAIL%>?subject=I Need Help" style='color:white;'>
+							<span>
+								<span class='badge badge-blue'><i class="icon-question"></i> <span id='email_support'>Email Support</span></span>
+							</span>
+						</a>
+					</td>
+
+					<td align='right' style='text-align: right:' width='54px'>			
+						<ul class="nav pull-right">
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle usermenu" data-toggle="dropdown">
+									<img alt="Avatar" src="<%=("https://www.gravatar.com/avatar/" + Digest::MD5.hexdigest(user.email.strip.downcase)).encode_html%>">
+									<!--
+									<span>&nbsp;&nbsp;<%=login.user.account.name.encode_html%></span>
+									-->
+								</a>
+								<ul class="dropdown-menu">
+									<li class="nav-header">User Details</li>
+									<li><a><b>Email:</b> <%=user.email.encode_html%></a></li>
+									<li><a><b>Company:</b> <%=account.name.to_s.encode_html%></a></li>								
+									<%
+									if !e.nil? # I am in a service
+										%>
+										<li class="divider"></li>
+										<li class="nav-header"><%=e.name.to_s.encode_html%></li>
+										<%
+										e.leftbar_icons.each { |i|
+											%>
+											<li>
+												<a href="/<%=e.name.downcase.to_s.encode_html%>/<%=i.screen.to_s.downcase.encode_html%>"><%=i.label.encode_html%> <span class="icon-<%=i.icon.to_s%>"></span></a>
+											</li>
+											<%
+										}
+									end
+									%>					
+									<li class="divider"></li>
+									<li class="nav-header">Options</li>
+									<li>
+										<a href="/settings/dashboard"><i class='icon-cog'></i> Settings</a>
+									</li>
+									<li>
+										<%
+										if SLAVE
+										%>
+											<a href="/logout"><i class='icon-signout'></i>Close</a>
+										<%
+										else
+										%>
+											<a href="/logout"><i class='icon-signout'></i>Sign Out</a>
+										<%
+										end
+										%>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</header>
