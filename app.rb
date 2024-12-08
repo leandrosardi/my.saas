@@ -520,6 +520,10 @@ begin
     erb :"views/ajax/get"
   end
 
+  post "/ajax/:object/get_many.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/get_many"
+  end
+
   post "/ajax/:object/errors.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/errors"
   end
