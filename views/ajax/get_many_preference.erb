@@ -11,6 +11,8 @@ begin
 
     preferences.each { |h| 
         name = h['name']
+        # Always you get or set a preferece, you must to pass a default value for such a preference.
+        # This is required for the situation that you try to get a preference that has not been setted yet.
         default = h['default']
         raise "name must be a String" unless name.is_a?(String)
         raise "default cannot be nil" if default.nil?
@@ -25,7 +27,7 @@ begin
         return_message[:values][key.to_s] = value
     }
 rescue => e
-    return_message[:status] = e.to_console
+    return_message[:status] = @body['backtrace'] ? e.to_console : e.message
 end
 return return_message.to_json
 %>

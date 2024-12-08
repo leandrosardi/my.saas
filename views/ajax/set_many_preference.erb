@@ -4,14 +4,16 @@ return_message['status'] = 'success'
 begin
     N = 25
     preferences = @body['preferences']
-    default = '' #@body['default']
 
     raise "preferences is required" if preferences.nil?
     raise "preferences must be an array" unless preferences.is_a?(Array) 
     raise "preferences cannot contains more than #{N} elements" if preferences.size > N
     
     preferences.each { |h| 
+        raise "preferences must be an array of hashes" unless h.is_a?(Hash)
         name = h['name']
+        # Always you get or set a preferece, you must to pass a default value for such a preference.
+        # This is required for the situation that you try to get a preference that has not been setted yet.
         default = h['default']
         value = h['value']
         raise "name must be a String" unless name.is_a?(String)
@@ -27,7 +29,7 @@ begin
         @login.user.preference(name, default, value)
     }
 rescue => e
-    return_message[:status] = e.to_console
+    return_message[:status] = @body['backtrace'] ? e.to_console : e.message
 end
 return return_message.to_json
 %>
