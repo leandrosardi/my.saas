@@ -3,12 +3,19 @@ return_message = {}
 return_message['status'] = 'success'
 begin
     name = @body['name']
-    default = '' #@body['default']
     value = @body['value']
-#binding.pry
+    # Always you get or set a preferece, you must to pass a default value for such a preference.
+    # This is required for the situation that you try to get a preference that has not been setted yet.
+    default = @body['default']
+
+    raise "name must be a String" unless name.is_a?(String)
+    raise "value cannot be nil" if value.nil?
+    raise "default cannot be nil" if default.nil?
+    raise "value and default must be of the same type" unless value.class == default.class    
+
     @login.user.preference(name, default, value)
 rescue => e
-    return_message[:status] = e.to_console
+    return_message[:status] = e.message
 end
 return return_message.to_json
 %>

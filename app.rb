@@ -493,8 +493,16 @@ begin
     erb :'views/ajax/set_preference'
   end
 
+  post '/ajax/set_many_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/set_many_preference'
+  end
+
   post '/ajax/get_preference.json', :auth => true, :agent => /(.*)/ do
     erb :'views/ajax/get_preference'
+  end
+
+  post '/ajax/get_many_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/get_many_preference'
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -793,6 +801,10 @@ begin
 
   post "/api1.0/:object/get.json", :api_key => true do
     erb :"views/api1.0/get"
+  end
+
+  post "/api1.0/:object/get_many.json", :api_key => true do
+    erb :"views/api1.0/get_many"
   end
 
   post "/api1.0/:object/errors.json", :api_key => true do
