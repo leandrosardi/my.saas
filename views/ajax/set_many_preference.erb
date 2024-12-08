@@ -2,12 +2,12 @@
 return_message = {}
 return_message['status'] = 'success'
 begin
-    N = 25
+    max = 25
     preferences = @body['preferences']
 
     raise "preferences is required" if preferences.nil?
     raise "preferences must be an array" unless preferences.is_a?(Array) 
-    raise "preferences cannot contains more than #{N} elements" if preferences.size > N
+    raise "preferences cannot contains more than #{max} elements" if preferences.size > max
     
     preferences.each { |h| 
         raise "preferences must be an array of hashes" unless h.is_a?(Hash)

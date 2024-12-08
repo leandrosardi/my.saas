@@ -223,10 +223,11 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	}
 
 	// update user preference via AJAX
-	function setPreference(name, value) {
+	function setPreference(name, deflt, value) {
 		// Prepare the data to be sent in the request
 		const data = {
 			name: name,       		// Preference name
+			default: deflt, 		// Default value
 			value: value        	// New value ('yes' or 'no')
 		};
 
@@ -260,10 +261,11 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	}
 
 	// update user preference via AJAX
-	function getPreference(name) {
+	function getPreference(name, deflt) {
 	    // Prepare the data to be sent in the request
 	    const data = {
-	        name: name // Preference name
+	        name: name, // Preference name
+	        default: deflt // default value
 	    };
 
 	    // Return the Promise from fetch
