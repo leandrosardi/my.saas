@@ -243,22 +243,23 @@ callx({
 
 <script>
     $(document).ready(function() {
-        //a = getPreference('demo.ajax.url');
-        getPreference('demo.ajax.url').then(value => { if (value) $('#url').val(value) });
-        getPreference('demo.ajax.params').then(value => { if (value) $('#params').val(value) });
+        getPreference('demo.ajax.url', '').then(value => { if (value) $('#url').val(value) });
+        getPreference('demo.ajax.params', '').then(value => { if (value) $('#params').val(value) });
 
         // Capture the keypress event on #url
         $('#url').on('keyup', function () {
             // Get the current value of #url and pass it to setPreference
             const value = $(this).val();
-            setPreference('demo.ajax.url', value);
+//console.log("url value:"+value);
+            setPreference('demo.ajax.url', '', value);
         });
 
         // Capture the keypress event on #url
         $('#params').on('keyup', function () {
             // Get the current value of #url and pass it to setPreference
             const value = $(this).val();
-            setPreference('demo.ajax.params', value);
+//console.log("params value:"+value);
+            setPreference('demo.ajax.params', '', value);
         });
 
         $('#submit').on('click', function() {
