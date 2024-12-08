@@ -512,6 +512,10 @@ begin
     erb :"views/ajax/get"
   end
 
+  post "/ajax/:object/errors.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/errors"
+  end
+
   post "/ajax/:object/insert.json", :auth => true, :agent => /(.*)/ do
     erb :"views/ajax/insert"
   end
@@ -789,6 +793,10 @@ begin
 
   post "/api1.0/:object/get.json", :api_key => true do
     erb :"views/api1.0/get"
+  end
+
+  post "/api1.0/:object/errors.json", :api_key => true do
+    erb :"views/api1.0/errors"
   end
 
   post "/api1.0/:object/insert.json", :api_key => true do
