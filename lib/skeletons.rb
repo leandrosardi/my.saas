@@ -133,6 +133,9 @@ module BlackStack
                 'create_time' => self.create_time,
                 'update_time' => self.update_time,
                 'delete_time' => self.delete_time,
+                'create_time_ago' => self.create_time.nil? ? nil : htimediff(self.create_time)+' ago',
+                'update_time_ago' => self.update_time.nil? ? nil : htimediff(self.update_time)+' ago',
+                'delete_time_ago' => self.delete_time.nil? ? nil : htimediff(self.delete_time)+' ago',
             }
         end # def to_h
 
