@@ -303,6 +303,99 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	    });
 	}
 
+	/**
+	* Fetch multiple user preferences via AJAX.
+	* 
+	* @param {Array} preferences - An array of preference objects, each containing:
+	*                              - name: The preference name (String)
+	*                              - default: The default value for the preference
+	* @returns {Promise<Object>} - A promise that resolves to an object containing the preferences.
+	*/
+	function getManyPreferences(preferences) {
+		// Prepare the data to be sent in the request
+		const data = {
+			preferences: preferences // Array of preference objects
+		};
+
+		// Return the Promise from fetch
+		return fetch('/ajax/get_many_preference.erb', {
+			method: 'POST', // HTTP method
+			headers: {
+				'Content-Type': 'application/json' // Specify JSON content
+			},
+			body: JSON.stringify(data) // Convert data to JSON string
+		})
+		.then(response => {
+			if (!response.ok) {
+				// Handle HTTP errors
+				throw new Error(`Network response was not ok: ${response.statusText}`);
+			}
+			return response.json(); // Parse the JSON response
+		})
+		.then(data => {
+			if (data.status !== 'success') {
+				// Handle application-level errors
+				console.error('Error fetching multiple preferences:', data.status);
+				throw new Error(`Error fetching multiple preferences: ${data.status}`);
+			} else {
+				return data.values; // Return the object containing all preference values
+			}
+		})
+		.catch(error => {
+			// Handle fetch or parsing errors
+			console.error('There was a problem with the fetch operation:', error);
+			throw error; // Rethrow the error for the caller to handle
+		});
+	}
+
+	/**
+	* Set multiple user preferences via AJAX.
+	* 
+	* @param {Array} preferences - An array of preference objects, each containing:
+	*                              - name: The preference name (String)
+	*                              - default: The default value for the preference
+	*                              - value: The new value to set
+	* @returns {Promise<void>} - A promise that resolves when the preferences are set successfully.
+	*/
+	function setManyPreferences(preferences) {
+		// Prepare the data to be sent in the request
+		const data = {
+			preferences: preferences // Array of preference objects
+		};
+
+		// Make the AJAX POST request to update the preferences
+		return fetch('/ajax/set_many_preference.erb', {
+			method: 'POST', // HTTP method
+			headers: {
+				'Content-Type': 'application/json' // Specify JSON content
+			},
+			body: JSON.stringify(data) // Convert data to JSON string
+		})
+		.then(response => {
+			if (!response.ok) {
+				// Handle HTTP errors
+				throw new Error(`Network response was not ok: ${response.statusText}`);
+			}
+			return response.json(); // Parse the JSON response
+		})
+		.then(data => {
+			if (data.status !== 'success') {
+				// Handle application-level errors
+				console.error('Error setting multiple preferences:', data.status);
+				throw new Error(`Error setting multiple preferences: ${data.status}`);
+			} else {
+				// Preferences updated successfully
+				console.log('Multiple preferences updated successfully.');
+				return;
+			}
+		})
+		.catch(error => {
+			// Handle fetch or parsing errors
+			console.error('There was a problem with the fetch operation:', error);
+			throw error; // Rethrow the error for the caller to handle
+		});
+	}
+	
 	// activate / deactivate dark-mode.
 	function setDarkMode(enable, set_preference=true) {
 		const body = document.body;setDarkMode
