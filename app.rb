@@ -603,19 +603,7 @@ begin
   post '/reset' do
     erb :'views/filter_reset'
   end
-
-  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Funnel
-  #
-  get '/offer', :auth => true, :agent => /(.*)/ do
-    erb :'views/offer', :layout => :'/views/layouts/public'
-  end
-
-  get '/plans', :auth => true, :agent => /(.*)/ do
-    erb :'views/plans', :layout => :'/views/layouts/public'
-  end
-  puts 'done'.green
-
+  
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # User welcome
   print 'Setting up entries of internal pages... '
