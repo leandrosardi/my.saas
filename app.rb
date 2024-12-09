@@ -603,7 +603,7 @@ begin
   post '/reset' do
     erb :'views/filter_reset'
   end
-  
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # User welcome
   print 'Setting up entries of internal pages... '
@@ -762,6 +762,10 @@ begin
 
   # Standard MySaaS API - Managing subaccounts
   #
+  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_key => true, :su => true do
+    erb :"views/api1.0/subaccount/get_subaccount_assigned_to_profile"
+  end
+
   post "/api1.0/subaccount/get.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get"
   end
