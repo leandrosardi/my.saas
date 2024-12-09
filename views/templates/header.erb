@@ -318,7 +318,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		};
 
 		// Return the Promise from fetch
-		return fetch('/ajax/get_many_preference.erb', {
+		return fetch('/ajax/get_many_preference.json', {
 			method: 'POST', // HTTP method
 			headers: {
 				'Content-Type': 'application/json' // Specify JSON content
@@ -364,7 +364,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		};
 
 		// Make the AJAX POST request to update the preferences
-		return fetch('/ajax/set_many_preference.erb', {
+		return fetch('/ajax/set_many_preference.json', {
 			method: 'POST', // HTTP method
 			headers: {
 				'Content-Type': 'application/json' // Specify JSON content
