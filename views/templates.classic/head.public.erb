@@ -23,23 +23,23 @@ theme = 'black-blue'
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
-	
+
 	  gtag('config', 'G-XHCG5LE744');
 	</script>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 
 	<script src="/classic/javascripts/1.3.0/adminflare-demo-init.min.js" type="text/javascript"></script>
-		
+
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
-	
+
 	<script type="text/javascript">
 		DEMO_CURRENT_THEME = "<%=theme%>";
-		
-		// Include Bootstrap stylesheet 
+
+		// Include Bootstrap stylesheet
 		document.write('<link href="/classic/css/' + DEMO_ADMINFLARE_VERSION + '/' + DEMO_CURRENT_THEME + '/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">');
-		// Include AdminFlare stylesheet 
+		// Include AdminFlare stylesheet
 		document.write('<link href="/classic/css/' + DEMO_ADMINFLARE_VERSION + '/' + DEMO_CURRENT_THEME + '/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">');
-		// Include AdminFlare page stylesheet 
+		// Include AdminFlare page stylesheet
 		document.write('<link href="/classic/css/' + DEMO_ADMINFLARE_VERSION + '/pages.css" media="all" rel="stylesheet" type="text/css">');
 		// Include Style to Draw Wizards
 		document.write('<link href="/classic/css/wizard.css" media="all" rel="stylesheet" type="text/css">');
@@ -75,13 +75,13 @@ theme = 'black-blue'
 		// behaviour of pages when load
 		let hide_loading_message_after_page_load = true;
 
-		// 
+		//
 		const reLinkedInGroup = /^http(s)?:\/\/(www\.)?linkedin\.com\/groups\/(\d+)(\/(profile)?)?$/;
-		const reLinkedInGroupUrlCode = /(\d+)/		
+		const reLinkedInGroupUrlCode = /(\d+)/
 		function getLinkedInGroupUrlCode(url) {
 			if (!reLinkedInGroup.test(url)) {
 				return null;
-			}		
+			}
 			return url.match(reLinkedInGroupUrlCode)[0];
 		}
 
@@ -90,7 +90,7 @@ theme = 'black-blue'
 			$('[title]').tooltip({
 				'placement': 'bottom',
 			});
-		}		
+		}
 
 		// enable select-all-text when focus on any input with class `select-all-on-focus`
 		function enableSelectAllTextOnFocus() {
@@ -102,7 +102,7 @@ theme = 'black-blue'
 		// this function check/uncheck all the rows,
 		// then calls methods h['afterCallback'] in order.
 		function enableSelectRows(h) {
-			// update list of selected rows 
+			// update list of selected rows
 			function updateSelectedIDs() {
 				a = $(".selected-ids");
 				i = 0;
@@ -129,10 +129,10 @@ theme = 'black-blue'
 				d = $(".select-row");
 				if ( b.prop('checked') ) {
 					d.prop( "checked", true );
-				} else {				
+				} else {
 					d.prop( "checked", false );
 				}
-				// update list of selected rows 
+				// update list of selected rows
 				updateSelectedIDs();
 				// callback function for after you select/unselect rows
 				h['afterCallback']();
@@ -140,24 +140,24 @@ theme = 'black-blue'
 
 			// select/unselect one signle row
 			$(".select-row").click(function() {
-				// update list of selected rows 
+				// update list of selected rows
 				updateSelectedIDs();
 				// callback function for after you select/unselect rows
 				h['afterCallback']();
 			});
 		}
 
-		// 
+		//
 		function selectRow(id) {
 			$('.select-row[data-id="'+id+'"]').prop( "checked", true );
 		}
 
-		// 
+		//
 		function newHttpRequest()
 		{
 			var xmlhttp;
 			if (window.XMLHttpRequest)
-			{	
+			{
 			 	// code for IE7+, Firefox, Chrome, Opera, Safari
 				xmlhttp=new XMLHttpRequest();
 			}
@@ -166,11 +166,11 @@ theme = 'black-blue'
 			 	// code for IE6, IE5
 				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 			}
-		
+
 			return xmlhttp ;
 		}
-	
-		// 
+
+		//
 		function newXmlParser(txt) {
 			if (window.DOMParser) {
 				parser = new DOMParser();
@@ -181,11 +181,11 @@ theme = 'black-blue'
 				xmlDoc.async = false;
 				xmlDoc.loadXML(txt);
 			}
-	
+
 			return xmlDoc
 		}
-	
-		// 
+
+		//
 		function addEvent(element, eventName, fn) {
 			if (element.addEventListener)
 				element.addEventListener(eventName, fn, false);
@@ -197,7 +197,7 @@ theme = 'black-blue'
 			$("#wait").show();
 			$("#wait-caption").text(s);
 		}
-	
+
 		function hideWait(s) {
 			$("#wait").hide();
 		}
@@ -223,9 +223,21 @@ theme = 'black-blue'
 	</script>
 
 	<script src="/classic/javascripts/1.3.0/modernizr-jquery.min.js" type="text/javascript"></script>
-	<script src="/classic/javascripts/react-1.0.2.min.js" type="text/javascript"></script>
-	<script src="/classic/javascripts/contenteditable.js" type="text/javascript"></script>
 	<script src="/classic/javascripts/1.3.0/bootstrap.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/contenteditable.js" type="text/javascript"></script>
+	<script src="/core/javascripts/data.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/selectrows.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/filters.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/editables.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/images.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/tags.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/profiles.min.js" type="text/javascript"></script>
+	<script src="/core/javascripts/purify.min.js" type="text/javascript"></script>
+	<%# <script src="/core/javascripts/layout.js" type="text/javascript"></script> %>
+	<%# <script src="/core/javascripts/table.js" type="text/javascript"></script> %>
+	<%# <script src="/core/javascripts/unibox.js" type="text/javascript"></script> %>
+	<script src="/core/javascripts/misc.js" type="text/javascript"></script>
+	<%# <script src="/core/javascripts/unibox.layout.js" type="text/javascript"></script> %>
 
 	<%
 	# if the constant TINYMCE_API_KEY is defined
@@ -268,7 +280,7 @@ theme = 'black-blue'
 			display: none;
 			position: fixed;
 			z-index: 100000000000;
-			
+
 			//top: 50px;
 			//left: 50px;
 			//right: 50px;
@@ -329,23 +341,23 @@ theme = 'black-blue'
 
 		// Tables with clickeable rows to show details in the right-side bar
 
-		table tbody tr.clickeable td { 
+		table tbody tr.clickeable td {
 			cursor: pointer;
 		}
 
-		table tbody tr.clickeable td:last-child { 
+		table tbody tr.clickeable td:last-child {
 			border-right: 5px dashed rgb(245,245,245);
 		}
 
-		table tbody tr.clickeable:hover td:last-child { 
+		table tbody tr.clickeable:hover td:last-child {
 			border-right: 5px dashed rgb(255,175,175);
 		}
 
-		table tbody tr.clickeable:hover td { 
+		table tbody tr.clickeable:hover td {
 			background-color: rgb(245,245,245);
 		}
 
-		table tbody tr.selected td:last-child { 
+		table tbody tr.selected td:last-child {
 			border-right: 5px dashed red;
 		}
 
@@ -358,10 +370,10 @@ body.dark-mode {
     background: url('/classic/images/blockquote-bg.png') no-repeat center center fixed;
     background-size: cover;
     color: #f1f1f1;
-    
+
     /* Ensure the background covers the entire viewport */
     min-height: 100vh;
-    
+
     /* Optional: Fallback background color in case the image doesn't load */
     background-color: #120136;
 }
@@ -558,7 +570,7 @@ body.dark-mode {
 
 
 
-		// general styles	
+		// general styles
 		a {
 			text-decoration: none;
 		}
@@ -571,7 +583,7 @@ body.dark-mode {
 			border-radius: 50%;
 		}
 
-		/* 
+		/*
 		* Dark mode
 		*
 		*/
@@ -627,7 +639,7 @@ body.dark-mode {
 		}
 		*/
 
-		/* 
+		/*
 		* Dark mode
 		*
 		*/
@@ -635,23 +647,23 @@ body.dark-mode {
 			background-color: black;
 			color: white;
 		}
-	
+
 		section.dark input {
 			background-color: black;
 			color: white;
 		}
-	
-		section.dark table tbody tr { 
+
+		section.dark table tbody tr {
 			background-color: black;
 			border: 2px none black;
 		}
-	
-		section.dark table tbody tr:hover { 
+
+		section.dark table tbody tr:hover {
 			background-color: rgb(30,30,30);
 			border: 2px solid yellow;
 		}
 
-		/* 
+		/*
 		* Style for fullscreen dashboard
 		*
 		*/
@@ -687,23 +699,23 @@ body.dark-mode {
 			background-color: black;
 		}
 
-		/* 
+		/*
 		* Style for scripts shown in both the responses and pipeline edition screen.
 		*
 		*/
 		pre {
-			mergin: 0px; 
-			padding: 0px; 
-			border:0px; 
-			background-color: transparent; 
-			font-size: 14px; 
-			font-name: Arial; 
+			mergin: 0px;
+			padding: 0px;
+			border:0px;
+			background-color: transparent;
+			font-size: 14px;
+			font-name: Arial;
 			color: rgb(64, 97, 140);
 		}
 
 		span.filesample {
-			font-size: 12px; 
-			font-name: Arial; 
+			font-size: 12px;
+			font-name: Arial;
 			color: rgb(64, 97, 140);
 			border: 1px rgb(175,175,175) solid;
 			border-radius: 5px;
@@ -714,8 +726,8 @@ body.dark-mode {
 		}
 
 		pre.filesample {
-			font-size: 12px; 
-			font-name: Arial; 
+			font-size: 12px;
+			font-name: Arial;
 			color: rgb(64, 97, 140);
 			border: 1px rgb(175,175,175) solid;
 			border-radius: 5px;
@@ -727,7 +739,7 @@ body.dark-mode {
 
 		/*
 		* Waiting GIF
-		* 
+		*
 		*/
 		div.wait {
 			position:   absolute;
@@ -741,7 +753,7 @@ body.dark-mode {
 
 		/*
 		 * Popups
-		 * 
+		 *
 		 */
 		div.popup {
 			position:fixed;
@@ -773,23 +785,23 @@ body.dark-mode {
 		div.popup div.area h1 {
 			margin-bottom:34px;
 		}
-		
+
 		/*
-		 * 
+		 *
 		 */
 		span.yellow-backgrownd {
 			background-color: yellow;
 			color: black;
 		}
-	
+
 		div.fixed-position {
 			position: fixed;
 		}
-	
+
 		.same-line {
 			display: inline-block;
 		}
- 
+
 		.loading-container {
 			position: fixed;
 			left: 0;
@@ -803,7 +815,7 @@ body.dark-mode {
 			display: none;
 			z-index: 9999;
 		}
-	
+
 		#loader {
 			//border: 16px solid #f3f3f3;
 			//border-radius: 50%;
@@ -825,7 +837,7 @@ body.dark-mode {
 		}
 
 		table.fix {
-			table-layout: fixed; 
+			table-layout: fixed;
 		}
 
 		table.fix td.fix {
@@ -835,7 +847,7 @@ body.dark-mode {
 		}
 	</style>
 
-	<script type="text/javascript">	
+	<script type="text/javascript">
 		// clickeable rows
 		function on_click_tr_clickeable(o) {
 			var id = $(o).data("id");
@@ -938,22 +950,22 @@ body.dark-mode {
 
 
 		// draw pagination function
-		// 
+		//
 		function drawPagination(o, current_page, total_pages, page_size=10)
 		{
-			url = '?p='; // url to get the next page	
-			
+			url = '?p='; // url to get the next page
+
 			o.html("");
 			u = $("<ul></ul>");
 			o.append(u);
-		
+
 			if (current_page>1) {
 				li = $('<li><a href="'+url+(current_page-1).toString()+'">Prev</a></li>');
 			} else {
 				li = $('<li class="disabled"><a href="#">Prev</a></li>')
 			}
 			u.append(li);
-		
+
 			i=1
 			i_prev = 1
 			while (i<=total_pages) {
@@ -973,7 +985,7 @@ body.dark-mode {
 				}
 				i=i+1
 			}
-		
+
 			if (current_page<total_pages) {
 				i = $('<li><a href="./'+url+(current_page+1).toString()+'">Next</a></li>');
 			} else {
@@ -987,14 +999,14 @@ body.dark-mode {
 
 			// set the current page size in the dropdown list
 			$('#page-size').val( page_size );
-		
+
 			// when the user changes the page size
 			// then reload the page with the new page size in the parameter z of the URL
 			$('#page-size').change(function() {
 				page_size = $(this).val();
 				window.location.href = window.location.href.split('?')[0] + '?z=' + page_size;
 			});
-		}	
+		}
 	</script>
 
 </head>
