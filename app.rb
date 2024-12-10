@@ -605,35 +605,23 @@ begin
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Funnel
-  #
-  get '/offer', :auth => true, :agent => /(.*)/ do
-    erb :'views/offer', :layout => :'/views/layouts/public'
-  end
-
-  get '/plans', :auth => true, :agent => /(.*)/ do
-    erb :'views/plans', :layout => :'/views/layouts/public'
-  end
-  puts 'done'.green
-
-  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # User welcome
   print 'Setting up entries of internal pages... '
 
   get '/survey', :auth => true, :agent => /(.*)/ do
-    erb :'views/survey', :layout => :'/views/layouts/core'
+    erb :'views/survey', :layout => :'/views/layouts/classic'
   end
 
   get '/welcome', :auth => true, :agent => /(.*)/ do
-    erb :'views/welcome', :layout => :'/views/layouts/core'
+    erb :'views/welcome', :layout => :'/views/layouts/classic'
   end
 
   get '/new', :auth => true, :agent => /(.*)/ do
-    erb :'views/search', :layout => :'/views/layouts/core'
+    erb :'views/search', :layout => :'/views/layouts/classic'
   end
 
   get '/edit/:sid', :auth => true, :agent => /(.*)/ do
-    erb :'views/search', :layout => :'/views/layouts/core'
+    erb :'views/search', :layout => :'/views/layouts/classic'
   end
 
   get '/delete/:sid', :auth => true, :agent => /(.*)/ do
@@ -675,12 +663,12 @@ begin
     redirect '/settings/dashboard'
   end
   get '/settings/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/dashboard', :layout => :'/views/layouts/core'
+    erb :'views/settings/dashboard', :layout => :'/views/layouts/classic'
   end
 
   # account information
   get '/settings/account', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/account', :layout => :'/views/layouts/core'
+    erb :'views/settings/account', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_account', :auth => true do
     erb :'views/settings/filter_account'
@@ -691,7 +679,7 @@ begin
   #
   # white label configuration
   get '/settings/whitelabel', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/whitelabel', :layout => :'/views/layouts/core'
+    erb :'views/settings/whitelabel', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_whitelabel', :auth => true do
     erb :'views/settings/filter_whitelabel'
@@ -699,7 +687,7 @@ begin
 =end
   # change password
   get '/settings/password', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/password', :layout => :'/views/layouts/core'
+    erb :'views/settings/password', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_password', :auth => true do
     erb :'views/settings/filter_password'
@@ -707,7 +695,7 @@ begin
 
   # change password
   get '/settings/apikey', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/apikey', :layout => :'/views/layouts/core'
+    erb :'views/settings/apikey', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_apikey', :auth => true do
     erb :'views/settings/filter_apikey'
@@ -715,7 +703,7 @@ begin
 
   ## users management screen
   get '/settings/users', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/users', :layout => :'/views/layouts/core'
+    erb :'views/settings/users', :layout => :'/views/layouts/classic'
   end
 
   get '/settings/filter_users_add', :auth => true do
@@ -774,6 +762,10 @@ begin
 
   # Standard MySaaS API - Managing subaccounts
   #
+  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_key => true, :su => true do
+    erb :"views/api1.0/subaccount/get_subaccount_assigned_to_profile"
+  end
+
   post "/api1.0/subaccount/get.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get"
   end

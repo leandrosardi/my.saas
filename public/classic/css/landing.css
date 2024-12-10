@@ -1,0 +1,188 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 40px;
+    padding-left: 45px;
+    padding-right: 45px;
+    width: 100%;
+    background-color: #fff;
+}
+
+h1.offer {
+    font-weight: normal; 
+    font-weight: bold; 
+    text-shadow: 4px 4px 5px rgb(200,200,200); 
+    font-size: 64px; 
+    color: rgb(43, 3, 3); 
+    padding-bottom: 22px;
+}
+
+h3.offer {
+    font-weight: normal; 
+    font-weight: bold; 
+    text-shadow: 4px 4px 5px rgb(200,200,200);
+    color: rgb(60, 60, 60); 
+    font-size: 32px;
+}
+
+section.container {
+    padding-top: 0px;
+    padding-bottom: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 100%;
+}
+
+div.span12 {
+    padding-top: 0px;
+    padding-bottom: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 100%;
+}
+
+.menu_banner {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height: 0px;
+}
+
+.top_banner {
+    background-image: url('/core/images/top.png');
+    height: 16px;
+}
+
+section.header {
+    width: 100%;
+    text-align: center;
+}
+
+section.header h1 {
+    font-size: 4.5em;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #555;
+    margin-top: 25px;
+    margin-left: 25px;
+    margin-right: 25px;
+
+}
+
+section.header h2 {
+    font-size: 2.5em;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #333;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+div.faq {
+    font-family: 'Open Sans', sans-serif;
+    font-size:20px;
+    padding-top:25px;
+    padding-botton:25px;
+    padding-left:25px;
+    border-bottom: 1px solid #999;
+}
+
+div.faq p {
+    padding-bottom:10px;
+    line-height: 1.5;
+    letter-spacing: 2px;
+}
+
+
+div.titles {
+    padding-top: 20px;
+    position: relative;
+    //top: 55px;
+    left: 0px;
+    width: 100%;
+}
+
+div.titles div.logo {
+    position: relative;
+    text-align: left;
+    top: 4px;
+    left: 4px;
+    z-index: 9999;
+}
+
+div.titles h1 {
+    max-width: 1280px;
+    color: red;
+    font-family: 'Courier', 'Courier		 New', 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    text-shadow: 4px 4px 5px #B4D0E2;
+    //padding-left: 15px;
+    font-size:48px; 
+    text-shadow: 4px 4px 5px rgb(200,200,200);
+    padding-bottom:10px;
+    padding-left: 10px;
+}
+
+div.titles h2 {
+    max-width: 1280px;
+    color: rgb(60,60,60);
+    font-family: 'Courier', 'Courier New', 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    text-shadow: 4px 4px 5px #B4D0E2;
+    //padding-left: 45px;
+    font-size:36px; 
+    padding-bottom:10px;
+}
+
+div.form {
+    padding-top: 20px;
+    position: relative;
+    left: 0px;
+    width: 100%;
+}
+
+div.form input.email {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 32px;
+    padding: 10px;
+    background-color: rgb(200,255,200);
+    border: 5px solid green;
+    border-radius: 15px;
+    width: 820px;
+    text-align: center;
+    caret-color: green;
+    caret-shape: block;
+}
+
+div.form input.submit {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 32px;
+    padding: 10px;
+    background-color: rgb(200,200,255);
+    border: 5px solid blue;
+    border-radius: 15px;
+    width: 820px;
+    text-align: center;
+}
+
+div.form span.error {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 32px;
+    color: red;
+    padding: 10px;
+    border: 5px dashed red;
+    width: 820px;
+    text-align: center;
+}
+
+div.form a {
+    margin-top: 20px;
+    font-family: 'Lucida Console', 'Tahoma', 'Arial', 'Helvetica', sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    width: 820px;
+    text-align: center;
+    text-decoration: none;
+}	

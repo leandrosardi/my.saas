@@ -1,0 +1,40 @@
+section.step h1 {
+    font-size:28pt; 
+    line-height:1.5;
+}
+
+section.step h2 {
+    font-size:14pt; 
+    line-height:1.5;
+    font-weight: normal;
+}
+
+section.step form section div.checkboxes-row {
+    margin-bottom:15px;
+}
+
+section.step form section div.checkboxes-row {
+    margin-bottom:15px;
+}
+
+section.step form section div.checkboxes-row input.checkbox {
+    font-size: 28pt;
+    transform: scale(2.5, 2.5); 
+    margin-right: 15px;
+}
+
+section.step form section input.text {
+    font-size:14pt;
+    height:45px;
+    text-align:left;
+    width:100%;
+}
+
+section.step form section div.awesomplete {
+    width:100%;
+}
+
+section.step form section div.checkboxes-row span {
+    font-size: 14pt;
+    vertical-align: middle;
+}

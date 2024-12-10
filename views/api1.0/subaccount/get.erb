@@ -1,9 +1,9 @@
-<% 
+<%
 # signup new account
 @return_message = {}
 begin
 	email = @body['email']
-	
+
 	u = BlackStack::MySaaS::User.where(:email => email).first
 
 	raise "User #{email} not found." if u.nil?
