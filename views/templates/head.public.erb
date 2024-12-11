@@ -471,7 +471,7 @@ theme = 'default'
 		// on press the left arrow, go to the prev image
 		$(document).keyup(function(e) {
 			if (e.keyCode == 37) {
-			prev_screenshot();
+				prev_screenshot();
 			}
 		});
 
@@ -485,8 +485,8 @@ theme = 'default'
       let alerts_delay = h.alerts_delay;
 
       if (alerts_delay == null) alerts_delay = -1;
-	
-	  fetch(url, {
+
+	  	fetch(url, {
         method: 'POST',                      	// HTTP method
         headers: {
           'Content-Type': 'application/json' 	// Specify JSON content

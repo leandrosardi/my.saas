@@ -944,14 +944,74 @@ body.dark-mode {
 		// on press the left arrow, go to the prev image
 		$(document).keyup(function(e) {
 			if (e.keyCode == 37) {
-			prev_screenshot();
+				prev_screenshot();
 			}
 		});
 
 
+		// Make a POST request to and ajax end-point.
+		function callx(h) {
+      let url = h.url;
+      let params = h.params;
+      let on_error = h.on_error;
+      let on_success = h.on_success;
+      let alerts_delay = h.alerts_delay;
+
+      if (alerts_delay == null) alerts_delay = -1;
+
+	  	fetch(url, {
+        method: 'POST',                      	// HTTP method
+        headers: {
+          'Content-Type': 'application/json' 	// Specify JSON content
+        },
+        body: JSON.stringify(params)           	// Convert data to JSON string
+      })
+      .then(response => {
+        if (!response.ok) {
+          // Handle HTTP errors
+          draw_error_alert("Operation Error", [], [`Network response from ${url} was not ok: ${response.statusText}`], alerts_delay);
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then(data => {
+        s = JSON.stringify(data, null, 2);
+        if (data.status == 'success') {
+          // Handle application-level errors
+          if (on_success != null) {
+            on_success(data);
+          } else {
+            draw_success_alert("Operation Success", [], [`End-point ${url} returned successfully.`], alerts_delay);
+          }
+        } else {
+          if (on_error != null) {
+              on_error(data);
+          } else {
+            draw_error_alert("Operation Error", [], [`End-point ${url} returned an error: ${s}`], alerts_delay);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Fetch operation failed:', error); // Log detailed error for debugging
+
+        let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+        // Check if the error has a status and body
+        if (error.status && error.body) {
+            // If the response body is an object, stringify it for readability
+            const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+            errorMessage = `Error ${error.status}: ${responseBody}`;
+        } else if (error.message) {
+            // Fallback to the error message
+            errorMessage = `Error: ${error.message}`;
+        }
+
+        draw_error_alert("Operation Error", [], [`Fetch error on end-point ${url}: ${errorMessage}`], alerts_delay);
+      });
+    }
+
 		// draw pagination function
 		//
-		function drawPagination(o, current_page, total_pages, page_size=10)
+		function drawPagination(o, current_page, total_pages) //, page_size=10)
 		{
 			url = '?p='; // url to get the next page
 
@@ -993,10 +1053,12 @@ body.dark-mode {
 			}
 			u.append(i);
 
+			/*
+			 * DEPRECATED BY NOW
+			 *
 			// create a drodown list with different page sizes
 			li = $('<li><span style="margin-left:25px;"><i class="icon-caret-right"></i> <b>Page Size:</b></span> <select id="page-size" class="form-control" style="width: 100px;"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></li>');
 			u.append(li);
-
 			// set the current page size in the dropdown list
 			$('#page-size').val( page_size );
 
@@ -1006,6 +1068,7 @@ body.dark-mode {
 				page_size = $(this).val();
 				window.location.href = window.location.href.split('?')[0] + '?z=' + page_size;
 			});
+			*/
 		}
 	</script>
 
