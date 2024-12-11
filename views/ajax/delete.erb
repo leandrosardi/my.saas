@@ -9,7 +9,6 @@ begin
     raise "id is required" if desc['id'].nil?
     o = cls.where(:id=>desc['id'], :id_account=>@account.id).first
     raise "id not found" if o.nil?
-    desc['id_account'] = @account.id
     o.delete_time = now()
     o.save
     return_message['result'] = o.to_h

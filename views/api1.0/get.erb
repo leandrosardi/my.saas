@@ -2,18 +2,15 @@
 begin
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
-
     id = @body['id']
     raise "id is required" if id.nil?
     raise "id is not a guid" if id && !id.guid?
-
     o = nil
     if @account.sysowner?
         o = cls.where(:id => id, :delete_time => nil).first
     else
         o = cls.where(:id_account => @account.id, :id => id, :delete_time => nil).first
     end
-
     raise "#{object.to_s} not found" if o.nil?
     @return_message['result'] = o.to_h
 rescue Exception => e
