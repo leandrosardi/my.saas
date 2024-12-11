@@ -279,6 +279,8 @@ begin
         rescue
           # request.body.read has not a valid json syntax
         end
+        # get super-user
+        @su = BlackStack::MySaaS::Account.where(:api_key=>SU_API_KEY).first
         # rendered to convert markdown to html
         @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, highlight: true)
         # current logged-in user
