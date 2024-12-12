@@ -3,18 +3,12 @@
 @return_message = {}
 begin
 	id_profile = @body['id_profile']
+
 	ds = DB["
-		select l.id_profile, s.api_key, s.dashboard_node
-		from \"lease\" l
-		join \"subaccount\" s on s.id=l.id_subaccount
-		where l.delete_time is null -- the leased has not expired
-
-		--and l.id_subscription -- the client paid for the account
-
-		and s.dashboard_node is not null -- the subaccount has been assisgned to a node
-		and s.api_key is not null -- the subaccount signed up into the node
-
-		and l.id_profile='#{id_profile}'
+		select p.id as id_profile, s.api_key, s.dashboard_node
+		from \"profile\" p
+		join \"subaccount\" s on s.id=p.id_subaccount
+		where p.id='#{id_profile}'
 	"]
 
 	# if there is no subaccount assigned, then there is a mistake.
@@ -24,9 +18,11 @@ begin
 	elsif ds.count > 1
 		raise "Profile #{id_profile} is assigned to more than one subaccounts."
 	else
+		id_profile = ds.first[:id_profile]
 		dashboard_node = ds.first[:dashboard_node]
 		api_key = ds.first[:api_key]
 		@return_message = {
+			'id_profile' => id_profile,
 			'url' => dashboard_node,
 			'api_key' => api_key,
 		}
