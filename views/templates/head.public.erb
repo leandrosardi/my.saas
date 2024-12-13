@@ -538,64 +538,57 @@ theme = 'default'
 
 		// draw pagination function
 		//
-		function drawPagination(o, current_page, total_pages) //, page_size=10)
+		function drawPagination(o, current_page, total_pages, on_click_function) //, page_size=10)
 		{
-			url = '?p='; // url to get the next page
-
 			o.html("");
 			u = $("<ul></ul>");
 			o.append(u);
-
+			/*
 			if (current_page>1) {
-				li = $('<li><a href="'+url+(current_page-1).toString()+'">Prev</a></li>');
+				li = $('<li><a href="#">Prev</a></li>');
 			} else {
 				li = $('<li class="disabled"><a href="#">Prev</a></li>')
 			}
 			u.append(li);
+			*/
 
 			i=1
 			i_prev = 1
 			while (i<=total_pages) {
 				if (i==current_page) {
 					sClassActive="class='active'"
+					onClick=null
 				} else {
 					sClassActive=""
+					onClick=on_click_function
 				}
 				if ( i==1 || i==total_pages || (i>=current_page-2 && i<=current_page+2) ) {
 					if (i>i_prev+1) {
 						li = $('<li><span>...</span></li>')
 						u.append(li)
 					}
-					li = $('<li '+sClassActive+'><a href="'+url+i.toString()+'">'+i.toString()+'</a></li>')
+					li = $('<li '+sClassActive+'><a href="#" data-i="'+i+'">'+i.toString()+'</a></li>');
+					//if (onClick != null) {
+						$(li).find('a')[0].addEventListener('click', function(event) {
+							var p = $(this).data('i');
+							on_click_function(p);
+						});
+					//}
 					u.append(li)
 					i_prev=i
 				}
 				i=i+1
 			}
 
+			/*
 			if (current_page<total_pages) {
 				i = $('<li><a href="./'+url+(current_page+1).toString()+'">Next</a></li>');
 			} else {
 				i = $('<li class="disabled"><a href="#">Next</a></li>')
 			}
 			u.append(i);
-
-			/*
-			 * DEPRECATED BY NOW
-			 *
-			// create a drodown list with different page sizes
-			li = $('<li><span style="margin-left:25px;"><i class="icon-caret-right"></i> <b>Page Size:</b></span> <select id="page-size" class="form-control" style="width: 100px;"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></li>');
-			u.append(li);
-			// set the current page size in the dropdown list
-			$('#page-size').val( page_size );
-
-			// when the user changes the page size
-			// then reload the page with the new page size in the parameter z of the URL
-			$('#page-size').change(function() {
-				page_size = $(this).val();
-				window.location.href = window.location.href.split('?')[0] + '?z=' + page_size;
-			});
 			*/
+
 		}
 	</script>
 
