@@ -639,6 +639,14 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		}
 	}
 
+	// apply behaviour of all tr.clickeable elements
+	function enableClickeableRows() {
+		$('tr.clickeable').click(function() {
+			$('tr.clickeable').removeClass('selected');
+			$(this).addClass('selected');
+		});
+	}
+
 	// layout events: darkmode, collapse/expand panels, choose tab
 	$(document).ready(function() {
 		// apply select-all-on-focus behaviour

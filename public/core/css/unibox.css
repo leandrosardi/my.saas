@@ -69,7 +69,21 @@ table tbody tr.clickeable:hover td:last-child {
 }
 
 table tbody tr.clickeable:hover td {
-  background-color: rgb(245, 245, 245);
+  //background-color: rgb(70, 130, 180);
+  //color: #FFFFFF; /* White text for contrast */
+  background-color: rgb(102, 51, 153);
+  color: white;
+}
+
+table tbody tr.selected td {
+  //background-color: rgb(15, 76, 129);
+  //color: #FFFFFF; /* White text for contrast */
+  background-color: yellow;
+  color: black;
+}
+
+table tbody tr.selected td a {
+  color: black;
 }
 
 table tbody tr.selected td:last-child {
