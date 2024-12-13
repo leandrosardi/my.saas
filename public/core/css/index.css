@@ -85,6 +85,10 @@
       color: white;
     }
 
+    table tbody tr.clickeable:hover td a {
+      color: white;
+    }
+
     table tbody tr.selected td {
       //background-color: rgb(15, 76, 129);
       //color: #FFFFFF; /* White text for contrast */
@@ -95,7 +99,7 @@
     table tbody tr.selected td a {
       color: black;
     }
-    
+
     table tbody tr.selected td:last-child {
         border-right: 5px dashed red;
     }
