@@ -139,6 +139,7 @@ Use the library to show alerts of different types by calling:
 The `success_lines` parameter accepts an array of strings representing positive feedback messages.
 
 Example:
+
 ```javascript
 draw_success_alert('Success!', ['Task completed', 'All checks passed']);
 ```
@@ -148,6 +149,7 @@ draw_success_alert('Success!', ['Task completed', 'All checks passed']);
 The `error_lines` parameter accepts an array of strings representing error feedback messages.
 
 Example:
+
 ```javascript
 draw_error_alert('Error!', [], ['An error occurred', 'Retry required']);
 ```
@@ -157,6 +159,7 @@ draw_error_alert('Error!', [], ['An error occurred', 'Retry required']);
 The `remove_seconds` parameter defines how long (in seconds) the alert will stay visible before automatically disappearing. Set `-1` to disable auto-dismiss.
 
 Example:
+
 ```javascript
 draw_info_alert('Info!', ['This is a test message'], [], 5);
 ```
