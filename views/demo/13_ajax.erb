@@ -159,6 +159,7 @@ To use the `callx` library, pass an object containing the following parameters:
 - `on_error`: Callback function for error responses.
 
 Example:
+
 ```javascript
 callx({
     url: '/ajax/example.json',
@@ -177,6 +178,7 @@ callx({
 
 The `on_success` callback executes when the API returns a successful response (`status: 'success'`).
 Example:
+
 ```javascript
 callx({
     url: '/ajax/example.json',
@@ -190,6 +192,7 @@ callx({
 
 The `on_error` callback executes when the API returns an error or the request fails.
 Example:
+
 ```javascript
 callx({
     url: '/ajax/example.json',
@@ -203,6 +206,7 @@ callx({
 
 The library allows sequential AJAX requests by chaining `callx` calls inside `on_success` handlers.
 Example:
+
 ```javascript
 callx({
     url: '/ajax/first.json',

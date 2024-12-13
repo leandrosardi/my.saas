@@ -12,7 +12,7 @@ end
 # get extension
 e = BlackStack::Extensions::extensions.select { |e| e.name.downcase==@service.downcase && e.show_in_top_bar }.first
 if e.nil?
-	@service = nil 
+	@service = nil
 	e = nil
 end
 %>
@@ -37,7 +37,7 @@ end
 			<table width='100%'>
 				<tr>
 					<td width='48px'><a class="logo" href="/dashboard" title='Home'><img alt="<%=CS_HOME_WEBSITE%>_logo" src="<%=CS_HOME_FAVICON%>" width='96px'></a></td>
-					
+
 					<td id='services'>
 						<span style='color: White;font-family: Arial;font-size: 12px;'>
 							<%
@@ -49,7 +49,7 @@ end
 							<ul class="nav">
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-										<i class='icon-coffee'></i> <span id='service_name'><%=@service.to_s.capitalize.encode_html%> <i class="icon-chevron-down"></span></i>  
+										<i class='icon-coffee'></i> <span id='service_name'><%=@service.to_s.capitalize.encode_html%> <i class="icon-chevron-down"></span></i>
 									</a>
 									<ul class="dropdown-menu" style='width:250px;'>
 										<li><a href="/dashboard"><i class="icon-home"></i> Home</a></li>
@@ -78,7 +78,7 @@ end
 							<%
 							end # if BlackStack::Extensions::extensions.select { |e| e.show_in_top_bar == true && !e.services_section.nil? }.size > 0
 							%>
-						</span>					
+						</span>
 					</td>
 
 					<%
@@ -86,16 +86,16 @@ end
 						BlackStack::I2P::services_descriptor.select { |h| h[:show_in_top_bar] }.each { |h|
 						%>
 						<td align='left' style='text-align: left:' width='250px'>
-							<a href="/plans"> 
+							<a href="/plans">
 								<span>
 									<%
 									if h[:mode] == BlackStack::I2P::MODE_CREDITS
 									%>
-									<span id='credits' class='label label-blue'><%=account.credits(h[:code]).to_i.to_label%></span> <span style='color:white;'><%=h[:unit_name].to_s%></span> 
+									<span id='credits' class='label label-blue'><%=account.credits(h[:code]).to_i.to_label%></span> <span style='color:white;'><%=h[:unit_name].to_s%></span>
 									<%
 									elsif h[:mode] == BlackStack::I2P::MODE_AMOUNT
 									%>
-									<span id='amount' class='label label-blue'>$<%=account.balance(h[:code]).to_f.round(2).to_label%></span> <span style='color:white;'></span> 
+									<span id='amount' class='label label-blue'>$<%=account.balance(h[:code]).to_f.round(2).to_label%></span> <span style='color:white;'></span>
 									<%
 									end # if h[:mode] == BlackStack::I2P::MODE_AMOUNT
 									%>
@@ -107,7 +107,7 @@ end
 						}
 					end
 					%>
-					
+
 					<td align='right' style='text-align: right;' width='auto' >
 						<%
 						# Badge: SysOwner
@@ -132,7 +132,7 @@ end
 							end
 						end
 						%>
-	
+
 						<a href="mailto:<%=HELPDESK_EMAIL%>?subject=I Need Help" style='color:white;'>
 							<span>
 								<span class='badge badge-blue'><i class="icon-question"></i> <span id='email_support'>Email Support</span></span>
@@ -140,7 +140,7 @@ end
 						</a>
 					</td>
 
-					<td align='right' style='text-align: right:' width='54px'>			
+					<td align='right' style='text-align: right:' width='54px'>
 						<ul class="nav pull-right">
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle usermenu" data-toggle="dropdown">
@@ -152,7 +152,7 @@ end
 								<ul class="dropdown-menu">
 									<li class="nav-header">User Details</li>
 									<li><a><b>Email:</b> <%=user.email.encode_html%></a></li>
-									<li><a><b>Company:</b> <%=account.name.to_s.encode_html%></a></li>								
+									<li><a><b>Company:</b> <%=account.name.to_s.encode_html%></a></li>
 									<%
 									if !e.nil? # I am in a service
 										%>
@@ -167,7 +167,7 @@ end
 											<%
 										}
 									end
-									%>					
+									%>
 									<li class="divider"></li>
 									<li class="nav-header">Options</li>
 									<li>

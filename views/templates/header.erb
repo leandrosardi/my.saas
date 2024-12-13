@@ -305,7 +305,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	/**
 	* Fetch multiple user preferences via AJAX.
-	* 
+	*
 	* @param {Array} preferences - An array of preference objects, each containing:
 	*                              - name: The preference name (String)
 	*                              - default: The default value for the preference
@@ -350,7 +350,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	/**
 	* Set multiple user preferences via AJAX.
-	* 
+	*
 	* @param {Array} preferences - An array of preference objects, each containing:
 	*                              - name: The preference name (String)
 	*                              - default: The default value for the preference
@@ -395,7 +395,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			throw error; // Rethrow the error for the caller to handle
 		});
 	}
-	
+
 	// activate / deactivate dark-mode.
 	function setDarkMode(enable, set_preference=true) {
 		const body = document.body;setDarkMode
@@ -641,6 +641,9 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	// layout events: darkmode, collapse/expand panels, choose tab
 	$(document).ready(function() {
+		// apply select-all-on-focus behaviour
+		enableSelectAllTextOnFocus();
+
 		// initialize select-rows
 		selectRowsJs.init();
 
