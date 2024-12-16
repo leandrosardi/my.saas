@@ -1,0 +1,130 @@
+:root {
+  --color1: rgb(60, 180, 238);
+  --color2: rgb(190, 190, 190); //rgb(90, 210, 238);
+}
+
+div.reference-funnel {
+    position: relative;
+    border:5px solid rgb(225,225,225);
+    cursor: pointer;
+    border-radius: 15px;
+    margin:15px;
+    padding:5px;
+    padding-left: 15px;
+    height:350px;
+}
+
+div.reference-funnel.selected {
+  border: 5px solid var(--color1);
+  pointer-events: none;
+}
+
+div.reference-funnel.selected:hover {
+    border:5px solid var(--color2);
+}
+
+div.reference-funnel.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+div.reference-funnel:hover {
+    border:5px solid var(--color2);
+}
+
+div.reference-funnel.disabled::after {
+  content: 'soon';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--color1);
+  color: white;
+  border-radius: 15px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+select.subaccount {
+    border:5px solid rgb(225,225,225);
+    border-radius: 15px;
+    width:100%;
+    font-size:24px;
+    height:55px;'
+}
+
+select.subaccount:hover {
+    border:5px solid var(--color2);
+}
+
+select.subaccount:focus {
+    border:5px solid var(--color1);
+}
+
+div.big h1 {
+    font-weight:normal;
+}
+
+div.big div.tips {
+    margin-top: 20px;
+    margin-bottom: 60px;
+}
+
+div.big div.tips p {
+    font-size: 24px;
+    margin-left: 40px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+div.big div.tips p i.icon-ok {
+    color: rgb(120,190,120);
+}
+
+div.big div.tips p i.icon-time {
+    color: rgb(190,190,190);
+}
+
+div.big div.tips p span.badge {
+    background-color: var(--color1);
+    font-size:24px;
+    height:25px;
+    vertical-align:
+    middle;
+    padding-top:7px;'
+}
+
+div.big div.tips p b {
+    color: var(--color1);
+}
+
+div.big div.control-group label {
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+div.big div.control-group input {
+    border:5px solid rgb(225,225,225);
+    border-radius: 15px;
+    font-size: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 75%;
+}
+
+div.big div.control-group input:hover {
+    border:5px solid var(--color2);
+}
+
+div.big div.control-group input:focus {
+    border:5px solid var(--color1);
+}
+
+div.big div.control-group button {
+    font-size: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 15%;
+}
