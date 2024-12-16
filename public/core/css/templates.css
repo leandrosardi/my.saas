@@ -8,10 +8,9 @@ div.reference-funnel {
     border:5px solid rgb(225,225,225);
     cursor: pointer;
     border-radius: 15px;
-    margin:15px;
-    padding:5px;
+    padding:15px;
     padding-left: 15px;
-    height:350px;
+    height:615px;
 }
 
 div.reference-funnel.selected {
