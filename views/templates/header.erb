@@ -286,15 +286,23 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	    document.body.style.overflow = 'hidden';
 	  }
 
-	  close() {
-	    this.overlay.classList.remove('show');
-	    // Wait for animation to finish before hiding
-	    setTimeout(() => {
-	      this.overlay.classList.add('hidden');
-	      // Restore background scrolling
-	      document.body.style.overflow = '';
-	    }, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--transition-duration')) * 1000);
-	  }
+		close() {
+		  // Remove the 'show' class to start the closing animation
+		  this.overlay.classList.remove('show');
+
+		  // Wait for the animation to finish before hiding the overlay
+		  setTimeout(() => {
+		    this.overlay.classList.add('hidden');
+		    // Restore background scrolling
+		    document.body.style.overflow = '';
+
+		    // Optionally, set focus back to the element that opened the dialog
+		    if (this.triggerElement) {
+		      this.triggerElement.focus();
+		      this.triggerElement = null;
+		    }
+		  }, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--transition-duration')) * 1000);
+		}
 
 	  handleOverlayClick(e) {
 	    if (e.target === this.overlay) {
@@ -302,16 +310,15 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	    }
 	  }
 
-	  handleEscPress(e) {
-	    if (e.key === 'Escape' && this.overlay.classList.contains('show')) {
-	      this.close();
-	    } else if (e.key === 'Enter') {
-				if (e.target !== this.cancelButton && !this.cancelButton.contains(e.target)) {
-					this.actionButton.click();
-					customDialog.close();
-				}
-			}
-	  }
+		handleEscPress(e) {
+		  if (e.key === 'Escape') {
+		  	this.close();
+		  } else if (e.key === 'Enter') {
+		    if (e.target !== this.cancelButton && !this.cancelButton.contains(e.target)) {
+					if (this.overlay.classList.contains('show')) this.actionButton.click();
+		    }
+		  }
+		}
 	}
 
 	// Initialize the dialog

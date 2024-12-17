@@ -16,7 +16,7 @@
 }
 
 /*
- * Template cards for choose.
+ * Templates for choose.
  *
  */
 div.reference-funnel {
@@ -214,6 +214,15 @@ div.big div.control-group button {
    color: black;
    text-align: right;
    vertical-align: top;
+ }
+
+
+ body.dark-mode table.insights tr td.insight-value {
+   color: white;
+ }
+
+ body.dark-mode table.insights tr td.insight-rate {
+   color: white;
  }
 
 
