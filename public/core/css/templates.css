@@ -3,6 +3,10 @@
   --color2: rgb(190, 190, 190); //rgb(90, 210, 238);
 }
 
+/*
+ * Template cards for choose.
+ *
+ */
 div.reference-funnel {
     position: relative;
     border:5px solid rgb(225,225,225);
@@ -127,3 +131,127 @@ div.big div.control-group button {
     margin-top: 20px;
     width: 15%;
 }
+
+/*
+ * Report cards
+ *
+ */
+ /* Existing Styles */
+ span#from,
+ span#to,
+ span#total_rows {
+   font-weight: bold;
+ }
+
+ /*
+   Rule div
+ */
+ div.card {
+   border-top: 5px dashed yellow;
+ }
+
+ /*
+   Rule details (trigger, filter, action)
+ */
+ table.card-config {
+   width:100%;
+ }
+
+ table.card-config tr td:first-child {
+   width:75px;
+ }
+
+ table.card-config tr td {
+   vertical-align:top;
+   padding-bottom:10px;
+ }
+
+
+ /*
+   Rule stats
+ */
+
+ table.insights {
+   width: 100%;
+   border-collapse: collapse;
+ }
+
+ table.insights tr {
+   height: 25px;
+ }
+
+ table.insights tr td.insight-label {
+   padding: 5px;
+   font-size: 14px;
+   color: gray;
+   vertical-align: top;
+   padding-bottom: 15px;
+ }
+
+ table.insights tr td.insight-value {
+   padding: 5px;
+   font-size: 24px;
+   color: black;
+   text-align: right;
+   vertical-align: top;
+ }
+
+ table.insights tr td.insight-rate {
+   padding: 5px;
+   font-size: 16px;
+   color: black;
+   text-align: right;
+   vertical-align: top;
+ }
+
+
+ /*
+   Rule instance stats
+ */
+
+ div.card-instance-stats {
+   border-bottom: 1px dashed gray;
+   padding-bottom: 10px;
+   opacity: 0.25;
+ }
+
+ div.card-instance-stats:hover {
+   opacity: 1.0;
+ }
+
+ div.card-instance-stats div {
+   text-align: right;
+   margin:0;
+   padding:5px;
+   padding-right: 7px;
+   border-radius: 10px;
+ }
+
+ div.card-instance-stats div span {
+   font-size: 18px;
+ }
+
+ div.card-instance-stats div:first-child {
+   background-color: blue;
+   color: white;
+ }
+
+ div.card-instance-stats div:nth-child(2) {
+   background-color: green;
+   color: white;
+ }
+
+ div.card-instance-stats div:nth-child(3) {
+   background-color: gray;
+   color: white;
+ }
+
+ div.card-instance-stats div:nth-child(4) {
+   background-color: red;
+   color: white;
+ }
+
+ div.card-instance-stats div:last-child {
+   background-color: red;
+   color: white;
+ }
