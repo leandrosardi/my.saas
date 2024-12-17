@@ -213,7 +213,111 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	</div>
 </header>
 
+<!-- Dialog Overlay -->
+<div id="custom-dialog-overlay" class="dialog-overlay hidden">
+  <div class="dialog-container">
+    <div class="dialog-header">
+      <h2 class="dialog-title">Dialog Title</h2>
+      <button class="dialog-close-button" aria-label="Close Dialog">&times;</button>
+    </div>
+    <div class="dialog-content">
+      <p>Your dialog content goes here. This can include text, forms, images, etc.</p>
+    </div>
+    <div class="dialog-footer">
+      <button class="dialog-action-button">Confirm</button>
+      <button class="dialog-cancel-button">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
+	/*
+	 * Dialog Controls
+	 *
+	 */
+
+	// Dialog Manager
+	class CustomDialog {
+	  constructor() {
+	    this.overlay = document.getElementById('custom-dialog-overlay');
+	    this.closeButton = this.overlay.querySelector('.dialog-close-button');
+	    this.cancelButton = this.overlay.querySelector('.dialog-cancel-button');
+	    this.actionButton = this.overlay.querySelector('.dialog-action-button');
+
+	    // Bind methods
+	    this.open = this.open.bind(this);
+	    this.close = this.close.bind(this);
+	    this.handleOverlayClick = this.handleOverlayClick.bind(this);
+	    this.handleEscPress = this.handleEscPress.bind(this);
+
+	    // Event Listeners
+	    this.closeButton.addEventListener('click', this.close);
+	    this.cancelButton.addEventListener('click', this.close);
+	    this.overlay.addEventListener('click', this.handleOverlayClick);
+	    document.addEventListener('keydown', this.handleEscPress);
+	  }
+
+	  open(options = {}) {
+	    // Customize dialog content if needed
+	    const { title, content, onConfirm } = options;
+	    if (title) {
+	      this.overlay.querySelector('.dialog-title').textContent = title;
+	    }
+	    if (content) {
+	      this.overlay.querySelector('.dialog-content').innerHTML = content;
+	    }
+	    if (onConfirm && typeof onConfirm === 'function') {
+	      this.actionButton.onclick = () => {
+	        onConfirm();
+	        this.close();
+	      };
+	    } else {
+	      this.actionButton.onclick = this.close;
+	    }
+
+	    // Show the dialog
+	    this.overlay.classList.remove('hidden');
+	    // Trigger CSS animations
+	    setTimeout(() => {
+	      this.overlay.classList.add('show');
+	    }, 10); // Slight delay to allow for CSS transition
+
+	    // Prevent background scrolling
+	    document.body.style.overflow = 'hidden';
+	  }
+
+	  close() {
+	    this.overlay.classList.remove('show');
+	    // Wait for animation to finish before hiding
+	    setTimeout(() => {
+	      this.overlay.classList.add('hidden');
+	      // Restore background scrolling
+	      document.body.style.overflow = '';
+	    }, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--transition-duration')) * 1000);
+	  }
+
+	  handleOverlayClick(e) {
+	    if (e.target === this.overlay) {
+	      this.close();
+	    }
+	  }
+
+	  handleEscPress(e) {
+	    if (e.key === 'Escape' && this.overlay.classList.contains('show')) {
+	      this.close();
+	    } else if (e.key === 'Enter') {
+				if (e.target !== this.cancelButton && !this.cancelButton.contains(e.target)) {
+					this.actionButton.click();
+					customDialog.close();
+				}
+			}
+	  }
+	}
+
+	// Initialize the dialog
+	const customDialog = new CustomDialog();
+
+
 	// Modern JavaScript environments (Node.js and browsers) provide the crypto API for generating random values, which you can use to implement a UUID generator.
 	// The GUID generated using either method below is a UUID version 4, which matches PostgreSQL's default format for UUID types. It is a 128-bit value formatted as xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
 	function generateGUID() {

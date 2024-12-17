@@ -1,6 +1,18 @@
 :root {
   --color1: rgb(60, 180, 238);
   --color2: rgb(190, 190, 190); //rgb(90, 210, 238);
+
+  // dialog
+  --overlay-bg-light: rgba(0, 0, 0, 0.5);
+  --overlay-bg-dark: rgba(255, 255, 255, 0.1);
+  --text-color-light: #333333;
+  --text-color-dark: #f0f0f0;
+  --button-bg-light: #007bff;
+  --button-bg-dark: #1a73e8;
+  --button-text-color: #ffffff;
+  --dialog-border-radius: 8px;
+  --transition-duration: 0.3s;
+
 }
 
 /*
@@ -254,4 +266,152 @@ div.big div.control-group button {
  div.card-instance-stats div:last-child {
    background-color: red;
    color: white;
+ }
+
+
+
+ /*
+   Dialog
+ */
+
+ /* Hidden class to toggle visibility */
+ .hidden {
+   display: none;
+ }
+
+ /* Overlay Styles */
+ .dialog-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: var(--overlay-bg-light);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity var(--transition-duration) ease, visibility var(--transition-duration) ease;
+ }
+
+ body.dark-mode .dialog-overlay {
+   background-color: var(--overlay-bg-dark);
+ }
+
+ .dialog-overlay.show {
+   opacity: 1;
+   visibility: visible;
+ }
+
+ /* Dialog Container */
+ .dialog-container {
+   background-color: white;
+   color: var(--text-color-light);
+   width: 90%;
+   max-width: 500px;
+   border: 5px dashed red;
+   border-radius: var(--dialog-border-radius);
+   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+   transform: translateY(-50px);
+   transition: transform var(--transition-duration) ease;
+   opacity: 0.9;
+ }
+
+ body.dark-mode .dialog-container {
+   border: 5px dashed yellow;
+   box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+ }
+
+ .dialog-overlay.show .dialog-container {
+   transform: translateY(0);
+ }
+
+ body.dark-mode .dialog-container {
+   background-color: black;
+   color: var(--text-color-dark);
+ }
+
+ /* Header */
+ .dialog-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 16px;
+   border-bottom: 1px solid #e5e5e5;
+ }
+
+ body.dark-mode .dialog-header {
+   border-bottom: 1px solid #444;
+ }
+
+ .dialog-title {
+   margin: 0;
+   font-size: 1.25rem;
+ }
+
+ .dialog-close-button {
+   background: none;
+   border: none;
+   font-size: 1.5rem;
+   cursor: pointer;
+   color: inherit;
+ }
+
+ /* Content */
+ .dialog-content {
+   padding: 16px;
+   font-size: 1rem;
+ }
+
+ /* Footer */
+ .dialog-footer {
+   display: flex;
+   justify-content: flex-end;
+   padding: 16px;
+   border-top: 1px solid #e5e5e5;
+ }
+
+ body.dark-mode .dialog-footer {
+   border-top: 1px solid #444;
+ }
+
+ .dialog-action-button,
+ .dialog-cancel-button {
+   padding: 8px 16px;
+   margin-left: 8px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   font-size: 1rem;
+ }
+
+ .dialog-action-button {
+   background-color: var(--button-bg-light);
+   color: var(--button-text-color);
+ }
+
+ body.dark-mode .dialog-action-button {
+   background-color: var(--button-bg-dark);
+ }
+
+ .dialog-cancel-button {
+   background-color: #6c757d;
+   color: var(--button-text-color);
+ }
+
+ .dialog-action-button:hover {
+   opacity: 0.9;
+ }
+
+ .dialog-cancel-button:hover {
+   opacity: 0.9;
+ }
+
+ /* Responsive */
+ @media (max-width: 480px) {
+   .dialog-container {
+     width: 95%;
+   }
  }
