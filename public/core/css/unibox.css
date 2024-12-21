@@ -1175,12 +1175,12 @@ body.dark-mode #darkModeButton {
   padding-right: 10px !important;
   /* Optional: Scrollbar ke liye space */
 }
-
+/*
 .user-item:hover,
 .user-item.active {
   background-color: #e6f7ff;
 }
-
+*/
 .user-item {
   display: flex;
   align-items: center;
