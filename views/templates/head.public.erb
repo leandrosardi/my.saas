@@ -521,20 +521,23 @@ theme = 'default'
         }
       })
       .catch(error => {
-        console.error('Fetch operation failed:', error); // Log detailed error for debugging
-
+				console.error('Fetch operation failed:', error); // Log detailed error for debugging
         let errorMessage = 'An unexpected error occurred. Please try again later.';
 
         // Check if the error has a status and body
         if (error.status && error.body) {
             // If the response body is an object, stringify it for readability
-            const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
-            errorMessage = `Error ${error.status}: ${responseBody}`;
+						try {
+							const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+	            errorMessage = `Error ${error.status}: ${responseBody}`;
+						} catch (e) {
+						  errorMessage = 'Could not parse error.body';
+						}
         } else if (error.message) {
             // Fallback to the error message
             errorMessage = `Error: ${error.message}`;
-        }
-
+				}
+				hideWait();
         draw_error_alert("Operation Error", [], [`Fetch error on end-point ${url}: ${errorMessage}`], alerts_delay);
       });
     }
