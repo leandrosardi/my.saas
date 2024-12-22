@@ -1,0 +1,26 @@
+<%
+return_message = {}
+return_message['status'] = 'success'
+begin
+    max = 100
+    object = params[:object]
+    cls = BlackStack::API.classes[object.to_sym]
+    ids = @body['ids']
+
+    raise "ids is required" if ids.nil?
+    raise "ids must be an array of GUIDs" unless ids.is_a?(Array) && ids.all? { |id| id.is_a?(String) }
+    raise "ids cannot contains more than #{max} ids" if ids.size > max
+
+    noids = []
+    ids.each { |id| noids << id if !id.guid? }
+    raise "ids #{noids.join(", ")} are not a guids" if noids.size > 0
+
+    a = cls.where(:id_account => @account.id, :id => ids, :delete_time => nil).all
+    raise "no objects found" if a.size == 0
+    raise "not all objects found" if a.size < ids.size
+    return_message['result'] = a.map { |o| o.to_h }
+rescue Exception => e
+    return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return return_message.to_json
+%>

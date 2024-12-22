@@ -1,0 +1,9 @@
+<%
+return_message = {}
+return_message[:status] = 'success'
+return_message[:login] = @login.to_hash
+return_message[:user] = @user.to_hash
+return_message[:account] = @account.to_hash
+return_message[:value] = ''
+return return_message.to_json
+%>

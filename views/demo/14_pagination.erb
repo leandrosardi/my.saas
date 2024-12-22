@@ -1,0 +1,166 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+                <li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Pagination</h2>
+
+								<div id='pagination' name='pagination' class='pagination'>
+									<!-- pagination component will be rendered here -->
+								</div>
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **pagination.min.js** library is a lightweight JavaScript tool designed to create and manage pagination controls in web applications.
+
+It dynamically generates navigable page links, including \"Prev\" and \"Next\" buttons, along with active and disabled states.
+
+The library supports ellipsis for a cleaner UI when dealing with numerous pages, focusing on simplicity and flexibility.
+
+Developers can integrate it with minimal effort to paginate large datasets effectively.
+
+Additionally, it can be adapted for other use cases like navigating through reminders or any structured list.
+
+#### 1. Define a Parent Element
+
+To use `pagination.min.js`, start by defining a container element in your HTML where the pagination control will be rendered. This element acts as the parent container for the dynamically generated pagination UI.
+
+```html
+<div id=\"pagination-container\" class=\"pagination\"></div>
+```
+
+#### 2. Draw a Pagination Control
+
+Invoke the `drawPagination` function within a JavaScript script block or external script. Pass the parent element, the current page number, and the total number of pages (or reminders) to generate the pagination.
+
+```javascript
+$(document).ready(function() {
+    let currentPage = 1; // The current page number
+    let totalReminders = 100; // Total number of reminders
+    drawPagination($(\"#pagination-container\"), currentPage, totalReminders);
+});
+```
+
+The function will dynamically populate the `pagination-container` with navigation controls for browsing through the reminders.
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		let page_number = 2;
+		let page_count = 50;
+		drawPagination($(".pagination"), page_number, page_count);
+	});
+</script>

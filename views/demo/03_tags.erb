@@ -1,0 +1,475 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Tags</h2>
+
+								<p><b>tags.min.js</b> is a JavaScript library that enables dynamic management of tags within web applications.</p>
+								<br/>
+
+								<h4>Single Tag Selection List</h4>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<p>Good if user has to pick one tag only.</p>
+										<p>Click it to expand the dropdown list.</p>
+		                <div class='tags' id='tag1' name='tag1' data-id="tag1">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+									<div class='span6'>
+										<p>Open the dropdown list manually before click on this button, band it will closed by code when you close this popup.</p>
+										<button class='btn btn-blue' onclick='tagsJs.collapse($("#tag1"));'>Close DropDown List by Code</button>
+										</br></br>
+										<button class='btn btn-blue' onclick='tagsJs.add_tag($("#tag1"), {
+											id: "4",
+											name: "Tag4",
+											color: "orange"
+										});'>Add Tag4</button>
+										<button class='btn btn-blue' onclick='tagsJs.set_text($("#tag1"), "new button text");'>Change Button Text</button>
+										</br></br>
+										<button class='btn btn-blue' onclick='tagsJs.set_tag_opacity($("#tag1"), "1", 0.5); alert("Open the dropdown list and see the tag1.")'>Change Opacity Of Tag1</button>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Event <code>on_expand</code></h4>
+										<p>This will fire a popup when you expand the dropdown list.</p>
+		                <div class='tags' id='tag2' name='tag2' data-id="tag2">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Event <code>on_click_tag</code></h4>
+										<p>Click it to expand the dropdown list.</p>
+		                <div class='tags' id='tag3' name='tag3' data-id="tag3">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Event <code>on_create_tag</code></h4>
+										<p>This will fire a popup when you expand the dropdown list.</p>
+		                <div class='tags' id='tag4' name='tag4' data-id="tag4">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+								<br/>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<h4>Events <code>on_select_tag</code> and <code>on_unselect_tag</code></h4>
+										<p>This will fire a popup when you expand the dropdown list.</p>
+		                <div class='tags' id='tag5' name='tag5' data-id="tag5">
+		                  <!-- call tagsJs.draw -->
+		                </div>
+									</div>
+								</section>
+
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render('
+**tags.min.js** is a JavaScript library that enables dynamic management of tags within web applications.
+
+It allows users to add, remove, and select tags seamlessly, enhancing user interaction and data organization.
+
+With customizable options and event callbacks, it simplifies the implementation of robust tagging systems.
+
+#### 1. Define a Parent Element
+
+A **parent element** is a `div` where the tag control will be rendered.
+
+```html
+<div class="tags" data-id="tag1">
+	<!-- call tagsJs.draw -->
+</div>
+```
+
+#### 2. Draw the Tag Control
+
+```javascript
+var parent1 = $("div.tags[data-id="tag1"]");
+
+tagsJs.draw(parent1, {
+	text: "3 tags will be added here by code",
+	allow_creation: true,
+	allow_selection: true
+});
+```
+
+**Notes:**
+
+- Use the `allow_creation` parameter to draw an input box and and **Add** button into the control.
+
+- Use the `allow_selection` parameter to draw a check-box with each tag that you will add further.
+
+#### 3. Add Tags by Code
+
+```javascript
+tagsJs.add_tag(parent1, {
+  // id is mandatory
+  id: "3",
+  // name is mandatory
+  name: "Tag3",
+  // checked is mandatory if `allow_selection` is activated
+  checked: false,
+  // color is optional - default: white
+  color: "rgb(255,0,0)"
+});
+```
+
+#### 4. Change Caption Dynamically
+
+Use JavaScript to change the caption of the dropdown menu:
+
+```javascript
+tagsJs.set_text(parent1, "3 tags have been added here by code");
+```
+
+#### 5. Change the Opacity of a Tag
+
+Use JavaScript to change the opacity of a tag dynamically:
+
+```javascript
+tagsJs.set_tag_opacity(parent1, "2", 0.5);
+```
+
+#### 6. Catch `on_expand` Event
+
+The event `on_expand` is raised when the user opens the dropdown list.
+
+Adding a callback function to the `on_expand` event is useful when you want to load the list of tags with AJAX.
+
+Loading a the list of tags dynamically, when the dropdown is expaned, is mandatory if your screen is showing a large number of drop-down lists.
+
+```javascript
+var parent1 = $("div.tags[data-id="tag1"]");
+
+tagsJs.draw(parent1, {
+	text: "3 tags will be added here by code",
+	...
+	on_expand: function() {
+		console.log("on_expand parent1");
+		// Add your AJAX code here to load tags dynamically.
+	},
+});
+```
+
+#### 7. Catch `on_create_tag` Event
+
+The event `on_create_tag` is raised when the user clicks on the `Add` button.
+
+Adding a callback function to the `on_create_tag` event is useful when you want to call an AJAX end-point for registering the new tag in your database.
+
+```javascript
+tagsJs.draw(parent1, {
+	text: "3 tags will be added here by code",
+	...
+	on_create_tag: function(s) {
+		console.log("on_create_tag parent1");
+
+		// generate a GUID
+		new_id = generateGUID();
+
+		// create the temporary tag
+		tagsJs.add_tag(parent1, {
+			id: new_id,
+			name: s,
+			color: "gray",
+			checked: true
+		});
+
+		// set the tag opacity in 0.5 to the temporary tag, while AJAX registering
+		tagsJs.set_tag_opacity(parent1, new_id, 0.5);
+
+		// do the AJAX call
+		$.ajax({
+				url: "<your ajax end point here>",
+				type: "POST",
+				data: {
+						id: new_id,
+						value: s,
+				},
+				success: function(data) {
+						json = JSON.parse(data);
+						if (json.status != "success") {
+							tagsJs.set_tag_opacity(parent1, new_id, 1);
+						} else {
+							console.log("AJAX Error: " + json.status);
+							// if an error happened, remove the tag
+							tagsJs.remove_tag(parent1, s);
+						}
+				},
+				error: function(xhr, status, error) {
+						console.error("AJAX Error:", status, error);
+						// if an error happened, remove the tag
+						tagsJs.remove_tag(parent1, s);
+				}
+		});
+	},
+});
+```
+
+#### 8. Catch `on_click_tag` Event
+
+The event `on_click_tag` is raised when the user clicks on a tag.
+
+Adding a callback function to the `on_click_tag` event is useful when you are using the **tags** component for single selection (with no checkboxes - `allow_selection: false`).
+
+Adding a callback function to the `on_click_tag` event is useful when you want to call an AJAX end-point for registering the tag selection.
+
+```javascript
+tagsJs.add_tag(parent1, {
+	id: "1",
+	name: "Tag1",
+	...
+	on_click_tag: function() {
+		console.log("on_click_tag: 1");
+		tagsJs.collapse(parent1);
+	}
+});
+```
+
+#### 9. Catch `on_select_tag` Event
+
+The event `on_select_tag` is raised when the user clicks on a tag.
+
+Adding a callback function to the `on_select_tag` event is useful when you are using the **tags** component for multiple selection (with checkboxes - `allow_selection: true`).
+
+Adding a callback function to the `on_select_tag` event is useful when you want to call an AJAX end-point for registering the tag selection.
+
+```javascript
+tagsJs.add_tag(parent1, {
+	id: "1",
+	name: "Tag1",
+	...
+	on_select_tag: function() {
+		console.log("on_select_tag: 1");
+		tagsJs.check_tag(parent1, "1");
+	}
+});
+```
+
+#### 10. Catch `on_unselect_tag` Event
+
+The event `on_select_tag` is raised when the user clicks on a tag.
+
+Adding a callback function to the `on_select_tag` event is useful when you are using the **tags** component for multiple selection (with checkboxes - `allow_selection: true`).
+
+Adding a callback function to the `on_select_tag` event is useful when you want to call an AJAX end-point for registering the tag deselection.
+
+```javascript
+tagsJs.add_tag(parent1, {
+	id: "1",
+	name: "Tag1",
+	...
+	on_unselect_tag: function() {
+		console.log("on_unselect_tag: 1");
+		tagsJs.uncheck_tag(parent1, "1");
+	}
+});
+```
+
+#### 11. Other Methods
+
+- `tagsJs.collapse(parent1);`
+- `tagsJs.check_tag(parent1, "1");`
+- `tagsJs.uncheck_tag(parent1, "1");`
+
+
+
+----
+')%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+$(document).ready(function() {
+  var parent1 = $(`div.tags[data-id="tag1"]`);
+	var parent2 = $(`div.tags[data-id="tag2"]`);
+	var parent3 = $(`div.tags[data-id="tag3"]`);
+
+	// tag1
+  tagsJs.draw(parent1, {
+    text: '3 tags will be added here by code'
+  });
+
+  tagsJs.add_tag(parent1, {
+    id: '1',
+    name: 'Tag1',
+    color: 'blue',
+    checked: true,
+  });
+
+  tagsJs.add_tag(parent1, {
+    id: '2',
+    name: 'Tag2',
+    color: '#00dd00',
+    checked: false
+  });
+
+  tagsJs.add_tag(parent1, {
+    id: '3',
+    name: 'Tag3',
+    //color: 'rgb(255,0,0)',
+    checked: false
+  });
+
+	// tag2
+  tagsJs.draw(parent2, {
+    text: 'Alert when you open this list.',
+		on_expand: function() {
+			alert('You opened the dropdown list.');
+		}
+  });
+
+  tagsJs.add_tag(parent2, {
+    id: '1',
+    name: 'Tag1',
+    color: 'blue',
+    checked: true,
+  });
+
+  tagsJs.add_tag(parent2, {
+    id: '2',
+    name: 'Tag2',
+    color: '#00dd00',
+    checked: false
+  });
+
+  tagsJs.add_tag(parent2, {
+    id: '3',
+    name: 'Tag3',
+    //color: 'rgb(255,0,0)',
+    checked: false
+  });
+
+});
+</script>

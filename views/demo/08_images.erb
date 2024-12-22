@@ -1,0 +1,212 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Images</h2>
+
+									<section class="row-fluid">
+										<div id='myImages1' name='myImages1' data-id="myImages1" class="span6">
+			                <!-- add images here using imagesJs -->
+			                <!-- attribute data-id is required if you manage many different lists of images -->
+			              </div>
+
+										<div class='span6'>
+											<p><b>Hint:</b> Click on one picture to maximize it.</p>
+											<br/>
+											<br/>
+											<pre>
+$(document).ready(function() {
+	var parent = $('#myImages1');
+	imagesJs.draw(parent, {
+	  urls: [
+	    'https://...',
+			...
+	  ]
+	});
+}); // end of document.ready
+											</pre>
+										</div>
+
+									</section>
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **images.min.js** library is a lightweight tool for managing image series with interactive features like viewing, navigation, and maximizing images.
+
+It allows developers to create dynamic image carousels, supporting functionalities such as navigating through images, displaying metadata, and enhancing the user experience with modals for viewing images in full-screen mode.
+
+####1. Define a Parent Element
+
+Define a parent element where the images will be rendered. Ensure the element includes a `data-id` attribute for proper identification:
+
+```html
+<div id=\"myImages1\" data-id=\"myImages1\"></div>
+```
+
+####2. Draw An Image Series
+
+Use the `imagesJs.draw` function to display a series of images. Provide an array of URLs to populate the image series dynamically:
+
+```javascript
+var parent = $('#myImages1');
+imagesJs.draw(parent, {
+    urls: [
+        'https://example.com/image1.jpg',
+        'https://example.com/image2.jpg',
+        'https://example.com/image3.jpg'
+    ]
+});
+```
+
+This will render the images in the specified parent element.
+
+####3. Maximize an Image
+
+Clicking on an image triggers the maximization functionality. The `images.min.js` library automatically creates a modal for viewing images in full screen. Additional controls such as \"Next,\" \"Previous,\" and \"Close\" buttons are included for navigation:
+
+```javascript
+$(\".screenshot\").click(function() {
+    $(\"#screenshot_modal\").show(); // Open modal on image click
+});
+```
+
+Keyboard shortcuts:
+- **Escape:** Close the modal
+- **Left Arrow:** View the previous image
+- **Right Arrow:** View the next image
+
+The modal also updates the image index (`#number`) and total count (`#total`) dynamically.
+
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+  $(document).ready(function() {
+      var parent = $('#myImages1');
+      imagesJs.draw(parent, {
+        urls: [
+					'/demo/images/image1.jpg',
+					'/demo/images/image2.jpg',
+					'/demo/images/image3.jpg',
+					'/demo/images/image4.jpg',
+					'/demo/images/image5.jpg',
+					'/demo/images/image6.jpg',
+					'/demo/images/image7.jpg',
+					'/demo/images/image8.jpg',
+					'/demo/images/image9.jpg',
+        ]
+      });
+  }); // end of document.ready
+</script>

@@ -1,0 +1,167 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Waiting</h2>
+
+                <button id='waiting' name='waiting' class='btn btn-large btn-blue'>Click to Activate Waiting GIF for 5 Seconds</button>
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **waiting.min.js** library provides a simple way to show and hide waiting indicators (e.g., loading GIFs) in a web application.
+
+It offers two core functions: `showWait` to display the waiting overlay with an optional caption and `hideWait` to hide it.
+
+This library is particularly useful for indicating background processing or loading states. Developers can integrate it seamlessly into their UI to improve user experience during delays.
+
+With minimal code, you can create visually appealing and functional waiting indicators.
+
+#### 1. Activate Waiting
+
+To activate the waiting indicator, use the `showWait` function. You can pass an optional string parameter to display a caption.
+
+```javascript
+// Show the waiting indicator with a custom message
+showWait('Please wait while the process completes...');
+```
+
+In your HTML, ensure that the element with the `id=\"wait\"` is styled and ready to display the waiting state.
+
+#### 2. Deactivate Waiting
+
+To deactivate the waiting indicator, use the `hideWait` function. This function will hide the `#wait` element from the user's view.
+
+```javascript
+// Hide the waiting indicator
+hideWait();
+```
+
+You can integrate these functions with events, such as button clicks or AJAX calls, to dynamically control the waiting indicator.
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+$(document).ready(function() {
+	$("#waiting").click(function() {
+		// show ajax wait
+		showWait('This Waiting GIF will dissapear in 5 seconds!');
+
+		setTimeout(function() {
+			hideWait();
+		}, 5000);
+	});
+});
+</script>

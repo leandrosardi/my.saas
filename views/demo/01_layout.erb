@@ -1,0 +1,424 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+                <li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Layout</h2>
+
+                <h3>URL Parameters</h3>
+                <section class='row-fluid'>
+                  <p><a href='http://127.0.0.1:3000/demo/01_layout?dark=yes'>Example: Setting dark-mode dynamically with <code>?dark=yes</code>.</a></p>
+                  <p><a href='http://127.0.0.1:3000/demo/01_layout?tab=tab2'>Example: Choosing the "Other Tab" tab with <code>?tab=tab2</code>.</a></p>
+                  <p><a href='http://127.0.0.1:3000/demo/01_layout?pool1=collapsed'>Example: Collapsing first panel with <code>?pool1=collapsed</code>.</a></p>
+                </section>
+
+                <h3>Dark Mode</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-black' onclick='setDarkMode(true);'>Set Dark-Mode ON</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-gray' onclick='setDarkMode(false);'>Set Dark-Mode OFF</button>
+                  </div>
+                </section>
+
+                <h3>Tabs</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='chooseTab("tab1");'>Choose "Documentation" Tab</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='chooseTab("tab2");'>Choose the "Other Tab"</button>
+                  </div>
+                </section>
+
+                <h3>Panels</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='togglePanel("pool1");'>Toggle Panel 1</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='togglePanel("pool3");'>Toggle Panel 3</button>
+                  </div>
+                </section>
+                <br/>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='closePanel("pool1");'>Close Panel 1</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='closePanel("pool3");'>Close Panel 3</button>
+                  </div>
+                </section>
+                <br/>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='openPanel("pool1");'>Open Panel 1</button>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-normal btn-blue' onclick='openPanel("pool3");'>Open Panel 3</button>
+                  </div>
+                </section>
+
+                <h3>Divs x 2</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    Panel 1
+                  </div>
+                  <div class='span6'>
+                    Panel 2
+                  </div>
+                </section>
+
+                <h3>Divs x 3</h3>
+                <section class='row-fluid'>
+                  <div class='span4'>
+                    Panel 1
+                  </div>
+                  <div class='span4'>
+                    Panel 2
+                  </div>
+                  <div class='span4'>
+                    Panel 3
+                  </div>
+                </section>
+
+                <h3>Boxes</h3>
+                <section class='row-fluid'>
+                  <div class='span6 box'>
+                    Box 1
+                  </div>
+                  <div class='span6 box'>
+                    Box 2
+                  </div>
+                </section>
+
+                <h3>Buttons</h3>
+                <section class='row-fluid'>
+                  <div class='span6'>
+                    <button class='btn btn-large'>Large Button</button><br/>
+                    <br/>
+                    <button class='btn btn-normal'>Normal Button</button><br/>
+                    <br/>
+                    <button class='btn btn-small'>Small Button</button><br/>
+                  </div>
+                  <div class='span6'>
+                    <button class='btn btn-blue'>Blue Button</button><br/>
+                    <br/>
+                    <button class='btn btn-red'>Red Button</button><br/>
+                    <br/>
+                    <button class='btn btn-green'>Green Button</button><br/>
+                  </div>
+                </section>
+
+              </div>
+            </section>
+          </div>
+
+
+
+
+
+
+
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                      <button class="tab-button" data-tab="tab2">Other Tab</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **layout.js** is a JavaScript library designed for creating responsive dashboard layouts with either 2 or 3 vertical panels.
+
+These panels, also known as \"pools,\" can dynamically adjust their widths and visibility based on the screen size and user preferences.
+
+The library also includes features for user preference management, dark mode toggling, and panel interactions such as collapsing or expanding.
+
+#### 1. How to Create a 2-Panel Screen
+
+To create a 2-panel screen, follow these steps:
+
+1. Add two `<section>` elements with the IDs `pool2` and `pool3` inside your HTML structure.
+2. Each pool should include a header with a title and buttons for maximizing, minimizing, or toggling visibility.
+3. Example:
+
+```html
+<section id=\"pool2\" name=\"pool2\" class=\"col-6 panel responsive-height-1\">
+  <div id=\"pool2_header\" name=\"pool2_header\" class=\"panel-header\">
+    <div class=\"header-info\">
+      <span class=\"user-name\">Pool 2 Title</span>
+    </div>
+    <button class=\"close-btn\" onclick=\"closePanel('pool2')\">
+      <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>
+    </button>
+    <button id=\"arrow-right-2\" class=\"arrow\" onclick=\"togglePanel('pool3', 'arrow-right-2')\">
+      <i class=\"fa-solid fa-arrow-right\"></i>
+    </button>
+  </div>
+  <div id=\"list_div\" class=\"panel-content\">
+  <section class=\"list\">
+  <div class=\"chat-messages\">
+    <!-- Content for Pool 2 -->
+  </div>
+  </section>
+  </div>
+</section>
+
+<section id=\"pool3\" name=\"pool3\" class=\"col-6 panel responsive-height-1\">
+  <div id=\"pool3_header\" name=\"pool3_header\" class=\"panel-header\">
+    <div class=\"header-info\">
+      <span class=\"user-name\">Pool 3 Title</span>
+    </div>
+    <button class=\"close-btn\" onclick=\"closePanel('pool3')\">
+      <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>
+    </button>
+    <button id=\"arrow-left-2\" class=\"arrow-left\" onclick=\"togglePanel('pool2', 'arrow-left-2')\">
+      <i class=\"fa-solid fa-arrow-left\"></i>
+    </button>
+  </div>
+  <div id=\"list_div\" class=\"panel-content\">
+  <section class=\"list\">
+  <div class=\"chat-messages\">
+    <!-- Content for Pool 3 -->
+  </div>
+  </section>
+  </div>
+</section>
+```
+
+#### 2. How to Create a 3-Panel Screen
+
+For a 3-panel screen:
+
+1. Add three `<section>` elements with IDs `pool1`, `pool2`, and `pool3`.
+2. Include headers for each pool with titles and buttons to maximize, minimize, or toggle panels.
+3. Example:
+
+```html
+<section id=\"pool1\" name=\"pool1\" class=\"col-6 panel responsive-height-1\">
+  <div id=\"pool1_header\" name=\"pool1_header\" class=\"panel-header\">
+    <h2>Pool 1 Title</h2>
+    <button class=\"close-btn\" onclick=\"closePanel('pool1')\">
+      <i class=\"fa fa-times-circle-o\" aria-hidden=\"true\"></i>
+    </button>
+    <button id=\"arrow-right-1\" class=\"arrow\" onclick=\"togglePanel('pool2', 'arrow-right-1')\">
+      <i class=\"fa-solid fa-arrow-right\"></i>
+    </button>
+  </div>
+  <div id=\"list_div\" class=\"panel-content\">
+  <section class=\"list\">
+  <div class=\"chat-messages\">
+    <!-- Content for Pool 1 -->
+  </div>
+  </section>
+  </div>
+</section>
+```
+
+Repeat similar structures for `pool2` and `pool3`.
+
+#### 3. URL Parameters
+
+- `dark`: Toggles dark mode (`yes` for enabled, `no` for disabled).
+- `tab`: Specifies the active tab by its ID.
+- `pool1`, `pool2`, `pool3`: Define the state of each pool (`expanded` or `collapsed`).
+
+Example: `?dark=yes&tab=2&pool1=expanded&pool2=collapsed&pool3=expanded`
+
+#### 4. Function: `setDarkMode`
+
+##### Description:
+Toggles dark mode and optionally updates user preferences.
+
+##### Syntax:
+```javascript
+setDarkMode(enable, set_preference=true);
+```
+
+- `enable`: `true` to enable dark mode, `false` to disable it.
+- `set_preference`: Whether to save the preference (`true` by default).
+
+#### 5. Function: `chooseTab`
+
+##### Description:
+Selects a tab and updates the content area.
+
+##### Syntax:
+```javascript
+chooseTab(tabId, set_preference=true);
+```
+
+- `tabId`: The ID of the tab to activate.
+- `set_preference`: Whether to save the preference.
+
+#### 6. Function: `closePanel`
+
+##### Description:
+Closes (hides) a panel and adjusts the layout.
+
+##### Syntax:
+```javascript
+closePanel(panelId, set_preference=true);
+```
+
+- `panelId`: ID of the panel to close.
+- `set_preference`: Whether to save the preference.
+
+#### 7. Function: `openPanel`
+
+##### Description:
+Opens (shows) a panel and adjusts the layout.
+
+##### Syntax:
+```javascript
+openPanel(panelId, set_preference=true);
+```
+
+- `panelId`: ID of the panel to open.
+- `set_preference`: Whether to save the preference.
+
+#### 8. Function: `togglePanel`
+
+##### Description:
+Toggles the visibility of a panel and adjusts the layout.
+
+##### Syntax:
+```javascript
+togglePanel(panelId, arrowID);
+```
+
+- `panelId`: ID of the panel to toggle.
+- `arrowID`: ID of the arrow button controlling the panel.
+
+#### 9. Save User Preferences with `setPreference`
+
+##### Example:
+```javascript
+setPreference(\"dark\", \"yes\"), \"yes\"); // Save dark mode preference
+setPreference(\"pool1\", \"expanded\"), \"collapsed\"); // Save panel state
+```
+
+#### 10. Load User Preferences with `getPreference`
+
+##### Example:
+```javascript
+getPreference(\"dark\").then(value => {
+  if (value === \"yes\") {
+    setDarkMode(true, false);
+  }
+});
+```
+
+
+
+
+
+
+---
+")%>
+                      </div>
+                      <div id="tab2" class="tab-content">
+                        <p>Content for any other tab that you want to place here.</p>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>

@@ -1,0 +1,18 @@
+<%
+return_message = {}
+return_message['status'] = 'success'
+begin
+    name = @body['name']
+
+    # Always you get or set a preferece, you must to pass a default value for such a preference.
+    # This is required for the situation that you try to get a preference that has not been setted yet.
+    default = @body['default']
+    raise "name must be a String" unless name.is_a?(String)
+    raise "default cannot be nil" if default.nil?
+
+    return_message[:value] = @login.user.preference(name, default, nil)
+rescue => e
+    return_message[:status] = @body['backtrace'] ? e.to_console : e.message
+end
+return return_message.to_json
+%>

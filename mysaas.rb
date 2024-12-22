@@ -21,7 +21,6 @@ require 'adspower-client'
 #require 'workmesh'
 #require_relative '../../workmesh/lib/workmesh.rb'
 
-require 'openai' #, '~>6.3.1'
 require 'my-dropbox-api'
 #require_relative '../../my-dropbox-api/lib/my-dropbox-api.rb'
 
@@ -46,6 +45,7 @@ require 'sisimai'
 require 'down'
 require 'securerandom'
 require 'highline'
+require 'redcarpet'
 
 require 'lib/controllers'
 require 'lib/emails'
@@ -67,7 +67,7 @@ PERIOD_FILTER_VALUES = [
 ]
 
 # Default login and signup screens.
-# 
+#
 DEFAULT_LOGIN = '/login'
 DEFAULT_SIGNUP = '/leads/signup'
 
@@ -85,7 +85,7 @@ end
 
 # receive a datetime parameter `dt`
 # return a string like ''1 day ago', '2 hours ago', '3 minutes ago', '4 seconds ago'.
-# 
+#
 # this function returns a string that describe difference between two times, in a human-friendy way.
 # e.g. "3 hours", "2 days"
 def htimediff(from, to=nil)
@@ -122,17 +122,17 @@ def real_user
     uid = login.user.id
     BlackStack::MySaaS::User.where(:id=>uid).first
 end # def real_user
-  
+
 # Helper: create file ./.maintenance if you want to disable internal pages in the member area
 def unavailable?
     f = File.exist?(File.expand_path(__FILE__).gsub('/mysaas.rb', '') + '/.maintenance')
 end
-  
+
 # Helper: create file ./.notrial if you want to switch to another landing
 def notrial?
     f = File.exist?(File.expand_path(__FILE__).gsub('/app.rb', '') + '/.notrial')
 end
-  
+
 # Helper: return true if there is a user logged into
 def logged_in?
     !session["login.id"].nil?
@@ -148,9 +148,9 @@ class String
         a.each { |m|
             x = x.gsub(m, "<span style='background-color:yellow;'>#{m}</span>")
         }
-      end # if 
+      end # if
       return x
-    end # def 
+    end # def
 
     # remove empty lines and strip spaces
     # reference: https://stackoverflow.com/questions/7339292/ruby-remove-empty-lines-from-string
@@ -165,12 +165,12 @@ class String
         self =~ /^http(s)?:\/\/[a-z0-9\-\._~:\/\?#\[\]@!\$&'\(\)\*\+,;=]+$/i
     end
 
-    # 
+    #
     def valid_filename?
         self =~ /^file\:\/\//
     end
 
-    # 
+    #
     def valid_domain?
         self =~ /^(http(s)?\:\/\/)?([a-z0-9\-\._]+\.)+[a-z]+(\/)?$/
     end

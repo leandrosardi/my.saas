@@ -1,0 +1,69 @@
+<%
+# get parameters
+err = params[:err]
+msg = params[:msg]
+%>
+
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
+
+<!-- Message and error alerts -->
+<%= ERB.new(File.read(File.expand_path("views/templates.classic/head.erb"))).result(binding) %>
+<!-- / Message and error alerts -->
+
+<body class="mysaas default-layout wysihtml5-supported" style>
+	<!-- Main navigation bar -->
+	<%= ERB.new(File.read(File.expand_path("views/templates.classic/header.erb"))).result(binding) %>
+	<!-- / Main navigation bar -->
+	
+
+	<!-- Left navigation panel -->
+	<%= ERB.new(File.read(File.expand_path("views/templates.classic/leftbar.erb"))).result(binding) %>
+	<!-- / Left navigation panel -->
+
+	<section class="row-fluid">
+		<div class='span12'>
+		<%
+		if !err.nil?
+		%>
+		<br/>
+		<br/>
+		<br/>
+		<div class="alert alert-error">
+			<pre><%=err.to_s.encode_html%></pre>
+		</div>
+		<%
+		end # err
+		%>
+						
+		<%
+		if !msg.nil?
+		%>
+		<br/>
+		<br/>
+		<br/>
+		<div class="alert alert-success">
+			<pre><%=msg.to_s.encode_html%></pre>
+		</div>
+		<%
+		end # msg
+		%>
+	</section>
+	
+	<!-- Page content -->
+	<section class="row-fluid" style='max-width:1024px;'>
+
+		<!-- Content here -->
+		<%=yield%>
+		<!-- / Content here -->
+		
+		<!-- Page footer -->
+		<%= ERB.new(File.read(File.expand_path("views/templates.classic/footer.erb"))).result(binding) %>
+		<!-- / Page footer -->
+	</section>
+		
+</body>
+</html>

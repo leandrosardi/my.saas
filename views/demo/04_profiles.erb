@@ -1,0 +1,295 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Profiles</h2>
+
+								<h4>Single Tag Selection List</h4>
+								<section class='row-fluid'>
+									<div class='span6'>
+										<p>Click it to expand the dropdown list.</p>
+		                <div class='profiles' id='profile1' name='profile1' data-id="profile1">
+		                  <!-- call profilesJs.draw -->
+		                </div>
+										</br>
+										<p>Click on Susan to raise an alert dialog.</p>
+									</div>
+									<div class='span6'>
+										<p>Open the dropdown list manually before click on this button, band it will closed by code when you close this popup.</p>
+										<button class='btn btn-blue' onclick='profilesJs.collapse($("#profile1"));'>Close DropDown List by Code</button>
+										</br></br>
+										<button class='btn btn-blue' onclick='profilesJs.add_profile($("#profile1"), {
+											id: "4",
+											name: "Joseph",
+											src: "/demo/images/joseph.png"
+										});'>Add Joseph</button>
+										<button class='btn btn-blue' onclick='profilesJs.set_text($("#profile1"), "new button text");'>Change Button Text</button>
+										</br></br>
+										<button class='btn btn-blue' onclick='profilesJs.set_profile_opacity($("#profile1"), "1", 0.5); alert("Open the dropdown list and see the profile1.")'>Change Opacity Of Tag1</button>
+									</div>
+								</section>
+
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+								<br/>
+
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("
+**profiles.min.js** is a lightweight JavaScript library designed to manage profile-related UI components dynamically.
+
+It allows developers to create, manipulate, and interact with profile lists in a dropdown menu format.
+
+The library provides methods for adding profiles, updating UI elements like captions and opacity, and handling events such as profile clicks and dropdown expansion.
+
+It ensures seamless integration with existing HTML structures, making it ideal for enhancing user interfaces in applications requiring profile management.
+
+With a focus on flexibility and ease of use, profilesJs simplifies dynamic profile rendering and interaction.
+
+#### 1. Define a Parent Element
+
+Prepare an HTML container where profiles will be displayed. Example:
+
+```html
+<div class=\"profiles\" id=\"profile1\" name=\"profile1\" data-id=\"profile1\"></div>
+```
+
+#### 2. Draw Profile Control
+
+Call the `draw` method to initialize the profile dropdown. Example:
+
+```javascript
+var parent1 = $(`div.profiles[data-id=\"profile1\"]`);
+
+profilesJs.draw(parent1, {
+  text: 'Add profiles dynamically'
+});
+```
+
+#### 3. Add Profiles by Code
+
+Add profiles dynamically using the `add_profile` method. Example:
+
+```javascript
+profilesJs.add_profile(parent1, {
+  id: '1',
+  name: 'Susan (click here to raise an alert)',
+  src: 'https://example.com/susan.png',
+  on_click_profile: function() {
+    alert('You clicked Susan!');
+  }
+});
+```
+
+#### 4. Change Caption Dynamically
+
+Change the button caption dynamically using the `set_text` method. Example:
+
+```javascript
+profilesJs.set_text(parent1, 'Updated Caption');
+```
+
+#### 5. Change Opacity of a Profile
+
+Adjust the opacity of a profile using the `set_profile_opacity` method. Example:
+
+```javascript
+profilesJs.set_profile_opacity(parent1, '1', 0.5);
+```
+
+#### 6. Catch on_expand Event
+
+Handle the dropdown expansion using the `on_expand` event. Example:
+
+```javascript
+profilesJs.draw(parent1, {
+  text: 'Expandable Profiles',
+  on_expand: function() {
+    console.log('Dropdown expanded');
+  }
+});
+```
+
+#### 7. Catch on_click_profile Event
+
+Handle profile click actions using the `on_click_profile` event. Example:
+
+```javascript
+profilesJs.add_profile(parent1, {
+  id: '1',
+  name: 'Clickable Profile',
+  on_click_profile: function() {
+    alert('Profile clicked!');
+  }
+});
+```
+
+#### 8. The collapse Method
+
+Close the dropdown programmatically using the `collapse` method. Example:
+
+```javascript
+profilesJs.collapse(parent1);
+```
+
+
+
+
+---
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+$(document).ready(function() {
+  var parent1 = $(`div.profiles[data-id="profile1"]`);
+
+	// profile1
+  profilesJs.draw(parent1, {
+    text: '3 profiles will be added here by code'
+  });
+
+  profilesJs.add_profile(parent1, {
+    id: '1',
+    name: 'Susan (click here to raise an alert)',
+    src: '/demo/images/susan.png',
+		on_click_profile: function() {
+			alert('You clicked Susan!');
+		}
+  });
+
+  profilesJs.add_profile(parent1, {
+    id: '2',
+    name: 'Mary',
+    src: '/demo/images/mary.png',
+  });
+
+  profilesJs.add_profile(parent1, {
+    id: '3',
+    name: 'Deborah',
+    src: '/demo/images/deborah.png',
+  });
+});
+</script>

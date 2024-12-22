@@ -3,7 +3,7 @@
 <%= ERB.new(File.read(File.expand_path("./views/templates/footer.public.erb"))).result(binding) %>
 <!-- / Page footer -->
 
-<script type="text/javascript">	
+<script type="text/javascript">
 	//applyReadMore();
 
 	showWait('Loading... ');
@@ -30,7 +30,7 @@
 	}
 
 	// overload the onload event in order to
-	// hide the "Loading..." message when the 
+	// hide the "Loading..." message when the
 	// onload event has done.
 	var old_onload = window.onload;
 	window.onload = function () {
@@ -75,15 +75,15 @@
 
 		// if user press ESC, then I close any popup
 		$('.popup').keydown(function(event) {
-			if (event.key == "Escape") { 
+			if (event.key == "Escape") {
 				$('.popup').hide('fade');
 			};
 		});
-	
+
 		// if click on this button, then I close any popup
 		$('.popup .cancel-button').click(function() {
 			$('.popup').hide('fade');
-		});	
+		});
 
 		// hide the "Loading..." message
 		if (hide_loading_message_after_page_load == true) {

@@ -8,20 +8,20 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Parsing command line parameters.
-  # 
+  #
   print 'Parsing command line parameters... '
   parser = BlackStack::SimpleCommandLineParser.new(
-    :description => 'This command will launch a Sinatra-based BlackStack webserver.', 
+    :description => 'This command will launch a Sinatra-based BlackStack webserver.',
     :configuration => [{
-      :name=>'port', 
-      :mandatory=>false, 
-      :description=>'Listening port.', 
+      :name=>'port',
+      :mandatory=>false,
+      :description=>'Listening port.',
       :type=>BlackStack::SimpleCommandLineParser::INT,
       :default => 3000,
     }, {
-      :name=>'config', 
-      :mandatory=>false, 
-      :description=>'Name of the configuration file.', 
+      :name=>'config',
+      :mandatory=>false,
+      :description=>'Name of the configuration file.',
       :type=>BlackStack::SimpleCommandLineParser::STRING,
       :default => 'config',
     }]
@@ -54,104 +54,104 @@ begin
 
   def nav1(name1, beta=false)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
 
-    ret = 
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    ret =
+    "<p>" +
+    "<a class='simple' href='/'><b>#{CGI.escapeHTML(user.account.name.encode_html)}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
     CGI.escapeHTML(name1)
 
     ret += "  <span class='badge badge-mini badge-important'>beta</span>" if beta
-    
+
     ret += "</p>"
   end
 
   def nav2(name1, url1, name2)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
 
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     CGI.escapeHTML(name2) +
     "</p>"
   end
 
   def nav3(name1, url1, name2, url2, name3)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name3 +
     "</p>"
   end
 
   def nav4(name1, url1, name2, url2, name3, url3, name4)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name4 +
     "</p>"
   end
 
   def nav5(name1, url1, name2, url2, name3, url3, name4, url4, name5)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name5 +
     "</p>"
   end
 
   def nav6(name1, url1, name2, url2, name3, url3, name4, url4, name5, url5, name6)
     login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
-    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first  
-    "<p>" + 
-    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
-    "<a class='simple' href='#{url5}'>#{CGI.escapeHTML(name5)}</a>" + 
-    " <i class='icon-chevron-right'></i> " + 
+    user = BlackStack::MySaaS::User.where(:id=>login.id_user).first
+    "<p>" +
+    "<a class='simple' href='/'><b>#{user.account.name.encode_html}</b></a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url1}'>#{CGI.escapeHTML(name1)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url2}'>#{CGI.escapeHTML(name2)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url3}'>#{CGI.escapeHTML(name3)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url4}'>#{CGI.escapeHTML(name4)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
+    "<a class='simple' href='#{url5}'>#{CGI.escapeHTML(name5)}</a>" +
+    " <i class='icon-chevron-right'></i> " +
     name6 +
     "</p>"
   end
   puts 'done'.green
-  
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Buffering some tables required in some screens.
-  # 
+  #
   print 'Buffering timezone table... '
   TIMEZONES = BlackStack::MySaaS::Timezone.order(:offset, :short_description).all
   puts 'done'.green + " (#{TIMEZONES.size.to_s.blue} records)"
@@ -162,14 +162,14 @@ begin
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Run webserver.
-  # 
+  #
   puts '
 
-  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\   
-  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \  
-   \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\ 
-    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/ 
-                                                                      
+  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\
+  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \
+   \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\
+    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/
+
   Welcome to MySaaS '+MYSAAS_VERSION.green+'.
 
   ---> '+'https://github.com/leandrosardi/my.saas'.blue+' <---
@@ -196,7 +196,7 @@ begin
     require "extensions/#{e.name.downcase}/lib/skeletons"
   }
   puts 'done'.green
-  
+
   print 'Setting up Sinatra... '
   PORT = parser.value("port")
 
@@ -208,11 +208,11 @@ begin
 
   configure do
     enable :cross_origin
-  end  
+  end
 
   before do
-    headers 'Access-Control-Allow-Origin' => '*', 
-            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']  
+    headers 'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']
   end
 
   set :protection, false
@@ -247,22 +247,22 @@ begin
     s = "message=#{CGI.escape(env['sinatra.error'].to_s)}&"
     s += "backtrace_size=#{CGI.escape(env['sinatra.error'].backtrace.size.to_s)}&"
     i = 0
-    env['sinatra.error'].backtrace.each { |a| 
+    env['sinatra.error'].backtrace.each { |a|
       a = "backtrace[#{i.to_s}]=#{CGI.escape(a.to_s)}&"
-      and_more = "backtrace[#{i.to_s}]=..." 
+      and_more = "backtrace[#{i.to_s}]=..."
       if (s+a).size > max_lenght - and_more.size
         s += and_more
         break
       else
         s += a
       end
-      i += 1 
+      i += 1
     }
     redirect "/500?#{s}"
   end
 
   # use this modifier for internal pages, who cannot be shown if there IS NOT a logged-in user
-  # condition: if there is not authenticated user on the platform, then redirect to the signup page 
+  # condition: if there is not authenticated user on the platform, then redirect to the signup page
   set(:auth) do |*roles|
     condition do
       if !logged_in?
@@ -270,9 +270,24 @@ begin
         session['redirect_on_success'] = "#{request.path_info.to_s}?#{request.query_string.to_s}"
         redirect "/login"
       elsif unavailable?
-        redirect "/unavailable"      
+        redirect "/unavailable"
       else
+        # parameters into a JSON strucutre received by an AJAX end-point
+        @body = nil
+        begin
+          @body = JSON.parse(request.body.read)
+        rescue
+          # request.body.read has not a valid json syntax
+        end
+        # get super-user
+        @su = BlackStack::MySaaS::Account.where(:api_key=>SU_API_KEY).first
+        # rendered to convert markdown to html
+        @md = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, highlight: true)
+        # current logged-in user
         @login = BlackStack::MySaaS::Login.where(:id=>session["login.id"]).first
+        @user = @login.user
+        @account = @user.account
+        # current service switched into the SaaS
         @service = @login.user.preference('service', SERVICE_NAME.to_s, params[:service])
       end
     end
@@ -285,7 +300,7 @@ begin
       if logged_in?
         redirect "/"
       elsif unavailable?
-        redirect "/unavailable"      
+        redirect "/unavailable"
       end
     end
   end
@@ -311,7 +326,7 @@ begin
   set(:su) do |*roles|
     condition do
       @return_message = {}
-      
+
       @return_message[:status] = 'success'
 
       # this is already proccessed in the :api_key condition
@@ -321,7 +336,7 @@ begin
 
       if validation_api_key != SU_API_KEY.to_s.to_guid.downcase
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
         @return_message[:status] = "api_key of the super-user only is allowed for this access point."
         @return_message[:value] = ""
@@ -334,7 +349,7 @@ begin
   set(:api_key) do |*roles|
     condition do
       @return_message = {}
-      
+
       @return_message[:status] = 'success'
 
       # validate: the pages using the :api_key condition must work as post only.
@@ -348,7 +363,7 @@ begin
 
       if !@body.has_key?('api_key')
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
         @return_message[:status] = "api_key is required on #{@body.to_s}"
         @return_message[:value] = ""
@@ -357,29 +372,179 @@ begin
 
       if !@body['api_key'].guid?
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
-    
+
         @return_message[:status] = "Invalid api_key (#{@body['api_key']}))"
         @return_message[:value] = ""
-        halt @return_message.to_json      
+        halt @return_message.to_json
       end
-      
+
       validation_api_key = @body['api_key'].to_guid.downcase
 
       @account = BlackStack::MySaaS::Account.where(:api_key => validation_api_key).first
       if @account.nil?
         # libero recursos
-        DB.disconnect 
+        DB.disconnect
         GC.start
-        #     
+        #
         @return_message[:status] = 'Api_key not found'
         @return_message[:value] = ""
-        halt @return_message.to_json        
+        halt @return_message.to_json
       end
     end
   end
   puts 'done'.green
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Demo Screens
+
+  get "/demo" do
+    redirect '/demo/01_layout'
+  end
+  get "/demo/" do
+    redirect '/demo/01_layout'
+  end
+
+  get '/demo/01_layout', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/01_layout', :layout => :'/views/layouts/full'
+  end
+  get '/demo/01a_2pools', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/01a_2pools', :layout => :'/views/layouts/full'
+  end
+  get '/demo/01b_3pools', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/01b_3pools', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/02_selectorws', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/02_selectrows', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/03_tags', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/03_tags', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/04_profiles', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/04_profiles', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/05_single_editable_fields', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/05_single_editable_fields', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/06_multiple_editable_fields', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/06_multiple_editable_fields', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/07_filters', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/07_filters', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/08_images', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/08_images', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/09_data', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/09_data', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/10_reminders', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/10_reminders', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/11_chat', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/11_chat', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/12_table', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/12_table', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/13_ajax', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/13_ajax', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/14_pagination', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/14_pagination', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/15_waiting', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/15_waiting', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/16_alerts', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/16_alerts', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/17_guid', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/17_guid', :layout => :'/views/layouts/full'
+  end
+
+  get '/demo/18_gpt', :auth => true, :agent => /(.*)/ do
+    erb :'views/demo/18_gpt', :layout => :'/views/layouts/full'
+  end
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Setup user preferences
+
+  post '/ajax/ping.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/ping'
+  end
+
+  post '/ajax/set_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/set_preference'
+  end
+
+  post '/ajax/set_many_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/set_many_preference'
+  end
+
+  post '/ajax/get_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/get_preference'
+  end
+
+  post '/ajax/get_many_preference.json', :auth => true, :agent => /(.*)/ do
+    erb :'views/ajax/get_many_preference'
+  end
+
+  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  # Objects management
+
+  post "/ajax/:object/page.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/page"
+  end
+
+  post "/ajax/:object/count.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/count"
+  end
+
+  post "/ajax/:object/get.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/get"
+  end
+
+  post "/ajax/:object/get_many.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/get_many"
+  end
+
+  post "/ajax/:object/errors.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/errors"
+  end
+
+  post "/ajax/:object/insert.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/insert"
+  end
+
+  post "/ajax/:object/update.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/update"
+  end
+
+  post "/ajax/:object/delete.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/delete"
+  end
+
+  post "/ajax/:object/upsert.json", :auth => true, :agent => /(.*)/ do
+    erb :"views/ajax/upsert"
+  end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # External pages: pages that don't require login
@@ -396,10 +561,6 @@ begin
 
   get '/500', :agent => /(.*)/ do
     erb :'views/500', :layout => :'/views/layouts/public'
-  end
-
-  get '/demo' do
-    erb :'views/demo', :layout => :'/views/layouts/public'
   end
 
   get '/unavailable' do
@@ -446,38 +607,23 @@ begin
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  # Funnel
-  # 
-  get '/offer', :auth => true, :agent => /(.*)/ do
-    erb :'views/offer', :layout => :'/views/layouts/public'
-  end
-
-  get '/plans', :auth => true, :agent => /(.*)/ do
-    erb :'views/plans', :layout => :'/views/layouts/public'
-  end
-  puts 'done'.green
-
-  # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # User welcome
   print 'Setting up entries of internal pages... '
 
   get '/survey', :auth => true, :agent => /(.*)/ do
-    erb :'views/survey', :layout => :'/views/layouts/core'
+    erb :'views/survey', :layout => :'/views/layouts/classic'
   end
 
   get '/welcome', :auth => true, :agent => /(.*)/ do
-    erb :'views/welcome', :layout => :'/views/layouts/core'
-  end
-  get '/ajax/welcome', :auth => true, :agent => /(.*)/ do
-    erb :'views/ajax/welcome'
+    erb :'views/welcome', :layout => :'/views/layouts/classic'
   end
 
   get '/new', :auth => true, :agent => /(.*)/ do
-    erb :'views/search', :layout => :'/views/layouts/core'
+    erb :'views/search', :layout => :'/views/layouts/classic'
   end
 
   get '/edit/:sid', :auth => true, :agent => /(.*)/ do
-    erb :'views/search', :layout => :'/views/layouts/core'
+    erb :'views/search', :layout => :'/views/layouts/classic'
   end
 
   get '/delete/:sid', :auth => true, :agent => /(.*)/ do
@@ -519,23 +665,23 @@ begin
     redirect '/settings/dashboard'
   end
   get '/settings/dashboard', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/dashboard', :layout => :'/views/layouts/core'
+    erb :'views/settings/dashboard', :layout => :'/views/layouts/classic'
   end
 
   # account information
   get '/settings/account', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/account', :layout => :'/views/layouts/core'
+    erb :'views/settings/account', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_account', :auth => true do
     erb :'views/settings/filter_account'
   end
 =begin
-  # 
+  #
   # UNDER CONSTRUCTION
-  # 
+  #
   # white label configuration
   get '/settings/whitelabel', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/whitelabel', :layout => :'/views/layouts/core'
+    erb :'views/settings/whitelabel', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_whitelabel', :auth => true do
     erb :'views/settings/filter_whitelabel'
@@ -543,7 +689,7 @@ begin
 =end
   # change password
   get '/settings/password', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/password', :layout => :'/views/layouts/core'
+    erb :'views/settings/password', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_password', :auth => true do
     erb :'views/settings/filter_password'
@@ -551,7 +697,7 @@ begin
 
   # change password
   get '/settings/apikey', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/apikey', :layout => :'/views/layouts/core'
+    erb :'views/settings/apikey', :layout => :'/views/layouts/classic'
   end
   post '/settings/filter_apikey', :auth => true do
     erb :'views/settings/filter_apikey'
@@ -559,7 +705,7 @@ begin
 
   ## users management screen
   get '/settings/users', :auth => true, :agent => /(.*)/ do
-    erb :'views/settings/users', :layout => :'/views/layouts/core'
+    erb :'views/settings/users', :layout => :'/views/layouts/classic'
   end
 
   get '/settings/filter_users_add', :auth => true do
@@ -601,7 +747,7 @@ begin
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # API access points
   print 'Setting up entries of API access points... '
-  
+
   # ping
   get '/api1.0/ping.json', :api_key => true do
     erb :'views/api1.0/ping'
@@ -618,6 +764,10 @@ begin
 
   # Standard MySaaS API - Managing subaccounts
   #
+  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_key => true, :su => true do
+    erb :"views/api1.0/subaccount/get_subaccount_assigned_to_profile"
+  end
+
   post "/api1.0/subaccount/get.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get"
   end
@@ -651,12 +801,24 @@ begin
     erb :"views/api1.0/get"
   end
 
+  post "/api1.0/:object/get_many.json", :api_key => true do
+    erb :"views/api1.0/get_many"
+  end
+
+  post "/api1.0/:object/errors.json", :api_key => true do
+    erb :"views/api1.0/errors"
+  end
+
   post "/api1.0/:object/insert.json", :api_key => true do
     erb :"views/api1.0/insert"
   end
 
   post "/api1.0/:object/update.json", :api_key => true do
     erb :"views/api1.0/update"
+  end
+
+  post "/api1.0/:object/delete.json", :api_key => true do
+    erb :"views/api1.0/delete"
   end
 
   post "/api1.0/:object/update_status.json", :api_key => true do
@@ -682,7 +844,7 @@ begin
   post '/api1.0/notifications/click.json' do
     erb :'views/api1.0/notifications/click'
   end
-    
+
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -693,7 +855,7 @@ begin
     require "extensions/#{e.name.downcase}/app.rb"
   }
   puts 'done'.green
-  
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # adding storage sub-folders
   # DEPRECATED

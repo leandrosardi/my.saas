@@ -1,0 +1,23 @@
+<%
+begin
+    object = params[:object]
+    cls = BlackStack::API.classes[object.to_sym]
+    
+    id = @body['id']
+    raise "id is required" if id.nil?
+    raise "id is not a guid" if id && !id.guid?
+    o = nil
+    if @account.sysowner?
+        o = cls.where(:id=>id).first
+    else
+        o = cls.where(:id=>id, :id_account=>@account.id).first
+    end
+    raise "id not found" if o.nil?
+    o.delete_time = now()
+    o.save
+    @return_message['result'] = o.to_h
+rescue Exception => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

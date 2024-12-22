@@ -1,0 +1,227 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Alerts</h2>
+
+								<section class='row-fluid'>
+									<div class='span6'>
+		                <button id='show_success_alert' name='show_success_alert' class='btn btn-large btn-green'>Click to Show a Success Alert</button><br/>
+										<br/>
+										<button id='show_error_alert' name='show_error_alert' class='btn btn-large btn-red'>Click to Show an Error Alert</button><br/>
+										<br/>
+										<button id='show_info_alert' name='show_info_alert' class='btn btn-large btn-blue'>Click to Show an Info Alert</button><br/>
+										<br/>
+									</div>
+									<div class='span6'>
+										<p>Disaper Alerts After <input type='number' id='disapear_seconds' name='disapear_seconds' class='input input-mini' value='-1' /> Seconds</p>
+										<p>* Set -1 to don't disapear alerts automatically.</p>
+										<br/>
+										<br/>
+										<button class='btn btn-black' id='close-alerts' name='close-alerts'>Close all Alerts</button>
+									</div>
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **alerts.min.js.js** library is a lightweight JavaScript utility for creating customizable alert messages on a webpage.
+
+It supports success, error, and informational alerts with optional auto-dismiss functionality.
+
+Each alert is visually distinct, can display lists of success and error messages, and includes a close button for manual dismissal.
+
+Developers can easily integrate it into their projects to provide feedback to users. Alerts are positioned at the bottom of the page and have adjustable opacity for a non-intrusive user experience.
+
+#### 1. Show success, error, and info alerts
+
+Use the library to show alerts of different types by calling:
+- `draw_success_alert(title, success_lines, error_lines, remove_seconds)`
+- `draw_error_alert(title, success_lines, error_lines, remove_seconds)`
+- `draw_info_alert(title, success_lines, error_lines, remove_seconds)`
+
+#### 2. Add a list of success points
+
+The `success_lines` parameter accepts an array of strings representing positive feedback messages.
+
+Example:
+
+```javascript
+draw_success_alert('Success!', ['Task completed', 'All checks passed']);
+```
+
+#### 3. Add a list of error points
+
+The `error_lines` parameter accepts an array of strings representing error feedback messages.
+
+Example:
+
+```javascript
+draw_error_alert('Error!', [], ['An error occurred', 'Retry required']);
+```
+
+#### 4. Disappearing Alerts Automatically
+
+The `remove_seconds` parameter defines how long (in seconds) the alert will stay visible before automatically disappearing. Set `-1` to disable auto-dismiss.
+
+Example:
+
+```javascript
+draw_info_alert('Info!', ['This is a test message'], [], 5);
+```
+
+#### 5. Closing Alerts Manually
+
+You can close the alerts with the cross-icon in the top-right corner of the alert, or you can press `escape` in your keyboard.
+
+#### 6. Close All alerts
+
+If you call the `draw_foo_alert` many time, then many alerts will be opened, one over other.
+
+You can close all together.
+
+```JavaScript
+close_alerts();
+```
+
+
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+$(document).ready(function() {
+
+	$("#show_success_alert").click(function() {
+		let title = 'Example Alert'
+		let i = parseInt($('#disapear_seconds').val());
+		draw_success_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
+
+	$("#show_error_alert").click(function() {
+		let title = 'Example Alert'
+		let i = parseInt($('#disapear_seconds').val());
+		draw_error_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
+
+	$("#show_info_alert").click(function() {
+		let title = 'Example Alert'
+		let i = parseInt($('#disapear_seconds').val());
+		draw_info_alert(title, ['good1', 'good2', 'good3'], ['bad1'], i);
+	});
+
+	$('#close-alerts').click(function() {
+		close_alerts();
+	});
+});
+</script>

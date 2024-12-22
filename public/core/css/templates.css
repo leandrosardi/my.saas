@@ -1,0 +1,426 @@
+:root {
+  --color1: rgb(60, 180, 238);
+  --color2: rgb(190, 190, 190); //rgb(90, 210, 238);
+
+  // dialog
+  --overlay-bg-light: rgba(0, 0, 0, 0.5);
+  --overlay-bg-dark: rgba(255, 255, 255, 0.1);
+  --text-color-light: #333333;
+  --text-color-dark: #f0f0f0;
+  --button-bg-light: #007bff;
+  --button-bg-dark: #1a73e8;
+  --button-text-color: #ffffff;
+  --dialog-border-radius: 8px;
+  --transition-duration: 0.3s;
+
+}
+
+/*
+ * Templates for choose.
+ *
+ */
+div.reference-funnel {
+    position: relative;
+    border:5px solid rgb(225,225,225);
+    cursor: pointer;
+    border-radius: 15px;
+    padding:15px;
+    padding-left: 15px;
+    height:615px;
+}
+
+div.reference-funnel.selected {
+  border: 5px solid var(--color1);
+  pointer-events: none;
+}
+
+div.reference-funnel.selected:hover {
+    border:5px solid var(--color2);
+}
+
+div.reference-funnel.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+div.reference-funnel:hover {
+    border:5px solid var(--color2);
+}
+
+div.reference-funnel.disabled::after {
+  content: 'soon';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--color1);
+  color: white;
+  border-radius: 15px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+select.subaccount {
+    border:5px solid rgb(225,225,225);
+    border-radius: 15px;
+    width:100%;
+    font-size:24px;
+    height:55px;'
+}
+
+select.subaccount:hover {
+    border:5px solid var(--color2);
+}
+
+select.subaccount:focus {
+    border:5px solid var(--color1);
+}
+
+div.big h1 {
+    font-weight:normal;
+}
+
+div.big div.tips {
+    margin-top: 20px;
+    margin-bottom: 60px;
+}
+
+div.big div.tips p {
+    font-size: 24px;
+    margin-left: 40px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+div.big div.tips p i.icon-ok {
+    color: rgb(120,190,120);
+}
+
+div.big div.tips p i.icon-time {
+    color: rgb(190,190,190);
+}
+
+div.big div.tips p span.badge {
+    background-color: var(--color1);
+    font-size:24px;
+    height:25px;
+    vertical-align:
+    middle;
+    padding-top:7px;'
+}
+
+div.big div.tips p b {
+    color: var(--color1);
+}
+
+div.big div.control-group label {
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+div.big div.control-group input {
+    border:5px solid rgb(225,225,225);
+    border-radius: 15px;
+    font-size: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 75%;
+}
+
+div.big div.control-group input:hover {
+    border:5px solid var(--color2);
+}
+
+div.big div.control-group input:focus {
+    border:5px solid var(--color1);
+}
+
+div.big div.control-group button {
+    font-size: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 15%;
+}
+
+/*
+ * Report cards
+ *
+ */
+ /* Existing Styles */
+ span#from,
+ span#to,
+ span#total_rows {
+   font-weight: bold;
+ }
+
+ /*
+   Rule div
+ */
+ div.card {
+   border-top: 5px dashed yellow;
+ }
+
+ /*
+   Rule details (trigger, filter, action)
+ */
+ table.card-config {
+   width:100%;
+ }
+
+ table.card-config tr td:first-child {
+   width:75px;
+ }
+
+ table.card-config tr td {
+   vertical-align:top;
+   padding-bottom:10px;
+ }
+
+
+ /*
+   Rule stats
+ */
+
+ table.insights {
+   width: 100%;
+   border-collapse: collapse;
+ }
+
+ table.insights tr {
+   height: 25px;
+ }
+
+ table.insights tr td.insight-label {
+   padding: 5px;
+   font-size: 14px;
+   color: gray;
+   vertical-align: top;
+   padding-bottom: 15px;
+ }
+
+ table.insights tr td.insight-value {
+   padding: 5px;
+   font-size: 24px;
+   color: black;
+   text-align: right;
+   vertical-align: top;
+ }
+
+ table.insights tr td.insight-rate {
+   padding: 5px;
+   font-size: 16px;
+   color: black;
+   text-align: right;
+   vertical-align: top;
+ }
+
+
+ body.dark-mode table.insights tr td.insight-value {
+   color: white;
+ }
+
+ body.dark-mode table.insights tr td.insight-rate {
+   color: white;
+ }
+
+
+ /*
+   Rule instance stats
+ */
+
+ div.card-instance-stats {
+   border-bottom: 1px dashed gray;
+   padding-bottom: 10px;
+   opacity: 0.25;
+ }
+
+ div.card-instance-stats:hover {
+   opacity: 1.0;
+ }
+
+ div.card-instance-stats div {
+   text-align: right;
+   margin:0;
+   padding:5px;
+   padding-right: 7px;
+   border-radius: 10px;
+ }
+
+ div.card-instance-stats div span {
+   font-size: 18px;
+ }
+
+ div.card-instance-stats div:first-child {
+   background-color: blue;
+   color: white;
+ }
+
+ div.card-instance-stats div:nth-child(2) {
+   background-color: green;
+   color: white;
+ }
+
+ div.card-instance-stats div:nth-child(3) {
+   background-color: gray;
+   color: white;
+ }
+
+ div.card-instance-stats div:nth-child(4) {
+   background-color: red;
+   color: white;
+ }
+
+ div.card-instance-stats div:last-child {
+   background-color: red;
+   color: white;
+ }
+
+
+
+ /*
+   Dialog
+ */
+
+ /* Hidden class to toggle visibility */
+ .hidden {
+   display: none;
+ }
+
+ /* Overlay Styles */
+ .dialog-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: var(--overlay-bg-light);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity var(--transition-duration) ease, visibility var(--transition-duration) ease;
+ }
+
+ body.dark-mode .dialog-overlay {
+   background-color: var(--overlay-bg-dark);
+ }
+
+ .dialog-overlay.show {
+   opacity: 1;
+   visibility: visible;
+ }
+
+ /* Dialog Container */
+ .dialog-container {
+   background-color: white;
+   color: var(--text-color-light);
+   width: 90%;
+   max-width: 500px;
+   border: 5px dashed red;
+   border-radius: var(--dialog-border-radius);
+   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+   transform: translateY(-50px);
+   transition: transform var(--transition-duration) ease;
+   opacity: 0.9;
+ }
+
+ body.dark-mode .dialog-container {
+   border: 5px dashed yellow;
+   box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+ }
+
+ .dialog-overlay.show .dialog-container {
+   transform: translateY(0);
+ }
+
+ body.dark-mode .dialog-container {
+   background-color: black;
+   color: var(--text-color-dark);
+ }
+
+ /* Header */
+ .dialog-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 16px;
+   border-bottom: 1px solid #e5e5e5;
+ }
+
+ body.dark-mode .dialog-header {
+   border-bottom: 1px solid #444;
+ }
+
+ .dialog-title {
+   margin: 0;
+   font-size: 1.25rem;
+ }
+
+ .dialog-close-button {
+   background: none;
+   border: none;
+   font-size: 1.5rem;
+   cursor: pointer;
+   color: inherit;
+ }
+
+ /* Content */
+ .dialog-content {
+   padding: 16px;
+   font-size: 1rem;
+ }
+
+ /* Footer */
+ .dialog-footer {
+   display: flex;
+   justify-content: flex-end;
+   padding: 16px;
+   border-top: 1px solid #e5e5e5;
+ }
+
+ body.dark-mode .dialog-footer {
+   border-top: 1px solid #444;
+ }
+
+ .dialog-action-button,
+ .dialog-cancel-button {
+   padding: 8px 16px;
+   margin-left: 8px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   font-size: 1rem;
+ }
+
+ .dialog-action-button {
+   background-color: var(--button-bg-light);
+   color: var(--button-text-color);
+ }
+
+ body.dark-mode .dialog-action-button {
+   background-color: var(--button-bg-dark);
+ }
+
+ .dialog-cancel-button {
+   background-color: #6c757d;
+   color: var(--button-text-color);
+ }
+
+ .dialog-action-button:hover {
+   opacity: 0.9;
+ }
+
+ .dialog-cancel-button:hover {
+   opacity: 0.9;
+ }
+
+ /* Responsive */
+ @media (max-width: 480px) {
+   .dialog-container {
+     width: 95%;
+   }
+ }

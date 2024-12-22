@@ -1,0 +1,32 @@
+<%
+# get parameters
+err = params[:err]
+msg = params[:msg]
+%>
+
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
+
+<!-- Message and error alerts -->
+<%= ERB.new(File.read(File.expand_path("views/templates/head.erb"))).result(binding) %>
+<!-- / Message and error alerts -->
+
+<body class="mysaas default-layout wysihtml5-supported" id="body-default">
+	<!-- Main navigation bar -->
+	<%= ERB.new(File.read(File.expand_path("views/templates/header.erb"))).result(binding) %>
+	<!-- / Main navigation bar -->
+	
+
+	<!-- Left navigation panel -->
+	<%= ERB.new(File.read(File.expand_path("views/templates/leftbar.erb"))).result(binding) %>
+	<!-- / Left navigation panel -->
+
+	<!-- Content here -->
+	<%=yield%>
+	<!-- / Content here -->
+				
+</body>
+</html>

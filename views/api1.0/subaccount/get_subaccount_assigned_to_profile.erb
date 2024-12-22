@@ -1,0 +1,37 @@
+<%
+# signup new account
+@return_message = {}
+begin
+	id_profile = @body['id_profile']
+
+	ds = DB["
+		select p.id as id_profile, s.api_key, s.dashboard_node
+		from \"profile\" p
+		join \"subaccount\" s on s.id=p.id_subaccount
+		where p.id='#{id_profile}'
+	"]
+
+	# if there is no subaccount assigned, then there is a mistake.
+	# if there is more than one subaccounts assigned, then there is a mistake too.
+	if ds.count == 0
+		raise "Profile #{id_profile} is not assigned to any subaccount."
+	elsif ds.count > 1
+		raise "Profile #{id_profile} is assigned to more than one subaccounts."
+	else
+		id_profile = ds.first[:id_profile]
+		dashboard_node = ds.first[:dashboard_node]
+		api_key = ds.first[:api_key]
+		@return_message = {
+			'id_profile' => id_profile,
+			'url' => dashboard_node,
+			'api_key' => api_key,
+		}
+	end
+
+	# return success
+	@return_message['status'] = 'success'
+rescue => e
+    #@return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

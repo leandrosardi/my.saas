@@ -1,0 +1,316 @@
+
+<style>
+.console {
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: black;
+}
+</style>
+
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+                <li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>AJAX</h2>
+
+                <div class="row-fluid">
+                  <h4 for="url">URL:</h4>
+                  <input type="text" id="url" placeholder="Enter API endpoint" class='input input-block-level console' value='/ajax/ping.json'>
+                </div>
+
+                <div class="row-fluid">
+                  <h4 for="params">Parameters (JSON format):</h4>
+                  <textarea id="params" placeholder='{"key": "value"}' class='input input-block-level console' rows=7>{}</textarea>
+                </div>
+
+                <div class="row-fluid">
+                  <button id="submit" class='btn btn-blue btn-normal'>Send AJAX Request</button>
+                </div>
+
+                <div class="row-fluid">
+                  <h4>Response:</h4>
+                  <textarea id="response" class='input input-block-level console' rows=14 readonly></textarea>
+                </div>
+
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render("The **callx.min.js** library is a lightweight JavaScript utility for making AJAX POST requests easily.
+
+It allows developers to interact with API endpoints while handling success and error responses gracefully.
+
+The library integrates with custom alert systems to notify users of operation results.
+
+It provides event callbacks for `on_success` and `on_error` events to execute additional code as needed.
+
+Its chaining capability also enables multiple sequential AJAX requests.
+
+#### 1. How to Use the AJAX Demo Screen
+
+The AJAX demo screen in the `demo.html` file demonstrates how to send POST requests using the `callx` library. Here's how to use it:
+1. Enter the API endpoint URL in the **URL** input field.
+2. Specify the JSON-formatted parameters in the **Parameters** textarea.
+3. Click the **Send AJAX Request** button to send the request.
+4. The response will be displayed in the **Response** textarea.
+
+#### 2. Writing a Proper AJAX Call With `callx`
+
+To use the `callx` library, pass an object containing the following parameters:
+- `url`: The endpoint URL.
+- `params`: A JavaScript object with the request parameters.
+- `alerts_delay`: (Optional) Delay in seconds before alert auto-dismiss.
+- `on_success`: Callback function for successful responses.
+- `on_error`: Callback function for error responses.
+
+Example:
+
+```javascript
+callx({
+    url: '/ajax/example.json',
+    params: { key: 'value' },
+    alerts_delay: 5,
+    on_success: function(data) {
+        console.log('Success:', data);
+    },
+    on_error: function(error) {
+        console.error('Error:', error);
+    }
+});
+```
+
+#### 3. Catch `on_success` Event
+
+The `on_success` callback executes when the API returns a successful response (`status: 'success'`).
+Example:
+
+```javascript
+callx({
+    url: '/ajax/example.json',
+    on_success: function(data) {
+        console.log('Operation succeeded:', data);
+    }
+});
+```
+
+#### 4. Catch `on_error` Event
+
+The `on_error` callback executes when the API returns an error or the request fails.
+Example:
+
+```javascript
+callx({
+    url: '/ajax/example.json',
+    on_error: function(error) {
+        console.error('Operation failed:', error);
+    }
+});
+```
+
+#### 5. Concatenated Calls
+
+The library allows sequential AJAX requests by chaining `callx` calls inside `on_success` handlers.
+Example:
+
+```javascript
+callx({
+    url: '/ajax/first.json',
+    on_success: function(firstResponse) {
+        console.log('First response:', firstResponse);
+        callx({
+            url: '/ajax/second.json',
+            on_success: function(secondResponse) {
+                console.log('Second response:', secondResponse);
+            }
+        });
+    }
+});
+```
+
+
+
+
+
+
+
+----
+")%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function() {
+        getPreference('demo.ajax.url', '').then(value => { if (value) $('#url').val(value) });
+        getPreference('demo.ajax.params', '').then(value => { if (value) $('#params').val(value) });
+
+        // Capture the keypress event on #url
+        $('#url').on('keyup', function () {
+            // Get the current value of #url and pass it to setPreference
+            const value = $(this).val();
+//console.log("url value:"+value);
+            setPreference('demo.ajax.url', '', value);
+        });
+
+        // Capture the keypress event on #url
+        $('#params').on('keyup', function () {
+            // Get the current value of #url and pass it to setPreference
+            const value = $(this).val();
+//console.log("params value:"+value);
+            setPreference('demo.ajax.params', '', value);
+        });
+
+        $('#submit').on('click', function() {
+            let url = $('#url').val();
+            let params = $('#params').val();
+            try {
+                // Attempt to parse the parameters to JSON
+                params = JSON.parse(params);
+            } catch (e) {
+                $('#response').css('color', 'red').val('Invalid JSON in parameters.');
+                return;
+            }
+
+            // call the access point.
+            showWait();
+            callx({
+              url: url,
+              params: params,
+              alerts_delay: 3, // seconds
+              on_success: function(json) {
+                let s = JSON.stringify(json, null, 2);
+                $('#response').css('color', 'green').val(s);
+                hideWait();
+              },
+              on_error: function(json) {
+                let s = JSON.stringify(json, null, 2);
+                $('#response').css('color', 'red').val(s);
+                hideWait();
+              },
+            });
+/*
+            // Example: How to run many AJAX calls one after other.
+            // first ajax
+            callx({
+              url: '/ajax/tag/count.json',
+              on_success: function(json) {
+                console.log(`There are ${json.result} tags.`);
+                // run another AJAX after the first one returned successfully.
+                callx({
+                  url: '/ajax/lead/count.json',
+                  on_success: function(json) {
+                    console.log(`There are ${json.result} leads.`);
+                  }
+                });
+              }
+            });
+*/
+        });
+    });
+</script>

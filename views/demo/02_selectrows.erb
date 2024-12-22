@@ -1,0 +1,215 @@
+<script type="text/javascript">
+    // Include Unibox
+		document.write('<link href="/core/css/unibox.css" media="all" rel="stylesheet" type="text/css" id="ajax-dialog-css">');
+</script>
+
+<section class="row-fluid" style="">
+    <div class="container-fluid" style="padding-right: 0 !important;">
+      <div class="row">
+        <!-- Pool 1 -->
+        <section id="pool1" name="pool1" class="col panel">
+          <div id="panel1_panel" class="pool1-panel">
+            <div id="pool1_header" name="pool1_header" class="panel1-header">
+              <h2>My.SaaS Tutorial</h2>
+              <button class="close-btn" onclick="closePanel('pool1')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-1" class="arrow" onclick="togglePanel('pool2', 'arrow-right-1')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+            <section class="list">
+            <div class="chat-messages">
+              <ul>
+								<li><a href="/demo/01_layout">Demo 01: Layout</a></li>
+                <li><a href="/demo/02_selectorws">Demo 02: Select Rows</a></li>
+                <li><a href="/demo/03_tags">Demo 03: Tags</a></li>
+                <li><a href="/demo/04_profiles">Demo 04: Profiles</a></li>
+                <li><a href="/demo/05_single_editable_fields">Demo 05: Single Editable</a></li>
+								<li><a href="/demo/06_multiple_editable_fields">Demo 06: Multiple Editable</a></li>
+								<li><a href="/demo/07_filters">Demo 07: Filters</a></li>
+                <li><a href="/demo/08_images">Demo 08: Images</a></li>
+                <li><a href="/demo/09_data">Demo 09: Data</a></li>
+                <li><a href="/demo/10_reminders">Demo 10: Reminders</a></li>
+								<li><a href="/demo/11_chat">Demo 11: Chat</a></li>
+								<li><a href="/demo/12_table">Demo 12: Table</a></li>
+								<li><a href="/demo/13_ajax">Demo 13: Ajax</a></li>
+								<li><a href="/demo/14_pagination">Demo 14: Pagination</a></li>
+								<li><a href="/demo/15_waiting">Demo 15: Waiting</a></li>
+								<li><a href="/demo/16_alerts">Demo 16: Alerts</a></li>
+<li><a href="/demo/17_guid">Demo 17: GUID</a></li>
+              </ul>
+            </div>
+            </section>
+            </div>
+          </div>
+        </section>
+        <!-- Pool 2 -->
+        <section id="pool2" name="pool2" class="col-6 panel ">
+          <div id="panel2_panel" class="pool2-panel">
+            <div id="pool2_header" name="pool2_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Live Demo</span> |
+                  <span class="user-message">
+                    Selected IDs: <input type='text' class='input input-small' name='ids' id='ids' value='' />
+                  </span>
+                </div>
+              </div>
+              <button class="close-btn" onclick="closePanel('pool2')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-right-2" class="arrow" onclick="togglePanel('pool3', 'arrow-right-2')">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button id="arrow-left-1" class="arrow-left" onclick="togglePanel('pool1', 'arrow-left-1')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="user-list">
+                <table class="table table-bordered table-condensed fix" width="3000px;">
+                  <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
+                    <tr>
+                      <th style="width:50px;">
+                        <input type="checkbox" class="checkbox select-all-rows" data-input-id="ids" data-rows-group-id="users">
+                      </th>
+                      <th style="width:150px;">Name</th>
+                      <th style="width:150px;">Time Zone</th>
+                      <th style="width:150px;">Job Title</th>
+                      <th style="width:250px;">Company</th>
+                      <th style="width:150px;">Social</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%
+                    i = 0
+                    while i<100
+                      i = i + 1
+                    %>
+                    <tr>
+                      <td>
+                        <input type="checkbox" class="checkbox select-row" id="<%=i%>" data-id="<%=i%>" data-rows-group-id="users">
+                      </td>
+                      <td data-label="Name">John Doe <%=i%></td>
+                      <td data-label="Time Zone">UTC-5</td>
+                      <td data-label="Job Title">Software Engineer</td>
+                      <td data-label="Company">TechCorp</td>
+                      <td data-label="Social">
+                        <button class="btn btn-link"><i class="icon icon-linkedin"></i></button>
+                        <button class="btn btn-link"><i class="icon icon-facebook"></i></button>
+                        <button class="btn btn-link"><i class="icon icon-envelope"></i></button>
+                      </td>
+                    </tr>
+                    <%
+                    end # while
+                    %>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+        <!-- Pool 3 -->
+        <section id="pool3" name="pool3" class="col panel">
+          <div id="panel3_panel" class="pool3-panel">
+            <div id="pool3_header" name="pool3_header" class="panel2-header">
+              <div class="header-info">
+                <div>
+                  <span class="user-name">Details</span>
+                </div>
+              </div>
+
+              <button class="close-btn" onclick="closePanel('pool3')">
+                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+              </button>
+              <button id="arrow-left-2" class="arrow-left" onclick="togglePanel('pool2', 'arrow-left-2')">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+            <div id="list_div" class="panel-content">
+              <section class="list">
+                <div class="third-section-content">
+                  <div class="tab-container">
+                    <!-- Tab Buttons -->
+                    <div class="tab-buttons">
+                      <button class="tab-button active" data-tab="tab1">Documentation</button>
+                    </div>
+                    <!-- Tab Contents -->
+                    <div class="tab-contents">
+                      <div id="tab1" class="tab-content active">
+                      <%=@md.render('
+**selectrows.min.js** is a JavaScript library that manages row selection within tables using checkboxes.
+
+It provides "select all" functionality, handles grouped selections, and updates input fields with the IDs of selected rows.
+
+This enhances user interaction and streamlines data handling on web pages.
+
+
+#### 1. Setting Up Your Input
+
+You need an input box where the IDs of the selected rows will be placed.
+Typically, such an input is `hidden`.
+
+`<input type="hidden" class="input input-small" name="ids" id="ids" value='' />`
+
+Every time you check or uncheck a row, such an input box will be updated.
+
+#### 2. Set a Select-All CheckBox
+
+Into a `th` element, create a checkbox with class `select-al-rows`:
+
+```html
+<table class="table table-bordered table-condensed fix" width="3000px;">
+  <thead class="table-light position-sticky" style="top: -1px; z-index: 1020;">
+    <tr>
+      <th style="width:50px;">
+        <input type="checkbox" class="checkbox select-all-rows" data-input-id="ids" data-rows-group-id="users">
+      </th>
+```
+
+- The value of `data-input-id` is the id of the input box where to store the IDs of the selected rows.
+
+- The value of `data-rows-group-id` is important if you want to manage more than one table, with more than one group of checkboxes.
+
+#### 3. Set a CheckBox on Each Row
+
+On each row of your table, you have to define a checkbox class `select-row` and a unique ID.
+
+```html
+<input type="checkbox" class="checkbox select-row" id="..." data-id="..." data-rows-group-id="users">
+```
+
+#### 4. Buttons Activation
+
+You can require that some buttons get enabled only if one or more rows are checked.
+
+```html
+<h3>Actions</h3>
+<div class="btn-group">
+	<button class="btn btn-large btn-blue" data-rows-group-id="users"><i class="icon-tag"></i> Add Tag</button>
+	<button class="btn btn-large btn-black" data-rows-group-id="users"><i class="icon-tag"></i> Remove Tag</button>
+	<button class="btn btn-large btn-red" data-rows-group-id="users"><i class="icon-trash"></i> Delete</button>
+</div>
+<p style="color:gray;"><b>Hint:</b> Actions to apply on the selected rows.</p>
+```
+
+----
+')%>
+                      </div>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <!-- <div class="panel-footer">
+                        Footer for Pool 3
+                        </div> -->
+            <button class="arrow-btn left">←</button>
+          </div>
+        </section>
+      </div>
+    </div>
+</section>
