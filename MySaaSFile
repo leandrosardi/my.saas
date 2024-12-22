@@ -1,0 +1,702 @@
+﻿# MySaaS Configuration File.
+# Author: Leandro D. Sardi.
+# Date: Nov-2024.
+#
+# IMPORTANT:
+# - Never write secrets in this file.
+# - Secrets must be placed into the `BlackOpsFile`,
+# and `BlackOpsFile` must be placed into a secret 
+# repository. More information here:
+# https://github.com/leandrosardi/blackops
+#
+# 
+#
+#
+#
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# CONSTANTS
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+
+# run the extension mass as a service
+SERVICE_NAME = 'mass.account'
+
+# choose a custom image to show when a page is loading, or when an AJAX content is loading
+LOADING_IMAGE_PATH = '/mass.account/images/loading.png'
+
+# Integration with TinyMCE
+# - Reference: https://www.tiny.cloud/docs/tinymce/latest/invalid-api-key
+#TINYMCE_API_KEY='!!tinymce_api_key'
+
+# my.saas api-key of the SU user
+# default value is '4db9d88c-dee9-4b5a-8d36-134d38e9f763'.
+# it is recommended you change it in production, with the password of the su user too.
+#
+SU_API_KEY = BlackStack.sandbox? ? '4db9d88c-dee9-4b5a-8d36-134d38e9f763' : '!!su_api_key'
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# MORE CONSTANTS
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+
+# IMPORTANT NOTE: This value should have a format like FOO.COM. 
+# => Other formats can generate bugs in the piece of codes where 
+# => this constant is concatenated. 
+APP_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : 'massprospecting.com'
+APP_NAME = 'MassProspecting'
+APP_SHORT_NAME = 'MassProspecting'
+
+# Email to contact support
+HELPDESK_EMAIL = 'support@massprospecting.com'
+
+# Company Information for invoicing
+COMPANY_NAME = 'MassProspecting'
+COMPANY_TYPE = '-'
+COMPANY_ADDRESS = '1287 Bellaustegui Street, Office 3B, Buenos Aires, Argentina'
+COMPANY_PHONE = '+54 11 15 5061 2148'
+COMPANY_URL = 'https://massprospecting.com'
+
+# Useful URLs
+TERMS_URL = 'https://massprospecting.com/seminars/pub/legal/terms-of-service' # Terms and Conditions URL.
+PRIVACY_URL = 'https://massprospecting.com/seminars/pub/legal/privacy-policy' # Privacy Policy URL.
+CANCEL_URL = 'https://massprospecting.com/seminars/pub/help/how-to-cancel-subscription' # Article explaining how to cancel the service.
+HELPDESK_URL = 'https://massprospecting.com/seminars/pub/help/getting-started' # Helpdesk URL.
+
+# app url
+CS_HOME_PAGE_PROTOCOL = BlackStack.sandbox? ? 'http' : 'https'
+CS_HOME_PAGE_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : 'massprospecting.com'
+CS_HOME_PAGE_PORT = BlackStack.sandbox? ? '3000' : '443'
+CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PAGE_PORT
+CS_HOME_LOGO = CS_HOME_WEBSITE + '/mass.account/images/logo.png'
+CS_HOME_FAVICON = CS_HOME_WEBSITE + '/mass.account/images/favicon.png'
+CS_HOME_TITLE = 'MassProspecting - AI-Driven Multi-Channel Outreach System'
+
+# default timezone
+DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# DB ACCESS - KEEP IT SECRET
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# 
+# For running a CockroachDB instance in your local computer:
+# - cockroach start-single-node --insecure
+# 
+# Either you use a local (demo) database, or a cloud (serverless) database, always find a connection string like this:
+# - postgresql://demo:demo7343@127.0.0.1:26257/movr?sslmode=require
+# - postgresql://root@dev1:26257/defaultdb?sslmode=disable
+# Then, map the parameters of such a connection string here.
+# 
+BlackStack::PostgreSQL::set_db_params({
+  :db_url => '!!ip',
+  :db_port => !!postgres_port,
+  :db_name => '!!postgres_database',
+  :db_user => '!!postgres_username',
+  :db_password => '!!postgres_password',
+})
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# CLOUD STORAGE
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+
+# Integration with DropBox
+# Reference: https://github.com/leandrosardi/my-dropbox-api
+BlackStack::DropBox.set({
+    :vymeco_api_key => '!!vymeco_api_key',
+    :dropbox_refresh_token => '!!dropbox_refresh_token',
+})
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# EXTENSIONS
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+
+# add required extensions
+BlackStack::Extensions.append :'dropbox-token-helper', { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+BlackStack::Extensions.append :i2p, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+BlackStack::Extensions.append :content, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+BlackStack::Extensions.append :monitoring, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# LOGGER CONFIGURATION
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+
+# Setup logging options. 
+BlackStack::Logger.set(
+  min_size: 10*1024*1024, # 10MB
+  max_size: 20*1024*1024, # 20MB
+  show_nesting_level: false,
+  show_nesting_caller: false,
+  colorize: true,
+  nesting_assertion: false
+)
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# API CLIENT - USE IT TO CONNECT TO THE API OF ANOTHER MY.SAAS
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+=begin
+# set api client
+#
+BlackStack::API.set_client(
+    api_key: SU_API_KEY,
+    api_url: BlackStack.sandbox? ? 'http://127.0.0.1' : 'https://' + HOSTNAME + '.massprospecting.com',
+    api_port: BlackStack.sandbox? ? 3000 : 443,
+    api_version: '1.0',
+    backtrace: BlackStack.sandbox?
+)
+=end
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# FUNNEL - USER JOURNEY CONFIGURATION
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+=begin
+# 
+BlackStack::Funnel.set({
+    # Goolge Analytics
+    #
+    # Find your Google Analytics UTM tracking 
+    # code by following the steps in this tutorial:
+    # https://www.monsterinsights.com/docs/where-to-find-utm-tracking-code-results-data-in-google-analytics
+    # 
+    :ga => nil, #BlackStack.sandbox? ? 'G-*****LRH' : 'G-****LRH',
+
+    # reCaptcha v2 keys
+    # 
+    # Create your keys here: https://www.google.com/recaptcha/admin/create
+    # Find your analytics here: https://www.google.com/recaptcha/admin
+    # 
+    :recaptcha2_site_key => nil,
+    :recaptcha2_secret_key => nil,
+})
+
+# Funnel Configuration
+BlackStack::Funnel.add({
+    :name => 'funnels.main',
+
+    # decide what is the screen to show in the root of the app.
+    :url_root => Proc.new do |login, *args|
+        '/landing'
+    end,
+
+    # decide if go to one-time-offer screen, or 
+    # to the plans screen. Return the URL to go.    
+    :url_plans => Proc.new do |login, *args|
+        '/plans'
+    end,
+
+    # return the url to go after signup
+    :url_after_signup => Proc.new do |login, *args|
+        BlackStack::Funnel.url_plans(login, 'funnels.main')
+    end,
+
+    # return the url to go after login
+    :url_after_login => Proc.new do |login, *args|
+        #BlackStack::Funnel.url_root(login, 'funnels.main')
+        BlackStack::Funnel.url_plans(login, 'funnels.main')
+    end,
+
+    # return the url to go if the user
+    # choose to go for free in the plans
+    # screen.
+    :url_to_go_free => Proc.new do |login, *args|
+        BlackStack::Funnel.url_root(login, 'funnels.main')
+    end,
+})
+=end
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# BREAKPOINTS SUPPORT
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+=begin
+# setting up breakpoints for backend processes.
+# enabling/disabling the flag  will enable/disable the function 
+BlackStack::Debugging::set({
+  :allow_breakpoints => BlackStack.sandbox?,
+})
+=end
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# TRANSACTINAL EMAILS
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+=begin
+# parameters for emails delivery
+BlackStack::Emails.set(
+  # postmark api key
+  :postmark_api_key => '!!postmark_api_key',
+
+  # smtp request sender information
+  :sender_email => 'leandro@massprospecting.com',
+  :from_email => 'leandro@massprospecting.com',
+  :from_name => 'MassProspecting',
+
+  # smtp request connection information
+  :smtp_url => 'smtp.postmarkapp.com',
+  :smtp_port => '25',
+  :smtp_user => '!!smtp_user',
+  :smtp_password => '!!smtp_password',
+
+  # default tracking domain
+  :tracking_domain_protocol => BlackStack.sandbox? ? 'http' : 'https',
+  :tracking_domain_tld => 'massprospecting.com',
+  :tracking_domain_port => BlackStack.sandbox? ? 3000 : 443,
+)
+
+# parameters for end user notifications
+BlackStack::Notifications.set(
+  :logo_url => CS_HOME_WEBSITE + '/mass.account/images/logo.png',
+  :signature_picture_url => CS_HOME_WEBSITE + '/core/images/logo/sheldon.jpg',
+  :signature_name => 'Leandro D. Sardi',
+  :signature_position => 'Founder & CEO',
+)
+=end
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# I2P CONFIGURATION
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+=begin
+#
+# I2P Services & Plans
+#
+# I2P configuration
+BlackStack::I2P::set({
+  # In PROD environment: use your public domain.
+  # IN DEV environment: user your ngrok domain. 
+  #
+  # ## Setting Up both Facilitator and Buyer accounts:
+  # 1. Login to developer.paypal.com.
+  # 2. Go to https://developer.paypal.com/developer/accounts
+  #
+  # ## Activate IPN:
+  # 1. Login to your PayPal account (if you are working on dev, login to sandbox.paypal.com using your facilitator email address).
+  # 2. Go Here: https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-ipn-notify
+  # (or https://sandbox.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-ipn-notify if you are in dev)
+  # Reference: https://developer.paypal.com/api/nvp-soap/ipn/IPNTesting/
+  #
+  # ## How to Find the IPNs
+  # 1. Login to your PayPal account (if you are working on dev, login to sandbox.paypal.com using your facilitator email address).
+  # 2. Go Here: https://www.paypal.com/us/cgi-bin/webscr?cmd=_display-ipns-history
+  # (or https://sandbox.paypal.com/us/cgi-bin/webscr?cmd=_display-ipns-history if you are in dev)
+  #
+  'paypal_ipn_listener' => ( BlackStack.sandbox? ? 'https://b5f4-181-164-172-11.ngrok-free.app' : CS_HOME_WEBSITE) + '/api1.0/i2p/ipn.json',
+
+  # In PROD environment: use your paypal.com email account.
+  # IN DEV environment: use your sandbox.paypal.con email address. 
+  'paypal_business_email' => BlackStack.sandbox? ? 'sardi.leandro.daniel-facilitator@gmail.com' : 'sardi.leandro.daniel@gmail.com',
+    
+  # In PROD environment: use https://www.paypal.com.
+  # In DEV environment: use https://www.sandbox.paypal.com.
+  # More information here: https://developer.paypal.com/doapp/business/test-and-go-live/sandbox/
+  'paypal_orders_url' => BlackStack.sandbox? ? 'https://sandbox.paypal.com' : 'https://www.paypal.com',
+
+  # TODO: add API communication in order to handle subscriptions cancelation
+  # PayPal API access. 
+  # 
+  # Follow the steps below to get such information for PROD:
+  # 1. Login to your account in either PayPal.com;
+  # 2. Go to https://www.paypal.com/businessmanage/credentials/apiAccess;
+  # 3. Click on Manage API credentials;
+  # 4. Choose to generate an NVP/SOAP API Signature.
+  # 
+  # For DEV environment, follow the same steps, but loggin into sandbox.PayPal.com.
+  # If you don't know the email and/or password of the fictitious Sandbox Accounts, 
+  # you can get such informatioin here: https://developer.paypal.com/developer/accounts/  
+  # 
+  #:paypal_api_username => 'sardi.leandro.daniel-facilitator_api1.gmail.com',
+  #:paypal_api_password => '*****',
+  #:paypal_signature => '******************************-**********.*****',
+})
+
+# setup the I2P product description here
+BlackStack::I2P::add_services([
+    { 
+        :code=>'subaccount-growth', 
+        :name=>'MassProspecting Growth', 
+        :unit_name=>'subaccount-growth', 
+        :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
+        # hide this service in the transactions screen or not.
+        :public=>true,
+        # if show this service in the header or not.
+        :show_in_top_bar=>false,
+        # if you assign credits and an amount of money when a user pay for this service
+        :mode=>BlackStack::I2P::MODE_CREDITS,
+        # formal description to show in the list of products
+        :description=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        # persuasive description to show in the sales letter
+        :title=>'Sub-Accounts',
+        # larger persuasive description to show in the sales letter
+        :summary=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
+        :return_path=>CS_HOME_WEBSITE+'/',
+        # what is the life time of this product or service?
+        :credits_expiration_period => 'month',
+        :credits_expiration_units => 3, # credits rollover during 3 months
+    }, {
+        :code=>'subaccount-hypergrowth', 
+        :name=>'MassProspecting Hypergrowth', 
+        :unit_name=>'subaccount-hypergrowth', 
+        :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
+        # hide this service in the transactions screen or not.
+        :public=>true,
+        # if show this service in the header or not.
+        :show_in_top_bar=>false,
+        # if you assign credits and an amount of money when a user pay for this service
+        :mode=>BlackStack::I2P::MODE_CREDITS,
+        # formal description to show in the list of products
+        :description=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        # persuasive description to show in the sales letter
+        :title=>'Sub-Accounts',
+        # larger persuasive description to show in the sales letter
+        :summary=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
+        :return_path=>CS_HOME_WEBSITE+'/',
+        # what is the life time of this product or service?
+        :credits_expiration_period => 'month',
+        :credits_expiration_units => 3, # credits rollover during 3 months
+    }, {
+        :code=>'subaccount-lightspeed', 
+        :name=>'MassProspecting Light Speed', 
+        :unit_name=>'subaccount-lightspeed', 
+        :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
+        # hide this service in the transactions screen or not.
+        :public=>true,
+        # if show this service in the header or not.
+        :show_in_top_bar=>false,
+        # if you assign credits and an amount of money when a user pay for this service
+        :mode=>BlackStack::I2P::MODE_CREDITS,
+        # formal description to show in the list of products
+        :description=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        # persuasive description to show in the sales letter
+        :title=>'Sub-Accounts',
+        # larger persuasive description to show in the sales letter
+        :summary=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
+        :return_path=>CS_HOME_WEBSITE+'/',
+        # what is the life time of this product or service?
+        :credits_expiration_period => 'month',
+        :credits_expiration_units => 3, # credits rollover during 3 months
+    }, {
+        :code=>'balance', 
+        :name=>'Maketplace Balance', 
+        :unit_name=>'$', 
+        :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
+        # hide this service in the transactions screen or not.
+        :public=>true,
+        # if show this service in the header or not.
+        :show_in_top_bar=>false,
+        # if you assign credits and an amount of money when a user pay for this service
+        :mode=>BlackStack::I2P::MODE_AMOUNT,
+        # formal description to show in the list of products
+        :description=>'Balance to spend in the Marketplace.',
+        # persuasive description to show in the sales letter
+        :title=>'Balance',
+        # larger persuasive description to show in the sales letter
+        :summary=>'Balance to spend in the Marketplace.',
+        :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
+        :return_path=>CS_HOME_WEBSITE+'/',
+        # what is the life time of this product or service?
+        :credits_expiration_period => 'week',
+        :credits_expiration_units => 1, # credits rollover during 3 months
+    },
+])
+
+BlackStack::I2P::add_plans([
+    {
+        # which product is this plan belonging
+        :service_code=>'subaccount-growth', 
+        # recurrent billing plan or one-time payments
+        :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+        # DEPRECATED - show this plan in the UI
+        :public=>false,
+        # is this a One-Time Offer?
+        # true: this plan is available only if the account has not any invoice using this plan
+        # false: this plan can be purchased many times
+        :one_time_offer=>false,  
+        # plan description
+        :item_number=>'growth', 
+        :name=>'Growth', 
+        
+        # trial configuration
+        #:trial_credits=>1,
+        #:trial_fee=>1,
+        #:trial_units=>7,
+        #:trial_period=>'day',
+        
+        # billing details
+        :credits=>1, 
+        :normal_fee=>27, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+        :fee=>27, # this is the fee that your will charge to the account, as a special offer price.
+        :period=>'month',
+        :units=>1, # billed monthy
+        
+        # Force credits expiration in the moment when the client 
+        # renew with a new payment from the same subscription.
+        # Activate this option for every allocation service.
+        :expiration_on_next_payment => true, # default true
+        
+        # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+        :expiration_lead_period => 'day', #'M', # default day
+        :expiration_lead_units => 7, # credits roll-over
+        
+        # bonus
+        :bonus_plans=>[],
+    }, {
+        # which product is this plan belonging
+        :service_code=>'subaccount-hypergrowth', 
+        # recurrent billing plan or one-time payments
+        :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+        # DEPRECATED - show this plan in the UI
+        :public=>false,
+        # is this a One-Time Offer?
+        # true: this plan is available only if the account has not any invoice using this plan
+        # false: this plan can be purchased many times
+        :one_time_offer=>false,  
+        # plan description
+        :item_number=>'hypergrowth', 
+        :name=>'Hypergrowth', 
+        
+        # trial configuration
+        #:trial_credits=>1,
+        #:trial_fee=>1,
+        #:trial_units=>7,
+        #:trial_period=>'day',
+        
+        # billing details
+        :credits=>1, 
+        :normal_fee=>97, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+        :fee=>97, # this is the fee that your will charge to the account, as a special offer price.
+        :period=>'month',
+        :units=>1, # billed monthy
+        
+        # Force credits expiration in the moment when the client 
+        # renew with a new payment from the same subscription.
+        # Activate this option for every allocation service.
+        :expiration_on_next_payment => true, # default true
+        
+        # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+        :expiration_lead_period => 'day', #'M', # default day
+        :expiration_lead_units => 7, # credits roll-over
+        
+        # bonus
+        :bonus_plans=>[],
+    }, {
+        # which product is this plan belonging
+        :service_code=>'subaccount-lightspeed', 
+        # recurrent billing plan or one-time payments
+        :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+        # DEPRECATED - show this plan in the UI
+        :public=>false,
+        # is this a One-Time Offer?
+        # true: this plan is available only if the account has not any invoice using this plan
+        # false: this plan can be purchased many times
+        :one_time_offer=>false,  
+        # plan description
+        :item_number=>'lightspeed', 
+        :name=>'Light Speed', 
+        
+        # trial configuration
+        #:trial_credits=>1,
+        #:trial_fee=>1,
+        #:trial_units=>7,
+        #:trial_period=>'day',
+        
+        # billing details
+        :credits=>1, 
+        :normal_fee=>297, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+        :fee=>297, # this is the fee that your will charge to the account, as a special offer price.
+        :period=>'month',
+        :units=>1, # billed monthy
+        
+        # Force credits expiration in the moment when the client 
+        # renew with a new payment from the same subscription.
+        # Activate this option for every allocation service.
+        :expiration_on_next_payment => true, # default true
+        
+        # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+        :expiration_lead_period => 'day', #'M', # default day
+        :expiration_lead_units => 7, # credits roll-over
+        
+        # bonus
+        :bonus_plans=>[],
+    },
+
+    # Life-Time Discounts
+    {
+        # which product is this plan belonging
+        :service_code=>'subaccount-growth', 
+        # recurrent billing plan or one-time payments
+        :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+        # DEPRECATED - show this plan in the UI
+        :public=>false,
+        # is this a One-Time Offer?
+        # true: this plan is available only if the account has not any invoice using this plan
+        # false: this plan can be purchased many times
+        :one_time_offer=>false,  
+        # plan description
+        :item_number=>'growth-37-off', 
+        :name=>'Growth 37% Off', 
+        
+        # trial configuration
+        #:trial_credits=>1,
+        #:trial_fee=>1,
+        #:trial_units=>7,
+        #:trial_period=>'day',
+        
+        # billing details
+        :credits=>1, 
+        :normal_fee=>27, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+        :fee=>17, # this is the fee that your will charge to the account, as a special offer price.
+        :period=>'month',
+        :units=>1, # billed monthy
+        
+        # Force credits expiration in the moment when the client 
+        # renew with a new payment from the same subscription.
+        # Activate this option for every allocation service.
+        :expiration_on_next_payment => true, # default true
+        
+        # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+        :expiration_lead_period => 'day', #'M', # default day
+        :expiration_lead_units => 7, # credits roll-over
+        
+        # bonus
+        :bonus_plans=>[],
+    }, {
+      # which product is this plan belonging
+      :service_code=>'subaccount-hypergrowth', 
+      # recurrent billing plan or one-time payments
+      :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+      # DEPRECATED - show this plan in the UI
+      :public=>false,
+      # is this a One-Time Offer?
+      # true: this plan is available only if the account has not any invoice using this plan
+      # false: this plan can be purchased many times
+      :one_time_offer=>false,  
+      # plan description
+      :item_number=>'hypergrowth-51-off', 
+      :name=>'Hypergrowth 51% Off', 
+      
+      # trial configuration
+      #:trial_credits=>1,
+      #:trial_fee=>1,
+      #:trial_units=>7,
+      #:trial_period=>'day',
+      
+      # billing details
+      :credits=>1, 
+      :normal_fee=>97, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+      :fee=>47, # this is the fee that your will charge to the account, as a special offer price.
+      :period=>'month',
+      :units=>1, # billed monthy
+      
+      # Force credits expiration in the moment when the client 
+      # renew with a new payment from the same subscription.
+      # Activate this option for every allocation service.
+      :expiration_on_next_payment => true, # default true
+      
+      # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+      :expiration_lead_period => 'day', #'M', # default day
+      :expiration_lead_units => 7, # credits roll-over
+      
+      # bonus
+      :bonus_plans=>[],
+    }, {
+      # which product is this plan belonging
+      :service_code=>'subaccount-lightspeed', 
+      # recurrent billing plan or one-time payments
+      :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+      # DEPRECATED - show this plan in the UI
+      :public=>false,
+      # is this a One-Time Offer?
+      # true: this plan is available only if the account has not any invoice using this plan
+      # false: this plan can be purchased many times
+      :one_time_offer=>false,  
+      # plan description
+      :item_number=>'lightspeed-33-off', 
+      :name=>'Light Speed 33% Off', 
+      
+      # trial configuration
+      #:trial_credits=>1,
+      #:trial_fee=>1,
+      #:trial_units=>7,
+      #:trial_period=>'day',
+      
+      # billing details
+      :credits=>1, 
+      :normal_fee=>297, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+      :fee=>197, # this is the fee that your will charge to the account, as a special offer price.
+      :period=>'month',
+      :units=>1, # billed monthy
+      
+      # Force credits expiration in the moment when the client 
+      # renew with a new payment from the same subscription.
+      # Activate this option for every allocation service.
+      :expiration_on_next_payment => true, # default true
+      
+      # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+      :expiration_lead_period => 'day', #'M', # default day
+      :expiration_lead_units => 7, # credits roll-over
+      
+      # bonus
+      :bonus_plans=>[],
+
+    # Marketplace Balance
+    }, {
+      # which product is this plan belonging
+      :service_code=>'balance', 
+      # recurrent billing plan or one-time payments
+      :type=>BlackStack::I2P::PAYMENT_SUBSCRIPTION,  
+      # DEPRECATED - show this plan in the UI
+      :public=>false,
+      # is this a One-Time Offer?
+      # true: this plan is available only if the account has not any invoice using this plan
+      # false: this plan can be purchased many times
+      :one_time_offer=>false,
+      # plan description
+      :item_number=>'balance', 
+      :name=>'Balance', 
+      
+      # trial configuration
+      #:trial_credits=>1,
+      #:trial_fee=>1,
+      #:trial_units=>7,
+      #:trial_period=>'day',
+      
+      # billing details
+      :credits=>1, 
+      :normal_fee=>1, # cognitive bias: expensive fee to show it strikethrough, as the normal price. But it's a lie. 
+      :fee=>1, # this is the fee that your will charge to the account, as a special offer price.
+      :period=>'month',
+      :units=>1, # billed monthy
+      
+      # Force credits expiration in the moment when the client 
+      # renew with a new payment from the same subscription.
+      # Activate this option for every allocation service.
+      :expiration_on_next_payment => true, # default true
+      
+      # Additional period after the billing cycle - Extend 2 weeks after the billing cycle - Referemce: https://github.com/ExpandedVenture/ConnectionSphere/issues/283.
+      :expiration_lead_period => 'day', #'M', # default day
+      :expiration_lead_units => 7, # credits roll-over
+      
+      # bonus
+      :bonus_plans=>[],
+  },
+])
+=end
