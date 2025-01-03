@@ -19,7 +19,7 @@ begin
         raise "name must be a String" unless name.is_a?(String)
         raise "value cannot be nil" if value.nil?
         raise "default cannot be nil" if default.nil?
-        raise "value and default must be of the same type" unless value.class == default.class    
+        raise "value and default must be of the same type" unless value.class == default.class || ([value, default].all? { |v| [TrueClass, FalseClass].include?(v.class) })  
     }
 
     preferences.each { |h|
