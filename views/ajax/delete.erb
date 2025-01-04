@@ -10,6 +10,9 @@ begin
     o = cls.where(:id=>desc['id'], :id_account=>@account.id).first
     raise "id not found" if o.nil?
     o.delete_time = now()
+    if o.respond_to?(:active) && [TrueClass, FalseClass].include?(o.active.class)
+        o.active = false
+    end
     o.save
     return_message['result'] = o.to_h
 rescue Exception => e
