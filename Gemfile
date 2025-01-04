@@ -17,6 +17,7 @@ gem 'zyte-client', '~>1.0.6'
 #gem 'mass-client', '~>1.0.19'
 
 # Other gems needed for running mysaas
+gem 'ruby-openai', '~>6.5.0'
 gem 'open3', '~>0.1.1'
 gem 'timeout', '~>0.4.1'
 gem 'net-http', '~>0.2.2'
