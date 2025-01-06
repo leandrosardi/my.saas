@@ -264,6 +264,7 @@ begin
   # use this modifier for internal pages, who cannot be shown if there IS NOT a logged-in user
   # condition: if there is not authenticated user on the platform, then redirect to the signup page
   set(:auth) do |*roles|
+#binding.pry
     condition do
       if !logged_in?
         # remember the internal page I have to return to after login or signup
@@ -296,6 +297,7 @@ begin
   # use this modifier for external pages, who cannot be shown if there IS a logged-in user
   # condition: if there is not authenticated user on the platform, then redirect to the / page
   set(:noauth) do |*roles|
+#binding.pry
     condition do
       if logged_in?
         redirect "/"
@@ -552,7 +554,11 @@ begin
   print 'Setting up entries of external pages... '
 
   get '/', :agent => /(.*)/ do
-    redirect BlackStack::Funnel.url_root(@login, 'funnels.main')
+    if logged_in?
+      redirect BlackStack::Funnel.url_root(@login, 'funnels.main')
+    else
+      redirect BlackStack::Funnel.url_landing(@login, 'funnels.main')
+    end
   end
 
   get '/404', :agent => /(.*)/ do
