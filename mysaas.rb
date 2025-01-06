@@ -24,7 +24,9 @@ require 'adspower-client'
 require 'my-dropbox-api'
 #require_relative '../../my-dropbox-api/lib/my-dropbox-api.rb'
 
+require 'simple-openai-client'
 require 'openai'
+
 require 'open3'
 require 'colorize'
 require 'pg'
