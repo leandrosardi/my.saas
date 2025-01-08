@@ -7,7 +7,7 @@ ruby '~>3.1.2'
 gem 'blackstack-db', '~>1.0.9'
 gem 'blackstack-core', '~>1.2.27'
 gem 'blackstack-nodes', '~>1.2.16'
-gem 'blackstack-enrichment', '~>1.0.3'
+gem 'blackstack-enrichment', '~>1.0.3' # DEPRECATED
 gem 'my-ruby-deployer', '~>1.3.5'
 gem 'simple_cloud_logging', '~>1.2.7'
 gem 'simple_command_line_parser', '~>1.1.2'
