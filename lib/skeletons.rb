@@ -105,6 +105,9 @@ module BlackStack
                 o = self.insert(h, upsert_children: b)
             else
                 o.update(h, upsert_children: b)
+                # remove the `delete_time`.
+                o.delete_time = nil
+                o.save
             end
 
             return o
