@@ -835,6 +835,12 @@ begin
     erb :"views/api1.0/upsert"
   end
 
+  # https://github.com/MassProspecting/docs/issues/378
+  # 
+  post "/api1.0/:object/upsert2.json", :api_key => true do
+    erb :"views/api1.0/upsert2"
+  end
+
 
   # notifications
   get '/api1.0/notifications/open.json' do

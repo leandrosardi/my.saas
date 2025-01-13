@@ -86,7 +86,7 @@ module BlackStack
             end
 
             return o
-        end # def self.upsert
+        end # def upsert
 
         # insert or update a record
         #
@@ -108,7 +108,7 @@ module BlackStack
             end
 
             return o
-        end # def self.upsert
+        end # def upsert2
 
         # insert or update an array of hash descriptors
         def insert_update_many(a, logger: nil)
