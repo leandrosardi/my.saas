@@ -609,7 +609,7 @@
                }
 
                body {
-                 background: #333;
+                 /* background: #333; */
                  overflow: hidden;
                  /* avoid the window to scroll because that breaks the layout of the panels */
                }
@@ -1024,12 +1024,15 @@
 
                /* General Panel Styles */
                .panel {
-                 position: relative;
-                 overflow: hidden;
-                 border: 1px solid #ddd;
-                 height: 92vh;
-                 background-color: #f7f9fc;
-               }
+                position: relative;
+                overflow: hidden;
+                border: 1px solid #ddd;
+                border-bottom-color: transparent;
+                /* height: 92vh; */
+                height: 100%;
+                /* background-color: #f7f9fc; */
+                background-color: #fff;
+              }
 
                #pool1_header,
                #pool2_header,
@@ -1188,12 +1191,13 @@
                }
 
                .chat-messages {
-                 flex-grow: 1;
-                 padding: 15px;
-                 overflow-y: auto;
-                 background-color: #fff;
-                 max-height: calc(92vh - 105px);
-               }
+                flex-grow: 1;
+                padding: 15px;
+                overflow-y: auto;
+                background-color: #fff;
+                /* max-height: calc(92vh - 105px); */
+                max-height: calc(92vh - 60px);
+              }
 
                .message.other {
                  display: flex;
@@ -1233,11 +1237,11 @@
                }
 
                .list {
-                 /* overflow-y: auto; */
-                 /* height: 90vh; */
-                 height: 92vh;
-                 overflow-y: auto;
-               }
+                /* overflow-y: auto; */
+                height: 90vh;
+                /* height: 92vh; */
+                overflow-y: auto;
+              }
 
                .user-list {
                  max-height: calc(100vh - 180px) !important;
@@ -1690,6 +1694,7 @@
                body.dark-mode {
                  background-color: #121212;
                  color: #f7f7f7;
+                 border-bottom-color: transparent;
                }
 
 
