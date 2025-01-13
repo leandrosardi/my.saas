@@ -88,6 +88,28 @@ module BlackStack
             return o
         end # def self.upsert
 
+        # insert or update a record
+        #
+        # parameters:
+        # - upsert_children: call upsert on children objects, or call insert on children objects
+        #
+        # return the object
+        #
+        # Unlike the `upsert` method, the `upsert2` calls the `find2` method instead of `find`, and if the record already existed but deleted `upsert2` will remove the `delete_time`.
+        # Refer to: https://github.com/MassProspecting/docs/issues/378
+        #
+        def upsert2(h={}, upsert_children: true)
+            o = self.find2(h)
+            b = upsert_children
+            if o.nil?
+                o = self.insert(h, upsert_children: b)
+            else
+                o.update(h, upsert_children: b)
+            end
+
+            return o
+        end # def self.upsert
+
         # insert or update an array of hash descriptors
         def insert_update_many(a, logger: nil)
             l = logger || BlackStack::DummyLogger.new
