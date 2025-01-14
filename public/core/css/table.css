@@ -69,15 +69,15 @@
                }
 
                table tbody tr.clickeable:hover td {
-                 //background-color: rgb(70, 130, 180);
-                 //color: #FFFFFF; /* White text for contrast */
+                 /* //background-color: rgb(70, 130, 180); */
+                 /* //color: #FFFFFF; White text for contrast */
                  background-color: rgb(102, 51, 153);
                  color: white;
                }
 
                table tbody tr.selected td {
-                 //background-color: rgb(15, 76, 129);
-                 //color: #FFFFFF; /* White text for contrast */
+                 /* //background-color: rgb(15, 76, 129); */
+                 /* //color: #FFFFFF; White text for contrast */
                  background-color: yellow;
                  color: black;
                }
@@ -1196,7 +1196,8 @@
                 overflow-y: auto;
                 background-color: #fff;
                 /* max-height: calc(92vh - 105px); */
-                max-height: calc(92vh - 60px);
+                /* max-height: calc(92vh - 60px); */
+                max-height: 100%;
               }
 
                .message.other {
@@ -1238,8 +1239,9 @@
 
                .list {
                 /* overflow-y: auto; */
-                height: 90vh;
+                /* height: 90vh; */
                 /* height: 92vh; */
+                height: 100%;
                 overflow-y: auto;
               }
 
@@ -1413,6 +1415,7 @@
                /* Ensure the panel content grows to take remaining space */
                #list_div {
                  flex-grow: 1;
+                 height: calc(100vh - 100px);
                  /* overflow-y: auto; */
                }
 
