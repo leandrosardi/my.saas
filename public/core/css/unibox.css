@@ -69,15 +69,15 @@ table tbody tr.clickeable:hover td:last-child {
 }
 
 table tbody tr.clickeable:hover td {
-  //background-color: rgb(70, 130, 180);
-  //color: #FFFFFF; /* White text for contrast */
+  /* //background-color: rgb(70, 130, 180); */
+  /* //color: #FFFFFF; White text for contrast */
   background-color: rgb(102, 51, 153);
   color: white;
 }
 
 table tbody tr.selected td {
-  //background-color: rgb(15, 76, 129);
-  //color: #FFFFFF; /* White text for contrast */
+  /* //background-color: rgb(15, 76, 129); */
+  /* //color: #FFFFFF; White text for contrast */
   background-color: yellow;
   color: black;
 }
@@ -609,7 +609,7 @@ table.fix td.fix {
 }
 
 body {
-  background: #333;
+  /* background: #333; */
   overflow: hidden;
   /* avoid the window to scroll because that breaks the layout of the panels */
 }
@@ -958,8 +958,11 @@ body.dark-mode #darkModeButton {
   position: relative;
   overflow: hidden;
   border: 1px solid #ddd;
-  height: 92vh;
-  background-color: #f7f9fc;
+                border-bottom-color: transparent;
+                /* height: 92vh; */
+                height: 100%;
+                /* background-color: #f7f9fc; */
+                background-color: #fff;
 }
 
 #pool1_header,
@@ -1123,7 +1126,10 @@ body.dark-mode #darkModeButton {
   padding: 15px;
   overflow-y: auto;
   background-color: #fff;
-  max-height: calc(92vh - 105px);
+  /* max-height: calc(92vh - 105px); */
+  /* max-height: calc(92vh - 60px); */
+  /* max-height: calc(92vh - 105px); */
+  max-height: 100%;
 }
 
 .message.other {
@@ -1166,7 +1172,9 @@ body.dark-mode #darkModeButton {
 .list {
   /* overflow-y: auto; */
   /* height: 90vh; */
-  height: 65vh;
+  /* height: 92vh; */
+  height: 100%;
+  overflow-y: auto;
 }
 
 .user-list {
@@ -1339,6 +1347,7 @@ body.dark-mode #darkModeButton {
 /* Ensure the panel content grows to take remaining space */
 #list_div {
   flex-grow: 1;
+  height: calc(100vh - 100px);
   /* overflow-y: auto; */
 }
 
@@ -1580,6 +1589,7 @@ body.dark-mode #darkModeButton {
 body.dark-mode {
   background-color: #121212;
   color: #f7f7f7;
+  border-bottom-color: transparent;
 }
 
 
