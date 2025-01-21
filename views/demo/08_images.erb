@@ -184,7 +184,7 @@ Define a parent element where the images will be rendered. Ensure the element in
 Use the `imagesJs.draw` function to display a series of images. Provide an array of URLs to populate the image series dynamically:
 
 ```javascript
-var parent = $('#myImages1');
+var parent = $('#myImages2');
 imagesJs.draw(parent, {
     urls: [
         'https://example.com/image1.jpg',
@@ -195,6 +195,24 @@ imagesJs.draw(parent, {
 ```
 
 This will render the images in the specified parent element.
+
+
+####3. Support for Many Components
+
+Use the `imagesJs.draw` function with another `parent` with a different id.
+
+```javascript
+var parent = $('#myImages2');
+imagesJs.draw(parent, {
+    urls: [
+        'https://example.com/image5.jpg',
+        'https://example.com/image6.jpg',
+        'https://example.com/image7.jpg'
+    ]
+});
+```
+
+This will render a second images into the second parent element.
 
 ----
 ")%>
