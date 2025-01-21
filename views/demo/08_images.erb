@@ -65,10 +65,13 @@
               </button>
             </div>
 
+        <section class='row-fluid'>
+        <div class='span6'>
+
             <div id="list_div" class="panel-content">
             <section class="list">
               <div class="chat-messages">
-                <h2>Images</h2>
+                <h2>Images 1</h2>
 
 									<section class="row-fluid">
 										<div id='myImages1' name='myImages1' data-id="myImages1" class="span6">
@@ -92,11 +95,49 @@ $(document).ready(function() {
 }); // end of document.ready
 											</pre>
 										</div>
+									</section>
+              </div>
+            </section>
+            </div>
+
+        </div>
+        <div class='span6'>
+
+            <div id="list_div" class="panel-content">
+            <section class="list">
+              <div class="chat-messages">
+                <h2>Images 2</h2>
+
+									<section class="row-fluid">
+										<div id='myImages2' name='myImages2' data-id="myImages2" class="span6">
+			                <!-- add images here using imagesJs -->
+			                <!-- attribute data-id is required if you manage many different lists of images -->
+			              </div>
+
+										<div class='span6'>
+											<p><b>Hint:</b> Click on one picture to maximize it.</p>
+											<br/>
+											<br/>
+											<pre>
+$(document).ready(function() {
+	var parent = $('#myImages2');
+	imagesJs.draw(parent, {
+	  urls: [
+	    'https://...',
+			...
+	  ]
+	});
+}); // end of document.ready
+											</pre>
+										</div>
 
 									</section>
               </div>
             </section>
-          </div>
+            </div>
+        </div>
+        </section>
+
         </section>
         <!-- Pool 3 -->
         <section id="pool3" name="pool3" class="col panel">
@@ -155,26 +196,6 @@ imagesJs.draw(parent, {
 
 This will render the images in the specified parent element.
 
-####3. Maximize an Image
-
-Clicking on an image triggers the maximization functionality. The `images.min.js` library automatically creates a modal for viewing images in full screen. Additional controls such as \"Next,\" \"Previous,\" and \"Close\" buttons are included for navigation:
-
-```javascript
-$(\".screenshot\").click(function() {
-    $(\"#screenshot_modal\").show(); // Open modal on image click
-});
-```
-
-Keyboard shortcuts:
-- **Escape:** Close the modal
-- **Left Arrow:** View the previous image
-- **Right Arrow:** View the next image
-
-The modal also updates the image index (`#number`) and total count (`#total`) dynamically.
-
-
-
-
 ----
 ")%>
                       </div>
@@ -208,5 +229,16 @@ The modal also updates the image index (`#number`) and total count (`#total`) dy
 					'/demo/images/image9.jpg',
         ]
       });
+
+      var parent2 = $('#myImages2');
+      imagesJs.draw(parent2, {
+        urls: [
+					'/demo/images/image6.jpg',
+					'/demo/images/image7.jpg',
+					'/demo/images/image8.jpg',
+					'/demo/images/image9.jpg',
+        ]
+      });
+
   }); // end of document.ready
 </script>
