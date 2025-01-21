@@ -751,9 +751,9 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	}
 
 	// apply behaviour of all tr.clickeable elements
-	function enableClickeableRows() {
-		$('tr.clickeable').click(function() {
-			$('tr.clickeable').removeClass('selected');
+	function enableClickeableRows(query = undefined) {
+		$(query ? query : 'tr.clickeable').click(function() {
+			$(query ? query : 'tr.clickeable').removeClass('selected');
 			$(this).addClass('selected');
 		});
 	}

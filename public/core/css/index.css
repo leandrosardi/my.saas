@@ -1296,6 +1296,11 @@
         display: block;
     }
 
+    div.lead.clickeable.selected {
+        background-color: yellow;
+        color: black;
+    }
+
     @media screen and (max-width: 768px) {
         .row {
             height: 90vh;
