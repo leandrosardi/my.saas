@@ -359,20 +359,40 @@ module BlackStack
             end
             return ret
         end # def mandatory_errors
-
+        
         # validate the values of some specific keys are valid URLs.
         def url_errors(h={}, keys:)
+            def fetch_with_redirects(uri_str, limit = 5)
+                raise ArgumentError, 'Too many HTTP redirects' if limit == 0
+                
+                uri = URI(uri_str)
+                response = Net::HTTP.get_response(uri)
+                
+                case response
+                when Net::HTTPSuccess then
+                response
+                when Net::HTTPRedirection then
+                location = response['location']
+                fetch_with_redirects(location, limit - 1)
+                else
+                response
+                end
+            end
+
             ret = []
             keys.each do |k|
                 unless h[k.to_s].nil? || h[k.to_s].to_s.empty?
                     # validate the URL is reachable
                     if h[k.to_s].to_s.valid_url?
                         begin
-                            uri = URI.parse(h[k.to_s])
-                            response = Net::HTTP.get_response(uri)
-                            ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} is not reachable." if response.code.to_i != 200
-                        rescue
-                            ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} is not reachable."
+                            response = fetch_with_redirects(h[k.to_s])
+                            if response.is_a?(Net::HTTPSuccess)
+                                # ok
+                            else
+                                ret << "The #{k} '#{h[k.to_s]}' for #{self.name.gsub('Mass::', '')} is not reachable. (HTTP #{response.code})"
+                            end
+                        rescue => e
+                            ret << "The #{k} '#{h[k.to_s]}' for #{self.name.gsub('Mass::', '')} is not reachable. (#{e.message})"
                         end
                     elsif h[k.to_s].to_s.valid_filename?
                         ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} is not reachable." if !File.exists?(h[k.to_s].gsub(/^file\:\/\//, '/'))
