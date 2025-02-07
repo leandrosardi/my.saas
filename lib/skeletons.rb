@@ -54,6 +54,7 @@ module BlackStack
         # - upsert_children: call upsert on children objects, or call insert on children objects
         #
         # return the object
+        # 
         def insert(h={}, in_memory_only: false, upsert_children: true)
             h = self.normalize(h)
             errors = self.errors(h)
@@ -76,13 +77,14 @@ module BlackStack
         # - upsert_children: call upsert on children objects, or call insert on children objects
         #
         # return the object
-        def upsert(h={}, upsert_children: true)
+        def upsert(h={}, in_memory_only: false, upsert_children: true)
             o = self.find(h)
+            a = in_memory_only
             b = upsert_children
             if o.nil?
-                o = self.insert(h, upsert_children: b)
+                o = self.insert(h, in_memory_only: a, upsert_children: b)
             else
-                o.update(h, upsert_children: b)
+                o.update(h, in_memory_only: a, upsert_children: b)
             end
 
             return o
@@ -98,13 +100,14 @@ module BlackStack
         # Unlike the `upsert` method, the `upsert2` calls the `find2` method instead of `find`, and if the record already existed but deleted `upsert2` will remove the `delete_time`.
         # Refer to: https://github.com/MassProspecting/docs/issues/378
         #
-        def upsert2(h={}, upsert_children: true)
+        def upsert2(h={}, in_memory_only: false, upsert_children: true)
             o = self.find2(h)
+            a = in_memory_only
             b = upsert_children
             if o.nil?
-                o = self.insert(h, upsert_children: b)
+                o = self.insert(h, in_memory_only: a, upsert_children: b)
             else
-                o.update(h, upsert_children: b)
+                o.update(h, in_memory_only: a, upsert_children: b)
                 # remove the `delete_time`.
                 o.delete_time = nil
                 o.save
