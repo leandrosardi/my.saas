@@ -54,19 +54,19 @@ module BlackStack
         # - upsert_children: call upsert on children objects, or call insert on children objects
         #
         # return the object
-        def insert(h={}, upsert_children: true)
+        def insert(h={}, in_memory_only: false, upsert_children: true)
             h = self.normalize(h)
             errors = self.errors(h)
             raise errors.join("\n") if errors.size > 0
 
-            b = upsert_children
+            b = upsert_children && !in_memory_only
             o = self.new
             o.id = h['id'] || guid
             o.id_account = h['id_account']
             o.id_user = h['id_user']
             o.create_time = now
             o.update(h, upsert_children: b)
-            o.save
+            o.save unless in_memory_only
             return o
         end
 
