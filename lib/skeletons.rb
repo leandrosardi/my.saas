@@ -60,13 +60,14 @@ module BlackStack
             errors = self.errors(h)
             raise errors.join("\n") if errors.size > 0
 
-            b = upsert_children && !in_memory_only
+            a = in_memory_only
+            b = upsert_children
             o = self.new
             o.id = h['id'] || guid
             o.id_account = h['id_account']
             o.id_user = h['id_user']
             o.create_time = now
-            o.update(h, upsert_children: b)
+            o.update(h, in_memory_only: a, upsert_children: b)
             o.save unless in_memory_only
             return o
         end

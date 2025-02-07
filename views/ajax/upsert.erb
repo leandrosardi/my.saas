@@ -2,6 +2,7 @@
 return_message = {}
 return_message['status'] = 'success'
 begin
+binding.pry
     object = params[:object]
     cls = BlackStack::API.classes[object.to_sym]
     desc = @body
