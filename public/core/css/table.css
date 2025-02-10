@@ -243,24 +243,22 @@
                  color: #f1f1f1 !important;
                }
 
-               /* Sections and Divs */
-               .dark-mode section.row-fluid {
-                 background-color: rgba(17, 17, 17, 0.22);
-                 /* Semi-transparent */
-                 color: #fff;
-               }
-
-               .dark-mode section.row-fluid div {
-                 background-color: rgba(17, 17, 17, 0.22);
-                 /* Semi-transparent */
-                 color: #fff;
-               }
-
-               .dark-mode section.div {
-                 background-color: rgba(0, 0, 0, 0.22);
-                 /* Semi-transparent */
-                 color: #fff;
-               }
+              .dark-mode section.row-fluid {
+                background-color: rgba(17, 17, 17, 0.22);
+                color: #fff;
+                isolation: isolate;
+              }
+              
+              .dark-mode section.row-fluid div {
+                background-color: transparent;
+                color: inherit;
+              }
+              
+              .dark-mode section.div {
+                background-color: rgba(0, 0, 0, 0.22);
+                color: #fff;
+                isolation: isolate;
+              }
 
                .dark-mode table {
                  background-color: rgba(0, 0, 0, 0.22);
