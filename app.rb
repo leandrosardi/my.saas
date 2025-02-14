@@ -200,7 +200,14 @@ begin
   print 'Setting up Sinatra... '
   PORT = parser.value("port")
 
-  configure { set :server, :puma }
+  configure do
+    set :server, :puma
+    set :server_settings, {
+      bind: "tcp://0.0.0.0:#{PORT}",
+      daemonize: false,
+      # threads: "0:5", etc. any Puma settings you want
+    }
+  end
   set :bind, '0.0.0.0'
   set :port, PORT
   enable :sessions
@@ -217,7 +224,7 @@ begin
   end
 
   at_exit do
-    STDERR.puts "at_exit: The process is stopping with status #{$?.inspect}"
+    puts "at_exit: The process is stopping with status #{$?.inspect}"
   end
 
   set :protection, false
@@ -879,15 +886,15 @@ begin
   #BlackStack::Extensions.add_storage_subfolders
 
 rescue LoadError => e
-  STDERR.puts "Failed to load required file: #{e.message}"
+  puts "Failed to load required file: #{e.message}"
   # You can add additional error handling here, such as exiting the script
   exit(2)
 
 rescue SystemExit => e
-  STDERR.puts e.to_s
+  puts e.to_s
   exit(1)
 
 rescue => e
-  STDERR.puts e.to_s
+  puts e.to_s
   exit(1)
 end
