@@ -874,11 +874,11 @@ begin
   #BlackStack::Extensions.add_storage_subfolders
 
 rescue LoadError => e
-  STDERR.puts "Failed to load required file: #{e.message}".red
+  puts "Failed to load required file: #{e.message}"
   # You can add additional error handling here, such as exiting the script
   exit(2)
 
 rescue => e
-  STDERR.puts e.to_console.red
+  puts e.to_s
   exit(1)
 end
