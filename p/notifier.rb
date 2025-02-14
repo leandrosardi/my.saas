@@ -38,7 +38,7 @@ while true
         start = Time.now()
         l.logf 'done'.green       
 
-        BlackStack::Notifications.run(l)
+        BlackStack::Notifications.run(logger:l)
 
         # get the end loop time
         l.logs 'Ending loop... '
