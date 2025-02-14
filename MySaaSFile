@@ -237,33 +237,221 @@ BlackStack::Debugging::set({
 # --------------------------------------------------------------
 =begin
 # parameters for emails delivery
+# parameters for emails delivery
 BlackStack::Emails.set(
   # postmark api key
   :postmark_api_key => '!!postmark_api_key',
 
   # smtp request sender information
-  :sender_email => 'leandro@massprospecting.com',
-  :from_email => 'leandro@massprospecting.com',
-  :from_name => 'MassProspecting',
+  :sender_email => '!!sender_email',
+  :from_email => '!!from_email',
+  :from_name => '!!from_name',
 
   # smtp request connection information
-  :smtp_url => 'smtp.postmarkapp.com',
-  :smtp_port => '25',
+  :smtp_url => '!!smtp_url',
+  :smtp_port => '!!smtp_port',
   :smtp_user => '!!smtp_user',
   :smtp_password => '!!smtp_password',
 
   # default tracking domain
-  :tracking_domain_protocol => BlackStack.sandbox? ? 'http' : 'https',
-  :tracking_domain_tld => 'massprospecting.com',
-  :tracking_domain_port => BlackStack.sandbox? ? 3000 : 443,
+  :tracking_domain_protocol => '!!tracking_domain_protocol',
+  :tracking_domain_tld => '!!tracking_domain_tld',
+  :tracking_domain_port => !!tracking_domain_port,
 )
 
 # parameters for end user notifications
 BlackStack::Notifications.set(
-  :logo_url => CS_HOME_WEBSITE + '/mass.account/images/logo.png',
-  :signature_picture_url => CS_HOME_WEBSITE + '/core/images/logo/sheldon.jpg',
-  :signature_name => 'Leandro D. Sardi',
-  :signature_position => 'Founder & CEO',
+  :logo_url => '!!logo_url',
+  :signature_picture_url => '!!signature_picture_url',
+  :signature_name => '!!signature_name',
+  :signature_position => '!!signature_position',
+)
+
+BlackStack::Notifications.add(
+  {
+    # descriptive name for this transactional email
+    :name => 'confirm_email',
+    # unique code for this transactional email - this value will be saved in the filed `code` of the `notification` table.
+    :type => 10,
+    # activate this flags if you want to track opens and/or click for these transactional emails/
+    :track_opens => true,
+    :track_clicks => true,
+    # return a Sequel dataset of objects to deliver transactional emails.
+    # Usually, it finds for records with a specific flag activated (e.g.: notification_confirm_email_requested).
+    :objects => Proc.new do |*args|
+      BlackStack::MySaaS::User.select(:id, :email, :notification_confirm_email_requested, :id_account).where(Sequel.lit('
+        notification_confirm_email_requested = true
+      '))
+    end,
+    # event to fire after the notification is delivered
+    # Usually, turns off a specific flag activated (e.g.: notification_confirm_email_requested).
+    :after_deliver => Proc.new do |o, *args|
+      o.notification_confirm_email_requested=false
+      o.save
+    end,
+    # return user to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :user => Proc.new do |o, *args|
+      o
+    end, 
+    # return email to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :email_to => Proc.new do |o, *args|
+      o.email
+    end, 
+    # return name to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :name_to => Proc.new do |o, *args|
+      o.name || o.email
+    end, 
+    # return the subject of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :subject => Proc.new do |o, *args|
+      'Confirm Your Email Address.'
+    end, 
+    # return the body of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :body => Proc.new do |o, *args|
+      ' 
+        <p>We sent this email to you becuase you created an account in <a href='+34.chr+CS_HOME_WEBSITE+34.chr+'><b>'+34.chr+APP_NAME+34.chr+'</b></a>.</p>
+
+        <p><b>Click the link below to confirm your email address.</b></p>
+        
+        <p>This link will be valid for '+34.chr+BlackStack::MySaaS::Notification::LINK_TIMEOUT.to_s+34.chr+' minutes.</p>
+        
+        <p><a href='+34.chr+CS_HOME_WEBSITE+'/confirm/!nid'+34.chr+'><b>Click here and confirm your email address</b></a>.</p>
+        
+        <br/>
+        
+        <p>Email address confirmation is a neccesary step to unlock most of the '+34.chr+APP_NAME+34.chr+' features.</p>
+        <p>If the link above is no longer available, you can request a new confirmation link <a href='+34.chr+CS_HOME_WEBSITE+'/settings/users'+34.chr+'><b>here</b></a>.</p>
+      '
+    end,
+  },
+)
+
+BlackStack::Notifications.add(
+  {
+    # descriptive name for this transactional email
+    :name => 'reset_password',
+    # unique code for this transactional email - this value will be saved in the filed `code` of the `notification` table.
+    :type => 11,
+    # activate this flags if you want to track opens and/or click for these transactional emails/
+    :track_opens => true,
+    :track_clicks => true,
+    # return a Sequel dataset of objects to deliver transactional emails.
+    # Usually, it finds for records with a specific flag activated (e.g.: notification_reset_password_requested).
+    :objects => Proc.new do |*args|
+      BlackStack::MySaaS::User.select(:id, :email, :notification_reset_password_requested, :id_account).where(Sequel.lit('
+        notification_reset_password_requested = true
+      '))
+    end,
+    # event to fire after the notification is delivered
+    # Usually, turns off a specific flag activated (e.g.: notification_reset_password_requested).
+    :after_deliver => Proc.new do |o, *args|
+      o.notification_reset_password_requested=false
+      o.save
+    end,
+    # return user to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :user => Proc.new do |o, *args|
+      o
+    end, 
+    # return email to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :email_to => Proc.new do |o, *args|
+      o.email
+    end, 
+    # return name to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :name_to => Proc.new do |o, *args|
+      o.name || o.email
+    end, 
+    # return the subject of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :subject => Proc.new do |o, *args|
+      'Reset Your Password.'
+    end, 
+    # return the body of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :body => Proc.new do |o, *args|
+      ' 
+        <p>We sent this email to you becuase you requested to reset your password of <a href='+34.chr+CS_HOME_WEBSITE+34.chr+'><b>'+34.chr+APP_NAME+34.chr+'</b></a>.</p>
+
+        <p><b>Click the link below to set a new password.</b></p>
+        
+        <p>This link will be valid for '+34.chr+BlackStack::MySaaS::Notification::LINK_TIMEOUT.to_s+34.chr+' minutes.</p>
+        
+        <p><a href='+34.chr+CS_HOME_WEBSITE+'/reset/!nid'+34.chr+'><b>Click here and confirm your email address</b></a>.</p>
+        
+        <br/>
+        
+        <p>If the link above is no longer available, you can request a new confirmation link <a href='+34.chr+CS_HOME_WEBSITE+'/recover'+34.chr+'><b>here</b></a>.</p>
+      '
+    end,
+  },
+)
+
+BlackStack::Notifications.add(
+  {
+    # descriptive name for this transactional email
+    :name => 'you_added',
+    # unique code for this transactional email - this value will be saved in the filed `code` of the `notification` table.
+    :type => 12,
+    # activate this flags if you want to track opens and/or click for these transactional emails/
+    :track_opens => true,
+    :track_clicks => true,
+    # return a Sequel dataset of objects to deliver transactional emails.
+    # Usually, it finds for records with a specific flag activated (e.g.: notification_you_have_been_added).
+    :objects => Proc.new do |*args|
+      BlackStack::MySaaS::User.select(:id, :email, :notification_you_have_been_added, :id_account).where(Sequel.lit('
+        notification_you_have_been_added = true
+      '))
+    end,
+    # event to fire after the notification is delivered
+    # Usually, turns off a specific flag activated (e.g.: notification_you_have_been_added).
+    :after_deliver => Proc.new do |o, *args|
+      o.notification_you_have_been_added=false
+      o.save
+    end,
+    # return user to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :user => Proc.new do |o, *args|
+      o
+    end, 
+    # return email to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :email_to => Proc.new do |o, *args|
+      o.email
+    end, 
+    # return name to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :name_to => Proc.new do |o, *args|
+      o.name || o.email
+    end, 
+    # return the subject of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :subject => Proc.new do |o, *args|
+      "#{o.account.name} invited your to join them at #{APP_NAME}."
+    end, 
+    # return the body of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :body => Proc.new do |o, *args|
+      '
+        <p>We sent this email to you someone at '+o.account.name+' invited you to collaborate on <a href='+34.chr+CS_HOME_WEBSITE+34.chr+'><b>'+34.chr+APP_NAME+34.chr+'</b></a>.</p>
+
+        <p><b>Click the link below to set a new password.</b></p>
+        
+        <p>This link will be valid for '+34.chr+BlackStack::MySaaS::Notification::LINK_TIMEOUT.to_s+34.chr+' minutes.</p>
+        
+        <p><a href='+34.chr+CS_HOME_WEBSITE+'/reset/!nid'+34.chr+'><b>Click here and confirm your email address</b></a>.</p>
+        
+        <br/>
+        
+        <p>If the link above is no longer available, you can request a new confirmation link <a href='+34.chr+CS_HOME_WEBSITE+'/recover'+34.chr+'><b>here</b></a>.</p>
+      ' 
+    end,
+  },
 )
 =end
 
