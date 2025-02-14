@@ -210,9 +210,14 @@ begin
     enable :cross_origin
   end
 
+  # https://github.com/MassProspecting/docs/issues/477
   before do
     headers 'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']
+  end
+
+  at_exit do
+    STDERR.puts "at_exit: The process is stopping with status #{$?.inspect}"
   end
 
   set :protection, false
