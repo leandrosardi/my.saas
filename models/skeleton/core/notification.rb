@@ -163,7 +163,7 @@ module BlackStack
         # if `delivery_time` is nil, then return nil.
         def oldness
           return nil if self.delivery_time.nil?
-          q = "SELECT EXTRACT(MINUTES FROM delivery_time-current_timestamp()) AS \"old\" FROM notification n WHERE id='#{self.id}'"
+          q = "SELECT EXTRACT(MINUTES FROM delivery_time-current_timestamp) AS \"old\" FROM notification n WHERE id='#{self.id}'"
           -DB[q].first[:old].to_i 
         end
 

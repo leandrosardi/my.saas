@@ -85,15 +85,15 @@ module BlackStack
         # get the list of followups
 
         l.logs "Processing followup #{h[:name].blue}... "
-        users = h[:objects].call()
-        users.all { |u|
+        users = h[:objects].call().all
+        users.each { |u|
           l.logs "User #{u.email.blue}... "
           n = BlackStack::MySaaS::Notification.new(u, h)
           n.deliver
           n.save
           l.done
         }
-        l.done(details: "#{users.count.to_s.blue} users")
+        l.done(details: "#{users.size.to_s.blue} users")
       end # def self.deliver
 
       # deliver pending notification of all followups

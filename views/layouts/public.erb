@@ -1,5 +1,6 @@
 <%
 err = params[:err]
+msg = params[:msg]
 %>
 
 <!DOCTYPE html>
@@ -209,7 +210,17 @@ err = params[:err]
 		<% 
 		end # err
 		%>
-	
+
+		<%
+		if !msg.nil? 
+		%>
+			<div class="alert alert-success">
+				<pre><%=msg.to_s.encode_html%></pre>
+			</div>
+		<% 
+		end # msg
+		%>
+
 		<section class='container menu_banner'>
 			<div class'row-fluid'>
 				<div class='top_banner'></div>
