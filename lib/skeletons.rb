@@ -499,7 +499,7 @@ module BlackStack
         def tristate_errors(h={}, keys:)
             ret = []
             keys.each do |k|
-binding.pry if h[k.to_s] && BlackStack::Tristate.tristates.index(h[k.to_s].to_s.to_sym).nil?
+#binding.pry if h[k.to_s] && BlackStack::Tristate.tristates.index(h[k.to_s].to_s.to_sym).nil?
                 ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid tristate (#{BlackStack::Tristate.tristates.join(",")})." if h[k.to_s] && BlackStack::Tristate.tristates.index(h[k.to_s].to_s.to_sym).nil?
             end # keys.each
             return ret
