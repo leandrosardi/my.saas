@@ -70,7 +70,7 @@ module BlackStack
           <tr><td height=5px><br/></td></tr>
           <!--signature--> 
           <tr><td><p style='font-size:18px;'>Warmest Regards.</p></td></tr>
-          <tr><td><img src=#{BlackStack::Notifications::signature_picture_url} width='128px' height='128px' style='border-radius: 64px; height: auto; max-width: 100%;' /></td></tr> 
+          <tr><td><img src=#{BlackStack::Notifications::signature_picture_url} width='64px' height='64px' style='border-radius: 64px; height: auto; max-width: 100%;' /></td></tr> 
           <tr><td><p style='font-size:18px;'><b>#{BlackStack::Notifications::signature_name}</b>,<br/>#{BlackStack::Notifications::signature_position}, <a href='#{CS_HOME_WEBSITE}'>#{COMPANY_NAME}</a>.</p></td></tr>
           </table>  
           </section>
