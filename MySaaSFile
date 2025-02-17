@@ -382,7 +382,7 @@ BlackStack::Notifications.add(
         
         <p>This link will be valid for '+34.chr+BlackStack::MySaaS::Notification::LINK_TIMEOUT.to_s+34.chr+' minutes.</p>
         
-        <p><a href='+34.chr+CS_HOME_WEBSITE+'/reset/!nid'+34.chr+'><b>Click here and confirm your email address</b></a>.</p>
+        <p><a href='+34.chr+CS_HOME_WEBSITE+'/reset/!nid'+34.chr+'><b>Click here and reset your password</b></a>.</p>
         
         <br/>
         
@@ -444,7 +444,7 @@ BlackStack::Notifications.add(
         
         <p>This link will be valid for '+34.chr+BlackStack::MySaaS::Notification::LINK_TIMEOUT.to_s+34.chr+' minutes.</p>
         
-        <p><a href='+34.chr+CS_HOME_WEBSITE+'/reset/!nid'+34.chr+'><b>Click here and confirm your email address</b></a>.</p>
+        <p><a href='+34.chr+CS_HOME_WEBSITE+'/reset/!nid'+34.chr+'><b>Click here and reset your password</b></a>.</p>
         
         <br/>
         
