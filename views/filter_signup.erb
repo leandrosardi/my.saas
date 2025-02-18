@@ -18,7 +18,7 @@ redirect_on_error = "/signup" if redirect_on_error.to_s.size == 0
 # signup new account
 begin
 	# guardar el ID de intento de l en una variable de sesion
-	@login = BlackStack::MySaaS::Account.signup(params, true)
+	@login = BlackStack::MySaaS::Account.signup(params, request_email_confirmation: false)
 	session["login.id"] = @login.id
 
 	# track IP

@@ -14,7 +14,7 @@ begin
 		:email => email,
 		:password => password
 	}
-	login = BlackStack::MySaaS::Account.signup(h, false) # false: don't send notificaitons
+	login = BlackStack::MySaaS::Account.signup(h, request_email_confirmation: false) # false: don't send notificaitons
 
 	if login.nil?
 		raise 'Account creation failed.'

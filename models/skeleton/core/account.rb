@@ -19,7 +19,7 @@ module BlackStack
         # create new records on tables account, user and login.
         # return the id of the new login record.
         # raise an exception if the signup descriptor doesn't pass all the valdiations.
-        def self.signup(h, notif=true)
+        def self.signup(h, request_email_confirmation: true)
           uid = guid
           errors = []
           companyname = h[:companyname]
@@ -108,7 +108,7 @@ module BlackStack
             u.phone = phone
             u.password = BCrypt::Password.create(password) # reference: https://github.com/bcrypt-ruby/bcrypt-ruby#how-to-use-bcrypt-ruby-in-general
             u.create_time = now
-            u.notification_confirm_email_requested = true
+            u.notification_confirm_email_requested = request_email_confirmation
             u.save
             
             # user owner
