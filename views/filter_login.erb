@@ -14,6 +14,11 @@ begin
 	# guardar el ID de intento de l en una variable de sesion
 	@login = BlackStack::MySaaS::User.login(params)
 	session["login.id"] = @login.id
+	
+	# track IP
+	@login.ip = request.ip
+	@login.save
+
 rescue => e
 	# libero recursos
 	DB.disconnect
