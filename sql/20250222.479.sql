@@ -1,0 +1,1 @@
+alter table "login" add column if not exists ip varchar(100) null;
