@@ -87,7 +87,8 @@ module BlackStack
         l.logs "Processing followup #{h[:name].blue}... "
         users = h[:objects].call().all
         users.each { |u|
-          l.logs "User #{u.email.blue}... "
+binding.pry
+          l.logs "User #{u[:id].blue}... "
           n = BlackStack::MySaaS::Notification.new(u, h)
           n.deliver
           n.save
