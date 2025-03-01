@@ -479,6 +479,42 @@ theme = 'default'
 		});
 
 
+		/**
+		* getUrlParameter('id') will:
+		*  1) Try to read "?id=..." from the query string,
+		*  2) If not found, try to read "/conversations/:id" from the path.
+		*/
+	   	function getUrlParameter(param) {
+			// 1) First, check query params normally.
+			const urlParams = new URLSearchParams(window.location.search);
+			let value = urlParams.get(param);
+			if (value) {
+			return value;
+			}
+		
+			// 2) If nothing found in query, and specifically asked for "id", parse the path.
+			if (param === 'id') {
+			const pathSegments = window.location.pathname.split('/');
+			// e.g. /conversations/f1bceac2 => ['', 'conversations', 'f1bceac2']
+			// If you expect exactly /conversations/:id:
+			if (pathSegments.length > 2 && pathSegments[1] === 'conversations') {
+				return pathSegments[2];
+			}
+			}
+		
+			// Otherwise, return null if not found.
+			return null;
+	   	}
+	   
+		// 
+		function guid() {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+				var r = Math.random() * 16 | 0,
+					v = c === 'x' ? r : r & 0x3 | 0x8;
+				return v.toString(16);
+			});
+		}
+
 		// Make a POST request to and ajax end-point.
 		function callx(h) {
       let url = h.url;
