@@ -105,7 +105,7 @@ module BlackStack
           self.email_from = BlackStack::Emails::from_email
           self.subject = h[:subject].call(o)
           self.body = h[:body].call(o)
-          self.id_object = o.id
+          self.id_object = o[:id]
           # if options has key :track_opens, map its value to self.track_opens.
           # otherwise, set self.track_opens to true.
           self.track_opens = h[:track_opens] if h.has_key?(:track_opens)
