@@ -484,7 +484,7 @@ theme = 'default'
 		*  1) Try to read "?id=..." from the query string,
 		*  2) If not found, try to read "/conversations/:id" from the path.
 		*/
-	   	function getUrlParameter(param) {
+		function getUrlParameter(param) {
 			// 1) First, check query params normally.
 			const urlParams = new URLSearchParams(window.location.search);
 			let value = urlParams.get(param);
@@ -504,7 +504,7 @@ theme = 'default'
 		
 			// Otherwise, return null if not found.
 			return null;
-	   	}
+	  }
 	   
 		// 
 		function guid() {

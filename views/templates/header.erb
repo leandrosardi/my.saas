@@ -334,7 +334,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	}
 
 	// update user preference via AJAX
-	function setPreference(name, deflt, value) {
+	function setPreference(name, deflt, value, successCallBack = undefined, errorCallBack = undefined) {
 		// Prepare the data to be sent in the request
 		const data = {
 			name: name,       		// Preference name
@@ -360,13 +360,22 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		.then(data => {
 			if (data.status !== 'success') {
 				// Handle application-level errors
+				if(errorCallBack && typeof errorCallBack  === 'function') {
+				    errorCallBack(data);
+				}
 				console.error('Error updating preference:', data.status);
 			} else {
 				//console.log('Preference updated successfully.');
+				if(successCallBack && typeof successCallBack  === 'function') {
+				    successCallBack(data);
+				}
 			}
 		})
 		.catch(error => {
 			// Handle fetch or parsing errors
+			if(errorCallBack && typeof errorCallBack  === 'function') {
+				errorCallBack(data);
+			}
 			console.error('There was a problem with the fetch operation:', error);
 		});
 	}
