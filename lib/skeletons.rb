@@ -436,7 +436,7 @@ module BlackStack
             ret = []
             keys.each do |k|
                 url = h[k.to_s].nil? ? nil : self.normalize_linkedin_url(h[k.to_s])
-                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid LinkedIn URL." if url && !url.to_s.match(/^http(s)?\:\/\/(www\.)?linkedin\.com\/in\/[^\/]+$/i)
+                ret << "The #{k} '#{h[k.to_s].to_s}' for #{self.name.gsub('Mass::', '')} must be a valid LinkedIn URL." if url && !url.to_s.match(/^https?:\/\/(?:(?:www\.)|(?:[a-z]{2}\.))?linkedin\.com\/in\/[^\/]+$/i)
             end # keys.each
             return ret
         end # def linkedin_errors
