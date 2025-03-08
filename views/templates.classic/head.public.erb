@@ -1075,7 +1075,7 @@ body.dark-mode {
 			const pathSegments = window.location.pathname.split('/');
 			// e.g. /conversations/f1bceac2 => ['', 'conversations', 'f1bceac2']
 			// If you expect exactly /conversations/:id:
-			if (pathSegments.length > 2 && pathSegments[1] === 'conversations') {
+			if (pathSegments.length > 2 && (pathSegments[1] === 'conversations' || pathSegments[1] === 'leads')) {
 				return pathSegments[2];
 			}
 			}
