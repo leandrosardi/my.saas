@@ -3,7 +3,7 @@ nid = params[:nid]
 
 # add users to the sub-account is possilbe, but they should be able to login, reset password, etc.....
 # e.g.: a user may want to add his client to his sub-account.
-#redirect "#{MASTER_URL}/reset?nid=#{nid}" if SLAVE
+redirect "#{MASTER_URL}/reset?nid=#{nid}" if SLAVE
 
 # validar que los parametros no esten vacios
 if nid.to_s.size==0

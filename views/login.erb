@@ -1,7 +1,7 @@
 <%
 # add users to the sub-account is possilbe, but they should be able to login, reset password, etc.....
 # e.g.: a user may want to add his client to his sub-account.
-#redirect "#{MASTER_URL}/login" if SLAVE
+redirect "#{MASTER_URL}/login" if SLAVE
 
 email = session['email'].to_s
 %>
