@@ -506,6 +506,14 @@ module BlackStack
         end # def linkedin_errors
 
         def normalize_facebook_url(url)
+            # replace URL like https://www.facebook.com/profile.php?id=100092915187620 
+            # by https://www.facebook.com/100092915187620
+            #
+            # Reference: 
+            #
+            if url.to_s =~ /https:\/\/www.facebook.com\/profile.php\?id=/
+                url = url.gsub(/https:\/\/www.facebook.com\/profile.php\?id=/, 'https://www.facebook.com/') 
+            end
             # remove query string parameters
             url = url.gsub(/\?.*$/, '')
             # remove # at the end
