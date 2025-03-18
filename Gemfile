@@ -12,7 +12,7 @@ gem 'my-ruby-deployer', '~>1.3.5'
 gem 'simple_cloud_logging', '~>1.2.7'
 gem 'simple_command_line_parser', '~>1.1.2'
 gem 'pampa', '~>2.1.5'
-gem 'my-dropbox-api', '~>1.0.2'
+gem 'my-dropbox-api', '~>1.0.3'
 gem 'zyte-client', '~>1.0.6'
 #gem 'mass-client', '~>1.0.19'
 
