@@ -50,7 +50,7 @@ APP_NAME = 'MassProspecting'
 APP_SHORT_NAME = 'MassProspecting'
 
 # Email to contact support
-HELPDESK_EMAIL = 'support@massprospecting.com'
+HELPDESK_EMAIL = '!!sender_email'
 
 # Company Information for invoicing
 COMPANY_NAME = 'MassProspecting'
