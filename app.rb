@@ -38,7 +38,12 @@ begin
   puts 'done'.green
 
   print 'Connecting database... '
+  Sequel.extension :pg_array
+  Sequel.extension :pg_json
   DB = BlackStack.db_connect
+  DB.extension :pg_array
+  DB.extension :pg_json
+  
   puts 'done'.green
 
   print 'Loading models... '
@@ -276,7 +281,6 @@ begin
   # use this modifier for internal pages, who cannot be shown if there IS NOT a logged-in user
   # condition: if there is not authenticated user on the platform, then redirect to the signup page
   set(:auth) do |*roles|
-#binding.pry
     condition do
       if !logged_in?
         # remember the internal page I have to return to after login or signup
@@ -309,7 +313,6 @@ begin
   # use this modifier for external pages, who cannot be shown if there IS a logged-in user
   # condition: if there is not authenticated user on the platform, then redirect to the / page
   set(:noauth) do |*roles|
-#binding.pry
     condition do
       if logged_in?
         redirect "/"
@@ -344,7 +347,7 @@ begin
       @return_message[:status] = 'success'
 
       # this is already proccessed in the :api_key condition
-      #@body = JSON.parse(request.body.read)
+      @body = JSON.parse(request.body.read)
 
       validation_api_key = @body['api_key'].to_s.to_guid.downcase
 
@@ -359,6 +362,88 @@ begin
     end
   end
 
+  set(:api_track) do |_|
+    condition do
+      # 1) read + rewind raw body so route can still parse it
+      s = request.body.read
+      request.body.rewind
+      
+      # 2) parse JSON (or fallback to empty hash)
+      begin
+        @body = JSON.parse(s)
+      rescue JSON::ParserError
+        @body = {}
+      end
+      body_hash = @body #request.body.read
+  
+      # 3) resolve account UUID if api_key is present & valid
+      api_key_val = body_hash['api_key'].to_s
+      account     = nil
+      if api_key_val.respond_to?(:to_guid)
+        lookup    = api_key_val.to_guid.downcase
+        account   = BlackStack::MySaaS::Account.where(api_key: lookup).first
+      end
+      id_account = account&.id  # will be nil if not found
+  
+      # 4) collect request headers into a Hash
+      headers = {}
+      request.env.each do |k, v|
+        if k.start_with?('HTTP_')
+          # normalize e.g. "HTTP_USER_AGENT" → "User-Agent"
+          name = k.sub(/^HTTP_/, '')
+                  .split('_').map(&:capitalize).join('-')
+          headers[name] = v
+        end
+      end
+      headers['Content-Type'] = request.env['CONTENT_TYPE'] if request.env['CONTENT_TYPE']
+      headers['User-Agent']    = request.env['HTTP_USER_AGENT'] if request.env['HTTP_USER_AGENT']
+  
+      # 5) insert into api_call (called_at uses default NOW())
+      @api_track_start      = now()
+      @api_call_row_id      = DB[:api_call].insert(
+        id_account:      id_account,
+        endpoint_url:    request.url,
+        http_method:     request.request_method,
+        api_key:         api_key_val,
+        request_headers: Sequel.pg_jsonb(headers),
+        request_body:    Sequel.pg_jsonb(body_hash)
+      )
+      # no halt — let the request proceed to your route logic
+    end
+  end
+
+  after do
+    # only run if we kicked off an api_track insert
+    if defined?(@api_call_row_id) && @api_call_row_id
+      # compute duration
+      duration = ((now() - @api_track_start) * 1000).to_i
+  
+      # extract status + body
+      status_code = response.status
+      # Sinatra may store body as an Array
+      raw_body    = if response.body.respond_to?(:join)
+                      response.body.join
+                    else
+                      response.body.to_s
+                    end
+  
+      # try parse JSON, else leave as raw text
+      parsed = begin
+        JSON.parse(raw_body)
+      rescue
+        raw_body
+      end
+  
+      # update the same row
+      DB[:api_call].where(id: @api_call_row_id).update(
+        response_status: status_code,
+        response_body:   Sequel.pg_json(parsed),  # or JSON.generate(parsed)
+        duration_ms:     duration
+      )
+    end
+  end
+
+  # IMPORTNAT: Add this just after the :api_track condition
   # condition: api_key parameter is required too for the access points
   set(:api_key) do |*roles|
     condition do
@@ -373,7 +458,7 @@ begin
         halt @return_message.to_json
       end
 
-      @body = JSON.parse(request.body.read)
+      raise "No body" if @body.to_s.empty?
 
       if !@body.has_key?('api_key')
         # libero recursos
@@ -767,89 +852,89 @@ begin
   print 'Setting up entries of API access points... '
 
   # ping
-  get '/api1.0/ping.json', :api_key => true do
+  get '/api1.0/ping.json', :api_track => true, :api_key => true do
     erb :'views/api1.0/ping'
   end
-  post '/api1.0/ping.json', :api_key => true do
+  post '/api1.0/ping.json', :api_track => true, :api_key => true do
     erb :'views/api1.0/ping'
   end
 
   # Standard MySaaS API - URL resolution for subaccounts
   #
-  post "/api1.0/resolve/get.json", :api_key => true do
+  post "/api1.0/resolve/get.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/resolve/get"
   end
 
   # Standard MySaaS API - Managing subaccounts
   #
-  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_key => true, :su => true do
+  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_track => true, :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get_subaccount_assigned_to_profile"
   end
 
-  post "/api1.0/subaccount/get.json", :api_key => true, :su => true do
+  post "/api1.0/subaccount/get.json", :api_track => true, :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get"
   end
 
-  post "/api1.0/subaccount/create.json", :api_key => true, :su => true do
+  post "/api1.0/subaccount/create.json", :api_track => true, :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/create"
   end
 
-  post "/api1.0/subaccount/delete.json", :api_key => true, :su => true do
+  post "/api1.0/subaccount/delete.json", :api_track => true, :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/delete"
   end
 
   # Standard MySaaS API - Getting account attribute
   #
-  post '/api1.0/account_value.json', :api_key => true do
+  post '/api1.0/account_value.json', :api_track => true, :api_key => true do
     erb :'views/api1.0/account_value'
   end
 
 
   # Standard MySaaS API - Managing objects
   #
-  post "/api1.0/:object/page.json", :api_key => true do
+  post "/api1.0/:object/page.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/page"
   end
 
-  post "/api1.0/:object/count.json", :api_key => true do
+  post "/api1.0/:object/count.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/count"
   end
 
-  post "/api1.0/:object/get.json", :api_key => true do
+  post "/api1.0/:object/get.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/get"
   end
 
-  post "/api1.0/:object/get_many.json", :api_key => true do
+  post "/api1.0/:object/get_many.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/get_many"
   end
 
-  post "/api1.0/:object/errors.json", :api_key => true do
+  post "/api1.0/:object/errors.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/errors"
   end
 
-  post "/api1.0/:object/insert.json", :api_key => true do
+  post "/api1.0/:object/insert.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/insert"
   end
 
-  post "/api1.0/:object/update.json", :api_key => true do
+  post "/api1.0/:object/update.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/update"
   end
 
-  post "/api1.0/:object/delete.json", :api_key => true do
+  post "/api1.0/:object/delete.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/delete"
   end
 
-  post "/api1.0/:object/update_status.json", :api_key => true do
+  post "/api1.0/:object/update_status.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/update_status"
   end
 
-  post "/api1.0/:object/upsert.json", :api_key => true do
+  post "/api1.0/:object/upsert.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/upsert"
   end
 
   # https://github.com/MassProspecting/docs/issues/378
   # 
-  post "/api1.0/:object/upsert2.json", :api_key => true do
+  post "/api1.0/:object/upsert2.json", :api_track => true, :api_key => true do
     erb :"views/api1.0/upsert2"
   end
 

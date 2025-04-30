@@ -7,10 +7,11 @@ require 'version'
 res = nil
 
 url = "#{CS_HOME_WEBSITE}/api1.0/ping.json"
+url = "http://localhost:3000/api1.0/ping.json"
 
 begin
     params = {
-        'api_key' => BlackStack::API.api_key
+        'api_key' => SU_API_KEY
     }
     res = BlackStack::Netting::call_post(url, params)
     parsed = JSON.parse(res.body)
