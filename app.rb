@@ -852,89 +852,89 @@ begin
   print 'Setting up entries of API access points... '
 
   # ping
-  get '/api1.0/ping.json', :api_track => true, :api_key => true do
+  get '/api1.0/ping.json', :api_key => true do
     erb :'views/api1.0/ping'
   end
-  post '/api1.0/ping.json', :api_track => true, :api_key => true do
+  post '/api1.0/ping.json', :api_key => true do
     erb :'views/api1.0/ping'
   end
 
   # Standard MySaaS API - URL resolution for subaccounts
   #
-  post "/api1.0/resolve/get.json", :api_track => true, :api_key => true do
+  post "/api1.0/resolve/get.json", :api_key => true do
     erb :"views/api1.0/resolve/get"
   end
 
   # Standard MySaaS API - Managing subaccounts
   #
-  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_track => true, :api_key => true, :su => true do
+  post "/api1.0/subaccount/get_subaccount_assigned_to_profile.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get_subaccount_assigned_to_profile"
   end
 
-  post "/api1.0/subaccount/get.json", :api_track => true, :api_key => true, :su => true do
+  post "/api1.0/subaccount/get.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/get"
   end
 
-  post "/api1.0/subaccount/create.json", :api_track => true, :api_key => true, :su => true do
+  post "/api1.0/subaccount/create.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/create"
   end
 
-  post "/api1.0/subaccount/delete.json", :api_track => true, :api_key => true, :su => true do
+  post "/api1.0/subaccount/delete.json", :api_key => true, :su => true do
     erb :"views/api1.0/subaccount/delete"
   end
 
   # Standard MySaaS API - Getting account attribute
   #
-  post '/api1.0/account_value.json', :api_track => true, :api_key => true do
+  post '/api1.0/account_value.json', :api_key => true do
     erb :'views/api1.0/account_value'
   end
 
 
   # Standard MySaaS API - Managing objects
   #
-  post "/api1.0/:object/page.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/page.json", :api_key => true do
     erb :"views/api1.0/page"
   end
 
-  post "/api1.0/:object/count.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/count.json", :api_key => true do
     erb :"views/api1.0/count"
   end
 
-  post "/api1.0/:object/get.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/get.json", :api_key => true do
     erb :"views/api1.0/get"
   end
 
-  post "/api1.0/:object/get_many.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/get_many.json", :api_key => true do
     erb :"views/api1.0/get_many"
   end
 
-  post "/api1.0/:object/errors.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/errors.json", :api_key => true do
     erb :"views/api1.0/errors"
   end
 
-  post "/api1.0/:object/insert.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/insert.json", :api_key => true do
     erb :"views/api1.0/insert"
   end
 
-  post "/api1.0/:object/update.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/update.json", :api_key => true do
     erb :"views/api1.0/update"
   end
 
-  post "/api1.0/:object/delete.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/delete.json", :api_key => true do
     erb :"views/api1.0/delete"
   end
 
-  post "/api1.0/:object/update_status.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/update_status.json", :api_key => true do
     erb :"views/api1.0/update_status"
   end
 
-  post "/api1.0/:object/upsert.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/upsert.json", :api_key => true do
     erb :"views/api1.0/upsert"
   end
 
   # https://github.com/MassProspecting/docs/issues/378
   # 
-  post "/api1.0/:object/upsert2.json", :api_track => true, :api_key => true do
+  post "/api1.0/:object/upsert2.json", :api_key => true do
     erb :"views/api1.0/upsert2"
   end
 
