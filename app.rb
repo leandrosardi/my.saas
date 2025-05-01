@@ -447,10 +447,21 @@ begin
   # condition: api_key parameter is required too for the access points
   set(:api_key) do |*roles|
     condition do
+      # 1) read + rewind raw body so route can still parse it
+      s = request.body.read
+      request.body.rewind
+      
+      # 2) parse JSON (or fallback to empty hash)
+      begin
+        @body = JSON.parse(s)
+      rescue JSON::ParserError
+        @body = {}
+      end
+
+      # 3) resolve account UUID if api_key is present & valid
       @return_message = {}
-
       @return_message[:status] = 'success'
-
+      
       # validate: the pages using the :api_key condition must work as post only.
       if request.request_method != 'POST'
         @return_message[:status] = 'Pages with an `api_key` parameter are only available for POST requests.'
