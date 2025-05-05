@@ -18,7 +18,7 @@ gem 'mass-client', '~>1.0.36'
 
 # Other gems needed for running mysaas
 gem 'ruby-openai', '~>6.5.0'
-gem 'simple-openai-client', '~>1.0.4'
+gem 'simple-openai-client', '~>1.0.5'
 gem 'open3', '~>0.1.1'
 gem 'timeout', '~>0.4.1'
 gem 'net-http', '~>0.2.2'
