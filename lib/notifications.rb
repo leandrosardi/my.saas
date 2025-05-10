@@ -89,9 +89,16 @@ module BlackStack
         rows.each { |o|
           l.logs "User #{o[:id].blue}... "
           u = h[:user].call(o)
-          n = BlackStack::MySaaS::Notification.new(o, h)
-          n.deliver
-          n.save
+          subject = h[:subject].call(o)
+          body = h[:body].call(o)
+          # sometimes, notifications are not for delivering emails, but for other things (like push a user to the CRM)
+          # https://github.com/MassProspecting/docs/issues/632
+          #
+          if subject && body
+            n = BlackStack::MySaaS::Notification.new(o, h)
+            n.deliver
+            n.save
+          end
           l.done
         }
         l.done(details: "#{rows.size.to_s.blue} users")

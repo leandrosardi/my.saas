@@ -1,0 +1,1 @@
+alter table "user" add column if not exists "notification_push_to_crm_requested" boolean default true;
