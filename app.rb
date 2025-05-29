@@ -215,7 +215,20 @@ begin
   end
   set :bind, '0.0.0.0'
   set :port, PORT
+
+  # ——————————————————————————————————————————————————————————————
+  # Sessions with 30-day expiration
   enable :sessions
+  # (you should pick a long, random string in ENV for production)
+  set :session_secret, 'your-very-long-random-secret-goes-here'
+  set :sessions,
+    key:          'rack.session',
+    expire_after: 60 * 60 * 24 * 30,    # seconds: 30 days
+    secure:       BlackStack.sandbox?,  # only send over HTTPS if SandBox is OFF
+    httponly:     true,                 # Prevents JavaScript from reading the cookie.
+    same_site:    :lax                  # Helps mitigate CSRF without breaking most cross-site links.
+  # ——————————————————————————————————————————————————————————————
+
   enable :static
 
   configure do
@@ -224,6 +237,13 @@ begin
 
   # https://github.com/MassProspecting/docs/issues/477
   before do
+    # —————————————————————————————————————————————————————————————————————————
+    # affiliate tracking: if ?affid=... is present, stash it in session,
+    # then make it available as @affid everywhere
+    session[:affid] = params['affid'] if params['affid']
+    @affid         = session[:affid]
+    # —————————————————————————————————————————————————————————————————————————
+    
     headers 'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']
   end

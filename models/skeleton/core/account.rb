@@ -19,7 +19,7 @@ module BlackStack
         # create new records on tables account, user and login.
         # return the id of the new login record.
         # raise an exception if the signup descriptor doesn't pass all the valdiations.
-        def self.signup(h, request_email_confirmation: true)
+        def self.signup(h, request_email_confirmation: true, affid: nil)
           uid = guid
           errors = []
           companyname = h[:companyname]
@@ -91,6 +91,7 @@ module BlackStack
             a = BlackStack::MySaaS::Account.new
             a.id = guid
             a.id_account_owner = BlackStack::MySaaS::Account.where(:api_key=>SU_API_KEY).first.id # TODO: getting the right owner when we develop domain aliasing
+            a.id_account_referral = affid if affid
             a.name = companyname
             a.create_time = now
             a.id_timezone = t.id
