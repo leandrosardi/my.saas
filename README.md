@@ -12,7 +12,8 @@
 ## Brainstorming Documentation Outline
 
 - Installation
-- Creating Extensions
+- UI Components - tags, lists, etc.
+- Extensibility
 - Monitoring Extensions: Super-User, monitoring, accessing other people accounts
 - Invoicing and Payments Processing
 - Content Management System
