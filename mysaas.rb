@@ -47,6 +47,9 @@ require 'csv'
 require 'sisimai'
 require 'down'
 require 'securerandom'
+require 'browser'       # gem “browser” (for device detection)
+require 'geoip2_compat' # or another GeoIP library, if you want geolocation
+require 'maxminddb'
 require 'highline'
 require 'redcarpet'
 

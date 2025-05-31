@@ -42,6 +42,9 @@ gem 'shellwords', '~>0.1.0'
 gem 'postmark', '~>1.24.0'
 gem 'down', '~>5.4.1'
 gem 'securerandom', '~>0.3.1'
+gem 'browser', '~>5.3.1'
+gem 'geoip2_compat', '~>0.0.3'
+gem 'maxminddb', '~>0.1.22'
 gem 'highline', '~>3.1.0'
 
 # Required by extensions

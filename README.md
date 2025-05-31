@@ -12,8 +12,10 @@
 ## Brainstorming Documentation Outline
 
 - Installation
-- UI Components - tags, lists, etc.
+- Visitors tracking - Download/update `GeoLite2-City.mmdb`
 - Extensibility
+- UI Components - tags, lists, etc.
+- API Calls, API Calls Tracking and API Calls Quota
 - Monitoring Extensions: Super-User, monitoring, accessing other people accounts
 - Invoicing and Payments Processing
 - Content Management System

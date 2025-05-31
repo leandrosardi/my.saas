@@ -221,7 +221,7 @@ begin
   enable :sessions
 
   # (you should pick a long, random string in ENV for production)
-  set :session_secret, 'your-very-long-random-secret-goes-here' #if !BlackStack.sandbox?
+  set :session_secret, SESSION_SECRET #if !BlackStack.sandbox?
   set :sessions,
     key:          'rack.session',
     expire_after: 60 * 60 * 24 * 30,    # seconds: 30 days
@@ -238,12 +238,66 @@ begin
   end
 
   # https://github.com/MassProspecting/docs/issues/477
+  # https://github.com/MassProspecting/docs/issues/647
   before do
     # —————————————————————————————————————————————————————————————————————————
     # affiliate tracking: if ?affid=... is present, stash it in session,
     # then make it available as @affid everywhere
-    session[:affid] = params['affid'] if params['affid']
-    @affid         = session[:affid]
+    session[:affid]   = params['affid'] if params['affid']
+    @affid            = session[:affid]
+
+    # visitors tracking
+    session[:vid]     = SecureRandom.uuid if !session[:vid]
+    @vid              = session[:vid]
+    
+    # Quick GeoIP lookup (optional—requires a GeoIP DB on disk)
+    geo = nil
+    begin
+      the_ip = request.ip
+      db = MaxMindDB.new('./GeoLite2-City.mmdb')
+      result = db.lookup(the_ip)
+      if result.found?
+        city     = result.city.name               # => e.g. "New York"
+        country  = result.country.name            # => e.g. "United States"
+        iso_code = result.country.iso_code        # => e.g. "US"
+        region   = result.subdivisions.most_specific.name rescue nil
+        timezone = result.location.time_zone rescue nil
+      end
+
+    rescue
+      # If DB is missing or IP invalid, we’ll skip geolocation
+      geo = nil
+    end
+    country = geo&.country&.iso_code      # e.g. "US" or "AR"
+    city    = geo&.city&.name              # e.g. "New York"
+
+    # Device detection (requires 'browser' gem)
+    browser = Browser.new(request.user_agent || "")
+    device_type = browser.device.mobile? ? "mobile" : "desktop"
+
+    # Collect UTM/campaign params (anything starting with “utm_”)
+    utm_payload = params.select { |k,_| k.start_with?("utm_") }
+    # e.g. {"utm_source"=>"google", "utm_campaign"=>"promo_may"}
+
+    # 6) Insert into affiliate_visit
+    DB[:visit].insert(
+      id:                   SecureRandom.uuid,
+      create_time:          Time.now,
+      id_account_refferral: @affid,
+      id_visitor:           @vid,
+      ip:                   request.ip,
+      user_agent:           request.user_agent,
+      referer:              request.referer || request.env["HTTP_REFERER"],
+      page_url:             request.url,
+      path_info:            request.path_info,
+      query_string:         request.query_string,
+      accept_language:      request.env["HTTP_ACCEPT_LANGUAGE"],
+      utm_params:           Sequel.pg_jsonb(utm_payload),
+      country_code:         country,
+      city_name:            city,
+      device_type:          device_type
+    )
+
     # —————————————————————————————————————————————————————————————————————————
     
     headers 'Access-Control-Allow-Origin' => '*',
