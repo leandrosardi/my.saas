@@ -10,6 +10,7 @@ redirect_on_error = session['redirect_on_error']
 recaptcha_response = params[:recaptcha_response]
 if recaptcha_response.to_s.size == 0 && BlackStack::Funnel.recaptcha2_site_key
 	redirect "/signup?err=#{CGI::escape("Recaptcha is Required.")}"
+	#halt
 end
 
 # setup default values
@@ -18,7 +19,7 @@ redirect_on_error = "/signup" if redirect_on_error.to_s.size == 0
 # signup new account
 begin
 	# guardar el ID de intento de l en una variable de sesion
-	@login = BlackStack::MySaaS::Account.signup(params, request_email_confirmation: false)
+	@login = BlackStack::MySaaS::Account.signup(params, request_email_confirmation: false, affid: @affid)
 	session["login.id"] = @login.id
 
 	# track IP
@@ -30,6 +31,7 @@ rescue => e
 	GC.start
 	# redirect
 	redirect "#{redirect_on_error}?err="+ CGI::escape(e.message)
+	#halt
 end
 
 # if the extension I2P exists
@@ -50,4 +52,5 @@ session['redirect_on_success'] = nil
 # redirect
 redirect_on_success = BlackStack::Funnel.url_after_signup(@login, 'funnels.main') if redirect_on_success.to_s.size == 0
 redirect redirect_on_success
+#halt
 %>

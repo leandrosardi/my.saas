@@ -8,6 +8,22 @@
 
 ![logo](./public/core/images/logo.png)
 
+
+## Brainstorming Documentation Outline
+
+- Installation
+- UI Components - tags, lists, etc.
+- Extensibility
+- Monitoring Extensions: Super-User, monitoring, accessing other people accounts
+- Invoicing and Payments Processing
+- Content Management System
+- Transactional emails
+- Asyncronius processing
+- Domain aliasing & `account.id_user_owner` field.
+- Affiliates tracking & `account.id_user_referral` field.
+
+---
+
 # MySaaS - Open Source SaaS Platform - Extensible and Scalable.  
 
 **MySaaS** is an open-source, extensible and scalable platform for develop your own Software as a Service (SaaS), e-Commerce, Education Platform, Social Network, Forum or any kind of memberships based product.
