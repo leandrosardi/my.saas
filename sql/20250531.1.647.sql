@@ -1,9 +1,7 @@
-create table if not exists affiliate_payoff (
-	id uuid not null primary key,
-	create_time timestamp not null,
-	amount float not null,
-	description text null
-);
+alter table "invoice" 
+  add column if not exists affiliate_paid_off bool not null default false,
+  add column if not exists affiliate_paid_time timestamp null,
+  add column if not exists affiliate_commission float null;
 
 create table if not exists visit (
 	id uuid not null primary key,
