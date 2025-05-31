@@ -12,7 +12,7 @@
 ## Brainstorming Documentation Outline
 
 - Installation
-- Visitors tracking - Download/update `GeoLite2-City.mmdb`
+- Visitors tracking - Download/update `GeoLite2-City.mmdb` (https://github.com/P3TERX/GeoLite.mmdb)
 - Extensibility
 - UI Components - tags, lists, etc.
 - API Calls, API Calls Tracking and API Calls Quota
