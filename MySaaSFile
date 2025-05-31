@@ -23,7 +23,7 @@
 # Used to sign and encrypt session cookies for security. This should be a long,
 # random, and unique string. In production, do NOT hardcode this — set up it in
 # your BlackOpsFile.
-SESSION_SECRET = !!session_secret
+SESSION_SECRET = '!!session_secret'
 
 # run the extension mass as a service
 SERVICE_NAME = 'mass.account'
