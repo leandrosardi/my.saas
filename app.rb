@@ -283,7 +283,7 @@ begin
     DB[:visit].insert(
       id:                   SecureRandom.uuid,
       create_time:          Time.now,
-      id_account_refferral: @affid,
+      id_account_affiliate:  @affid,
       id_visitor:           @vid,
       ip:                   request.ip,
       user_agent:           request.user_agent,

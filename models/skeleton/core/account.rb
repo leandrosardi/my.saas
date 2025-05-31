@@ -19,7 +19,7 @@ module BlackStack
         # create new records on tables account, user and login.
         # return the id of the new login record.
         # raise an exception if the signup descriptor doesn't pass all the valdiations.
-        def self.signup(h, request_email_confirmation: true, affid: nil)
+        def self.signup(h, request_email_confirmation: true, affid: nil, vid: nil)
           uid = guid
           errors = []
           companyname = h[:companyname]
@@ -91,7 +91,7 @@ module BlackStack
             a = BlackStack::MySaaS::Account.new
             a.id = guid
             a.id_account_owner = BlackStack::MySaaS::Account.where(:api_key=>SU_API_KEY).first.id # TODO: getting the right owner when we develop domain aliasing
-            a.id_account_referral = affid if affid
+            a.id_account_affiliate = affid if affid
             a.name = companyname
             a.create_time = now
             a.id_timezone = t.id
@@ -110,6 +110,7 @@ module BlackStack
             u.password = BCrypt::Password.create(password) # reference: https://github.com/bcrypt-ruby/bcrypt-ruby#how-to-use-bcrypt-ruby-in-general
             u.create_time = now
             u.notification_confirm_email_requested = request_email_confirmation
+            u.id_visitor = vid if vid
             u.save
             
             # user owner
