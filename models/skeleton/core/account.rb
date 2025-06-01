@@ -318,6 +318,13 @@ module BlackStack
         def user_owner
           self.contact
         end
+
+        # -----------------------------------------------------------------------
+        # Generate affiliate URL
+        # -----------------------------------------------------------------------
+        def affiliate_url
+          "https://#{APP_DOMAIN}/?affid=#{self.id}"
+        end
         
         # return true if the self.delete_time.nil? == false
         def deleted?

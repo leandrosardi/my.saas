@@ -11,41 +11,68 @@
 <section class="row-fluid">
 	<div class='span12 box'>
 		<h2>Affiliate Dashboard</h2>
+
+    <div class="control-group span12">
+			<label class="control-label" for="inputKeywords">Affiliate URL</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge disabled api-key select-all-on-focus" name="affiliate_url" id="affiliate_url" placeholder="No affiliate URL yet." value="<%=@account.affiliate_url.to_s.encode_html%>" readonly>
+				<a id="copy-button" href='#' class="btn-link" title='Copy to Clipboard.' onclick=""><i id='copy-icon' class='icon-copy'></i></a>
+        <span> | </span>
+        <a href='/settings/affiliates/referrals'>Referrals</a>
+        <span> | </span>
+        <a href='/settings/affiliates/sales'>Sales</a>  
+			</div>
+		</div>
+
 		<p>Here's an overview of your affiliate stats:</p>
 
     <table class="table table-condensed">
       <thead>
         <tr>
           <th>Stat</th>
-          <th>Value</th>
+          <th style='text-align:right;'>Value</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Total Visits</td>
-          <td><%=@account[:stat_affiliate_visits]%></td>
+          <td style='text-align:right;'><%=@account[:stat_affiliate_visits]%></td>
         </tr>
         <tr>
           <td>Unique Visits</td>
-          <td><%=@account[:stat_affiliate_unique_visits]%></td>
+          <td style='text-align:right;'><%=@account[:stat_affiliate_unique_visits]%></td>
         </tr>
         <tr>
           <td>Signups</td>
-          <td><%=@account[:stat_affiliate_signups]%></td>
+          <td style='text-align:right;'><%=@account[:stat_affiliate_signups]%></td>
         </tr>
         <tr>
           <td>Total Revenue</td>
-          <td><%=@account[:stat_affiliate_total_revenue]%></td>
+          <td style='text-align:right;'>$<%=@account[:stat_affiliate_total_revenue].to_f.round(2)%></td>
         </tr>
         <tr>
           <td>Total Commissions</td>
-          <td><%=@account[:stat_affiliate_total_commissions]%></td>
+          <td style='text-align:right;'>$<%=@account[:stat_affiliate_total_commissions].to_f.round(2)%></td>
         </tr>
         <tr>
           <td>Total Paid Off</td>
-          <td><%=@account[:stat_affiliate_total_paid_off]%></td>
+          <td style='text-align:right;'>$<%=@account[:stat_affiliate_total_paid_off].to_f.round(2)%></td>
         </tr>
       </tbody>
     </table>
+
 	</div>
 </section>
+
+<script>
+	$('#copy-button').click(function() {
+		let affiliate_url = $('#affiliate_url').val();
+		navigator.clipboard.writeText(affiliate_url);
+		$('#copy-icon').removeClass('icon-copy');
+		$('#copy-icon').addClass('icon-ok');
+		$('#copy-button').removeClass('btn-link');
+		$('#copy-button').removeAttr('href');
+		$('#copy-button').attr('title', 'Copied to Clipboard.');
+		applyToolTips();
+	});
+</script>
