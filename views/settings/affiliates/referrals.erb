@@ -1,16 +1,117 @@
+<%
+search_keyword = @login.user.preference('settings.affiliates.referrals.search_keyword', '', params[:search_keyword])
+
+all = "
+select 
+	r.id as id_referral, 
+	r.name as referral_name,
+	sum(t.amount) as total_revenue
+from \"account\" a -- affiliate
+join \"account\" r on a.id=r.id_account_affiliate -- referral
+left join \"invoice\" i on (
+	r.id=i.id_account
+	and
+	i.status=1
+)
+left join invoice_item t on i.id=t.id_invoice 
+where a.id='#{@login.user.id_account}'
+AND (
+        lower(r.name) like '%#{search_keyword.downcase}%'
+    )
+group by r.id, r.name
+order by r.name
+"
+
+# TODO: use re-utilizable function here.
+page_size = 25
+total_rows = DB[all].count
+if total_rows>0
+  total_pages = (total_rows.to_f/page_size.to_f).ceil
+  # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
+  # then, get user preferences regarding the page number on this screen
+  page_number = @login.user.preference("settings.affiliates.referrals.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  # pagination correction to prevent glitches
+  page_number = 1 if page_number < 1
+  page_number = total_pages if page_number > total_pages
+  # calculate info for showing at the bottom of the table
+  from_row = (page_number.to_i-1) * page_size.to_i + 1
+  to_row = [page_number*page_size, total_rows].min
+else
+  total_pages = 1
+  page_number = 1
+  from_row = 0
+  to_row = 0
+end
+
+q = "
+"+all+"
+  LIMIT #{page_size.to_s}
+  OFFSET #{((page_number.to_i - 1) * page_size.to_i).to_s}
+"
+%>
+
 <!-- NavBar -->
 <div class="mynavbar mysticky">
 	<section class="row-fluid">
-		<div class="span6">
-			<%=nav3("Settings", "/settings/dashboard", "Affiliates", "/settings/affiliates", "Referrals")%>
+		<div class="span4">
+		    <%=nav3("Settings", "/settings/dashboard", "Affiliates", "/settings/affiliates", "Referrals")%>
 		</div>
+		<div class="span8" style='text-align:right;'>
+            <div class="pull-right">
+                <form action="/settings/affiliates/referrals" method="get">
+                    <div class="span8">
+                        <input type='text' class='input-block-level select-all-on-focus' id='search_keyword' name='search_keyword' value='<%=search_keyword.encode_html%>' />
+                    </div>
+                    <button class="btn btn-blue btn-medium btn-submit" style="margin-left: 2px;" type="submit">
+                        <i class='icon-search'></i> Search
+                    </button>
+                </form>
+            </div>    
+        </div>
 	</section>
 </div>
 
 <!-- Content -->
 <section class="row-fluid">
 	<div class='span12 box'>
-		<h2>Affiliate Referrals</h2>
-		<p>This page will show a list of your referrals.</p>
+        <p><b>Records:</b> <%=from_row.to_label%> to <%=to_row.to_label%> <b>of</b> <%=total_rows.to_label%></p>
+		<table class="table table-condensed">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th style='text-align:right;'>Total Revenue</th>
+				</tr>
+			</thead>
+			<tbody>
+				<%
+				i = 0
+				DB[q].all { |row|
+					i += 1
+				%>
+				<tr>
+					<td><%=row[:id_referral][0..5]%></td>
+					<td><%=row[:referral_name]%></td>
+					<td style='text-align:right;'>$<%=row[:total_revenue].to_f.round(2)%></td>
+				</tr>
+				<%
+				}
+				if i==0
+				%>
+				<tr>
+					<td colspan="3">No referrals found.</td>
+				</tr>
+				<%
+				end
+				%>
+			</tbody>
+		</table>
+        <div class="pagination"></div>
 	</div>
 </section>
+
+<script>
+    $(document).ready(function() {
+        drawPagination($(".pagination"), <%=page_number%>, <%=total_pages%>);
+    });
+</script>
