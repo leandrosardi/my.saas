@@ -16,8 +16,11 @@ select
 
 	100 * coalesce(a.affiliate_commission, i.affiliate_commission) as commission,
 	
-	coalesce(sum(t.amount),0) * coalesce(a.affiliate_commission, i.affiliate_commission) as pay_off
+	coalesce(sum(t.amount),0) * coalesce(a.affiliate_commission, i.affiliate_commission) as pay_off,
 	
+	i.billing_period_from,
+	i.billing_period_to
+
 from \"account\" a -- affiliate
 join \"account\" r on a.id=r.id_account_affiliate -- referral
 left join \"invoice\" i on (
@@ -37,8 +40,10 @@ group by
 	i.status,
 	i.affiliate_paid_off,
 	i.affiliate_commission,
-	a.affiliate_commission
-order by r.name
+	a.affiliate_commission,
+	i.billing_period_from,
+	i.billing_period_to
+order by i.billing_period_from desc
 "
 
 # TODO: use re-utilizable function here.
@@ -48,7 +53,7 @@ if total_rows>0
   total_pages = (total_rows.to_f/page_size.to_f).ceil
   # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
   # then, get user preferences regarding the page number on this screen
-  page_number = @login.user.preference("settings.affiliates.sales.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  page_number = @login.user.preference("settings.affiliates.sales.pagination.page", 1, params[:p].nil? ? nil : params[:p].to_i)
   # pagination correction to prevent glitches
   page_number = 1 if page_number < 1
   page_number = total_pages if page_number > total_pages
@@ -97,11 +102,12 @@ q = "
 		<table class="table table-condensed">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Revenue</th>
-					<th>Commission</th>
-					<th>Pay Off</th>
+					<th width='75px'>Ref. ID</th>
+					<th width='auto'>Referral Name</th>
+					<th width='150px' style='text-align:left;'>Billing Period</th>
+					<th width='125px' style='text-align:right;'>Revenue</th>
+					<th width='125px' style='text-align:right;'>Commission</th>
+					<th width='125px' style='text-align:right;'>Pay Off</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -111,11 +117,14 @@ q = "
 					i += 1
 				%>
 				<tr>
-					<td><%=row[:id_referral]%></td>
-					<td><%=row[:referral_name]%></td>
-					<td><%=row[:total_revenue]%></td>
-					<td><%=row[:commission]%></td>
-					<td>
+					<td><%=row[:id_referral][0..5]%></td>
+					<td><%=row[:referral_name].to_s.encode_html%></td>
+					<td><%=row[:billing_period_from].to_s.encode_html%> - <%=row[:billing_period_to].to_s.encode_html%></td>
+					<td style='text-align:right;'>$<%=row[:total_revenue].to_f.round(2)%></td>
+					<td style='text-align:right;'><%=row[:commission].to_f.round(2)%>%</td>
+					<td style='text-align:right;'>
+						<span>$<%=row[:pay_off].to_f.round(2)%></span>
+						<br/>
 						<% if row[:affiliate_paid_off] %>
 							<span class="label label-success">Paid</span>
 						<% else %>

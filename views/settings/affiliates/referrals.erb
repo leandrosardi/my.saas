@@ -29,7 +29,7 @@ if total_rows>0
   total_pages = (total_rows.to_f/page_size.to_f).ceil
   # if there is a GET parameters `number` on the URL, update the user preference regarding the page number on this screen
   # then, get user preferences regarding the page number on this screen
-  page_number = @login.user.preference("settings.affiliates.referrals.pagination.page", 1, params[:number].nil? ? nil : params[:number].to_i)
+  page_number = @login.user.preference("settings.affiliates.referrals.pagination.page", 1, params[:p].nil? ? nil : params[:p].to_i)
   # pagination correction to prevent glitches
   page_number = 1 if page_number < 1
   page_number = total_pages if page_number > total_pages
