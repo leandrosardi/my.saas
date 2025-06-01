@@ -1,0 +1,51 @@
+<!-- NavBar -->
+<div class="mynavbar mysticky">
+	<section class="row-fluid">
+		<div class="span6">
+			<%=nav2("Settings", "/settings/dashboard", "Affiliates")%>
+		</div>
+	</section>
+</div>
+
+<!-- Content -->
+<section class="row-fluid">
+	<div class='span12 box'>
+		<h2>Affiliate Dashboard</h2>
+		<p>Here's an overview of your affiliate stats:</p>
+
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th>Stat</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Total Visits</td>
+          <td><%=@account[:stat_affiliate_visits]%></td>
+        </tr>
+        <tr>
+          <td>Unique Visits</td>
+          <td><%=@account[:stat_affiliate_unique_visits]%></td>
+        </tr>
+        <tr>
+          <td>Signups</td>
+          <td><%=@account[:stat_affiliate_signups]%></td>
+        </tr>
+        <tr>
+          <td>Total Revenue</td>
+          <td><%=@account[:stat_affiliate_total_revenue]%></td>
+        </tr>
+        <tr>
+          <td>Total Commissions</td>
+          <td><%=@account[:stat_affiliate_total_commissions]%></td>
+        </tr>
+        <tr>
+          <td>Total Paid Off</td>
+          <td><%=@account[:stat_affiliate_total_paid_off]%></td>
+        </tr>
+      </tbody>
+    </table>
+	</div>
+</section>

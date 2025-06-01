@@ -932,6 +932,18 @@ begin
   post '/settings/filter_users_set_account_owner', :auth => true do
     erb :'views/settings/filter_users_set_account_owner'
   end
+
+  get '/settings/affiliates', :auth => true do
+    erb :'views/settings/affiliates', :layout => :'/views/layouts/classic'
+  end
+
+  get '/settings/affiliates/referrals', :auth => true do
+    erb :'views/settings/affiliates/referrals', :layout => :'/views/layouts/classic'
+  end
+
+  get '/settings/affiliates/sales', :auth => true do
+    erb :'views/settings/affiliates/sales', :layout => :'/views/layouts/classic'
+  end
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
