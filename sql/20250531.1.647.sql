@@ -32,6 +32,9 @@ alter table "account" add column if not exists affiliate_commission float not nu
 alter table "account" add column if not exists stat_affiliate_visits bigint not null default 0;
 alter table "account" add column if not exists stat_affiliate_unique_visits bigint not null default 0;
 alter table "account" add column if not exists stat_affiliate_signups bigint not null default 0;
-alter table "account" add column if not exists stat_affiliate_total_revenue bigint not null default 0;
-alter table "account" add column if not exists stat_affiliate_total_commissions bigint not null default 0;
-alter table "account" add column if not exists stat_affiliate_total_paid_off bigint not null default 0;
+alter table "account" add column if not exists stat_affiliate_total_revenue float not null default 0;
+alter table "account" add column if not exists stat_affiliate_total_commissions float not null default 0;
+alter table "account" add column if not exists stat_affiliate_total_paid_off float not null default 0;
+
+-- glitch found on method update_movements
+alter table "account" add column if not exists movement_last_date_processed date null;
