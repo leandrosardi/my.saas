@@ -252,6 +252,7 @@ begin
     
     # Quick GeoIP lookup (optional—requires a GeoIP DB on disk)
     geo = nil
+
     begin
       the_ip = request.ip
       db = MaxMindDB.new('./GeoLite2-City.mmdb')
@@ -263,7 +264,6 @@ begin
         region   = result.subdivisions.most_specific.name rescue nil
         timezone = result.location.time_zone rescue nil
       end
-
     rescue
       # If DB is missing or IP invalid, we’ll skip geolocation
       geo = nil
@@ -297,7 +297,7 @@ begin
       city_name:            city,
       device_type:          device_type
     )
-
+    
     # —————————————————————————————————————————————————————————————————————————
     
     headers 'Access-Control-Allow-Origin' => '*',
