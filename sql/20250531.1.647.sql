@@ -1,3 +1,5 @@
+alter table "account" add column if not exists id_account_affiliate uuid null references "account"("id");
+
 alter table "invoice" 
   add column if not exists affiliate_paid_off bool not null default false,
   add column if not exists affiliate_paid_time timestamp null,
