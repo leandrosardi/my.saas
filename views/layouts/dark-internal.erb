@@ -1,0 +1,3089 @@
+<%
+user = @login.user
+account = BlackStack::I2P::Account.where(:id=>user.id_account).first
+orders = BlackStack::MySaaS::ScrapingOrder.where(:id_account=>account.id, :delete_time=>nil).order(:create_time).all.reverse
+#redirect '/linkedin-feed-signals/new' if orders.size == 0
+
+active_subs = account.subscriptions.select { |s| 
+	s.active && 
+	( s.invoices.first && s.invoices.first.items.first && s.invoices.first.items.first.service_code == 'data-credits' ) &&
+	!s.cancellation_requested 
+}
+
+row = DB["
+	select -sum(m.credits) as total_credits, count(m.id) as total_movements
+	from \"movement\" m
+	where m.id_account='#{account.id}' 
+	and m.service_code='data-credits';
+"].first
+
+credits = row.nil? ? nil : row[:total_credits].to_i || 0
+movements = row.nil? ? nil : row[:total_movements].to_i || 0
+
+plans = [
+    { credits:  77,  price:  7.00, per: 0.0900 },
+    { credits: 200,  price: 17.00, per: 0.0850 },
+    { credits: 337,  price: 27.00, per: 0.0800 },
+    { credits: 627,  price: 47.00, per: 0.0750 },
+    { credits:1385,  price: 97.00, per: 0.0700 },
+    { credits:3030,  price:197.00, per: 0.0650 }
+]
+%>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-B2JZ0P1PXR"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		
+		gtag('config', 'G-B2JZ0P1PXR');
+		</script>
+
+		<meta charset="utf-8">
+		<title>MassProspecting | AI-Driven Multi-Channel Outreach System</title>
+		<!-- Stylesheets -->
+		<link href="/onboarding/css/bootstrap.css" rel="stylesheet">
+		<link href="/onboarding/css/style.css" rel="stylesheet">
+		<link href="/onboarding/css/meanmenu.min.css" rel="stylesheet">
+		<link href="/onboarding/css/responsive.css" rel="stylesheet">
+
+		<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+		<link rel="shortcut icon" href="/onboarding/images/favicon.png" type="image/x-icon">
+		<link rel="icon" href="/onboarding/images/favicon.png" type="image/x-icon">
+
+		<!-- Responsive -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+		<style>
+			/* Left-side strategy blocks */
+			div.order-row {
+				/* A semi-transparent dark background helps the white glow show up */
+				background: rgba(0, 0, 0, 0.8);
+				
+				/* White shadow/glow around the box */
+				//box-shadow: 0 0 3px 3px rgba(255, 255, 255, 0.3);
+				
+				/* Optional styling */
+				border-radius: 12px;
+				padding: 20px;
+				margin-bottom: 20px; /* space between each block */
+			}
+			
+			img.screenshot {
+				//margin-top: 25px;
+				display: inline-block;          /* or block, depending on your layout needs */
+				border-radius: 8px;            /* Adjust corner rounding as needed */
+				border: 2px solid purple;      /* 2px yellow border */
+				box-shadow: 0 0 6px #fff, 
+							0 0 12px #fff;     /* Bright white glow/shadow */
+			}
+		  
+
+			.info-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #0000ff; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+			.success-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #005500; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+			.pending-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #555555; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+			.error-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #ff0000; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+			.sold-out-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #ff0000; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+		
+
+			h3.onboarding-title {
+				color:white; 
+				margin:25px;
+				color: #fff;  
+				text-shadow: 
+				0 0 2px rgba(255, 255, 255, 0.8),
+				0 0 3px rgba(255, 255, 255, 0.6),
+				0 0 4px rgba(255, 255, 255, 0.4);							  
+			}
+			
+			h3 a.help {
+				margin-left:25px;
+				font-size: 18px;
+				vertical-align: bottom;
+				color: rgb(160,160,255);  
+				text-shadow: 
+					0 0 0px,
+					0 0 0px,
+					0 0 0px;
+			}
+
+			div.order-row {
+				margin-bottom: 25px;
+				border: 2px solid gray;
+				cursor: pointer;  /* Shows link-like pointer by default */
+			}
+			  
+			div.order-row:hover {
+				border: 2px solid purple;
+			}
+			  
+			div.order-row.selected {
+				border: 2px solid purple;
+				background-color: purple;
+			}
+			  
+			/* When the disabled class is present */
+			div.order-row.disabled {
+				opacity: 0.5;     /* Makes it semitransparent */
+				cursor: default;  /* Reverts to a neutral mouse pointer */
+			}
+			  
+
+			.order-row-description-container {
+			/* Remove or comment out the next two lines: */
+			/* height: 100vh; */
+			/* overflow: hidden; */
+
+			/* Optionally, you can keep position relative if needed for your layout */
+			position: relative;
+			/* let it size automatically */
+			}
+
+			div.order-row-description {
+			/* Instead of absolute, let it be static or relative so it just flows */
+			position: absolute;
+			/* Remove max-height if you want it to grow with content: */
+			/* max-height: 100vh; */
+			/* Let the content flow naturally: */
+			overflow-y: visible; 
+			/* Or remove overflow altogether */
+			}
+
+			div.order-row-description.hidden {
+				visibility: hidden;
+			}
+
+			div.order-row-description h3 {
+				color: white;
+				padding-bottom: 15px;
+			}
+
+			section.onboarding { 
+				margin-top:24px;
+				padding-top:24px; 
+			}
+
+			div.price-block_one-title.shadow {
+				font-size: 24px;
+				text-shadow: 
+				0 0 1px rgba(255, 255, 255, 0.8),
+				0 0 2px rgba(255, 255, 255, 0.6),
+				0 0 3px rgba(255, 255, 255, 0.4);							  
+			}
+
+			div.price-block_one-subtitle {
+				color: white;
+			}
+
+			ul.price-block_one-list {
+				margin-top:5px;
+				padding-top:5px; 
+			}
+
+
+			span.bright-underline {
+				position: relative;
+				text-decoration: none; /* Remove the built-in underline */
+			}
+			
+			span.bright-underline::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				bottom: 0; /* adjust as needed */
+				width: 100%;
+				height: 2px; /* thickness of the "underline" */
+				background-color: yellow; //rgb(255,90,90); /* the underline color */
+				box-shadow: 0 0 3px white, 0 0 6px white; /* bright white shadow/glow */
+			}
+		
+			span.old-price {
+				position: relative;
+				color: white;
+				font-weight: bolder;
+				text-decoration: none; /* Remove default strike-through */
+			}
+			
+			span.old-price::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 50%; /* Position the line in the middle of the text */
+				height: 3px; /* Thickness of the strike-through: 3 pixels */
+				background-color: red; /* Red line */
+				box-shadow: 0 0 3px white, 0 0 6px white; /* White bright shadow */
+				transform: translateY(-50%); /* Center the line vertically */
+			}
+		
+
+			div.about-one_tab-image img {
+				border-radius: 12px; /* Adjust for more or less rounded corners */
+				opacity: 0.85; /* Adjust for desired transparency */
+				//mix-blend-mode: multiply; /* Blends image with the background */
+				transition: opacity 0.3s ease-in-out;
+			}
+
+			div.about-one_tab-image img:hover {
+				opacity: 1.0; /* Adjust for desired transparency */
+			}
+
+			/* Ensure the icon remains fixed in the bottom-right corner */
+			.whatsapp-float {
+			position: fixed;       /* Stays in the same place even on scroll */
+			width: 60px;          /* Adjust the size as desired */
+			height: 60px;
+			bottom: 20px;         /* Distance from the bottom edge of the page */
+			right: 20px;          /* Distance from the right edge of the page */
+			z-index: 999;         /* Ensures the icon is above other elements */
+			}
+			.whatsapp-float img {
+			width: 100%;
+			height: 100%;
+			}
+
+			a.bright {
+				color: #fff;  
+				text-shadow: 
+				0 0 1px rgba(255, 255, 255, 0.8),
+				0 0 2px rgba(255, 255, 255, 0.6),
+				0 0 4px rgba(255, 255, 255, 0.4);							  
+			}
+
+			a.disabled-link {
+				color: gray;             /* Make the text gray */
+				pointer-events: none;    /* Disable clicking */
+				cursor: default;         /* Show the neutral/default cursor */
+				text-decoration: none;   /* Remove underline (optional) */
+				opacity: 0.25;            /* Slightly fade the link (optional) */
+			}
+
+
+			/* Push the input to the far right */
+			.price-block_one-list li .amount {
+			margin-left: auto;
+			}
+			
+			div.price-block_one.active div.price-block_one-content div.price-block_one-button a div { 
+				color: black; 
+			}
+
+			div.price-block_one.active div.price-block_one-content div.price-block_one-button a div sup span.old-price { 
+				color: black; 
+			}
+
+
+			/* The rest of the input’s custom styles */
+			input.amount {
+			background-color: #000;           /* black background */
+			border: 2px solid #7f56d9;        /* purple border */
+			border-radius: 4px;               /* rounded corners */
+			color: #7f56d9;                   /* purple text */
+			font-weight: bold;
+			width: 75px;                      /* tweak as needed */
+			padding: 4px 6px;
+			text-align: right;               /* center the number text if you like */
+			}
+			
+			/* Purple spinner buttons (for Chrome, Safari, etc.) */
+			input.amount::-webkit-inner-spin-button,
+			input.amount::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			appearance: none;
+			background: #7f56d9; /* match the purple border color */
+			width: 10px;
+			height: 10px;
+			}
+			
+			/* The rest of the input’s custom styles */
+			select.amount {
+			background-color: #000;           /* black background */
+			border: 2px solid #7f56d9;        /* purple border */
+			border-radius: 4px;               /* rounded corners */
+			color: #7f56d9;                   /* purple text */
+			font-weight: bold;
+			width: 75px;                      /* tweak as needed */
+			padding: 4px 6px 4px 4px;
+			text-align: right;               /* center the number text if you like */
+			}
+			
+			
+			/* The rest of the input’s custom styles */
+			select.amount option {
+			background-color: #000;           /* black background */
+			color: #7f56d9;                   /* purple text */
+			font-weight: bold;
+			width: 90px;                      /* tweak as needed */
+			text-align: right;               /* center the number text if you like */
+			}
+
+
+			/* 
+			1) Make the parent `.price-block_one-inner` position: relative,
+				so we can anchor `.price-block_buttons` in the top-right corner.
+			*/
+			.price-block_one-inner {
+				position: relative;
+			}
+
+			/* 
+			2) Absolutely position the container of the buttons in the top-right corner.
+			*/
+			div.price-block_buttons {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+			}
+
+			/* 
+			3) Style each button so it looks more like a text link and uses
+				a pointer cursor.
+			*/
+			a.view-button {
+				background: none;            /* Remove default button background */
+				border: none;                /* Remove default button border */
+				color: #55bbff;             /* “Link” color (Bootstrap’s default link blue) */
+				text-decoration: none;
+				cursor: pointer;            /* Show pointer on hover */
+				font-size: 0.95rem;         /* Adjust text size to preference */
+				margin-left: 6px;           /* Little space between each button */
+				padding: 0;                 /* Remove default button padding */
+			}
+
+
+			div.price-block_one-title a.pay {
+				background: none;            /* Remove default button background */
+				border: none;                /* Remove default button border */
+				color: #55bbff;             /* “Link” color (Bootstrap’s default link blue) */
+				text-decoration: none;
+				cursor: pointer;            /* Show pointer on hover */
+				font-size: 0.95rem;         /* Adjust text size to preference */
+				margin-left: 6px;           /* Little space between each button */
+				padding: 0;                 /* Remove default button padding */
+			}
+
+			div.price-block_one-inner span.order-id {
+				color: rgb(160,160,160);
+			}
+
+
+
+/* wrapper: split big stats on the left, details on the right */
+.stats-summary-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+/* left: three big stat cards */
+.stats-summary {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.big-stat {
+  flex: 1;
+  background: #1f1f1f;    /* fallback very-dark gray */
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.big-stat .stat-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1;
+}
+
+.big-stat .stat-label {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 2. Per-stat vivid colors */
+.big-stat.stat-leads {
+  background: #7f56d9;    /* purple (matching your brand accent) */
+}
+.big-stat.stat-processed {
+  background: #22c55e;    /* emerald green */
+}
+.big-stat.stat-valid {
+  background: #3b82f6;    /* sky-blue */
+}
+
+/* 4. Preserve your existing text styles */
+.big-stat .stat-value { color: #fff; }
+.big-stat .stat-label { color: #eee; }
+
+
+/* right: detail list */
+.stats-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.detail-item {
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.detail-item strong {
+  color: #fff;
+}
+
+
+
+			
+
+/* ensure the container is relative, so absolutely‑positioned siblings line up */
+.price-block_one-inner.order-row {
+  position: relative;
+}
+
+/* Download link stays top-right */
+/* Base download link */
+.price-block_one-inner.order-row .search-link {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #fff;
+  font-size: 1.2rem;
+  opacity: 0.8;
+  transition: opacity .2s, color .2s;
+}
+
+/* Download link stays top-right */
+/* Base download link */
+.price-block_one-inner.order-row .download-link {
+  position: absolute;
+  top: 12px;
+  right: 52px;
+  color: #fff;
+  font-size: 1.2rem;
+  opacity: 0.8;
+  transition: opacity .2s, color .2s;
+}
+.price-block_one-inner.order-row .download-link:hover {
+  opacity: 1;
+}
+
+/* Disabled state */
+.price-block_one-inner.order-row .download-link.disabled {
+  opacity: 0.3;               /* make it very faint */
+  color: #aaa;                /* lighter grey color */
+  pointer-events: none;       /* no clicks */
+  cursor: default;            /* normal arrow instead of pointer */
+  filter: grayscale(100%);    /* optional: desaturate it */
+}
+
+/* Play/Pause button sits immediately to the left of the download icon */
+.price-block_one-inner.order-row .state-btn {
+  position: absolute;
+  top: 10px;
+  right: 86px;               /* adjust so it doesn’t overlap download */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  transition: background-color .2s, opacity .2s;
+}
+
+/* “Play” = green */
+.price-block_one-inner.order-row .pause-btn {
+  background-color: #28a745;
+}
+.price-block_one-inner.order-row .pause-btn:hover {
+  background-color: #218838;
+}
+
+/* “Pause” = red */
+.price-block_one-inner.order-row .play-btn {
+  background-color: #dc3545;
+}
+.price-block_one-inner.order-row .play-btn:hover {
+  background-color: #c82333;
+}
+
+
+
+/* ─────────────────────────────────────────────────────
+   Editables.Js “dark theme” overrides
+───────────────────────────────────────────────────── */
+
+/* 1. Make sure the <i> can show generated content */
+.icon-pencil {
+  position: relative;   /* in case you want to absolutely position pseudoelements */
+  display: inline-block;
+  font-style: normal;   /* prevent any inherited italic */
+  line-height: 1;
+}
+
+/* 2. Insert a Unicode “pencil” glyph before the <i> */
+.icon-pencil::before {
+  content: "\270E";     /* ✎  (pencil) */
+  font-size: 1em;       /* same size as surrounding text */
+  color: currentColor;  /* pick up the color of its parent */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 3. (Optional) add some padding so it doesn’t butt right up against text */
+.icon-pencil {
+  padding-right: 0.25em;
+}
+
+/* make the container a positioning context */
+.editable-container {
+  position: relative;
+}
+
+/* both read‑only and edit layers fill that container */
+.editable-container .editable-field-readonly,
+.editable-container .editable-field-editable {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* stack the edit layer above */
+.editable-container .editable-field-editable {
+  z‑index: 2;
+}
+
+/* keep the read‑only text underneath (so cursor clicks go through once hidden) */
+.editable-container .editable-field-readonly {
+  z‑index: 1;
+}
+
+.editable-input {
+	border: 4px solid #7f56d9;        /* purple border */
+	border-radius: 8px;               /* rounded corners */
+	background-color: #000;           /* black background */
+	color: #7f56d9;                   /* purple text */
+	font-weight: bold;
+	padding: 4px 6px;               /* padding for the input */
+}
+
+/* Chrome, Firefox, Opera, Safari 10.1+ */
+.editable-input::placeholder {
+  color: #b084eb;    /* light purple */
+  opacity: 1;        /* Firefox applies default opacity=0.54 unless overridden */
+}
+
+/* Firefox 19+ */
+.editable-input:-moz-placeholder {
+  color: #b084eb;
+  opacity: 1;
+}
+
+/* Internet Explorer 10+ */
+.editable-input:-ms-input-placeholder {
+  color: #b084eb;
+}
+
+/* Microsoft Edge */
+.editable-input::-ms-input-placeholder {
+  color: #b084eb;
+}
+
+/* Safari 5‑9 */
+.editable-input::-webkit-input-placeholder {
+  color: #b084eb;
+}
+
+
+/*
+Big stats: three big stats on the left, details on the right */
+*/
+/* override the white text on .stat-value for our credits box */
+.stat-value.positive {
+  color: #22c55e;  /* emerald green */
+}
+
+.stat-value.negative {
+  color: #ef4444;  /* red-500 */
+}
+
+
+
+
+/* slider area */
+.purchase-slider {
+  margin-top: 20px;
+}
+.purchase-slider label {
+  display: block;
+  color: #ccc;
+  margin-bottom: 4px;
+}
+#plan-slider {
+  width: 100%;
+}
+.plan-info {
+  margin-top: 6px;
+  color: #fff;
+  font-weight: bold;
+}
+.features-title p {
+  margin-top: 6px;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* plans table */
+.plans-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 30px 0 10px;
+}
+.plans-table th,
+.plans-table td {
+	padding: 8px 12px;
+	text-align: left;
+	color: #ddd;
+}
+.plans-table th {
+  	border-bottom: 2px solid #444;
+}
+.plans-table tr:nth-child(odd) td {
+  	background: #1f1f1f;
+}
+.plans-table tr:hover td {
+	background: #2a2a2a;
+}
+
+/* features list */
+.plan-features {
+	list-style-type: disc;
+	margin: 0 0 40px 20px;
+	color: #ccc;
+}
+.plan-features li {
+  	margin-bottom: 18px;
+  	line-height: 1.4;
+}
+.plan-features strong {
+  	color: #fff;
+}
+
+/* Highlighted plan row */
+.plans-table tr.selected td {
+    background-color: #5b21b6;  /* a rich purple */
+    color: #fff;
+}
+
+.feature-icon {
+  display: inline-block;
+  width: 1.2em;
+  text-align: center;
+  margin-right: 0.5em;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.plan-features .feature {
+  display: contents; /* let the grid span li children directly */
+  margin-bottom: 18px;
+}
+
+.feature-label {
+  display: flex;
+  align-items: center;
+}
+
+.feature-desc {
+  margin-bottom: 14px;
+}
+
+.feature-desc p {
+  color: #bbb;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.feature-icon.green { color: #22c55e; }
+.feature-icon.red   { color: #ef4444; }
+
+
+.subscribe-wrapper {
+  margin-top: 24px;      /* space above the button */
+}
+
+.btn-subscribe-1 {
+  text-align: center;
+  font-size: 0.9rem;     /* bump up the text a bit */
+  padding: 6px 6px;       /* taller button */
+  margin-left: 12px; /* space between buttons */
+  border-radius: 8px;
+
+  background-color: #22c55e;     /* emerald green */
+  border-color:   #22c55e;       /* if you need a border match */
+
+  color: #fff;
+  transition: background-color .2s;
+}
+
+.btn-subscribe-2 {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 1.1rem;     /* bump up the text a bit */
+  padding: 12px 0;       /* taller button */
+  border-radius: 8px;
+
+  background-color: #22c55e;     /* emerald green */
+  border-color:   #22c55e;       /* if you need a border match */
+
+  color: #fff;
+  transition: background-color .2s;
+}
+
+.btn-subscribe:hover,
+.btn-subscribe:focus {
+  background-color: #16a34a;     /* darker green on hover/focus */
+  border-color:   #16a34a;
+  color: white;
+}
+
+
+/* hide until user wants to add credits */
+#plans-div {
+  display: none;
+  margin-top: 24px;
+}
+
+/* simple styling for the button */
+.btn-add-credits {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: #22c55e;       /* green */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background .2s;
+}
+.btn-add-credits:hover {
+  background: #16a34a;
+}
+
+/* active subscriptions list */
+.active-subscriptions {
+  margin-top: 24px;
+}
+.active-subscriptions h4 {
+  margin-bottom: 8px;
+  color: #eee;
+}
+.subscription-item {
+  color: #ccc;
+  margin-bottom: 4px;
+}
+
+.sub-icon {
+  font-size: 1.2em;
+  margin-right: 0.5em;
+  color: #22c55e;
+}
+.btn-cancel-sub {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.btn-cancel-sub:hover {
+  background: #dc2626;
+}
+
+
+
+
+
+
+/* White‐text label above the textarea */
+.affiliate-intro {
+  display: block;
+  color: #ccc;          /* light gray */
+  font-size: 1rem;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: normal;
+}
+
+/* Container around the textarea + “copied!” label */
+.affiliate-text-container {
+  position: relative;      /* so the “copied!” label can be positioned absolutely */
+  margin-top: 8px;
+}
+
+/* The read‐only textarea itself */
+.affiliate-text {
+  width: 100%;                   /* fill parent width */
+  min-height: 100px;             /* adjust height as needed */
+  padding: 12px;                 /* inner padding */
+  font-size: 1rem;               
+  font-weight: bold;             /* bold text */
+  color: #cccccc;                /* light gray text */
+  background-color: #1f1f1f;     /* dark background to match your theme */
+  border: 2px solid #22c55e;     /* green border */
+  border-radius: 8px;            /* rounded corners */
+  resize: none;                  /* disable manual resizing */
+  line-height: 1.4;
+  caret-color: transparent;      /* hide blinking caret in read-only */
+  overflow: auto;
+}
+
+/* Remove default focus outline and show subtle glow */
+.affiliate-text:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(34, 197, 94, 0.6); /* subtle green glow */
+}
+
+/* The hidden “copied!” label */
+.copied-label {
+  position: absolute;
+  top: -24px;                   /* position it just above the textarea */
+  right: 0;
+  background-color: #22c55e;    /* match the green border */
+  color: #ffffff;               /* white text */
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;         /* not clickable */
+  white-space: nowrap;
+  transform: translateY(-4px);  /* slight upward shift */
+}
+
+/* When the “visible” class is added, fade it in */
+.copied-label.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ─────── Affiliate Stats Styling ─────── */
+.affiliate-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;              /* space between each row */
+  margin-bottom: 16px;   /* space below stats, before “Share Your Affiliate Link” */
+}
+
+.affiliate-stats .stat-row {
+	display: flex;
+	justify-content: space-between;
+	color: #ffffff;        /* white text */
+	font-size: 0.9rem;     /* adjust as desired */
+	line-height: 1.2;
+
+	padding-bottom:0px;
+	margin-bottom:0px;
+
+	padding:5px;
+	margin-top:0px;
+
+	vertical-align: middle;
+	height: 25px;
+
+	background-color: #151515;
+}
+
+.affiliate-stats .stat-row.gray {
+	background-color: #1f1f1f;
+}
+
+.affiliate-stats .stat-label {
+  font-weight: 500;
+}
+
+.affiliate-stats .stat-value {
+  /* monospace ensures digits line up when padded with zeros */
+  font-family: "Courier New", Courier, monospace;
+  text-align: right;
+}
+/* ───────────────────────────────────────── */
+
+
+
+/* ─────────── On-Hold Alert Styling ─────────── */
+.order-alert {
+  margin-top: 12px;
+  background-color: #2a2a2a;        /* same as your email’s dark background */
+  border-left: 4px solid #ff5f5f;   /* vibrant red accent */
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #ffbdbd;                   /* light-pink text color */
+  font-family: sans-serif;          /* match your email font-stack */
+  line-height: 1.4;
+}
+
+/* Ensure paragraphs inside .order-alert have no extra margins */
+.order-alert p {
+  margin: 0;
+  color: #ffbdbd;
+}
+
+/* If you ever want a UL inside the alert */
+.order-alert ul {
+  padding-left: 18px;
+  margin: 6px 0 0;
+  color: #ffbdbd;
+}
+
+
+
+
+			.info-label.mini {
+				margin-left: 4px;           /* Spacing from the title text */
+				font-size: 0.50rem;        /* Slightly smaller text */
+				padding: 0px 4px;          /* Padding for the badge look */
+			}
+
+			.success-label.mini {
+				margin-left: 4px;           /* Spacing from the title text */
+				font-size: 0.50rem;        /* Slightly smaller text */
+				padding: 0px 4px;          /* Padding for the badge look */
+			}
+
+
+
+
+
+
+
+		.fixed-height-row {
+			/* Force a consistent height, e.g. 600px */
+			min-height: 600px;
+			height: auto;				
+			display: flex;              /* Make columns flexible */
+			align-items: stretch;       /* Ensure columns fill the same height */
+		}
+
+
+
+			/* Container spacing, optional */
+			.dark-form-group {
+				margin-bottom: 1rem;
+			}
+		
+			.dark-label {
+				display: block;
+				margin-bottom: 0.5rem;
+				font-weight: 600;
+				color: #fff; /* White text, matching your theme */
+			}
+		
+			.dark-textarea{
+				background-color: #000;        /* Black background */
+				border: 2px solid #7f56d9;     /* Purple border */
+				border-radius: 4px;
+				color: #7f56d9;                /* Purple text */
+				font-weight: bold;
+				padding: 6px 10px;
+				margin-right: 10px;
+				margin-top: 0;          /* Removes extra vertical offset */
+				margin-bottom: 0;
+				vertical-align: middle; /* Helps ensure it lines up in some browsers */
+			}
+
+			.dark-input {
+				background-color: #000;        /* Black background */
+				border: 2px solid #7f56d9;     /* Purple border */
+				border-radius: 4px;
+				color: #7f56d9;                /* Purple text */
+				font-weight: bold;
+				padding: 6px 10px;
+				height: 36px;
+				margin-right: 10px;
+				margin-top: 0;          /* Removes extra vertical offset */
+				margin-bottom: 0;
+				vertical-align: middle; /* Helps ensure it lines up in some browsers */
+			}
+
+			.dark-checkbox {
+				background-color: #000;        /* Black background */
+				border: 2px solid #7f56d9;     /* Purple border */
+				border-radius: 4px;
+				color: #7f56d9;                /* Purple text */
+				font-weight: bold;
+				padding: 6px 10px;
+				width: 36px;
+				height: 36px;
+				margin-right: 10px;
+				margin-top: 0;          /* Removes extra vertical offset */
+				margin-bottom: 0;
+				vertical-align: middle; /* Helps ensure it lines up in some browsers */
+			}
+
+			.form-check {
+				display: flex;          /* Let’s line up the checkbox and label side by side */
+				align-items: center;    /* Vertically center them */
+			}
+
+			/* Ensure label color in checkboxes is also visible */
+			.form-check-label {
+				color: #fff;
+				margin-bottom: 0;       /* Default bootstrap adds margin; this aligns text better */
+			}
+
+			/* Textarea and input width to 100% for responsiveness */
+			.dark-textarea,
+			.dark-input {
+				width: 100%;
+			}
+		
+			/* Slight top margin for checkbox input */
+			.dark-checkbox {
+				margin-top: 5px;
+			}
+
+
+		img.screenshot {
+			//margin-top: 25px;
+			display: inline-block;          /* or block, depending on your layout needs */
+			border-radius: 8px;            /* Adjust corner rounding as needed */
+			border: 2px solid purple;      /* 2px yellow border */
+			box-shadow: 0 0 6px #fff, 0 0 12px #fff;     /* Bright white glow/shadow */
+		}
+
+
+
+
+		.step-block_one-button {
+			position: relative; /* Prevent overlap */
+			margin-top: 15px; /* Add spacing above */
+			width: 100%; /* Ensure it takes full width */
+			text-align: center; /* Center the button */
+		}
+
+		.step-block_one-content {
+			padding-bottom: 0px !important; /* Add extra spacing to avoid overlap */
+		}
+
+		.step-block_one-content h4 {
+			text-align: left;
+			color: #fff;                  /* white text */
+			//font-size: 0.5rem;            /* tweak as needed */
+			font-weight: 600;
+			margin: 0rem 0 0rem;        /* space above/below */
+			text-shadow: 
+				0 0 2px rgba(255,255,255,0.3),
+				0 0 4px rgba(255,255,255,0.1);
+		}
+
+		.step-block_one-content p {
+			text-align: left;
+			color: #ddd;                  /* slightly grey */
+			font-size: 1rem;
+			line-height: 1.5;
+			margin: 0 0 1rem;             /* bottom spacing */
+		}
+
+		#advanced-filters-content p {
+			text-align: left;
+			color: #ddd;                  /* slightly grey */
+			font-size: 1rem;
+			line-height: 1.5;
+			margin: 0 0 1rem;             /* bottom spacing */
+		}
+
+
+
+		@media (max-width: 768px) {
+			.step-block_one-button {
+				position: relative;
+				margin-top: 20px;
+				width: 100%;
+			}
+
+			.step-block_one-content {
+				padding-bottom: 0px; /* Extra space for button */
+			}
+		}
+
+		@media (max-width: 1000px) {
+			.arrow-column { 
+				display: none !important; 
+			}
+		}
+	
+
+		/* Make the row a flex container that stretches each column */
+		.arrow-row {
+			display: flex;
+			align-items: stretch; /* columns match tallest column’s height */
+		}
+		
+		/* So we can absolutely position the arrow inside */
+		.arrow-column {
+			position: relative;
+			/* Optionally: min-height: 300px; if row is too short */
+		}
+	
+		/* This 7‐corner polygon forms a right‐pointing arrow 
+		with a distinct top half, tip in the middle, and bottom half. */
+		.big-arrow-1 {
+			position: absolute;
+			top: 0; 
+			left: 0;
+			width: 100%; 
+			height: 95%;
+
+			background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+			
+			clip-path: polygon(
+				00% 0%, 
+				20% 0%, 
+				60% 50%, 
+				20% 100%, 
+				00% 100%,
+				40% 50%
+			);
+			
+			box-shadow: 0 0 15px rgba(0,0,0,0.4); /* optional shadow */
+		}
+
+		.big-arrow-2 {
+			position: absolute;
+			top: 0; 
+			left: 0;
+			width: 100%; 
+			height: 95%;
+
+			background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+			
+			clip-path: polygon(
+				40% 0%, 
+				60% 0%, 
+				100% 50%, 
+				60% 100%, 
+				40% 100%,
+				80% 50%
+			);
+
+			box-shadow: 0 0 15px rgba(0,0,0,0.4); /* optional shadow */
+		}
+	
+			/* Price Block One */
+			.step-block_one-inner {
+				display: flex;
+				flex-direction: column;
+				//height: 100%; /* Fill the parent row */
+				height: auto !important;
+				flex: 0 0 auto !important;
+
+				/* Dark purple-to-black gradient background */
+				background: linear-gradient(
+					135deg,
+					rgba(48, 0, 48, 0.9), /* Dark purple, 90% opacity */
+					rgba(16, 0, 16, 0.95) /* Almost black, 95% opacity */
+				);
+
+				/* White shadow/glow around the box */
+				box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.3);
+			
+				/* Optional styling */
+				border-radius: 12px;
+				padding: 20px;
+				color: #fff; /* Ensure text is still readable */
+			}
+
+
+			.step-block_two-inner {			
+				/* White shadow/glow around the box */
+				box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.3);
+			
+				text-align: center;
+
+				/* Optional styling */
+				border-radius: 12px;
+				padding: 20px;
+				color: #fff; /* Ensure text is still readable */
+			}
+
+			.step-block_two-inner h1 {
+				font-size: 72px;
+				color: #fff;
+				margin-bottom: 10px;
+				line-height: 1.3;
+				text-shadow: 
+					0 0 2px rgba(255, 255, 255, 0.7),
+					0 0 4px rgba(255, 255, 255, 0.4);
+			}
+
+			.step-block_two-inner h1 span {
+				font-size: 72px;
+				font-weight: bold;
+				color: #66bb6a;
+				margin-bottom: 10px;
+				line-height: 1.3;
+				text-shadow:
+					0 0 2px rgba(0, 0, 0, 0.7),
+					0 0 4px rgba(0, 0, 0, 0.4);
+			}
+
+
+			.step-block_two-inner h2 {
+				font-size: 42px;
+				color: #fff;
+				margin-bottom: 10px;
+				line-height: 1.3;
+				text-shadow: 
+					0 0 2px rgba(255, 255, 255, 0.7),
+					0 0 4px rgba(255, 255, 255, 0.4);
+			}
+
+			.step-block_two-inner h2 span {
+				font-size: 42px;
+				font-weight: bold;
+				color: #66bb6a;
+				margin-bottom: 10px;
+				line-height: 1.3;
+				text-shadow:
+					0 0 2px rgba(0, 0, 0, 0.7),
+					0 0 4px rgba(0, 0, 0, 0.4);
+			}
+
+			.step-block_two-inner h3 {
+				font-size: 26px;
+				/* green letters */
+				color: #fff;
+				margin-bottom: 20px;
+				line-height: 1.3;
+				text-shadow:
+					0 0 2px rgba(255, 255, 255, 0.7),
+					0 0 4px rgba(255, 255, 255, 0.4);
+			}
+
+			.step-block_two-inner h3 span {
+				font-size: 26px;
+				font-weight: bold;
+				color: #66bb6a;
+				margin-bottom: 20px;
+				line-height: 1.3;
+				text-shadow:
+					0 0 2px rgba(0, 0, 0, 0.7),
+					0 0 4px rgba(0, 0, 0, 0.4);
+			}
+
+			.step-block_two-inner h4 {
+				font-size: 22px;
+				color: #ddd;
+				margin-top: 20px;
+				line-height: 1.3;
+				text-shadow: 
+					0 0 2px rgba(255, 255, 255, 0.7),
+					0 0 4px rgba(255, 255, 255, 0.4);
+			}
+
+			.step-block_two-inner img {
+				border-radius: 12px;
+				border: 1px solid rgb(120, 120, 255); /* Border color */
+				padding: 25px;
+				//box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8); /* White shadow */
+				display: inline-block; 
+				overflow: hidden; 
+			
+				/* Add your gradient here */
+				//background: linear-gradient(135deg, #6a00ff 0%, #2f2f2f 100%);
+				/* Adjust angle & colors as desired */
+			}
+
+
+
+
+	  
+		.price-four {					
+			text-align: center;
+
+			/* Optional styling */
+			border-radius: 12px;
+			padding: 20px;
+			color: #fff; /* Ensure text is still readable */
+		}
+
+		.price-four h2 {
+			font-size: 42px;
+			color: #fff;
+			margin-bottom: 10px;
+			line-height: 1.3;
+			text-shadow: 
+				0 0 2px rgba(255, 255, 255, 0.7),
+				0 0 4px rgba(255, 255, 255, 0.4);
+		}
+
+		.price-four h2 span {
+			font-size: 42px;
+			font-weight: bold;
+			color: #66bb6a;
+			margin-bottom: 10px;
+			line-height: 1.3;
+			text-shadow:
+				0 0 2px rgba(0, 0, 0, 0.7),
+				0 0 4px rgba(0, 0, 0, 0.4);
+		}
+
+		.price-four h3 {
+			font-size: 28px;
+			/* green letters */
+			color: #fff;
+			margin-bottom: 32px;
+			line-height: 1.3;
+			text-shadow:
+				0 0 2px rgba(255, 255, 255, 0.7),
+				0 0 4px rgba(255, 255, 255, 0.4);
+		}
+
+		.price-four h3 span {
+			font-size: 28px;
+			font-weight: bold;
+			color: #66bb6a;
+			margin-bottom: 35px;
+			line-height: 1.3;
+			text-shadow:
+				0 0 2px rgba(0, 0, 0, 0.7),
+				0 0 4px rgba(0, 0, 0, 0.4);
+		}
+
+		.price-four h4 {
+			font-size: 22px;
+			color: #ddd;
+			margin-top: 20px;
+			line-height: 1.3;
+			text-shadow: 
+				0 0 2px rgba(255, 255, 255, 0.7),
+				0 0 4px rgba(255, 255, 255, 0.4);
+		}
+		  
+		  
+		  
+
+			.sold-out-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #ff0000; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+		  
+
+			.discount-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #009900; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+
+			h3.onboarding-title {
+				color:white; 
+				margin:25px;
+				color: #fff;  
+				text-shadow: 
+				  0 0 2px rgba(255, 255, 255, 0.8),
+				  0 0 3px rgba(255, 255, 255, 0.6),
+				  0 0 4px rgba(255, 255, 255, 0.4);							  
+			}
+			
+			h3 a.help {
+				margin-left:25px;
+				font-size: 18px;
+				vertical-align: bottom;
+				color: rgb(160,160,255);  
+				text-shadow: 
+					0 0 0px,
+					0 0 0px,
+					0 0 0px;
+			}
+
+			section.onboarding { 
+				margin-top:24px;
+				padding-top:24px; 
+			}
+
+			div.step-block_one-title.shadow {
+				font-size: 24px;
+				text-align: left;
+				text-shadow: 
+				  0 0 1px rgba(255, 255, 255, 0.8),
+				  0 0 2px rgba(255, 255, 255, 0.6),
+				  0 0 3px rgba(255, 255, 255, 0.4);
+			}
+
+			ul.step-block_one-list {
+				margin-top:5px;
+				padding-top:5px; 
+			}
+
+
+			span.bright-underline {
+				position: relative;
+				text-decoration: none; /* Remove the built-in underline */
+			}
+			
+			span.bright-underline::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				bottom: 0; /* adjust as needed */
+				width: 100%;
+				height: 2px; /* thickness of the "underline" */
+				background-color: yellow; //rgb(255,90,90); /* the underline color */
+				box-shadow: 0 0 3px white, 0 0 6px white; /* bright white shadow/glow */
+			}
+		  
+			span.old-price {
+				position: relative;
+				color: white;
+				font-weight: bolder;
+				text-decoration: none; /* Remove default strike-through */
+			}
+			  
+			span.old-price::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 50%; /* Position the line in the middle of the text */
+				height: 3px; /* Thickness of the strike-through: 3 pixels */
+				background-color: red; /* Red line */
+				box-shadow: 0 0 3px white, 0 0 6px white; /* White bright shadow */
+				transform: translateY(-50%); /* Center the line vertically */
+			}
+		  
+
+			div.about-one_tab-image img {
+				border-radius: 12px; /* Adjust for more or less rounded corners */
+				opacity: 0.85; /* Adjust for desired transparency */
+				//mix-blend-mode: multiply; /* Blends image with the background */
+				transition: opacity 0.3s ease-in-out;
+			}
+
+			div.about-one_tab-image img:hover {
+				opacity: 1.0; /* Adjust for desired transparency */
+			}
+
+			/* Ensure the icon remains fixed in the bottom-right corner */
+			.whatsapp-float {
+			  position: fixed;       /* Stays in the same place even on scroll */
+			  width: 60px;          /* Adjust the size as desired */
+			  height: 60px;
+			  bottom: 20px;         /* Distance from the bottom edge of the page */
+			  right: 20px;          /* Distance from the right edge of the page */
+			  z-index: 999;         /* Ensures the icon is above other elements */
+			}
+			.whatsapp-float img {
+			  width: 100%;
+			  height: 100%;
+			}
+
+			a.bright {
+				color: #fff;  
+				text-shadow: 
+				  0 0 1px rgba(255, 255, 255, 0.8),
+				  0 0 2px rgba(255, 255, 255, 0.6),
+				  0 0 4px rgba(255, 255, 255, 0.4);							  
+			}
+
+			a.disabled-link {
+				color: gray;             /* Make the text gray */
+				pointer-events: none;    /* Disable clicking */
+				cursor: default;         /* Show the neutral/default cursor */
+				text-decoration: none;   /* Remove underline (optional) */
+				opacity: 0.25;            /* Slightly fade the link (optional) */
+			}
+
+			/* Push the input to the far right */
+			.step-block_one-list li .amount {
+			  margin-left: auto;
+			}
+			
+			div.step-block_one.active div.step-block_one-content div.step-block_one-button a div { 
+				color: black; 
+			}
+
+			div.step-block_one.active div.step-block_one-content div.step-block_one-button a div sup span.old-price { 
+				color: black; 
+			}
+
+
+			/* The rest of the input’s custom styles */
+			input.amount {
+			  background-color: #000;           /* black background */
+			  border: 2px solid #7f56d9;        /* purple border */
+			  border-radius: 4px;               /* rounded corners */
+			  color: #7f56d9;                   /* purple text */
+			  font-weight: bold;
+			  width: 75px;                      /* tweak as needed */
+			  padding: 4px 6px;
+			  text-align: right;               /* center the number text if you like */
+			}
+			
+			/* Purple spinner buttons (for Chrome, Safari, etc.) */
+			input.amount::-webkit-inner-spin-button,
+			input.amount::-webkit-outer-spin-button {
+			  -webkit-appearance: none;
+			  appearance: none;
+			  background: #7f56d9; /* match the purple border color */
+			  width: 10px;
+			  height: 10px;
+			}
+			
+			/* The rest of the input’s custom styles */
+			select.amount {
+			  background-color: #000;           /* black background */
+			  border: 2px solid #7f56d9;        /* purple border */
+			  border-radius: 4px;               /* rounded corners */
+			  color: #7f56d9;                   /* purple text */
+			  font-weight: bold;
+			  width: 75px;                      /* tweak as needed */
+			  padding: 4px 6px 4px 4px;
+			  text-align: right;               /* center the number text if you like */
+			}
+			
+			
+			/* The rest of the input’s custom styles */
+			select.amount option {
+			  background-color: #000;           /* black background */
+			  color: #7f56d9;                   /* purple text */
+			  font-weight: bold;
+			  width: 90px;                      /* tweak as needed */
+			  text-align: right;               /* center the number text if you like */
+			}
+
+
+
+
+			/* Container for each step’s left column */
+			.vertical-step {
+			position: relative; 
+			/* Important for absolutely-positioned line and dot */
+			padding-left: 3rem; /* spacing so labels aren’t on top of the line */
+			margin-bottom: 0;   /* we’ll handle margin in .vertical-line or its container */
+			}
+
+			/* The vertical connecting line */
+			.vertical-step .vertical-line {
+			position: absolute;
+			left: 0.75rem;  /* how far from the left you want the line */
+			top: 0;
+			width: 2px;
+			background-color: #66bb6a;
+			/* Make it taller than 100% to overlap the next step, ensuring a continuous line */
+			height: calc(100% + 30px);
+			/* “30px” is just an example. Adjust so it meets or slightly overlaps the next step’s line. */
+			z-index: 0;
+			opacity: 0.8;   /* optional subtle effect */
+			}
+
+			/* The dot that marks each step */
+			.vertical-step .step-dot {
+				position: absolute;
+				left: calc(0.75rem - 8px); /* horizontally center the circle on the line */
+				top: 10px;  /* vertical offset for the dot within this row */
+				width: 18px;
+				height: 18px;
+				background-color: #66bb6a;
+				border-radius: 50%;
+				z-index: 1; /* so it’s on top of the line */
+				box-shadow: 0 0 4px #fff, 0 0 8px #fff; /* optional glow */
+			}
+
+			/* The text label next to the dot */
+			.vertical-step .step-label {
+				text-align: left; /* Align text to the left */
+				color: #fff;
+				margin-left: 2rem; /* a bit more space if needed */
+				/* Adjust font styling as you like */
+			}
+
+			.vertical-step .step-label h4 {
+				color: #fff;
+				margin: 0;
+				font-size: 1.2rem; /* example size */
+				text-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+			}
+
+			.vertical-step .step-label p {
+				color: #fff;
+				margin: 0;
+				font-size: 0.9rem;
+				line-height: 1.4;
+			}
+
+
+
+
+			/* =========================================
+			Scope everything under your filter’s id
+			(change #linkedin-kw-filter if yours is different)
+			========================================= */
+			/* ——————————————————————————————
+			SCOPE EVERYTHING TO “*-filter” CONTAINERS
+			—————————————————————————————— */
+			[id$="-filter"] {
+			/* full width */
+			width: 100%;
+			}
+
+			/* 1) label above the textbox */
+			[id$="-filter"] .control-label {
+			display: block;
+			margin-bottom: 0.25rem;
+			color: #fff;
+			font-weight: 600;
+			}
+
+			/* 2) make the input+buttons row flex */
+			[id$="-filter"] .row-fluid {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			margin-bottom: 0.75rem; /* space before the tags list */
+			}
+
+			/* 3) style the text‑input like your .dark-input */
+			[id$="-filter"] input[type="text"] {
+			background-color: #000;
+			border: 2px solid #7f56d9;
+			border-radius: 4px;
+			color: #7f56d9;
+			font-weight: bold;
+			padding: 6px 10px;
+			height: 36px;
+			flex: 1;             /* grow to fill */
+			min-width: 150px;    /* don’t shrink too far */
+			margin-right: 0.75rem;
+			}
+
+			/* 4) buttons container */
+			[id$="-filter"] .span4 {
+			display: flex;
+			gap: 0.5rem;
+			}
+
+			/* 5) include = dark‑blue */
+			[id$="-filter"] .include-button {
+			background-color: #1e3a8a;
+			border-color:    #1e40af;
+			color:           #fff;
+			}
+			[id$="-filter"] .include-button:hover {
+			background-color: #1e40af;
+			}
+
+			/* 6) exclude = dark‑red */
+			[id$="-filter"] .exclude-button {
+			background-color: #b91c1c;
+			border-color:    #991b1b;
+			color:           #fff;
+			}
+			[id$="-filter"] .exclude-button:hover {
+			background-color: #991b1b;
+			}
+
+			/* 7) strip Bootstrap margins */
+			[id$="-filter"] .control-group {
+			margin-bottom: 0;
+			}
+
+			/* 8) tags styling */
+			[id$="-filter"] #keywords .label-info {
+			background-color: #1e3a8a;
+			color:           #fff;
+			border:          none;
+			}
+			[id$="-filter"] #keywords .label-important {
+			background-color: #b91c1c;
+			color:           #fff;
+			border:          none;
+			}
+			/* tighten up tag height & spacing */
+			[id$="-filter"] #keywords .label {
+			display: inline-flex;
+			align-items: center;
+			padding: 0 8px;
+			border-radius: 4px;
+			font-size: 0.9rem;
+			height: 28px;
+			cursor: pointer;
+			margin: 0;            /* we’ll use flex-gap below */
+			}
+			/* the × icon before the text */
+			[id$="-filter"] #keywords .label .icon-remove-sign::before {
+			content: "×";
+			margin-right: 0.5rem;
+			font-weight: bold;
+			color: rgba(255,255,255,0.8);
+			}
+			/* wrap tags in a flex container */
+			[id$="-filter"] #keywords {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;       /* space between tags */
+			justify-content: flex-start;
+			margin-top: 0.75rem;
+			}
+
+			/* 9) stack label+controls at the top */
+			[id$="-filter"] .control-group.row-fluid {
+			display: flex;
+			align-items: flex-start;
+			}
+			[id$="-filter"] .control-group.row-fluid .control-label {
+			float: none !important;
+			display: inline-block;
+			vertical-align: top;
+			margin-top: 0.25rem;
+			margin-right: 1rem;
+			width: 6rem;
+			text-align: left;
+			}
+			[id$="-filter"] .control-group.row-fluid .controls {
+			flex: 1;
+			}
+
+			/* 10) Font‑Awesome “×” fallback */
+			.icon-remove-sign {
+			font-family: "FontAwesome";
+			speak: none;
+			font-style: normal;
+			font-weight: normal;
+			font-variant: normal;
+			text-transform: none;
+			line-height: 1;
+			display: inline-block;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			}
+			.icon-remove-sign::before {
+			content: "×";
+			display: inline-block;
+			font-weight: bold;
+			margin-right: 0.3em;
+			color: rgba(255,255,255,0.8);
+			}
+
+
+			/* header line with toggle button */
+			.advanced-filters-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-top: 1.5rem;
+				cursor: pointer;
+			}
+
+			.advanced-filters-header h4{
+				text-align: left;
+				color: #fff;                  /* white text */
+				//font-size: 0.5rem;            /* tweak as needed */
+				font-weight: 600;
+				margin: 0rem 0 0rem;        /* space above/below */
+				text-shadow: 
+					0 0 2px rgba(255,255,255,0.3),
+					0 0 4px rgba(255,255,255,0.1);
+			}
+
+
+			.advanced-filters-header span {
+				color: #fff;
+				font-size: 1.5rem;
+				font-weight: bold;
+				text-shadow:
+					0 0 2px rgba(255,255,255,0.3),
+					0 0 4px rgba(255,255,255,0.1);
+			}
+
+			/* the little arrow */
+			#toggle-advanced {
+				background: none;
+				border: none;
+				color: #fff;
+				font-size: 1.25rem;
+				line-height: 1;
+				transition: transform .2s;
+			}
+
+			/* rotate when collapsed */
+			#toggle-advanced.collapsed {
+				transform: rotate(-90deg);
+			}
+
+			/* the content you want to hide/show */
+			#advanced-filters-content {
+				margin-top: 1rem;
+			}
+
+			#advanced-filters-content.collapsed {
+				display: none;
+			}
+
+
+
+			/* Green button at the bottom */
+			.green-btn {
+				background-color: #28a745; /* Green button */
+				border: none;
+				color: #fff;
+				border-radius: 4px;
+				padding: 8px 16px;
+				cursor: pointer;
+				font-weight: bold;
+				font-size: 1rem;
+				transition: background-color 0.3s ease;
+			}
+			
+			.green-btn:hover {
+				background-color: #218838; /* Slightly darker green on hover */
+			}
+
+			button.green-btn:disabled {
+				background-color: #6c757d;   /* muted gray */
+				cursor: not-allowed;         /* show the “no” cursor */
+				opacity: 0.65;               /* visually “dim” it */
+			}
+
+			/* keep the hover effect only when enabled */
+			button.green-btn:not(:disabled):hover {
+				background-color: #218838;   /* your darker‑green hover */
+			}
+
+
+			/* Blue button at the bottom */
+			.blue-btn {
+				background-color: #007bff;  /* primary blue */
+				border: none;
+				color: #fff;
+				border-radius: 4px;
+				padding: 8px 16px;
+				cursor: pointer;
+				font-weight: bold;
+				font-size: 1rem;
+				transition: background-color 0.3s ease;
+			}
+
+			.blue-btn:hover {
+				background-color: #0056b3;  /* darker blue on hover */
+			}
+
+			button.blue-btn:disabled {
+				background-color: #6c757d;  /* muted gray */
+				cursor: not-allowed;
+				opacity: 0.65;
+			}
+
+			/* keep the hover effect only when enabled */
+			button.blue-btn:not(:disabled):hover {
+				background-color: #0056b3;
+			}
+
+
+
+
+			.step-block_one-content-2 {
+				margin-top: 0.15rem;        /* a little breathing room */
+				text-align: left;
+			}
+
+
+
+
+			/* Make any <div> (or other element) with both .step and .disabled non‑interactive and faded */
+			.step.disabled {
+				opacity: 0.25;           /* fade it out */
+				pointer-events: none;    /* disable any mouse interaction */
+				user-select: none;       /* prevent text selection */
+				cursor: default;         /* show default cursor */
+			}
+
+		.step-block_one-content-2 h3 {
+			text-align: left;
+			color: #fff;                  /* white text */
+			//font-size: 0.5rem;            /* tweak as needed */
+			font-weight: 600;
+			margin: 0rem 0 0rem;        /* space above/below */
+			text-shadow: 
+				0 0 2px rgba(255,255,255,0.3),
+				0 0 4px rgba(255,255,255,0.1);
+		}
+
+		.step-block_one-content-2 h4{
+			text-align: left;
+			color: #fff;                  /* white text */
+			//font-size: 0.5rem;            /* tweak as needed */
+			font-weight: 600;
+			margin: 0rem 0 0rem;        /* space above/below */
+			text-shadow: 
+				0 0 2px rgba(255,255,255,0.3),
+				0 0 4px rgba(255,255,255,0.1);
+		}
+
+			.step-block_one-content-2 p,
+			.step-block_one-content-2 button {
+				color: #fff;                  /* white text */
+				text-align: left;
+			}
+
+			.step-block_one-content-2 a {
+				display: inline-block;     /* so padding / font-size applies nicely */
+				font-size: 1.125rem;       /* ~18px; tweak as you like */
+				font-weight: 700;          /* bold */
+				margin-top: 0.15rem;        /* a little breathing room */
+				margin-bottom: 0.55rem;        /* a little breathing room */
+				text-decoration: underline;
+			}
+
+			/* — or — if you only want specific ones, give them a “disabled” class: */
+			.step-block_one-content-2 a.disabled {
+				pointer-events: none;
+				cursor: not-allowed;         /* show the “no” cursor */
+				color: #888;
+				text-decoration: none;
+			}
+
+
+			div.warning {
+				display: block;
+				background-color: #fff3cd;        /* light yellow background */
+				border-left: 4px solid #ffeeba;   /* accent border */
+				padding: 0.75rem 1rem;            /* spacing */
+				border-radius: 4px;               /* slight rounding */
+				font-size: 0.875rem;              /* a bit smaller text */
+				line-height: 1.4;                 /* readable line‑height */
+				margin-bottom: 0rem;              /* space before the button */
+				text-align: center;               /* center the message */
+				white-space: normal;              /* allow wrapping */
+				pointer-events: auto;             /* don’t make banner interactive */
+			  	cursor: pointer; /* visual affordance */
+			}
+
+			div.warning p,span {
+				color: black;
+			}
+
+			.warning input[type="checkbox"] {
+				pointer-events: auto;
+				/* use scale to enlarge without distorting layout too much */
+				transform: scale(1.5);
+				-webkit-transform: scale(1.5);
+				transform-origin: top left;
+				/* ensure the rest of your layout doesn’t shift too much */
+				margin-right: 0.5rem;
+				vertical-align: middle;
+			}
+
+
+
+
+
+
+
+
+
+			.scraping-sources-header {
+				display: flex;
+				align-items: center;
+				margin-bottom: 1.5rem;
+				/* if you want it to stick at top: 
+					position: sticky; top: 0; z-index: 50; */
+			}
+
+			.scraping-sources-label {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.4rem 0.75rem;
+				background: linear-gradient(135deg, #7f56d9 0%, #4caf50 100%);
+				color: #fff;
+				font-weight: 600;
+				font-size: 1rem;
+				border-radius: 20px;
+				box-shadow: 0 0 6px rgba(0,0,0,0.4);
+				text-shadow: 0 0 2px rgba(0,0,0,0.5);
+				margin-right: 1rem;
+				vertical-align: middle;
+			}
+
+			.scraping-sources-label i {
+				/* make the filter icon align nicely */
+				font-size: 1.1em;
+			}
+
+			/* container background */
+			.custom-script-tabs .tab-content {
+				background: linear-gradient(
+					135deg,
+					rgba(48, 0, 48, 0.9),
+					rgba(16, 0, 16, 0.95)
+				);
+				border: 0px solid rgba(255,255,255,0.2);
+				border-top: none;
+				border-bottom-left-radius: 8px;
+				border-bottom-right-radius: 8px;
+				padding: 0rem;
+				color: #fff;
+			}
+
+			/* reset Bootstrap’s default tab‑border */
+			.custom-script-tabs .nav-tabs {
+				border-bottom: none;
+				margin-bottom: 0;
+			}
+
+			/* inactive tabs */
+			.custom-script-tabs .nav-link {
+				background: rgba(0,0,0,0.2);
+				color: rgba(255,255,255,0.7);
+				margin-right: 0.25rem;
+				border: none;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				padding: 0.6rem 1rem;
+			}
+
+			/* active tab */
+			.custom-script-tabs .nav-link.active {
+				background: linear-gradient(
+					135deg,
+					rgba(48, 0, 48, 0.9),
+					rgba(16, 0, 16, 0.95)
+				);
+				color: #fff !important;
+				box-shadow: 0 0 8px rgba(255,255,255,0.3);
+			}
+
+			/* ensure the form‑controls stand out */
+			.custom-script-tabs textarea.form-control {
+				background: rgba(0,0,0,0.3);
+				border: 1px solid #7f56d9;
+				color: #fff;
+
+				/* fix the height so overflow can kick in */
+				height: 250px;        
+				max-height: 250px;
+
+				/* enable vertical scrolling */
+				overflow-y: auto;    
+
+				/* hide any horizontal scrollbars */
+				overflow-x: hidden;  
+
+				/* still allow users to drag‑resize vertically if you like */
+				resize: vertical;  
+			}
+
+			.custom-script-tabs input.form-control {
+				width: 100%; 
+				margin-bottom: 1rem;
+				background: rgba(0,0,0,0.3);
+				border: 1px solid #7f56d9;
+				color: #fff;
+			}
+				
+			.custom-script-tabs pre.form-control {
+				width: 100%; 
+				margin-bottom: 1rem;
+				background: rgba(0,0,0,0.3);
+				border: 0px solid #7f56d9;
+				color: #fff;
+				/* preserve newlines, but allow wrapping */
+				white-space: pre-wrap;
+				/* break long words */
+				word-wrap: break-word;
+				/* newer spec name */
+				overflow-wrap: break-word;
+			}
+
+			
+			/* style for disabling the “New Sample” link/button */
+			#new-post-sample.disabled {
+				pointer-events: none;
+				opacity: 0.75;
+				color: gray !important;
+				cursor: default;
+			}
+
+			/* optional: if you want a helper class for your loading text */
+			.loading-text {
+				color: #888;
+				font-style: italic;
+			}
+
+
+			/* container that scrolls if too wide */
+			.scraping-sources-container {
+			overflow-x: auto;
+			padding: 1rem 0;
+			margin-bottom: 2rem;
+			}
+			.scraping-sources {
+			display: inline-flex;
+			gap: 0.75rem;
+			white-space: nowrap;
+			}
+
+			/* base button style */
+			.src-btn {
+			background: rgba(0,0,0,0.3);
+			border: 1px solid #7f56d9;
+			color: #fff;
+			font-weight: 600;
+			padding: 0.5rem 1rem;
+			border-radius: 6px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			}
+
+			.src-btn:hover:not(.disabled) {
+			background: rgba(127,86,217,0.4);
+			}
+
+			/* active state */
+			.src-btn.active {
+			background: #66bb6a;
+			border-color: #4caf50;
+			color: #000;
+			}
+
+			/* disabled “soon” states */
+			.src-btn.disabled {
+			//opacity: 0.6;
+			/* no opacity here */
+			cursor: not-allowed;
+		  
+			/* simulate a “faded” look via colors */
+			background-color: rgba(0, 0, 0, 0.2);
+			border-color: rgba(127, 86, 217, 0.3);
+			color: rgba(255, 255, 255, 0.6);
+			}
+
+			.soon-label {
+			background: #1e40af;
+			color: #fff;
+			font-size: 0.65rem;
+			padding: 2px 4px;
+			border-radius: 3px;
+			text-transform: uppercase;
+			}
+
+			/* vote link styling */
+			.vote-link {
+			font-size: 0.75rem;
+			color: #1e90ff;
+			text-decoration: underline;
+			cursor: pointer;
+			}
+			.vote-link i {
+			margin-right: 0.25rem;
+			}
+			.vote-link:hover {
+			color: #63b3ed;
+			}
+
+			.src-btn.disabled .vote-link {
+			color: #1e90ff;      /* full-strength blue */
+			opacity: 1;          /* just in case */
+			text-decoration: underline;
+			}
+			.src-btn.disabled .vote-link i {
+			color: #1e90ff;
+			opacity: 1;
+			}
+
+
+
+/* 1) Wrap both in a fixed-height container */
+.code-container {
+  position: relative;
+  width: 100%;
+  height: 250px;           /* or whatever height you need */
+  overflow: hidden;        /* so scrollbar is on both at once */
+}
+
+/* 2) Make pre & textarea exactly overlap */
+.code-container pre,
+.code-container textarea {
+  position: absolute;
+  top:    0;
+  left:   0;
+  right:  0;
+  bottom: 0;
+  margin: 0;
+  padding: 12px 16px;      /* copy your .form-control padding exactly */
+  box-sizing: border-box;
+  width:  100%;
+  height: 100%;
+  font-family: Menlo, Consolas, "Courier New", monospace;
+  font-size:   1rem;       /* match your textarea’s font-size */
+  line-height: 1.5;        /* match your textarea’s line-height */
+  white-space: pre-wrap;   /* preserve line-breaks & spaces */
+  word-wrap: break-word;   /* wrap long lines */
+  overflow: auto;          /* enable scroll when needed */
+}
+
+/* 3) The highlighter is behind */
+.code-container pre {
+  z-index: 0;
+  color: #ddd;             /* your default text color */
+  pointer-events: none;    /* clicks go through */
+}
+
+/* 4) The textarea is on top, but transparent */
+.code-container textarea {
+  z-index:     1;
+  background:  transparent !important;
+  color:       transparent !important;
+  caret-color: #fff;       /* keep the caret visible */
+  resize:      none;       /* optional: lock resize to container */
+  border:      none;       /* assume container handles border */
+}
+
+/* 5) Finally, color just your merge-tags */
+.code-container pre .merge-tag {
+  color:       #66bb6a;
+  font-weight: bold;
+}
+
+
+
+.navigation .nav-step.active {
+  background: none !important;
+  color: #fff !important;         /* white text */
+  text-shadow:
+    0 0 1px rgba(255,255,255,0.8),
+    0 0 2px rgba(255,255,255,0.6),
+    0 0 4px rgba(255,255,255,0.4);
+}
+
+.navigation .nav-step.active::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 4px;
+  width: 100%; height: 2px;
+  background: yellow;
+  box-shadow: 0 0 3px #fff, 0 0 6px #fff;
+}
+
+
+
+			.info-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #0000ff; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+			.info-label.mini {
+				margin-left: 4px;           /* Spacing from the title text */
+				font-size: 0.50rem;        /* Slightly smaller text */
+				padding: 0px 4px;          /* Padding for the badge look */
+			}
+
+			.success-label {
+				display: inline-block;
+				margin-left: 8px;           /* Spacing from the title text */
+				padding: 2px 6px;          /* Padding for the badge look */
+				background-color: #005500; /* Bright red background */
+				color: #ffffff;            /* White text */
+				font-size: 0.75rem;        /* Slightly smaller text */
+				font-weight: bold;         /* Bold for emphasis */
+				text-transform: uppercase; /* Uppercase text */
+				border-radius: 3px;        /* Rounded corners */
+				letter-spacing: 0.5px;     /* Spacing for readability */
+			}
+
+			.success-label.mini {
+				margin-left: 4px;           /* Spacing from the title text */
+				font-size: 0.50rem;        /* Slightly smaller text */
+				padding: 0px 4px;          /* Padding for the badge look */
+			}
+
+
+
+		</style>
+
+<!--
+		<script type='text/javascript'>
+			window.smartlook||(function(d) {
+			var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
+			var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+			c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js';h.appendChild(c);
+			})(document);
+			smartlook('init', '6c6c4827e7ff4858cc67849bdecbe50f12d42b0a', { region: 'eu' });
+		</script>
+-->
+
+		<script src="/onboarding/js/jquery.js"></script>
+		<script src="/onboarding/js/popper.min.js"></script>
+		<script src="/onboarding/js/bootstrap.min.js"></script>
+		<script src="/onboarding/js/appear.js"></script>
+		<script src="/onboarding/js/parallax.min.js"></script>
+		<script src="/onboarding/js/tilt.jquery.min.js"></script>
+		<script src="/onboarding/js/jquery.paroller.min.js"></script>
+		<script src="/onboarding/js/wow.js"></script>
+		<script src="/onboarding/js/swiper.min.js"></script>
+		<script src="/onboarding/js/backtotop.js"></script>
+		<script src="/onboarding/js/odometer.js"></script>
+		<script src="/onboarding/js/parallax-scroll.js"></script>
+
+		<script src="/onboarding/js/gsap.min.js"></script>
+		<script src="/onboarding/js/SplitText.min.js"></script>
+		<script src="/onboarding/js/ScrollTrigger.min.js"></script>
+		<script src="/onboarding/js/ScrollToPlugin.min.js"></script>
+		<script src="/onboarding/js/ScrollSmoother.min.js"></script>
+
+		<script src="/onboarding/js/touchspin.js"></script>
+		<script src="/onboarding/js/jquery.marquee.min.js"></script>
+		<script src="/onboarding/js/magnific-popup.min.js"></script>
+		<script src="/onboarding/js/nav-tool.js"></script>
+		<script src="/onboarding/js/jquery-ui.js"></script>
+		<script src="/onboarding/js/element-in-view.js"></script>
+		<script src="/onboarding/js/script.js"></script>
+
+		<script src="/core/javascripts/editables.min.js" type="text/javascript"></script>
+		<script src="/core/javascripts/filters.min.js" type="text/javascript"></script>
+
+	</head>
+
+	<body>
+		<!-- WhatsApp Icon -->
+		<!-- Replace PHONE_NUMBER with your actual WhatsApp number (in international format, without + or dashes) -->
+		<!-- Optionally add a default message by appending ?text=YourMessage to the URL -->
+		<a href="https://wa.me/5491150612148?text=Hello!%20I'm%20interested%20in%20MassProspecting!." class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+			<!-- Replace the src with the path or URL to your WhatsApp icon image -->
+			<img src="/onboarding/images/screenshots/WhatsApp_icon.png" alt="WhatsApp Icon">
+		</a>
+
+		<div class="page-wrapper">			
+			<!-- Cursor -->
+			<div class="cursor"></div>
+			<div class="cursor-follower"></div>
+			<!-- Cursor End -->
+
+			<%=yield%>
+
+			<!-- Main Footer -->
+			<footer class="main-footer style-two" id='footer' name='footer'>
+				<div class="footer_pattern" style="background-image: url(/onboarding/images/background/footer-pattern.png)"></div>
+				<div class="footer-upper-box">
+					<div class="auto-container">
+
+						<div class="row clearfix">	
+							<!-- Big Column -->
+							<div class="big-column col-lg-5 col-md-12 col-sm-12">
+								<div class="footer-newsletter">
+									<h5 class="footer-title">#buildinpublic</h5>
+									<div class="footer-newsletter_text">We are building AI Agents that work 24/7, to drive personalized outreach and pipeline, while your SDRs become strategic orchestrators.</div>
+									<div class="newsletter-box">
+										<div class="about-one_options d-flex align-items-center flex-wrap">
+											<a href="https://www.facebook.com/groups/massprospecting" class="template-btn btn-style-one" target='_window'>
+												<span class="btn-wrap">
+													<span class="text-one"><i class='fa-brands fa-facebook-f'></i> - Follow Our Journey</span>
+													<span class="text-two"><i class='fa-brands fa-facebook-f'></i> - Follow Our Journey</span>
+												</span>
+											</a>
+										</div>
+										<!--
+										<form method="post" action="/linkedin-feed-signals/filter_subscribe">
+											<div class="form-group">
+												<span class="icon fa-regular fa-envelope fa-fw"></span>
+												<input type="email" name="email" id="email" value="" placeholder="Enter your business email" required>
+												<button type="submit" class="template-btn btn-style-one">
+													<span class="btn-wrap">
+														<span class="text-one">Start Now</span>
+														<span class="text-two">Start Now</span>
+													</span>
+												</button>
+											</div>
+										</form>
+										-->
+									</div>
+								</div>
+							</div>
+
+							<!-- Big Column -->
+							<div class="big-column col-lg-7 col-md-12 col-sm-12">
+								<div class="footer-lists_outer">
+									<div class="row clearfix">
+										<!-- Column -->
+										<div class="column col-lg-3 col-md-4 col-sm-6">
+
+											<h5 class="footer-title">Product</h5>
+											<ul class="footer-pages_list">
+												<!-- <li><a href="/story">Our Story</a></li> -->
+												<!--
+												<li><a href="/jobs">Jobs</a></li>
+												-->
+												<li><a href="https://github.com/massprospecting" target='_window'>Documentation</a></li>
+												<li><a href="https://github.com/orgs/MassProspecting/repositories" target='_window'>Open Source</a></li>
+												<li><a href="https://stats.uptimerobot.com/CUwMdgXZ3T" target='_window'>Status Page</a></li>
+												<li><a href="https://github.com/orgs/MassProspecting/projects/48/views/2" target='_window'>Roadmap</a></li>
+												<li><a href="https://wa.me/5491150612148?text=Hello!%20I%27m%20interested%20in%20MassProspecting!." target='_window'>Contact Support</a></li>
+											</ul>
+
+											<!--
+											<h5 class="footer-title">Integrations</h5>
+											<ul class="footer-pages_list">
+												<li><a href="/integrations#linkedin">LinkedIn</a></li>
+												<li><a href="/integrations#facebook">Facebook</a></li>
+												<li><a href="/integrations#gsuite">GSuite</a></li>
+												<li><a href="/integrations#openai">OpenAI</a></li>
+												<li><a href="/integrations#apollo">Apollo</a></li>
+												<li><a href="/integrations#zyte">Zyte</a></li>
+												<li><a href="/integrations#reoon">Reoon</a></li>
+												<li><a href="/integrations#postmark">PostMark</a></li>
+												<li><a href="/integrations#mailreef">MailReef</a></li>
+											</ul>
+											-->
+										</div>
+										<!-- Column -->
+										<div class="column col-lg-5 col-md-4 col-sm-6">
+											<h5 class="footer-title">Roadmap</h5>
+											<ul class="footer-pages_list">
+												<li><a href="/linkedin-feed-signals">LinkedIn Feed Signals</a> <span class='success-label mini'>new!</span><</li>
+												<li><a href="https://github.com/MassProspecting/docs/issues/667" target='_window'>Facebook Groups Posts</a> <span class='info-label mini'>pending</span><</li>
+												<li><a href="https://github.com/MassProspecting/docs/issues/668" target='_window'>LinkedIn Post Comments</a> <span class='info-label mini'>pending</span><</li>
+												<li><a href="https://github.com/MassProspecting/docs/issues/669" target='_window'>LinkedIn Event Attendees</a> <span class='info-label mini'>pending</span><</li>
+												<!--
+												<li><a href="/sources#apollo-people-search">Apollo People Search</a></li>
+												-->
+												<li><a href="https://github.com/MassProspecting/docs/issues/670" target='_window'>Email Outreach AI</a> <span class='info-label mini'>pending</span><</li>
+												<li><a href="https://github.com/MassProspecting/docs/issues/671" target='_window'>LinkedIn Outreach AI</a> <span class='info-label mini'>pending</span><</li>
+												<li><a href="https://github.com/MassProspecting/docs/issues/672" target='_window'>Facebook Outreach AI</a> <span class='info-label mini'>pending</span><</li>
+												<li><a href="https://github.com/MassProspecting/docs/issues/673" target='_window'>Reply AI</a> <span class='info-label mini'>pending</span><</li>
+
+											</ul>
+
+											<!--
+											<h5 class="footer-title">Reference Workflows</h5>
+											<ul class="footer-pages_list">
+												<li><a href="/workflows#linkedin-posts-signals">LinkedIn Posts Signals</a></li>
+												<li><a href="/workflows#facebook-posts-signals">Facebook Posts Signals</a></li>
+												<li><a href="/workflows#facebook-group-requests">Facebook Group Requests</a></li>
+												<li><a href="/workflows#apollo-intent-signals">Apollo Intent Signals</a></li>
+											</ul>
+											-->
+										</div>
+										<!-- Column -->
+										<div class="column col-lg-3 col-md-4 col-sm-6">
+											<h5 class="footer-title">Developers</h5>
+											<ul class="footer-pages_list">
+												<li><a href="/developers#api">API</a></li>
+												<li><a href="/developers#sdk">SDK</a></li>
+											</ul>
+
+											<h5 class="footer-title">legal</h5>
+											<ul class="footer-pages_list">
+												<li><a href="/terms">Service Terms</a></li>
+												<li><a href="/privacy">Privacy Policy</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<br/>
+						<br/>
+
+						<div class="d-flex align-items-center justify-content-between flex-wrap">
+							<div class="footer-logo"><a href="index.html"><img src="/onboarding/images/logo.svg" alt="" title=""></a></div>
+							<!-- Social Box -->
+							<div class="footer-social_box">
+								<span>Follow us:</span>
+								<a target='_window' href="https://www.facebook.com/groups/massprospecting"><i class="fa-brands fa-facebook-f"></i></a>
+								<a target='_window' href="https://www.linkedin.com/company/massprospecting"><i class="fa-brands fa-linkedin"></i></a>
+								<a target='_window' href="https://github.com/massprospecting"><i class="fa-brands fa-github"></i></a>
+								<!--
+								<a target='_window' href="https://youtube.com/"><i class="fa-brands fa-youtube"></i></a>
+								<a target='_window' href="https://github.com/massprospecting"><i class="fa-brands fa-telegram"></i></a>
+								<a target='_window' href="https://github.com/massprospecting"><i class="fa-brands fa-mastodon"></i></a>
+								<a target='_window' href="https://github.com/massprospecting"><i class="fa-brands fa-discord"></i></a>
+								-->
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="footer-bottom">
+					<div class="auto-container">
+						<div class="inner-container d-flex justify-content-center">
+							<div class="footer-copyright">&copy; <%=Time.now.year.to_s%> <a href="/">MassProspecting.</a> All rights reserved.</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+		
+		<script>
+			window.plans = <%= plans.to_json %>;
+
+			// Make a POST request to and ajax end-point.
+			function callx(h) {
+				let url = h.url;
+				let params = h.params;
+				let on_error = h.on_error;
+				let on_success = h.on_success;
+				let alerts_delay = h.alerts_delay;
+
+				if (alerts_delay == null) alerts_delay = -1;
+
+					fetch(url, {
+					method: 'POST',                      	// HTTP method
+					headers: {
+					'Content-Type': 'application/json' 	// Specify JSON content
+					},
+					body: JSON.stringify(params)           	// Convert data to JSON string
+				})
+				.then(response => {
+					if (!response.ok) {
+					// Handle HTTP errors
+					draw_error_alert("Operation Error", [], [`Network response from ${url} was not ok: ${response.statusText}`], alerts_delay);
+					}
+					return response.json(); // Parse the JSON response
+				})
+				.then(data => {
+					s = JSON.stringify(data, null, 2);
+					if (data.status == 'success') {
+					// Handle application-level errors
+					if (on_success != null) {
+						on_success(data);
+					} else {
+						draw_success_alert("Operation Success", [], [`End-point ${url} returned successfully.`], alerts_delay);
+					}
+					} else {
+					if (on_error != null) {
+						on_error(data);
+					} else {
+						draw_error_alert("Operation Error", [], [`End-point ${url} returned an error: ${s}`], alerts_delay);
+					}
+					}
+				})
+				.catch(error => {
+							console.error('Fetch operation failed:', error); // Log detailed error for debugging
+					let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+					// Check if the error has a status and body
+					if (error.status && error.body) {
+						// If the response body is an object, stringify it for readability
+									try {
+										const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+							errorMessage = `Error ${error.status}: ${responseBody}`;
+									} catch (e) {
+									errorMessage = 'Could not parse error.body';
+									}
+					} else if (error.message) {
+						// Fallback to the error message
+						errorMessage = `Error: ${error.message}`;
+							}
+							hideWait();
+					draw_error_alert("Operation Error", [], [`Fetch error on end-point ${url}: ${errorMessage}`], alerts_delay);
+				});
+			}
+
+			//
+			// TODO: Codigo Replicado
+			//
+			// update user preference via AJAX
+			function setPreference(name, deflt, value, successCallBack = undefined, errorCallBack = undefined) {
+				// Prepare the data to be sent in the request
+				const data = {
+					name: name,       		// Preference name
+					default: deflt, 		// Default value
+					value: value        	// New value ('yes' or 'no')
+				};
+
+				// Make the AJAX POST request to update the preference
+				fetch('/ajax/set_preference.json', {
+					method: 'POST',                      	// HTTP method
+					headers: {
+						'Content-Type': 'application/json' 	// Specify JSON content
+					},
+					body: JSON.stringify(data)           	// Convert data to JSON string
+				})
+				.then(response => {
+					if (!response.ok) {
+						// Handle HTTP errors
+						throw new Error(`Network response was not ok: ${response.statusText}`);
+					}
+					return response.json(); // Parse the JSON response
+				})
+				.then(data => {
+					if (data.status !== 'success') {
+						// Handle application-level errors
+						if(errorCallBack && typeof errorCallBack  === 'function') {
+							errorCallBack(data);
+						}
+						console.error('Error updating preference:', data.status);
+					} else {
+						//console.log('Preference updated successfully.');
+						if(successCallBack && typeof successCallBack  === 'function') {
+							successCallBack(data);
+						}
+					}
+				})
+				.catch(error => {
+					// Handle fetch or parsing errors
+					if(errorCallBack && typeof errorCallBack  === 'function') {
+						errorCallBack(data);
+					}
+					console.error('There was a problem with the fetch operation:', error);
+				});
+			}
+				
+			//
+			// TODO: Codigo Replicado
+			//
+			// update user preference via AJAX
+			function getPreference(name, deflt) {
+				// Prepare the data to be sent in the request
+				const data = {
+					name: name, // Preference name
+					default: deflt // default value
+				};
+
+				// Return the Promise from fetch
+				return fetch('/ajax/get_preference.json', {
+					method: 'POST', // HTTP method
+					headers: {
+						'Content-Type': 'application/json' // Specify JSON content
+					},
+					body: JSON.stringify(data) // Convert data to JSON string
+				})
+				.then(response => {
+					if (!response.ok) {
+						// Handle HTTP errors
+						//console.log('Error0');
+						throw new Error(`Network response was not ok: ${response.statusText}`);
+					}
+					return response.json(); // Parse the JSON response
+				})
+				.then(data => {
+					if (data.status !== 'success') {
+						// Handle application-level errors
+						//console.log('Error2');
+						console.error('Error updating preference:', data.status);
+						throw new Error(`Error updating preference: ${data.status}`);
+					} else {
+						//console.log('Success0:' + data.value);
+						return data.value; // Return the value
+					}
+				})
+				.catch(error => {
+					// Handle fetch or parsing errors
+					//console.log('Error3');
+					console.error('There was a problem with the fetch operation:', error);
+					throw error; // Rethrow the error for the caller to handle
+				});
+			}
+
+			$(document).ready(function() {
+				// select the first strategy when page load
+				/*
+				getPreference("onboarding.strategy.id", 'linkedin-signals').then(id => {
+					$(`.order-row[data-id="${id}"]`).trigger('click');
+				});
+				*/
+				
+
+				// Bootstrap 4/5 tooltips
+				$('[data-toggle="tooltip"]').tooltip();
+
+				// iterate all .order-name elements
+				$('.order-name').each(function() {
+					// get the data-id attribute value
+					const ctx = this;
+					const id = $(this).data('id');
+					const text = $(this).text().trim();
+					// draw content-editable
+					editablesJs.draw( ctx, {
+						value: text,
+						placeholder: 'Write the name of the order here.',
+						onsave: function() {
+							const newValue = editablesJs.value(ctx);
+							callx({
+								url: '/ajax/linkedin-feed-signals/rename.json',
+								params: {
+									id:   id,
+									name: newValue
+								},
+								on_success(data) {
+									if (data.status === 'success') {
+										// updated with the the displayed name
+									} else {
+										alert('Rename failed: ' + data.status);
+									}
+								},
+								on_error(err) {
+									alert('Network error renaming: ' + err.status);
+								}						
+							});
+						}
+					});
+
+					// then immediately switch back to read‑only
+					editablesJs.switchToReadOnly(ctx);
+
+					// Play button → call play.json, then switch to Pause
+					$(document).on('click', '.play-btn', function(e) {
+						e.preventDefault();
+						const btn = $(this);
+						const id  = btn.data('id');
+
+						callx({
+							url:    '/ajax/linkedin-feed-signals/play.json',
+							params: { id: id },
+							on_success(data) {
+							if (data.status === 'success') {
+								// 1) swap Play → Pause button
+								btn
+								.removeClass('play-btn btn-success')   // remove old classes
+								.addClass('pause-btn btn-danger')      // match your Pause style
+								.attr('title', 'Pause this order’s allocation')
+								.find('i')
+									.removeClass('fa-play')
+									.addClass('fa-pause');
+								btn.find('span').text('Pause');
+
+								// 2) update the little "Active/Paused" badge
+								const badge = $(`.order-active[data-id="${id}"]`);
+								badge
+								.removeClass('pending-label')
+								.addClass('success-label')
+								.text('Active');
+							} else {
+								alert('Could not start order: ' + data.status);
+							}
+							},
+							on_error(err) {
+							alert('Network error starting order');
+							}
+						});
+					});
+
+					// Pause button → call pause.json, then switch to Play
+					$(document).on('click', '.pause-btn', function(e) {
+						e.preventDefault();
+						const btn = $(this);
+						const id  = btn.data('id');
+
+						callx({
+							url:    '/ajax/linkedin-feed-signals/pause.json',
+							params: { id: id },
+							on_success(data) {
+							if (data.status === 'success') {
+								// 1) swap Pause → Play button
+								btn
+								.removeClass('pause-btn btn-danger')
+								.addClass('play-btn btn-success')
+								.attr('title', 'Start this order’s allocation')
+								.find('i')
+									.removeClass('fa-pause')
+									.addClass('fa-play');
+								btn.find('span').text('Play');
+
+								// 2) update the little "Active/Paused" badge
+								const badge = $(`.order-active[data-id="${id}"]`);
+								badge
+								.removeClass('success-label')
+								.addClass('pending-label')
+								.text('Paused');
+							} else {
+								alert('Could not pause order: ' + data.status);
+							}
+							},
+							on_error(err) {
+							alert('Network error pausing order');
+							}
+						});
+					});
+				});		
+				
+				// ——————————————————————————————  
+				// Credits‐slider → table highlight  
+				// ——————————————————————————————  
+				const slider = document.getElementById('plan-slider');
+				const info   = document.getElementById('plan-info');
+
+				const $plans    = $('#plans-div');
+				const $subs     = $('#subscriptions-div');
+				const $affs		= $('#affiliates-div');	
+				const $btnPlans = $('#add-credits-btn');
+				const $btnSubs  = $('#toggle-subs-btn');
+				const $btnAffs 	= $('#toggle-affs-btn'); 
+				
+				function hidePlans()    { $plans.slideUp(200); $btnPlans.text('Add Credits'); }
+				function hideSubs()     { $subs .slideUp(200); $btnSubs .text('Show Subscriptions'); }
+				function hideAffs()     { $affs .slideUp(200); }
+				
+				function showPlans()    { hideSubs(); hideAffs(); $plans.slideDown(200); $btnPlans.text('Hide Plans'); }
+				function showSubs()     { hidePlans(); hideAffs(); $subs .slideDown(200); $btnSubs .text('Hide Subscriptions'); }
+				function showAffs()     { hidePlans(); hideSubs(); $affs .slideDown(200); }
+
+				function highlightPlan(val) {
+					const plan = window.plans[val - 1];
+					console.log('highlightPlan:', plan);
+					info.textContent = `${plan.credits} credits for $${plan.price.toFixed(2)}`;
+					
+					// clear previous highlight
+					document.querySelectorAll('.plans-table tr.selected')
+						.forEach(r => r.classList.remove('selected'));
+					
+					// highlight selected row
+					const row = document.querySelector(`.plans-table tr[data-plan="${val}"]`);
+					if (row) row.classList.add('selected');
+				}
+
+				function updateFeatures(planValue) {
+					// planValue is 1-6
+					// first three are always green ✓
+					['linkedin-account','appending'].forEach(feature => {
+					  document.querySelector(
+						`li[data-feature="${feature}"] .feature-icon`
+					  ).className = 'feature-icon green';
+					});
+				  
+					// Dedicated Human Support only green if plan 5 or 6
+					const humanIcon = document.querySelector(
+					  'li[data-feature="human-support"] .feature-icon'
+					);
+					if (+planValue >= 5) {
+					  humanIcon.textContent = '✓';
+					  humanIcon.className   = 'feature-icon green';
+					} else {
+					  humanIcon.textContent = '✕';
+					  humanIcon.className   = 'feature-icon red';
+					}
+				}
+
+				function updateSubscribeLink(planValue) {
+					const btn1 = document.getElementById('subscribe-btn-1');
+					const btn2 = document.getElementById('subscribe-btn-2');
+					btn1.href = `/settings/filter_create_invoice?item_number=data-credits-${planValue}&n=1`;
+					btn2.href = `/settings/filter_create_invoice?item_number=data-credits-${planValue}&n=1`;
+				}
+
+				// then, wherever you do:
+				slider.addEventListener('input', e => {
+					const val = e.target.value;
+					highlightPlan(val);
+					updateFeatures(val);
+					updateSubscribeLink(val);
+				});
+
+				// When you click a table row, jump the slider there:
+				document.querySelectorAll('.plans-table tr[data-plan]').forEach(tr => {
+					// make it obvious it’s clickable
+					tr.style.cursor = 'pointer';
+					
+					tr.addEventListener('click', () => {
+						const planValue = tr.getAttribute('data-plan')
+					
+						// 1) move the slider
+						slider.value = planValue
+					
+						// 2) re‐run your existing logic
+						highlightPlan(planValue)
+						updateFeatures(planValue)
+						updateSubscribeLink(planValue)
+					})
+				})
+
+				// and on init:
+				highlightPlan(slider.value);
+				updateFeatures(slider.value);
+				updateSubscribeLink(slider.value);  
+
+				$(function(){				  
+					$btnPlans.on('click', e => {
+					  e.preventDefault();
+					  $plans.is(':visible') ? hidePlans() : showPlans();
+					});
+				  
+					$btnSubs.on('click', e => {
+					  e.preventDefault();
+					  $subs.is(':visible') ? hideSubs() : showSubs();
+					});
+
+					$btnAffs.on('click', e => {
+					  e.preventDefault();
+					  $affs.is(':visible') ? hideAffs() : showAffs();
+					});
+
+					// OPTIONAL: handle cancel clicks
+					$('.btn-cancel-sub').on('click', function(){
+					  const subId = $(this).data('sub-id');
+					  // TODO: fire your AJAX to cancel subscription #subId,
+					  // on success remove that .subscription-item or refresh the list.
+					});
+				});
+				  
+
+				// show plans if no credits
+				if ( <%=credits%> <= 0 ) {
+					showPlans();
+				}
+
+				// show movements button if movements > 0
+				if ( <%=movements.size%> > 0 ) {
+					$('#toggle-movements-btn').show();
+				} else {
+					$('#toggle-movements-btn').hide();
+				}
+
+				// hide subscriptions if no active subs, and hide the button, and show plans
+				if ( <%=active_subs.size%> <= 0 ) {
+					$('#toggle-subs-btn').hide();
+					//$('#add-credits-btn').hide();
+					//$('#toggle-movements-btn').hide();
+					showPlans();
+				}
+
+				$('#affiliate-text').focus(function() {
+					const textarea = document.getElementById("affiliate-text");
+					const copiedLabel = document.getElementById("copied-label");
+
+					// 1) Select all text
+					textarea.select();
+
+					// 2) Copy to clipboard
+					try {
+						document.execCommand("copy");
+					} catch (err) {
+						// Fallback: newer API
+						navigator.clipboard.writeText(textarea.value).catch(() => {});
+					}
+
+					// 3) Show the “copied!” label briefly
+					copiedLabel.classList.add("visible");
+					setTimeout(() => {
+						copiedLabel.classList.remove("visible");
+					}, 2000);
+					});
+
+					// Optionally, if the user clicks elsewhere, unselect text
+					textarea.addEventListener("blur", () => {
+					textarea.setSelectionRange(0, 0);
+				});
+
+			}); // document.ready
+
+
+		</script>
+
+		<!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script><![endif]-->
+		<!--[if lt IE 9]><script src="js/respond.js"></script><![endif]-->
+
+	</body>
+</html>
