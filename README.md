@@ -24,6 +24,36 @@
 - Domain aliasing & `account.id_user_owner` field.
 - Affiliates tracking & `account.id_user_referral` field.
 
+## Getting Started
+
+[MassProspecting](https://github.com/leandrosardi/my.saas) uses [BlackOps](https://github.com/leandrosardi/blackops) for installaton and continious deployment.
+
+### Installation
+
+1. First thing first, [download the `saas` command in your computer](https://github.com/leandrosardi/blackops?tab=readme-ov-file#11-download-the-saas-command).
+
+2. Download pre-built **operations**.
+
+```
+mkdir -p ~/code1
+cd ~/code1
+git clone https://github.com/leandrosardi/blackops
+```
+
+3. Install My.SaaS
+
+```
+saas source ~/code1/blackops/ops/mysaas.install.ubuntu_22_04.base.op \
+    --local 
+    --ssh_username= && \
+
+saas source ~/code1/blackops/ops/mysaas.install.ubuntu_22_04.postgresql.op 
+    --local
+    --ssh_username= && \
+
+saas migrations
+```
+
 ---
 
 # MySaaS - Open Source SaaS Platform - Extensible and Scalable.  
