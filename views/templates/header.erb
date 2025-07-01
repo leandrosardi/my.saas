@@ -824,8 +824,16 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		// initialize select-rows
 		selectRowsJs.init();
 
-		// setup preference dark mode
-		setDarkMode('<%=dark%>' == 'yes', false);
+		// new: load from client storage (falling back to 'no' if nothing saved)
+		getPreference('dark','no')
+		.then(value => {
+			// value will be 'yes' or 'no'
+			setDarkMode(value === 'yes', false);
+		})
+		.catch(err => {
+			console.warn("Failed to load dark-mode preference:", err);
+			setDarkMode(false, false);
+		});
 
 		// choose the right tab
 		chooseTab('<%=tab%>');
