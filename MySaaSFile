@@ -20,6 +20,18 @@
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 
+# -----------------------------------------------------------------------------
+# Client-side Preference Storage Mode
+#
+# Controls how the front-end JS will handle user preferences:
+#  • :nothing  – no-op stub (always returns defaults; no storage)
+#  • :session  – uses browser sessionStorage for persistence
+#  • :database – performs AJAX calls to persist/retrieve from DB
+#
+# Modify this to switch between dummy, session, or real database behavior.
+# -----------------------------------------------------------------------------
+PREFERENCE_MODE = :session
+
 # Used to sign and encrypt session cookies for security. This should be a long,
 # random, and unique string. In production, do NOT hardcode this — set up it in
 # your BlackOpsFile.
