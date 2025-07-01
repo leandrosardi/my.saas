@@ -335,6 +335,16 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	// update user preference via AJAX
 	function setPreference(name, deflt, value, successCallBack = undefined, errorCallBack = undefined) {
+console.log('Dummy setPreference (promise):', { name, default: deflt, value });
+const fakeResponse = { status: 'success', name, value };
+Promise.resolve(fakeResponse)
+    .then(data => {
+      if (typeof successCallBack === 'function') successCallBack(data);
+    })
+    .catch(err => {
+      if (typeof errorCallBack === 'function') errorCallBack(err);
+    });
+/*
 		// Prepare the data to be sent in the request
 		const data = {
 			name: name,       		// Preference name
@@ -378,10 +388,14 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			}
 			console.error('There was a problem with the fetch operation:', error);
 		});
-	}
+*/
+	} // function setPreference
 
 	// update user preference via AJAX
 	function getPreference(name, deflt) {
+console.log('💤 Dummy getPreference:', { name, default: deflt });
+return Promise.resolve(deflt);
+/*
 	    // Prepare the data to be sent in the request
 	    const data = {
 	        name: name, // Preference name
@@ -421,7 +435,8 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 	        console.error('There was a problem with the fetch operation:', error);
 	        throw error; // Rethrow the error for the caller to handle
 	    });
-	}
+*/
+	} // function getPreference
 
 	/**
 	* Fetch multiple user preferences via AJAX.
