@@ -231,6 +231,9 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 </div>
 
 <script>
+	// from Rails: PREFERENCE_MODE = :nothing, :session or :database 
+	window.PREFERENCE_MODE = "<%= PREFERENCE_MODE %>";
+
 	/*
 	 * Dialog Controls
 	 *
@@ -335,135 +338,139 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 
 	// ─── setPreference ────────────────────────────────────────────────────────────
 	function setPreference(name, deflt, value, successCallBack = undefined, errorCallBack = undefined) {
-	// --- dummy stub (no network) commented out ---
-	/*
-	console.log('Dummy setPreference (promise):', { name, default: deflt, value });
-	const fakeResponse = { status: 'success', name, value };
-	Promise.resolve(fakeResponse)
-		.then(data => {
+		// --- dummy‐stub (no network) commented out ---
+		/*
+		console.log('Dummy setPreference (promise):', { name, default: deflt, value });
+		const fakeResponse = { status: 'success', name, value };
+		return Promise.resolve(fakeResponse)
+			.then(data => {
 			if (typeof successCallBack === 'function') successCallBack(data);
-		})
-		.catch(err => {
+			})
+			.catch(err => {
 			if (typeof errorCallBack === 'function') errorCallBack(err);
-		});
-	*/
-console.log('setPreference');
-	// --- new: store in browser sessionStorage ---
-	try {
-		const key = `preference_${name}`;
-		sessionStorage.setItem(key, JSON.stringify({ value }));
-		const response = { status: 'success', name, value };
-		if (typeof successCallBack === 'function') successCallBack(response);
-		return Promise.resolve(response);
-	}
-	catch (err) {
-		if (typeof errorCallBack === 'function') errorCallBack(err);
-		return Promise.reject(err);
-	}
+			});
+		*/
 
-	/*
-		// Prepare the data to be sent in the request
-		const data = {
-		name: name,         // Preference name
-		default: deflt,     // Default value
-		value: value        // New value ('yes' or 'no')
-		};
-
-		// Make the AJAX POST request to update the preference
-		fetch('/ajax/set_preference.json', {
-		method: 'POST',                        // HTTP method
-		headers: {
-			'Content-Type': 'application/json'   // Specify JSON content
-		},
-		body: JSON.stringify(data)             // Convert data to JSON string
-		})
-		.then(response => {
-		if (!response.ok) {
-			throw new Error(`Network response was not ok: ${response.statusText}`);
+		// branch based on mode
+		if (window.PREFERENCE_MODE === 'nothing') {
+			console.log('⚪️ [nothing] setPreference – returning default response');
+			const resp = { status: 'success', name, value };
+			if (typeof successCallBack === 'function') successCallBack(resp);
+			return Promise.resolve(resp);
 		}
-		return response.json(); // Parse the JSON response
-		})
-		.then(data => {
-		if (data.status !== 'success') {
-			if (errorCallBack && typeof errorCallBack === 'function') {
-			errorCallBack(data);
+		else if (window.PREFERENCE_MODE === 'session') {
+			console.log('💾 [session] setPreference – saving to sessionStorage');
+			try {
+			sessionStorage.setItem(`preference_${name}`, JSON.stringify({ value }));
+			const resp = { status: 'success', name, value };
+			if (typeof successCallBack === 'function') successCallBack(resp);
+			return Promise.resolve(resp);
 			}
-			console.error('Error updating preference:', data.status);
-		} else {
-			if (successCallBack && typeof successCallBack === 'function') {
-			successCallBack(data);
+			catch (err) {
+			if (typeof errorCallBack === 'function') errorCallBack(err);
+			return Promise.reject(err);
 			}
 		}
-		})
-		.catch(error => {
-		if (errorCallBack && typeof errorCallBack === 'function') {
-			errorCallBack(data);
+		else if (window.PREFERENCE_MODE === 'database') {
+			console.log('🌐 [database] setPreference – sending AJAX');
+			const data = { name: name, default: deflt, value: value };
+			return fetch('/ajax/set_preference.json', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
+			})
+			.then(response => {
+			if (!response.ok) throw new Error(`Status ${response.status}`);
+			return response.json();
+			})
+			.then(json => {
+			if (json.status !== 'success') {
+				if (typeof errorCallBack === 'function') errorCallBack(json);
+				throw new Error(json.status);
+			}
+			if (typeof successCallBack === 'function') successCallBack(json);
+			return json;
+			})
+			.catch(err => {
+			if (typeof errorCallBack === 'function') errorCallBack(err);
+			throw err;
+			});
 		}
-		console.error('There was a problem with the fetch operation:', error);
-		});
-	*/
-	} // function setPreference
+		else {
+			throw new Error(
+				`Invalid PREFERENCE_MODE: ${window.PREFERENCE_MODE}. ` +
+				`Allowed values are 'nothing', 'session' or 'database'.`
+			);
+		}
 
+		// fallback
+		return Promise.reject(new Error(`Unknown PREFERENCE_MODE: ${window.PREFERENCE_MODE}`));
+	} // setPreference
 
 	// ─── getPreference ────────────────────────────────────────────────────────────
 	function getPreference(name, deflt, successCallBack = undefined, errorCallBack = undefined) {
-	// --- dummy stub (always deflt) commented out ---
-	/*
-	console.log('💤 Dummy getPreference:', { name, default: deflt });
-	return Promise.resolve(deflt);
-	*/
-console.log('getPreference');
-	// --- new: retrieve from sessionStorage ---
-	try {
-		const key = `preference_${name}`;
-		const raw = sessionStorage.getItem(key);
-		const value = raw !== null
-		? JSON.parse(raw).value
-		: deflt;
+		// --- dummy‐stub (always deflt) commented out ---
+		/*
+		console.log('💤 Dummy getPreference:', { name, default: deflt });
+		return Promise.resolve(deflt);
+		*/
 
-		if (typeof successCallBack === 'function') successCallBack(value);
-		return Promise.resolve(value);
-	}
-	catch (err) {
-		if (typeof errorCallBack === 'function') errorCallBack(err);
-		return Promise.reject(err);
-	}
-
-	/*
-		// Prepare the data to be sent in the request
-		const data = {
-		name: name,        // Preference name
-		default: deflt     // default value
-		};
-
-		// Return the Promise from fetch
-		return fetch('/ajax/get_preference.json', {
-		method: 'POST',     // HTTP method
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-		})
-		.then(response => {
-		if (!response.ok) {
-			throw new Error(`Network response was not ok: ${response.statusText}`);
+		// branch based on mode
+		if (window.PREFERENCE_MODE === 'nothing') {
+			console.log('⚪️ [nothing] getPreference – returning default');
+			if (typeof successCallBack === 'function') successCallBack(deflt);
+			return Promise.resolve(deflt);
 		}
-		return response.json();
-		})
-		.then(data => {
-		if (data.status !== 'success') {
-			console.error('Error updating preference:', data.status);
-			throw new Error(`Error updating preference: ${data.status}`);
-		} else {
-			return data.value;
+		else if (window.PREFERENCE_MODE === 'session') {
+			console.log('💾 [session] getPreference – reading from sessionStorage');
+			try {
+			const raw = sessionStorage.getItem(`preference_${name}`);
+			const value = raw !== null ? JSON.parse(raw).value : deflt;
+			if (typeof successCallBack === 'function') successCallBack(value);
+			return Promise.resolve(value);
+			}
+			catch (err) {
+			if (typeof errorCallBack === 'function') errorCallBack(err);
+			return Promise.reject(err);
+			}
 		}
-		})
-		.catch(error => {
-		console.error('There was a problem with the fetch operation:', error);
-		throw error;
-		});
-	*/
-	} // function getPreference
+		else if (window.PREFERENCE_MODE === 'database') {
+			console.log('🌐 [database] getPreference – sending AJAX');
+			const data = { name: name, default: deflt };
+			return fetch('/ajax/get_preference.json', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
+			})
+			.then(response => {
+			if (!response.ok) throw new Error(`Status ${response.status}`);
+			return response.json();
+			})
+			.then(json => {
+			if (json.status !== 'success') {
+				throw new Error(json.status);
+			}
+			return json.value;
+			})
+			.then(value => {
+			if (typeof successCallBack === 'function') successCallBack(value);
+			return value;
+			})
+			.catch(err => {
+			if (typeof errorCallBack === 'function') errorCallBack(err);
+			throw err;
+			});
+		}
+		else {
+			throw new Error(
+				`Invalid PREFERENCE_MODE: ${window.PREFERENCE_MODE}. ` +
+				`Allowed values are 'nothing', 'session' or 'database'.`
+			);
+		}
+
+		// fallback
+		return Promise.reject(new Error(`Unknown PREFERENCE_MODE: ${window.PREFERENCE_MODE}`));
+	}
 
 	/**
 	* Fetch multiple user preferences via AJAX.
