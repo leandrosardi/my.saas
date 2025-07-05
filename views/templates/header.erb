@@ -350,7 +350,7 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 			if (typeof errorCallBack === 'function') errorCallBack(err);
 			});
 		*/
-
+console.log("HOLA-1-a");
 		// branch based on mode
 		if (window.PREFERENCE_MODE === 'nothing') {
 			console.log('⚪️ [nothing] setPreference – returning default response');
@@ -361,39 +361,40 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		else if (window.PREFERENCE_MODE === 'session') {
 			console.log('💾 [session] setPreference – saving to sessionStorage');
 			try {
-			sessionStorage.setItem(`preference_${name}`, JSON.stringify({ value }));
-			const resp = { status: 'success', name, value };
-			if (typeof successCallBack === 'function') successCallBack(resp);
-			return Promise.resolve(resp);
+console.log(`-----> SET-VALUE:${name}=${value} (${typeof value})`);
+				sessionStorage.setItem(`preference_${name}`, JSON.stringify({ value }));
+				const resp = { status: 'success', name, value };
+				if (typeof successCallBack === 'function') successCallBack(resp);
+				return Promise.resolve(resp);
 			}
 			catch (err) {
-			if (typeof errorCallBack === 'function') errorCallBack(err);
-			return Promise.reject(err);
+				if (typeof errorCallBack === 'function') errorCallBack(err);
+				return Promise.reject(err);
 			}
 		}
 		else if (window.PREFERENCE_MODE === 'database') {
 			console.log('🌐 [database] setPreference – sending AJAX');
 			const data = { name: name, default: deflt, value: value };
 			return fetch('/ajax/set_preference.json', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(data)
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
 			})
 			.then(response => {
-			if (!response.ok) throw new Error(`Status ${response.status}`);
-			return response.json();
+				if (!response.ok) throw new Error(`Status ${response.status}`);
+				return response.json();
 			})
 			.then(json => {
-			if (json.status !== 'success') {
-				if (typeof errorCallBack === 'function') errorCallBack(json);
-				throw new Error(json.status);
-			}
-			if (typeof successCallBack === 'function') successCallBack(json);
-			return json;
+				if (json.status !== 'success') {
+					if (typeof errorCallBack === 'function') errorCallBack(json);
+					throw new Error(json.status);
+				}
+				if (typeof successCallBack === 'function') successCallBack(json);
+				return json;
 			})
 			.catch(err => {
-			if (typeof errorCallBack === 'function') errorCallBack(err);
-			throw err;
+				if (typeof errorCallBack === 'function') errorCallBack(err);
+				throw err;
 			});
 		}
 		else {
@@ -424,14 +425,15 @@ pool3 = @login.user.preference("#{path}_pool3", 'expanded', params[:pool3])
 		else if (window.PREFERENCE_MODE === 'session') {
 			console.log('💾 [session] getPreference – reading from sessionStorage');
 			try {
-			const raw = sessionStorage.getItem(`preference_${name}`);
-			const value = raw !== null ? JSON.parse(raw).value : deflt;
-			if (typeof successCallBack === 'function') successCallBack(value);
-			return Promise.resolve(value);
+				const raw = sessionStorage.getItem(`preference_${name}`);
+				const value = raw !== null ? JSON.parse(raw).value : deflt;
+				if (typeof successCallBack === 'function') successCallBack(value);
+console.log(`-----> GET-VALUE:${name}=${value} (${typeof value})`);
+				return Promise.resolve(value);
 			}
 			catch (err) {
-			if (typeof errorCallBack === 'function') errorCallBack(err);
-			return Promise.reject(err);
+				if (typeof errorCallBack === 'function') errorCallBack(err);
+				return Promise.reject(err);
 			}
 		}
 		else if (window.PREFERENCE_MODE === 'database') {
