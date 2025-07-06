@@ -1,0 +1,200 @@
+# All your secrets are in this file.
+# Keep it safe.
+#
+# This `BlackOpsFile` is an example for installing
+# all MassProspecting components (master, slave, worker)
+# into one single computer.
+#
+
+# Setup the IP of node where you want to install the dev environment.
+#
+# Since BlackOps connect such a node via SSH, you can define the IP
+# of a remote computer.
+#
+#LOCAL_IP = '127.0.0.1'
+#SSH_ROOT_PASSWORD = '<write-here>'
+#SSH_PASSWORD = '<write-here>'
+
+# Write the password for the `blackstack` user of your postgresql
+#POSTGRES_PASSWORD = '<write-here>'
+
+# The following keys are about integrations between
+SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
+#POSTMARK_API_KEY = '<write-here>'
+#SMTP_USER = '<write-here>'
+#SMTP_PASSWORD = '<write-here>'
+
+# Re-usabeTemplates for Node-Descriptions
+#
+@t = {
+    # ssh credentials to production nodes.
+    :ssh => {
+        # SSH credentials.
+        # Root password is required to install the environment at the first time.
+        #
+        # Mandatory. The 4 keys below are mandatory.
+        #
+        # Allowed values:
+        # - ssh_username: string with a valid Linus user name,
+        # - ssh_port: integer with a valid port number
+        #
+        :ssh_username => 'blackstack',
+        :ssh_port => 22,
+
+        # IMPORTANT: for ssh passwords, it is a good practice to define unique values for each node.
+        #
+        # - ssh_password: string with a valid Linux password.
+        # - ssh_root_password: string with a valid Linux password.
+
+        # NOTE: In a local environment, the master, slave and worker
+        # share same domain, ssh password and postgres password.
+        #
+        # ssh passwords
+        #:ssh_password => SSH_PASSWORD,
+        #:ssh_root_password => SSH_ROOT_PASSWORD,
+    },
+
+    # PostgreSQL credentials.
+    :postgres => {
+        :postgres_port => 5432,
+        :postgres_username => 'blackstack',
+        # IMPORTANT: for postgres_password, it is a good practice to define unique values for each node.
+
+        # NOTE: In a local environment, the master, slave and worker
+        # share same domain, ssh password and postgres password.
+        #
+        # postgres password
+        #:postgres_password => POSTGRES_PASSWORD,
+    },
+
+    # git credentials
+    :git => {
+        :git_username => 'leandrosardi',
+
+        # IMPORTANT: Don't submit/store this secret into any node.
+        # Use when running operations from your local computer only.
+        #
+        #:git_password => GIT_PASSWORD,
+    },
+
+    # credentials of other commons
+    #
+    # IMPORTANT: Don't submit/store this secret into any node.
+    # Use when running operations from your local computer only.
+    #
+    :commons => {
+        :su_api_key => SU_API_KEY,
+        #:tinymce_api_key => TINYMCE_API_KEY,
+        #:adspower_api_key => ADSPOWER_API_KEY,
+
+        # Integration with DropBox
+        # Reference: https://github.com/leandrosardi/my-dropbox-api
+        #:vymeco_api_key => VYMECO_API_KEY,
+        #:dropbox_refresh_token => DROPBOX_REFRESH_TOKEN,
+
+        # this is for setting up custom domains for "WhiteLabel" features.
+        #:postmark_api_key => POSTMARK_API_KEY,
+        #:smtp_user => SMTP_USER,
+        #:smtp_password => SMTP_PASSWORD,
+
+        # NOTE: In a local environment, the master, slave and worker
+        # share same domain, ssh password and postgres password.
+        #
+        # domain
+        :domain => 'localhost',
+    },
+
+    # transactional emails
+    :emails => {
+        :smtp_url => SMTP_URL,
+        :smtp_port => SMTP_PORT,
+        :sender_email => SMTP_SENDER_EMAIL,
+        :from_email => SMTP_FROM_EMAIL,
+        :from_name => SMTP_FROM_NAME,
+
+        :tracking_domain_protocol => 'https',
+        :tracking_domain_tld => 'localhost',
+        :tracking_domain_port => 3000,
+
+        :logo_url => 'https://massprospecting.com/mass.account/images/logo.png',
+        :signature_picture_url => 'https://raw.githubusercontent.com/MassProspecting/docs/refs/heads/main/assets/marketing/leandro5-rounded.png',
+        :signature_name => 'Leandro D. Sardi',
+        :signature_position => 'Founder & CEO',
+    },
+
+    # master node parameters
+    :master => {
+        :git_repository => 'leandrosardi/my.saas',
+        :git_branch => 'main',
+        :code_folder => 'my.saas', # folder inside /home/$$ssh_username/code1
+
+        # Used to sign and encrypt session cookies for security. This should be a long,
+        # random, and unique string. In production, do NOT hardcode this — Setup it in
+        # your BlackOpsFile.
+        :session_secret => '000b6013-bbc9-412a-816c-c3eea0c0c68a',
+
+        # paypal
+        #:paypal_ipn_listener => 'https://b5f4-181-164-172-11.ngrok-free.app',
+        #:paypal_business_email => 'sardi.leandro.daniel-facilitator@gmail.com',
+        #:paypal_orders_url => 'https://sandbox.paypal.com',
+
+        # name of database to connect
+        :postgres_database => 'my.saas',
+
+        #:cpu_threshold => 50,
+        #:ram_threshold => 50,
+        #:disk_threshold => 50,
+
+        :procs => [
+            #'ruby ./extensions/i2p/p/baddebt.rb',
+            #'ruby ./extensions/i2p/p/expire.rb',
+            #'ruby ./extensions/i2p/p/ipn.rb',
+            #'ruby ./extensions/i2p/p/movement.rb',
+            'puma',
+        ],
+
+        :install_ops => [
+            'hostname.op',
+            'mysaas.install.ubuntu_22_04.base.op',
+            #'mysaas.install.ubuntu_22_04.nginx.op', # ==> nginx installation is not required in local environment
+            'mysaas.install.ubuntu_22_04.postgresql.op',
+            #'i2p.install',
+        ],
+
+        :deploy_ops => [
+            'mass.master.deploy.op'
+        ],
+
+        :migration_folders => [
+            '/home/blackstack/code1/my.aaas/sql',
+            #'/home/blackstack/code1/my.aaas/extensions/content/sql',
+            #'/home/blackstack/code1/my.aaas/extensions/dropbox-token-helper/sql',
+            #'/home/blackstack/code1/my.aaas/extensions/i2p/sql',
+            #'/home/blackstack/code1/my.aaas/extensions/monitoring/sql',
+        ],
+
+        :start_ops => [
+            'mass.master.start.op',
+            'i2p.start.op',
+        ],
+
+        :stop_ops => [
+            'mass.master.stop.op',
+            'i2p.stop.op',
+        ],
+    },
+}
+
+BlackOps.add_node({
+    :name => 'mysaas',
+    :ip => LOCAL_IP,
+    :port => '3000',
+}.merge(
+    @t[:ssh],
+    @t[:postgres],
+    @t[:git],
+    @t[:commons],
+    @t[:emails],
+    @t[:master],
+))
+
