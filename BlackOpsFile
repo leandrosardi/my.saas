@@ -11,18 +11,43 @@
 # Since BlackOps connect such a node via SSH, you can define the IP
 # of a remote computer.
 #
-#LOCAL_IP = '127.0.0.1'
-#SSH_ROOT_PASSWORD = '<write-here>'
-#SSH_PASSWORD = '<write-here>'
+SSH_PASSWORD = '<write-here>'
+SSH_ROOT_PASSWORD = '<write-here>'
 
 # Write the password for the `blackstack` user of your postgresql
 #POSTGRES_PASSWORD = '<write-here>'
 
-# The following keys are about integrations between
+# Api key of My.SaaS super-user
 SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
-#POSTMARK_API_KEY = '<write-here>'
-#SMTP_USER = '<write-here>'
-#SMTP_PASSWORD = '<write-here>'
+
+SMTP_URL = '<write-here>'
+SMTP_PORT = '<write-here>'
+SMTP_SENDER_EMAIL = '<write-here>'
+SMTP_FROM_EMAIL = '<write-here>'
+SMTP_FROM_NAME = '<write-here>'
+
+# BlackOps Configurations
+#
+BlackOps.set(
+    # Define one or more locations to find the `.op` files.
+    # Locations may be paths in your local disk or URLs.
+    #
+    # Don't use `https` for remote paths (URLs) because it 
+    # have SSL certificate issues. Simplify your life and use `http`.
+    #
+    repositories: [
+        #'http://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops',
+        './',
+    ],
+
+    # Setup Contabo client.
+    contabo: ContaboClient.new(
+        client_id: 'INT-11833581',
+        client_secret: '7jK6K9SHCyxTEuXkb99bGQDFCwsbcRwS',
+        api_user: 'leandro@massprospecting.com',
+        api_password: 'SDF4545DFD$dffdfd'
+    ),
+)
 
 # Re-usabeTemplates for Node-Descriptions
 #
@@ -50,8 +75,8 @@ SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
         # share same domain, ssh password and postgres password.
         #
         # ssh passwords
-        #:ssh_password => SSH_PASSWORD,
-        #:ssh_root_password => SSH_ROOT_PASSWORD,
+        :ssh_password => SSH_PASSWORD,
+        :ssh_root_password => SSH_ROOT_PASSWORD,
     },
 
     # PostgreSQL credentials.
@@ -101,7 +126,7 @@ SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
         # share same domain, ssh password and postgres password.
         #
         # domain
-        :domain => 'localhost',
+        :domain => '127.0.0.1',
     },
 
     # transactional emails
@@ -123,7 +148,7 @@ SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
     },
 
     # master node parameters
-    :master => {
+    :mysaas => {
         :git_repository => 'leandrosardi/my.saas',
         :git_branch => 'main',
         :code_folder => 'my.saas', # folder inside /home/$$ssh_username/code1
@@ -174,27 +199,27 @@ SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
         ],
 
         :start_ops => [
-            'mass.master.start.op',
-            'i2p.start.op',
+            'mass.mysaas.start.op',
+            #'i2p.start.op',
         ],
 
         :stop_ops => [
-            'mass.master.stop.op',
-            'i2p.stop.op',
+            'mass.mysaas.stop.op',
+            #'i2p.stop.op',
         ],
     },
 }
 
 BlackOps.add_node({
     :name => 'mysaas',
-    :ip => LOCAL_IP,
+    :ip => '127.0.0.1',
     :port => '3000',
 }.merge(
     @t[:ssh],
     @t[:postgres],
     @t[:git],
-    @t[:commons],
-    @t[:emails],
-    @t[:master],
+    #@t[:commons],
+    #@t[:emails],
+    @t[:mysaas],
 ))
 
