@@ -303,6 +303,9 @@ begin
     
     headers 'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST']
+
+    # make the Rack session available in this thread
+    Thread.current[:rack_session] = session
   end
 
   at_exit do
@@ -518,6 +521,9 @@ begin
         duration_ms:     duration
       )
     end
+
+    # clear it out when the request is done
+    Thread.current[:rack_session] = nil
   end
 
   # IMPORTNAT: Add this just after the :api_track condition

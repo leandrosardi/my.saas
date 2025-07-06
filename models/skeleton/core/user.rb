@@ -15,6 +15,11 @@ module BlackStack
                 self.class.default_password(self.id)
             end
 
+            # pull the session in any context
+            def session
+                Thread.current[:rack_session] ||= {}
+            end
+
             # get the type of the default parameter (string, integer, boolean, or float).
             # lookup for the name in the preference table.
             # if the name is not found, create a new record. 
@@ -53,7 +58,7 @@ module BlackStack
 
                 # return the value of the preference
                 p.get_value
-            end # def preference 
+            end # def preference  
 
             def pref(
                 name:,
