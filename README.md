@@ -31,7 +31,7 @@ cd ~ && \
 wget https://raw.githubusercontent.com/leandrosardi/my.saas/refs/heads/main/BlackOpsFile
 ```
 
-### Run the `saas` command
+### Install the Environment
 
 ```
 saas install --root --local \
@@ -43,17 +43,50 @@ saas install --root --local \
  --install_ops=hostname.op,mysaas.install.ubuntu_22_04.base.op,mysaas.install.ubuntu_22_04.postgresql.op
 ```
 
+### Deploy the Software
+
+```
+saas install --root --local \
+ --config=./BlackOpsFile \
+ --name=mysaas \
+
+ --ssh_username=mysaas \
+ --ssh_password=<password for mysaas user> \
+ --ssh_root_password=<current root password> \
+
+ --postgres_username=mysaas \
+ --postgres_password=<password for mysaas user> \
+
+ --install_ops=hostname.op,mysaas.install.ubuntu_22_04.base.op,mysaas.install.ubuntu_22_04.postgresql.op
+```
+
+### Run Migrations
+
+```
+saas migrate --local \
+ --config=./BlackOpsFile \
+ --name=mysaas \
+
+ --ssh_username=mysaas \
+ --ssh_password=<password for mysaas user> \
+ --ssh_root_password=<current root password> \
+
+ --postgres_username=mysaas \
+ --postgres_password=<password for mysaas user> \
+```
+
 ## Further Work
 
-- Installation
-- Visitors tracking - Download/update `GeoLite2-City.mmdb` (https://github.com/P3TERX/GeoLite.mmdb)
-- Extensibility
-- UI Components - tags, lists, etc.
-- API Calls, API Calls Tracking and API Calls Quota
-- Monitoring Extensions: Super-User, monitoring, accessing other people accounts
-- Invoicing and Payments Processing
-- Content Management System
-- Transactional emails
-- Asyncronius processing
-- Domain aliasing & `account.id_user_owner` field.
-- Affiliates tracking & `account.id_user_referral` field.
+1. Installation
+2. Visitors tracking - Download/update `GeoLite2-City.mmdb` (https://github.com/P3TERX/GeoLite.mmdb)
+3. Extensibility
+4. UI Components - tags, lists, etc.
+5. API Calls, API Calls Tracking and API Calls Quota
+6. Monitoring Extensions: Super-User, monitoring, accessing other people accounts
+7. Invoicing and Payments Processing
+8. Content Management System
+9. Transactional emails
+10. Asyncronius processing
+11. Domain aliasing & `account.id_user_owner` field.
+12. Affiliates tracking & `account.id_user_referral` field.
+13. [Micro-Services](./docu/micro-services.md)
