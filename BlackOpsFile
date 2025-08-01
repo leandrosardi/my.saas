@@ -26,14 +26,6 @@ SMTP_SENDER_EMAIL = '<write-here>'
 SMTP_FROM_EMAIL = '<write-here>'
 SMTP_FROM_NAME = '<write-here>'
 
-# configure once at startup
-Monitoring.configure do |m|
-  m.contabo_client_id     = 'your_contabo_client_id'
-  m.contabo_client_secret = 'your_contabo_client_secret'
-  m.contabo_api_user      = 'your_contabo_api_username'
-  m.contabo_api_password  = 'your_contabo_api_password'
-end
-
 # BlackOps Configurations
 #
 BlackOps.set(

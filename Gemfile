@@ -14,6 +14,7 @@ gem 'simple_command_line_parser', '~>1.1.2'
 gem 'pampa', '~>2.1.5'
 gem 'my-dropbox-api', '~>1.0.3'
 gem 'zyte-client', '~>1.0.6'
+gem 'contabo-client', '~>0.1.1'
 gem 'mass-client', '~>1.0.36'
 
 # Other gems needed for running mysaas
@@ -46,6 +47,7 @@ gem 'browser', '~>5.3.1'
 gem 'geoip2_compat', '~>0.0.3'
 gem 'maxminddb', '~>0.1.22'
 gem 'highline', '~>3.1.0'
+gem 'bigdecimal', '~>3.2.2'
 
 # Required by extensions
 gem 'email_verifier', '~>0.1.0'

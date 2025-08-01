@@ -12,6 +12,7 @@ require 'blackstack-db'
 
 require 'my-ruby-deployer' # ==> DEPRECATED in favor of BlackOps (https://github.com/leandrosardi/blackops)
 require 'zyte-client'
+require 'contabo-client'
 require 'pampa'
 require 'adspower-client'
 #require 'mass-client'
@@ -76,6 +77,54 @@ PERIOD_FILTER_VALUES = [
 #
 DEFAULT_LOGIN = '/login'
 DEFAULT_SIGNUP = '/leads/signup'
+
+module Monitoring
+  class << self
+    attr_accessor :contabo_client_id, :contabo_client_secret, :contabo_api_user, :contabo_api_password
+
+    # Usage:
+    # Monitoring.configure do |m|
+    #   m.contabo_client_id     = '...'
+    #   m.contabo_client_secret = '...'
+    #   m.contabo_api_user      = '...'
+    #   m.contabo_api_password  = '...'
+    # end
+    def configure
+      yield self
+    end
+
+    # Returns a validated ContaboClient. Accepts per-call overrides.
+    def contabo_client(**override)
+      cid     = override[:contabo_client_id]     || contabo_client_id     || ENV['CONTABO_CLIENT_ID']
+      csecret = override[:contabo_client_secret] || contabo_client_secret || ENV['CONTABO_CLIENT_SECRET']
+      user    = override[:contabo_api_user]      || contabo_api_user      || ENV['CONTABO_API_USER']
+      pass    = override[:contabo_api_password]  || contabo_api_password  || ENV['CONTABO_API_PASSWORD']
+
+      missing = []
+      missing << 'contabo_client_id'     if blank?(cid)
+      missing << 'contabo_client_secret' if blank?(csecret)
+      missing << 'contabo_api_user'      if blank?(user)
+      missing << 'contabo_api_password'  if blank?(pass)
+      unless missing.empty?
+        raise "Missing Contabo credentials: #{missing.join(', ')}"
+      end
+
+      ContaboClient.new(
+        client_id:     cid,
+        client_secret: csecret,
+        api_user:      user,
+        api_password:  pass
+      )
+    end
+
+    private
+
+    def blank?(v)
+      v.nil? || (v.respond_to?(:strip) && v.to_s.strip.empty?)
+    end
+  end
+end
+
 
 # convert an integer to a string like 1.5K or 1.5M
 def short_label(i)

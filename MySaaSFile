@@ -94,6 +94,15 @@ CS_HOME_TITLE = 'MassProspecting - AI-Driven Multi-Channel Outreach System'
 # default timezone
 DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'
 
+# Monitoring Setup
+#
+Monitoring.configure do |m|
+  m.contabo_client_id     = '!!contabo_client_id'
+  m.contabo_client_secret = '!!contabo_client_secret'
+  m.contabo_api_user      = '!!contabo_api_user'
+  m.contabo_api_password  = '!!contabo_api_password'
+end
+
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 # DB ACCESS - KEEP IT SECRET
