@@ -43,6 +43,11 @@ end
 <br/>
 -->
 <section class='box span10'>	
+	<a href='/'><img src='<%=CS_HOME_LOGO%>' style='height:64px;' title='<%=APP_NAME%> logo' /></a>
+	<br/>
+	<br/>
+	<br/>
+
 	<span align='left'>
 		<h4>Reset your password</b></h4>
 	</span>
@@ -51,8 +56,8 @@ end
 		<input type="hidden" name="nid" id="nid" value="<%=nid%>">
 		<fieldset>
 			<div class="fields">				
-				<input type="password" class='input-xlarge' name="new_password_1" id="id_password_1" placeholder="Write New Password" tabindex="3" value="" onfocus="$(this).select();">
-				<input type="password" class='input-xlarge' name="new_password_2" id="id_password_2" placeholder="Repeat Password" tabindex="4" value="" onfocus="$(this).select();">
+				<input type="password" class='input-xlarge' name="new_password_1" id="id_password_1" autofocus style='height: 45px; padding: 10px; width: 100%;' placeholder="Write New Password" tabindex="3" value="" onfocus="$(this).select();">
+				<input type="password" class='input-xlarge' name="new_password_2" id="id_password_2" style='height: 45px; padding: 10px; width: 100%;' placeholder="Repeat Password" tabindex="4" value="" onfocus="$(this).select();">
 			</div>
 			<button type="submit" class="btn btn-primary" tabindex="5">Reset</button>
 		</fieldset>
@@ -71,8 +76,18 @@ end
 <br/>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-	     document.getElementById("id_password_1").focus();
+	document.addEventListener("DOMContentLoaded", function(){
+		// set focus on email field
+		const email = document.getElementById("new_password_1");
+		if (email) {
+			// slight delay to avoid other scripts stealing focus
+			setTimeout(() => {
+				email.focus();
+				email.select();
+				}, 100);
+		} else {
+			console.warn("#new_password_1 not found");
+		}
 	});
 </script>
 

@@ -19,6 +19,11 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 <br/>
 -->
 <section class='box span10'>
+	<a href='/'><img src='<%=CS_HOME_LOGO%>' style='height:64px;' title='<%=APP_NAME%> logo' /></a>
+	<br/>
+	<br/>
+	<br/>
+
 	<span align='left'>
 		<h4>Recover your password</b></h4>
 	</span>
@@ -27,7 +32,7 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 		<input type='hidden' id='recaptcha_response' name='recaptcha_response' value='' />
 		<fieldset>
 			<div class="fields">
-				<input type="text" class='input-xlarge' name="email" placeholder="Email" id="id_email" tabindex="1" onfocus="$(this).select();" />
+				<input type="text" class='input-large' style='height: 45px; padding: 10px; width: 100%;' name="email" placeholder="Email" id="id_email" autofocus tabindex="1" onfocus="$(this).select();" />
 			</div>
 				
 			<%
@@ -60,8 +65,22 @@ end # if BlackStack::Funnel.recaptcha2_site_key
 		$('#recaptcha_response').val(grecaptcha.getResponse());
 	}
 
-	$(document).ready(function() {
-		$('input, textarea').placeholder();
-		document.getElementById("id_email").focus();
+	document.addEventListener("DOMContentLoaded", function(){
+		// placeholder plugin if available
+		if (window.jQuery) {
+			try { jQuery('input, textarea').placeholder(); } catch(e){ console.warn("placeholder failed", e); }
+		}
+		
+		// set focus on email field
+		const email = document.getElementById("id_email");
+		if (email) {
+			// slight delay to avoid other scripts stealing focus
+			setTimeout(() => {
+			email.focus();
+			email.select();
+			}, 100);
+		} else {
+			console.warn("#id_email not found");
+		}
 	});
 </script>
