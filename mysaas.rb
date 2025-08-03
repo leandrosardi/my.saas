@@ -53,6 +53,7 @@ require 'geoip2_compat' # or another GeoIP library, if you want geolocation
 require 'maxminddb'
 require 'highline'
 require 'redcarpet'
+require 'bigdecimal'
 
 require 'lib/controllers'
 require 'lib/emails'

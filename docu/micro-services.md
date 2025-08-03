@@ -211,7 +211,9 @@ curl -X POST http://127.0.0.1:3000/api2.0/node/upsert.json \
 POST /api2.0/node/track.json
 ```
 
-Same as Upsert Node, but `ip` is derived from the requester's IP rather than the body.
+This endpoint is a lightweight heartbeat/upsert that identifies the node by the **caller IP** (`request.ip`) instead of requiring `ip` in the body. 
+
+It **only updates a restricted set of fields** (usage metrics, capacity, thresholds, slot info, and last start heartbeat) to avoid overwriting unrelated metadata. If the node does not yet exist, it will be created with sensible defaults so required non-null fields are populated.
 
 **Request Body**: Accepts all **Create Node** fields except `ip`, `id`, and `create_time`.
 
