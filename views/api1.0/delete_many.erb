@@ -1,0 +1,31 @@
+<%
+@return_message = {}
+@return_message['status'] = 'success'
+begin
+    object = params[:object]
+    cls = BlackStack::API.classes[object.to_sym]
+    ids = @body['ids']
+    
+    raise "ids is empty" if ids.nil? || ids.empty?
+
+    if @account.sysowner?
+        DB.execute("
+            UPDATE \"#{cls.name.to_sql}\"
+            SET delete_time = '#{now}'
+            WHERE delete_time IS NULL
+            AND \"id\" IN ('#{ids.join("', '")}')
+        ")
+    else
+        DB.execute("
+            UPDATE \"#{cls.name.to_sql}\"
+            SET delete_time = '#{now}'
+            WHERE delete_time IS NULL
+            AND \"id\" IN ('#{ids.join("', '")}')
+            AND \"id_account\" = '#{@account.id}' 
+        ")
+    end
+rescue Exception => e
+    @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
+end
+return @return_message.to_json
+%>

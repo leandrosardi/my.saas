@@ -1030,6 +1030,10 @@ begin
     erb :"views/api1.0/delete"
   end
 
+  post "/api1.0/:object/delete_many.json", :api_key => true do
+    erb :"views/api1.0/delete_many"
+  end
+
   post "/api1.0/:object/update_status.json", :api_key => true do
     erb :"views/api1.0/update_status"
   end
