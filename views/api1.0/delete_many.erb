@@ -10,14 +10,14 @@ begin
 
     if @account.sysowner?
         DB.execute("
-            UPDATE \"#{cls.name.to_sql}\"
+            UPDATE \"#{cls.table_name.to_s.to_sql}\"
             SET delete_time = '#{now}'
             WHERE delete_time IS NULL
             AND \"id\" IN ('#{ids.join("', '")}')
         ")
     else
         DB.execute("
-            UPDATE \"#{cls.name.to_sql}\"
+            UPDATE \"#{cls.table_name.to_s.to_sql}\"
             SET delete_time = '#{now}'
             WHERE delete_time IS NULL
             AND \"id\" IN ('#{ids.join("', '")}')
