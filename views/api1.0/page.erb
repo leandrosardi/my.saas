@@ -32,6 +32,7 @@ begin
 
     #@return_message['total'] = n
     @return_message['results'] = arr.map { |o| o.to_h }
+    @return_message['total'] = cls.list(a, filters: filters).count 
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
