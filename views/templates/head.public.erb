@@ -515,68 +515,80 @@ theme = 'default'
 			});
 		}
 
-		// Make a POST request to and ajax end-point.
-		function callx(h) {
-      let url = h.url;
-      let params = h.params;
-      let on_error = h.on_error;
-      let on_success = h.on_success;
-      let alerts_delay = h.alerts_delay;
 
-      if (alerts_delay == null) alerts_delay = -1;
+// Make a POST request to and ajax end-point.
+// Make a POST request to an ajax end-point, returning a handle that allows aborting.
+function callx(h) {
+console.log('callx!');
+	let url = h.url;
+	let params = h.params;
+	let on_error = h.on_error;
+	let on_success = h.on_success;
+	let alerts_delay = h.alerts_delay;
 
-	  	fetch(url, {
-        method: 'POST',                      	// HTTP method
-        headers: {
-          'Content-Type': 'application/json' 	// Specify JSON content
-        },
-        body: JSON.stringify(params)           	// Convert data to JSON string
-      })
-      .then(response => {
-        if (!response.ok) {
-          // Handle HTTP errors
-          draw_error_alert("Operation Error", [], [`Network response from ${url} was not ok: ${response.statusText}`], alerts_delay);
-        }
-        return response.json(); // Parse the JSON response
-      })
-      .then(data => {
-        s = JSON.stringify(data, null, 2);
-        if (data.status == 'success') {
-          // Handle application-level errors
-          if (on_success != null) {
-            on_success(data);
-          } else {
-            draw_success_alert("Operation Success", [], [`End-point ${url} returned successfully.`], alerts_delay);
-          }
-        } else {
-          if (on_error != null) {
-              on_error(data);
-          } else {
-            draw_error_alert("Operation Error", [], [`End-point ${url} returned an error: ${s}`], alerts_delay);
-          }
-        }
-      })
-      .catch(error => {
-				console.error('Fetch operation failed:', error); // Log detailed error for debugging
-        let errorMessage = 'An unexpected error occurred. Please try again later.';
+	if (alerts_delay == null) alerts_delay = -1;
 
-        // Check if the error has a status and body
-        if (error.status && error.body) {
-            // If the response body is an object, stringify it for readability
-						try {
-							const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
-	            errorMessage = `Error ${error.status}: ${responseBody}`;
-						} catch (e) {
-						  errorMessage = 'Could not parse error.body';
-						}
-        } else if (error.message) {
-            // Fallback to the error message
-            errorMessage = `Error: ${error.message}`;
-				}
-				hideWait();
-        draw_error_alert("Operation Error", [], [`Fetch error on end-point ${url}: ${errorMessage}`], alerts_delay);
-      });
-    }
+	// Create an AbortController for canceling the request
+	const controller = new AbortController();
+	const signal = controller.signal;
+
+	const fetchPromise = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(params),
+		signal // Attach the signal so we can abort later
+	})
+	.then(response => {
+		console.log(response);
+		return response.json();
+	})
+	.then(data => {
+		const s = JSON.stringify(data, null, 2);
+		if (data.status === 'success') {
+			if (on_success != null) {
+				on_success(data);
+			} else {
+				draw_success_alert("Operation Success", [], [`End-point ${url} returned successfully.`], alerts_delay);
+			}
+		} else {
+			if (on_error != null) {
+				on_error(data);
+			} else {
+				//draw_error_alert("Operation Error", [], [`End-point ${url} returned an error: ${s}`], alerts_delay);
+			}
+		}
+	})
+	.catch(error => {
+		// Don't treat aborts as errors
+		if (error.name === 'AbortError') {
+			console.log(`Request to ${url} was aborted`);
+			return;
+		}
+
+		console.error('Fetch operation failed:', error);
+		let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+		if (error.status && error.body) {
+			try {
+				const responseBody = typeof error.body === 'object' ? JSON.stringify(error.body) : error.body;
+				errorMessage = `Error ${error.status}: ${responseBody}`;
+			} catch (e) {
+				errorMessage = 'Could not parse error.body';
+			}
+		} else if (error.message) {
+			errorMessage = `Error: ${error.message}`;
+		}
+		//draw_error_alert("Operation Error", [], [`Fetch error on end-point ${url}: ${errorMessage}`], alerts_delay);
+	});
+
+	// Return an object similar to jqXHR: gives you a handle to abort
+	return {
+		abort: () => controller.abort(),
+		promise: fetchPromise
+	};
+}
 
 		// draw pagination function
 		//
