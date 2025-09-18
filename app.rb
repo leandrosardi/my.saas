@@ -240,7 +240,7 @@ begin
   # https://github.com/MassProspecting/docs/issues/477
   # https://github.com/MassProspecting/docs/issues/647
   before do
-    if request.url !~ /api1\.0/
+    if request.url !~ /api1\.0/ && request.url !~ /api2\.0/
       # —————————————————————————————————————————————————————————————————————————
       # affiliate tracking: if ?affid=... is present, stash it in session,
       # then make it available as @affid everywhere
