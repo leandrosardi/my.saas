@@ -563,7 +563,7 @@ begin
         halt @return_message.to_json
       end
 
-      if !@body['api_key'].guid?
+      if !@body['api_key'].to_s.guid?
         # libero recursos
         DB.disconnect
         GC.start
