@@ -5,7 +5,7 @@ begin
 	id_profile = @body['id_profile']
 	
 	q = "
-		select p.id as id_profile, s.api_key, n.name||'.massprospecting.com'||':443' as dashboard_node
+		select p.id as id_profile, s.api_key, n.name||'.#{APP_DOMAIN}'||':443' as dashboard_node
 		from \"profile\" p
 		join \"subaccount\" s on s.id=p.id_subaccount
 		join \"node\" n on n.id=s.id_node
