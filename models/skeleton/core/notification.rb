@@ -169,12 +169,13 @@ module BlackStack
         # raise an exception if `delivery_time` is not nil.
         # deliver notification and track `delivery_time` flag.
         def deliver
+binding.pry
           # raise an exception if `delivery_time` is not nil.
           raise "delivery_time is not nil" if !self.delivery_time.nil?
           # deliver
           BlackStack::Emails::delivery(
-            :receiver_name => self.user.name,
-            :receiver_email => self.user.email,
+            :receiver_name => self.name_to, #self.user.name,
+            :receiver_email => self.email_to, #self.user.email,
             :subject => self.subject,
             :body => self.body,
           )
