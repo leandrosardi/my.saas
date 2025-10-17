@@ -57,3 +57,7 @@ gem 'aws-sdk-s3', '~> 1.169.0'
 gem 'appending', '~>1.5.2'
 gem 'redcarpet', '~>3.5.1'
 gem 'adspower-client', '~>1.0.17'
+
+# PostPilot
+gem 'google-apis-youtube_v3', '~>0.57.0'
+gem 'launchy', '~>3.1.1'
