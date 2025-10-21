@@ -5,7 +5,7 @@ ruby '~>3.1.2'
 
 # BlackStack framework gems
 gem 'blackstack-db', '~>1.0.9'
-gem 'blackstack-core', '~>1.2.29'
+gem 'blackstack-core', '~>1.2.33'
 gem 'blackstack-nodes', '~>1.2.16'
 gem 'blackstack-enrichment', '~>1.0.3' # DEPRECATED
 gem 'my-ruby-deployer', '~>1.3.5'
@@ -59,5 +59,6 @@ gem 'redcarpet', '~>3.5.1'
 gem 'adspower-client', '~>1.0.17'
 
 # PostPilot
+gem 'faraday', '~>2.13'
 gem 'google-apis-youtube_v3', '~>0.57.0'
 gem 'launchy', '~>3.1.1'
