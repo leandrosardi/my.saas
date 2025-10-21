@@ -1,3 +1,6 @@
+# ignore oAuth tokens
+token.yaml
+
 # ignore any output file
 *.out
 
