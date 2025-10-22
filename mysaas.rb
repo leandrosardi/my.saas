@@ -11,7 +11,7 @@ require 'blackstack-db'
 #require 'blackstack-enrichment'
 
 require 'my-ruby-deployer' # ==> DEPRECATED in favor of BlackOps (https://github.com/leandrosardi/blackops)
-require 'zyte-client'
+#require 'zyte-client'
 require 'contabo-client'
 require 'pampa'
 require 'adspower-client'
