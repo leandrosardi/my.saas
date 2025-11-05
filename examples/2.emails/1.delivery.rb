@@ -7,7 +7,7 @@ require 'lib/skeletons'
 
 BlackStack::Emails::delivery(
     :receiver_name => 'Leandro D. Sardi',
-    :receiver_email => 'leandro.sardi@expandedventure.com',
-    :subject => 'Welcome to ConnectionSphere',
-    :body => '<h1>Welcome to ConnectionSphere</h1>',
+    :receiver_email => 'demo@massprospecting.com',
+    :subject => 'Welcome to MassProspecting',
+    :body => '<h1>Welcome to MassProspecting</h1>',
 )

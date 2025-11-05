@@ -207,8 +207,8 @@ module BlackStack
                 from "#{BlackStack::Emails::from_name} <#{BlackStack::Emails::from_email}>"
                 subject "#{email_subject}"
                 html_part do
-                content_type 'text/html; charset=UTF-8'
-                body email_body
+                    content_type 'text/html; charset=UTF-8'
+                    body email_body
                 end
             end
 
