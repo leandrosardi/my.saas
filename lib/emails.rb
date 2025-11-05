@@ -19,6 +19,56 @@ module BlackStack
         @@tracking_domain_tld = nil
         @@tracking_domain_port = nil
 
+        # --- SMTP pooling / transaction counting (MailerSend: 5 mails per connection) ---
+        # Reference: https://github.com/MassProspecting/hub/issues/21
+        @@smtp_session = nil
+        @@smtp_sent_in_session = 0
+        @@smtp_mutex = Mutex.new
+        SMTP_MAX_PER_CONNECTION = 5
+
+        # Helper: ensure we have an open session, or open a fresh one
+        # Reference: https://github.com/MassProspecting/hub/issues/21
+        def self.ensure_smtp_session!
+            # called inside @@smtp_mutex.synchronize
+            if @@smtp_session.nil? || !@@smtp_session.started? || @@smtp_sent_in_session >= SMTP_MAX_PER_CONNECTION
+                # close previous session if exists
+                begin
+                    if @@smtp_session && @@smtp_session.started?
+                        @@smtp_session.finish
+                    end
+                rescue => e
+                    # ignore errors closing old session
+                ensure
+                    @@smtp_session = nil
+                    @@smtp_sent_in_session = 0
+                end
+
+                # create and start a fresh Net::SMTP session
+                smtp = Net::SMTP.new(@@smtp_url, @@smtp_port)
+                smtp.enable_starttls_auto if smtp.respond_to?(:enable_starttls_auto)
+
+                # if you want to enforce OpenSSL verify mode settings, configure here
+                smtp.start(Socket.gethostname, @@smtp_user, @@smtp_password, :plain)
+                @@smtp_session = smtp
+                @@smtp_sent_in_session = 0
+            end
+        end
+
+        # Helper: safely finish and clear session
+        # Reference: https://github.com/MassProspecting/hub/issues/21
+        def self.close_smtp_session!
+            begin
+                if @@smtp_session && @@smtp_session.started?
+                @@smtp_session.finish
+                end
+            rescue => e
+                # ignore close errors
+            ensure
+                @@smtp_session = nil
+                @@smtp_sent_in_session = 0
+            end
+        end
+
         # return the postmark API key
         def self.postmark_api_key
             @@postmark_api_key
@@ -144,42 +194,51 @@ module BlackStack
         end
 
         # delivery an email
+        # delivery using pooled Net::SMTP sessions (respect MailerSend 5-per-connection rule)
         def self.delivery(h)
             receiver_name = h[:receiver_name]
-            receiver_email = h[:receiver_email] 
+            receiver_email = h[:receiver_email]
             email_subject = h[:subject]
             email_body = h[:body]
-            # reply_to_name # use this for tracking re
-            # reply_to_email = nil,
 
-            options = { 
-                :address              => BlackStack::Emails::smtp_url,
-                :port                 => BlackStack::Emails::smtp_port,
-                :user_name            => BlackStack::Emails::smtp_user,
-                :password             => BlackStack::Emails::smtp_password,
-                :authentication       => 'plain',
-                :enable_starttls_auto => true, 
-                :openssl_verify_mode => OpenSSL::SSL::VERIFY_NONE
-            }
-        
-            Mail.defaults do
-                delivery_method :smtp, options
-            end
-        
+            # Build the Mail::Message (headers + html body)
             mail = Mail.new do
                 to "#{receiver_email}"
-                #message_id the_message_id # use this for
                 from "#{BlackStack::Emails::from_name} <#{BlackStack::Emails::from_email}>"
-                #reply_to reply_to_email.nil? ? BlackStack::Emails::from_email : reply_to_email
                 subject "#{email_subject}"
                 html_part do
-                    content_type 'text/html; charset=UTF-8'
-                    body email_body
-                end # html_part      
-            end # Mail.new
-            
-            # deliver the email
-            mail.deliver
-        end # def smtp        
+                content_type 'text/html; charset=UTF-8'
+                body email_body
+                end
+            end
+
+            raw_message = mail.to_s
+
+            # Send using pooled Net::SMTP with mutex
+            @@smtp_mutex.synchronize do
+                begin
+                    # ensure session opened (and not exhausted)
+                    ensure_smtp_session!
+
+                    # send raw RFC822 message
+                    @@smtp_session.send_message(raw_message, @@from_email, receiver_email)
+
+                    # increment counter and close session if reached the per-connection limit
+                    @@smtp_sent_in_session += 1
+                    if @@smtp_sent_in_session >= SMTP_MAX_PER_CONNECTION
+                        # close now to comply with MailerSend "5 mails per connection" rule
+                        close_smtp_session!
+                    end
+                rescue => e
+                    # On any SMTP error we must close the session so we start fresh next time.
+                    close_smtp_session!
+
+                    # Re-raise so caller can apply its retry/backoff logic.
+                    raise e
+                end
+            end # synchronize
+        end
+
+
     end # module Emails
 end # module BlackStack

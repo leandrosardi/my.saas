@@ -109,28 +109,7 @@ module BlackStack
       def self.run(logger:nil)
         l = logger || BlackStack::DummyLogger.new(nil)
         @@followups.each { |h|
-          begin
-            BlackStack::Notifications::deliver(h, logger:l)            
-          rescue => e
-            if e.message =~ /Too many requests/i
-              l.reset
-              l.log "SMTP throttling detected.".yellow
-
-              l.logs "Sleeping for 5 minutes... "
-              sleep(300)
-              l.done
-
-              l.logs "Retry delivery... "
-              BlackStack::Notifications::deliver(h, logger:l)
-              l.done
-            else
-              raise e
-            end
-          ensure
-            l.logs 'Delay... '
-            sleep(2)
-            l.done
-          end
+          BlackStack::Notifications::deliver(h, logger:l)            
         }
       end
 
