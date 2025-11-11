@@ -60,9 +60,9 @@ gem 'adspower-client', '~>1.0.17'
 
 # PostPilot
 gem 'faraday', '~>2.13'
-gem 'google-apis-youtube_v3', '~>0.57.0'
+gem 'google-apis-youtube_v3', '< 0.57.0'
 gem 'launchy', '~>3.1.1'
 gem 'activesupport', '~>7.2.2.2'
 gem 'ffmpeg', '~>0.2.5'
 gem 'streamio-ffmpeg', '~>3.0.2'
-gem 'streamio-ffmpeg', '~>0.23.2'
+#gem 'streamio-ffmpeg', '~>0.23.2'
