@@ -261,36 +261,82 @@ module BlackStack
 
 
     module Storage
-        # Download a file form the web and store it in Dropbox.
-        # Return the URL of the file in Dropbox.
+        # Upload a file to AWS S3 and return the file URL on S3.
         #
         # Parameters:
         # - url: the URL of the file to download.
-        # - filename: the name of the file to store in Dropbox.
-        # - dropbox_folder: the name of the folder in Dropbox where the file will be stored. E.g.: "channels/#{account.id}".
-        # - downloadeable: if true, the returnled URL will allow the download of the file. If false, the URL will show the file in the browser.
-        #
-        def store(url:, filename:, dropbox_folder:, downloadeable: false)
+        # - filename: the name of the file to store in S3.
+        # - dropbox_folder: the name of the folder (used as S3 key prefix). E.g.: "channels/#{account.id}".
+        # - downloadeable: if true, the returned URL will force download (adds a content-disposition query param). If false, the URL will show the file in the browser. - DEPRECATED
+        def store(
+            url:, 
+            filename:, 
+            dropbox_folder:, 
+            downloadeable: false # DEPRECATED
+        )
+            # lazy require so we don't add a hard dependency unless this method is used
+            require 'aws-sdk-s3'
+            require 'cgi'
+            
             tempfile = nil
+            downloaded_tmp = false
+
             if url =~ /^http(s)?\:\/\//
                 tempfile = Down.download(url)
-            elsif url =~ /^file\:\/\//
-                tempfile = File.open(url.gsub(/^file\:\/\//, '/'))
+                downloaded_tmp = true
+            elsif url =~ /^file:\/\//
+                # local file path provided as file:///... -> open it
+                tempfile = File.open(url.gsub(/^file:\/\//, '/'))
+            else
+                raise "Unsupported URL schema for #{url}"
             end
+
             year = Time.now.year.to_s.rjust(4,'0')
             month = Time.now.month.to_s.rjust(2,'0')
-            folder = "/massprospecting.bots/#{dropbox_folder}.#{year}.#{month}"
-            path = "#{folder}/#{filename}"
-            BlackStack::DropBox.dropbox_create_folder(folder)
-            BlackStack::DropBox.dropbox_upload_file(tempfile.path, path)
-            ret = BlackStack::DropBox.get_file_url(path)
-            ret.gsub!(/\&dl\=1/, "&dl=0") if downloadeable == false
-            # delete the temporary file if I downloaded it form the web
-            if url =~ /^http(s)?\:\/\//
-                # delete the temporary file from the hard drive
+
+            # Use the provided dropbox_folder as an S3 prefix. Compose a key.
+            prefix = dropbox_folder.to_s.gsub(/^\//, '').gsub(/\.+$/, '')
+            key = "#{prefix}/#{year}/#{month}/#{filename}".gsub(/^\//, '')
+
+            # Build the S3 resource using credentials loaded from config.rb
+            s3 = Aws::S3::Resource.new(
+                region: AWS_S3_REGION,
+                credentials: Aws::Credentials.new(AWS_S3_ACCESS_KEY_ID, AWS_S3_SECRET_ACCESS_KEY)
+            )
+
+            bucket = s3.bucket(AWS_S3_BUCKET_NAME)
+
+            # Upload the file. Use upload_file when a path is available.
+            file_path = tempfile.respond_to?(:path) ? tempfile.path : nil
+
+            obj = bucket.object(key)
+
+            if file_path && File.exist?(file_path)
+                # upload without ACL because the bucket disallows ACLs (bucket ownership enforced)
+                obj.upload_file(file_path)
+            else
+                # fallback: read body and put without ACL
+                body_io = tempfile.respond_to?(:read) ? tempfile.read : File.read(url)
+                obj.put(body: body_io)
+            end
+
+            # build a stable public URL for the uploaded object
+            # encode each path segment to preserve slashes
+            encoded_key = key.split('/').map { |seg| CGI.escape(seg) }.join('/')
+            # virtual-hosted style URL
+            ret = "https://#{AWS_S3_BUCKET_NAME}.s3.#{AWS_S3_REGION}.amazonaws.com/#{encoded_key}"
+
+            # DEPRECATED
+            # if downloadeable is true, add a content-disposition query parameter to force download
+            #if downloadeable
+            #    ret += "?response-content-disposition=attachment"
+            #end
+
+            # delete the temporary file if it was downloaded by Down
+            if downloaded_tmp && tempfile && tempfile.respond_to?(:path)
                 File.delete(tempfile.path) if File.exists?(tempfile.path)
             end
-            # return the URL of the file in Dropbox.
+
             return ret
         end
     end # module Storage
