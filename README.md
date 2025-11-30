@@ -34,7 +34,8 @@ platform for develop your own Software as a Service (SaaS).
 _(pending to write documentation)_
 
 - UI Components
-- Users Storage
+- User Preferences
+- User Storage
 - Building an API
 - Users Managment 
 - Visitors Tracking
