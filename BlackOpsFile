@@ -13,7 +13,7 @@ SSH_IP = 'localhost'
 SSH_USERNAME = 'mysaas'
 SSH_PASSWORD = 'mysaas'
 SSH_PORT = 22
-SSH_ROOT_PASSWORD = ENV["MYSAAS_ROOT_PASS"]
+SSH_ROOT_PASSWORD = ENV["MYSAAS_ROOT_PASSWORD"]
 
 # Write the password for the `mysaas` user of your postgresql
 POSTGRES_URL = 'localhost'
