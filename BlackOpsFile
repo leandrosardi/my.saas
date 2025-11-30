@@ -182,29 +182,67 @@ BlackOps.set(
             'mysaas.install.ubuntu_22_04.base.op',
             #'mysaas.install.ubuntu_22_04.nginx.op', # ==> nginx installation is not required in local environment
             'mysaas.install.ubuntu_22_04.postgresql.op',
+            
+            # Invoicing and Payments Processing extension.
             #'i2p.install',
+            
+            # CMS extension.
+            #'content.install',
+            
+            # Security and Users Monitoring extension.
+            #'monitoring.install',
         ],
 
         :deploy_ops => [
             'mysaas.deploy.op'
+
+            # Invoicing and Payments Processing extension.
+            #'i2p.deploy',
+            
+            # CMS extension.
+            #'content.deploy',
+            
+            # Security and Users Monitoring extension.
+            #'monitoring.deploy',
         ],
 
         :migration_folders => [
             "/home/#{SSH_USERNAME}/code1/my.aaas/sql",
-            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/content/sql",
-            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/dropbox-token-helper/sql",
+
+            # Invoicing and Payments Processing extension.
             #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/i2p/sql",
+
+            # CMS extension.
+            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/content/sql",
+
+            # Security and Users Monitoring extension.
             #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/monitoring/sql",
         ],
 
         :start_ops => [
             'mass.mysaas.start.op',
-            #'i2p.start.op',
+
+            # Invoicing and Payments Processing extension.
+            #'i2p.start',
+            
+            # CMS extension.
+            #'content.start',
+            
+            # Security and Users Monitoring extension.
+            #'monitoring.start',
         ],
 
         :stop_ops => [
             'mass.mysaas.stop.op',
-            #'i2p.stop.op',
+
+            # Invoicing and Payments Processing extension.
+            #'i2p.stop',
+            
+            # CMS extension.
+            #'content.stop',
+            
+            # Security and Users Monitoring extension.
+            #'monitoring.stop',
         ],
     },
 }
@@ -216,11 +254,18 @@ BlackOps.add_node({
 }.merge(
     @t[:ssh],
     @t[:postgres],
+    @t[:mysaas],
+
     #@t[:git],
     #@t[:commons],
     #@t[:emails],
-    #@t[:i2p],
-    #@t[:monitoring],
-    @t[:mysaas],
-))
 
+    # Invoicing and Payments Processing extension.
+    #@t[:i2p],
+
+    # CMS extension.
+    #@t[:content],
+
+    # Security and Users Monitoring extension.
+    #@t[:monitoring],
+))
