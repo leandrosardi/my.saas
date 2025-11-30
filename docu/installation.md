@@ -6,57 +6,37 @@ MySaaS is currently supporting **Ubuntu 20.04** and **Ubuntu 22.04**.
 
 You need to [install the BlackOps's `saas` commnad](https://github.com/leandrosardi/blackops?tab=readme-ov-file#install-the-saas-command) in your local environment.
 
-### 2. Download BlackOps operations
+### 2. Download Required Operation Scripts
 
 Some `.op` files are required to install **My.SaaS** using [BlackOps](https://github.com/leandrosardi/blackops).
 
 ```
 cd ~ && \
-
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/hostname.op && \
-
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.base.op && \
-
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.postgresql.op
 ```
 
-### 3. Install the Environment
+### 3. Setup the Enrivonmnet Variable `OPSROOTPASS`
 
 ```
-saas install --ssh=root:2404@127.0.0.1:22 \
- --config=./BlackOpsFile \
- --name=mysaas \
- --postgres_database=mysaas \
- --postgres_username=mysaas \
- --postgres_password=mysaas \
- --install_ops=hostname.op,mysaas.install.ubuntu_22_04.base.op,mysaas.install.ubuntu_22_04.postgresql.op
+export OPSROOTPASS=<root password of your local computer>
 ```
 
+### 4. Install the Environment
+
+```
+saas install --config=./BlackOpsFile --node=local --root
+```
 
 ### 4. Deploy the Software
 
-```
-saas deploy --ssh=root:2404@127.0.0.1:22 \
- --config=./BlackOpsFile \
- --name=mysaas \
+_pending instructions to deploy both, source code and migrations_
 
- --postgres_username=mysaas \
- --postgres_password=mysaas \
+### 5. Starting My.SaaS Service
 
- --install_ops=mysaas.deploy.ubuntu_22_04.base.op,mysaas.install.ubuntu_22_04.postgresql.op
-```
+_pending_
 
-### Run Migrations
+### 6. Stopping My.SaaS Service
 
-```
-saas migrate --local \
- --config=./BlackOpsFile \
- --name=mysaas \
-
- --ssh_username=mysaas \
- --ssh_password=<password for mysaas user> \
- --ssh_root_password=<current root password> \
-
- --postgres_username=mysaas \
- --postgres_password=<password for mysaas user> \
-```
+_pending_

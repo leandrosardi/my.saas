@@ -28,6 +28,7 @@ platform for develop your own Software as a Service (SaaS).
 
 ## Documentation
 
+- Getting Started _(pending to write a simple docker deployment)_
 - [Installation](./docu/installation.md)
 
 _(pending to write documentation)_
