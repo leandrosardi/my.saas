@@ -1,30 +1,43 @@
 # All your secrets are in this file.
-# Keep it safe.
+# Keep it safe into a PRIVATE repository.
 #
-# This `BlackOpsFile` is an example for installing
-# all MassProspecting components (master, slave, worker)
-# into one single computer.
+# This `BlackOpsFile` is an example for
+# installing my.saas into one single computer.
 #
 
-# Setup the IP of node where you want to install the dev environment.
-#
-# Since BlackOps connect such a node via SSH, you can define the IP
+# Since [BlackOps](https://github.com/leandrosardi/blackops) 
+# connect such a node via SSH, you can define the IP
 # of a remote computer.
 #
-SSH_PASSWORD = '<write-here>'
-SSH_ROOT_PASSWORD = '<write-here>'
+SSH_IP = 'localhost'
+SSH_USERNAME = 'mysaas'
+SSH_PASSWORD = 'mysaas'
+SSH_PORT = 22
+SSH_ROOT_PASSWORD = ENV["MYSAAS_ROOT_PASS"]
 
-# Write the password for the `blackstack` user of your postgresql
-#POSTGRES_PASSWORD = '<write-here>'
+# Write the password for the `mysaas` user of your postgresql
+POSTGRES_URL = 'localhost'
+POSTGRES_PORT = 5432
+POSTGRES_USERNAME = 'mysaas'
+POSTGRES_PASSWORD = 'mysaas'
+POSTGRES_DATABASE = 'mysaas'
 
-# Api key of My.SaaS super-user
-SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
+# Git credentials.
+# Uncomment this piece of code if your operations require to download from a private repository.
+GIT_USERNAME = '<write-here>'
+GIT_PASSWORD = '<write-here>'
 
+# Transactional emails
 SMTP_URL = '<write-here>'
 SMTP_PORT = '<write-here>'
+SMTP_USERNAME = '<write-here>'
+SMTP_PASSWORD = '<write-here>'
 SMTP_SENDER_EMAIL = '<write-here>'
 SMTP_FROM_EMAIL = '<write-here>'
 SMTP_FROM_NAME = '<write-here>'
+
+# Api key of My.SaaS super-user
+SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
 
 # BlackOps Configurations
 #
@@ -36,12 +49,12 @@ BlackOps.set(
     # have SSL certificate issues. Simplify your life and use `http`.
     #
     repositories: [
-        #'http://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops',
+        'http://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops',
         './',
     ],
 )
 
-# Re-usabeTemplates for Node-Descriptions
+# Re-usable templates for Node-Descriptions
 #
 @t = {
     # ssh credentials to production nodes.
@@ -55,8 +68,8 @@ BlackOps.set(
         # - ssh_username: string with a valid Linus user name,
         # - ssh_port: integer with a valid port number
         #
-        :ssh_username => 'blackstack',
-        :ssh_port => 22,
+        :ssh_username => SSH_USERNAME,
+        :ssh_port => SSH_PORT,
 
         # IMPORTANT: for ssh passwords, it is a good practice to define unique values for each node.
         #
@@ -73,26 +86,23 @@ BlackOps.set(
 
     # PostgreSQL credentials.
     :postgres => {
-        :postgres_port => 5432,
-        :postgres_username => 'blackstack',
+        :postgres_port => POSTGRES_PORT,
+        :postgres_username => POSTGRES_USERNAME,
         # IMPORTANT: for postgres_password, it is a good practice to define unique values for each node.
 
         # NOTE: In a local environment, the master, slave and worker
         # share same domain, ssh password and postgres password.
         #
         # postgres password
-        #:postgres_password => POSTGRES_PASSWORD,
+        :postgres_password => POSTGRES_PASSWORD,
     },
 
-    # git credentials
-    :git => {
-        :git_username => 'leandrosardi',
-
-        # IMPORTANT: Don't submit/store this secret into any node.
-        # Use when running operations from your local computer only.
-        #
-        #:git_password => GIT_PASSWORD,
-    },
+    # Git credentials.
+    # Uncomment this piece of code if your operations require to download from a private repository.
+    #:git => {
+    #    :git_username => GIT_USERNAME,
+    #    :git_password => GIT_PASSWORD,
+    #},
 
     # credentials of other commons
     #
@@ -101,18 +111,6 @@ BlackOps.set(
     #
     :commons => {
         :su_api_key => SU_API_KEY,
-        #:tinymce_api_key => TINYMCE_API_KEY,
-        #:adspower_api_key => ADSPOWER_API_KEY,
-
-        # Integration with DropBox
-        # Reference: https://github.com/leandrosardi/my-dropbox-api
-        #:vymeco_api_key => VYMECO_API_KEY,
-        #:dropbox_refresh_token => DROPBOX_REFRESH_TOKEN,
-
-        # this is for setting up custom domains for "WhiteLabel" features.
-        #:postmark_api_key => POSTMARK_API_KEY,
-        #:smtp_user => SMTP_USER,
-        #:smtp_password => SMTP_PASSWORD,
 
         # NOTE: In a local environment, the master, slave and worker
         # share same domain, ssh password and postgres password.
@@ -125,6 +123,9 @@ BlackOps.set(
     :emails => {
         :smtp_url => SMTP_URL,
         :smtp_port => SMTP_PORT,
+        :smtp_user => SMTP_USERNAME,
+        :smtp_password => SMTP_PASSWORD,
+
         :sender_email => SMTP_SENDER_EMAIL,
         :from_email => SMTP_FROM_EMAIL,
         :from_name => SMTP_FROM_NAME,
@@ -139,6 +140,29 @@ BlackOps.set(
         :signature_position => 'Founder & CEO',
     },
 
+    # invoicing and payments processing
+    :i2p => {
+        # paypal
+        :paypal_ipn_listener => 'https://b5f4-181-164-172-11.ngrok-free.app',
+        :paypal_business_email => 'sardi.leandro.daniel-facilitator@gmail.com',
+        :paypal_orders_url => 'https://sandbox.paypal.com',
+    }, 
+
+    # monitoring
+    :monitoring => {
+        :cpu_threshold => 50,
+        :ram_threshold => 50,
+        :disk_threshold => 50,
+
+        :procs => [
+            #'ruby ./extensions/i2p/p/baddebt.rb',
+            #'ruby ./extensions/i2p/p/expire.rb',
+            #'ruby ./extensions/i2p/p/ipn.rb',
+            #'ruby ./extensions/i2p/p/movement.rb',
+            'puma',
+        ],
+    },
+
     # master node parameters
     :mysaas => {
         :git_repository => 'leandrosardi/my.saas',
@@ -150,25 +174,8 @@ BlackOps.set(
         # your BlackOpsFile.
         :session_secret => '000b6013-bbc9-412a-816c-c3eea0c0c68a',
 
-        # paypal
-        #:paypal_ipn_listener => 'https://b5f4-181-164-172-11.ngrok-free.app',
-        #:paypal_business_email => 'sardi.leandro.daniel-facilitator@gmail.com',
-        #:paypal_orders_url => 'https://sandbox.paypal.com',
-
         # name of database to connect
-        :postgres_database => 'my.saas',
-
-        #:cpu_threshold => 50,
-        #:ram_threshold => 50,
-        #:disk_threshold => 50,
-
-        :procs => [
-            #'ruby ./extensions/i2p/p/baddebt.rb',
-            #'ruby ./extensions/i2p/p/expire.rb',
-            #'ruby ./extensions/i2p/p/ipn.rb',
-            #'ruby ./extensions/i2p/p/movement.rb',
-            'puma',
-        ],
+        :postgres_database => POSTGRES_DATABASE,
 
         :install_ops => [
             'hostname.op',
@@ -179,15 +186,15 @@ BlackOps.set(
         ],
 
         :deploy_ops => [
-            'mass.master.deploy.op'
+            'mysaas.deploy.op'
         ],
 
         :migration_folders => [
-            '/home/blackstack/code1/my.aaas/sql',
-            #'/home/blackstack/code1/my.aaas/extensions/content/sql',
-            #'/home/blackstack/code1/my.aaas/extensions/dropbox-token-helper/sql',
-            #'/home/blackstack/code1/my.aaas/extensions/i2p/sql',
-            #'/home/blackstack/code1/my.aaas/extensions/monitoring/sql',
+            "/home/#{SSH_USERNAME}/code1/my.aaas/sql",
+            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/content/sql",
+            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/dropbox-token-helper/sql",
+            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/i2p/sql",
+            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/monitoring/sql",
         ],
 
         :start_ops => [
@@ -203,15 +210,17 @@ BlackOps.set(
 }
 
 BlackOps.add_node({
-    :name => 'mysaas',
+    :name => 'local',
     :ip => '127.0.0.1',
     :port => '3000',
 }.merge(
     @t[:ssh],
     @t[:postgres],
-    @t[:git],
+    #@t[:git],
     #@t[:commons],
     #@t[:emails],
+    #@t[:i2p],
+    #@t[:monitoring],
     @t[:mysaas],
 ))
 

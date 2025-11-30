@@ -17,10 +17,10 @@ wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.postgresql.op
 ```
 
-### 3. Setup the Enrivonmnet Variable `OPSROOTPASS`
+### 3. Setup the Enrivonmnet Variable `MYSAAS_ROOT_PASS`
 
 ```
-export OPSROOTPASS=<root password of your local computer>
+export MYSAAS_ROOT_PASS=<root password of your local computer>
 ```
 
 ### 4. Install the Environment
