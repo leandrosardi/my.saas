@@ -5,6 +5,11 @@
 # installing my.saas into one single computer.
 #
 
+# API key of My.SaaS super-user
+# IMPORTANT: Replace this value by a new and unique key.
+#
+SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
+
 # Since [BlackOps](https://github.com/leandrosardi/blackops) 
 # connect such a node via SSH, you can define the IP
 # of a remote computer.
@@ -16,6 +21,8 @@ SSH_PORT = 22
 SSH_ROOT_PASSWORD = ENV["MYSAAS_ROOT_PASSWORD"]
 
 # Write the password for the `mysaas` user of your postgresql
+# IMPORTANT: Edit the value of `POSTGRES_PASSWORD` with a strong password.
+# 
 POSTGRES_URL = 'localhost'
 POSTGRES_PORT = 5432
 POSTGRES_USERNAME = 'mysaas'
@@ -24,32 +31,32 @@ POSTGRES_DATABASE = 'mysaas'
 
 # Git credentials.
 # Uncomment this piece of code if your operations require to download from a private repository.
-GIT_USERNAME = '<write-here>'
-GIT_PASSWORD = '<write-here>'
+# 
+#GIT_USERNAME = '<write-here>'
+#GIT_PASSWORD = '<write-here>'
 
 # Transactional emails
-SMTP_URL = '<write-here>'
-SMTP_PORT = '<write-here>'
-SMTP_USERNAME = '<write-here>'
-SMTP_PASSWORD = '<write-here>'
-SMTP_SENDER_EMAIL = '<write-here>'
-SMTP_FROM_EMAIL = '<write-here>'
-SMTP_FROM_NAME = '<write-here>'
-
-# Api key of My.SaaS super-user
-SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
+# Uncomment this piece of code if you implement transactional emails.
+# 
+#SMTP_URL = '<write-here>'
+#SMTP_PORT = '<write-here>'
+#SMTP_USERNAME = '<write-here>'
+#SMTP_PASSWORD = '<write-here>'
+#SMTP_SENDER_EMAIL = '<write-here>'
+#SMTP_FROM_EMAIL = '<write-here>'
+#SMTP_FROM_NAME = '<write-here>'
 
 # BlackOps Configurations
 #
+# Define one or more locations to find the `.op` files.
+# Locations may be paths in your local disk or URLs.
+#
+# Don't use `https` for remote paths (URLs) because it 
+# have SSL certificate issues. Simplify your life and use `http`.
+#
 BlackOps.set(
-    # Define one or more locations to find the `.op` files.
-    # Locations may be paths in your local disk or URLs.
-    #
-    # Don't use `https` for remote paths (URLs) because it 
-    # have SSL certificate issues. Simplify your life and use `http`.
-    #
     repositories: [
-        'http://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops',
+        #'http://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops',
         './',
     ],
 )
