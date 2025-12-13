@@ -17,7 +17,7 @@ cd ~ && \
 wget https://raw.githubusercontent.com/leandrosardi/my.saas/refs/heads/main/BlackOpsFile
 ```
 
-### 3. Download Required Operation Scripts
+### 3. Download Required Operation
 
 Some `.op` files are required to install **My.SaaS** using [BlackOps](https://github.com/leandrosardi/blackops).
 
@@ -27,7 +27,9 @@ wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.base.op && \
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.postgresql.op && \
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.service.op && \
-wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.deploy.base.op
+wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.deploy.base.op && \
+wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.start.op && \
+wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.stop.op
 ```
 
 ### 4. Setup the Enrivonmnet Variable `MYSAAS_ROOT_PASSWORD`
@@ -43,25 +45,15 @@ The line below will install 2 nodes, **web server** (`web`) and **database serve
 In a production environment, `web` and `db` are hosted in different servers because of a security reasons.
 
 ```
-saas install --config=./BlackOpsFile --node=* --root
+saas install --config=./BlackOpsFile --node=* --root && \
+saas deploy --config=./BlackOpsFile --node=web && \
+saas migrations --config=./BlackOpsFile --node=web && \
+saas start --config=./BlackOpsFile --node=web --root
 ```
 
-### 6. Deploy the Software
+### 8. Stopping My.SaaS Service
 
 ```
-saas deploy --config=./BlackOpsFile --node=web
+saas stop --config=./BlackOpsFile --node=web --root
 ```
 
-### 7. Run Database Migrations
-
-```
-saas migrations --config=./BlackOpsFile --node=web
-```
-
-### 8. Starting My.SaaS Service
-
-_pending_
-
-### 9. Stopping My.SaaS Service
-
-_pending_
