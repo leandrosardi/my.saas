@@ -38,20 +38,18 @@ PREFERENCE_MODE = :session
 SESSION_SECRET = '!!session_secret'
 
 # run the extension mass as a service
-SERVICE_NAME = 'mass.account'
+SERVICE_NAME = 'main'
 
 # choose a custom image to show when a page is loading, or when an AJAX content is loading
-LOADING_IMAGE_PATH = '/mass.account/images/loading.png'
+LOADING_IMAGE_PATH = '/core/images/loading.png'
 
 # Integration with TinyMCE
 # - Reference: https://www.tiny.cloud/docs/tinymce/latest/invalid-api-key
 #TINYMCE_API_KEY='!!tinymce_api_key'
 
 # my.saas api-key of the SU user
-# default value is '4db9d88c-dee9-4b5a-8d36-134d38e9f763'.
-# it is recommended you change it in production, with the password of the su user too.
 #
-SU_API_KEY = BlackStack.sandbox? ? '4db9d88c-dee9-4b5a-8d36-134d38e9f763' : '!!su_api_key'
+SU_API_KEY = '!!su_api_key'
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
@@ -62,12 +60,12 @@ SU_API_KEY = BlackStack.sandbox? ? '4db9d88c-dee9-4b5a-8d36-134d38e9f763' : '!!s
 # IMPORTANT NOTE: This value should have a format like FOO.COM. 
 # => Other formats can generate bugs in the piece of codes where 
 # => this constant is concatenated. 
-APP_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : 'massprospecting.com'
-APP_NAME = 'MassProspecting'
-APP_SHORT_NAME = 'MassProspecting'
+APP_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : '!!domain'
+APP_NAME = 'My.SaaS'
+APP_SHORT_NAME = 'mysaas'
 
 # Email to contact support
-HELPDESK_EMAIL = '!!sender_email'
+HELPDESK_EMAIL = 'leandro@massprospecting.com'
 
 # Company Information for invoicing
 COMPANY_NAME = 'MassProspecting'
@@ -84,11 +82,11 @@ HELPDESK_URL = 'https://massprospecting.com/seminars/pub/help/getting-started' #
 
 # app url
 CS_HOME_PAGE_PROTOCOL = BlackStack.sandbox? ? 'http' : 'https'
-CS_HOME_PAGE_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : 'massprospecting.com'
+CS_HOME_PAGE_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : '!!domain'
 CS_HOME_PAGE_PORT = BlackStack.sandbox? ? '3000' : '443'
 CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PAGE_PORT
-CS_HOME_LOGO = CS_HOME_WEBSITE + '/mass.account/images/logo.png'
-CS_HOME_FAVICON = CS_HOME_WEBSITE + '/mass.account/images/favicon.png'
+CS_HOME_LOGO = CS_HOME_WEBSITE + '/core/images/logo.png'
+CS_HOME_FAVICON = CS_HOME_WEBSITE + '/core/images/favicon.png'
 CS_HOME_TITLE = 'MassProspecting - AI-Driven Multi-Channel Outreach System'
 
 # default timezone
@@ -96,12 +94,14 @@ DEFAULT_TIMEZONE_SHORT_DESCRIPTION='Buenos Aires'
 
 # Monitoring Setup
 #
+=begin
 Monitoring.configure do |m|
   m.contabo_client_id     = '!!contabo_client_id'
   m.contabo_client_secret = '!!contabo_client_secret'
   m.contabo_api_user      = '!!contabo_api_user'
   m.contabo_api_password  = '!!contabo_api_password'
 end
+=end
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
@@ -118,7 +118,7 @@ end
 # Then, map the parameters of such a connection string here.
 # 
 BlackStack::PostgreSQL::set_db_params({
-  :db_url => '!!ip',
+  :db_url => '!!postgres_url',
   :db_port => !!postgres_port,
   :db_name => '!!postgres_database',
   :db_user => '!!postgres_username',
@@ -131,12 +131,7 @@ BlackStack::PostgreSQL::set_db_params({
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 
-# Integration with DropBox
-# Reference: https://github.com/leandrosardi/my-dropbox-api
-BlackStack::DropBox.set({
-    :vymeco_api_key => '!!vymeco_api_key',
-    :dropbox_refresh_token => '!!dropbox_refresh_token',
-})
+# TODO: Declare AWS/S3 credentials
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
@@ -145,10 +140,9 @@ BlackStack::DropBox.set({
 # --------------------------------------------------------------
 
 # add required extensions
-BlackStack::Extensions.append :'dropbox-token-helper', { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :i2p, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :content, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
-BlackStack::Extensions.append :monitoring, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+#BlackStack::Extensions.append :i2p, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+#BlackStack::Extensions.append :content, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
+#BlackStack::Extensions.append :monitoring, { :show_in_top_bar => false, :show_in_footer => false, :show_in_dashboard => false }
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
