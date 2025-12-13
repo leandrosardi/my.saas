@@ -47,9 +47,7 @@ saas install --config=./BlackOpsFile --node=* --root
 
 ### 6. Deploy the Software
 
-```
-saas deploy --config=./BlackOpsFile --node=web
-```
+_pending_
 
 ### 7. Starting My.SaaS Service
 
