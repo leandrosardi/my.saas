@@ -48,10 +48,23 @@ In a production environment, `web` and `db` are hosted in different servers beca
 saas install --config=./BlackOpsFile --node=* --root && \
 saas deploy --config=./BlackOpsFile --node=web && \
 saas migrations --config=./BlackOpsFile --node=web && \
+```
+
+### 6. Start My.SaaS Service
+
+```
 saas start --config=./BlackOpsFile --node=web --root
 ```
 
-### 8. Stopping My.SaaS Service
+### 7. Login to My.SaaS
+
+1. Visit [http://127.0.0.1:3000](http://127.0.0.1:3000).
+2. Access with default credentials:
+
+    - username: `su`
+    - password: `su`
+
+### 8. Stop My.SaaS Service
 
 ```
 saas stop --config=./BlackOpsFile --node=web --root
