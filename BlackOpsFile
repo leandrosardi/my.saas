@@ -10,6 +10,14 @@
 #
 SU_API_KEY = '98c60163-5555-5555-5555-a7fa823f459f'
 
+# Used to sign and encrypt session cookies for security. This should be a long,
+# random, and unique string. In production, do NOT hardcode this — Setup it in
+# your BlackOpsFile.
+#
+# IMPORTANT: Replace this value by a new and unique key.
+#
+SESSION_SECRET = '000b6013-bbc9-412a-816c-c3eea0c0c68a'
+
 # Since [BlackOps](https://github.com/leandrosardi/blackops) 
 # connect such a node via SSH, you can define the IP
 # of a remote computer.
@@ -106,12 +114,15 @@ BlackOps.set(
 
     # Git credentials.
     # Uncomment this piece of code if your operations require to download from a private repository.
-    #:git => {
-    #    :git_username => GIT_USERNAME,
-    #    :git_password => GIT_PASSWORD,
-    #},
+    # 
+=begin
+    :git => {
+        :git_username => GIT_USERNAME,
+        :git_password => GIT_PASSWORD,
+    },
+=end
 
-    # credentials of other commons
+    # Credentials of other commons
     #
     # IMPORTANT: Don't submit/store this secret into any node.
     # Use when running operations from your local computer only.
@@ -126,7 +137,10 @@ BlackOps.set(
         :domain => '127.0.0.1',
     },
 
-    # transactional emails
+    # Transactional emails
+    # Uncomment this piece of code if you implement transactional emails.
+    # 
+=begin
     :emails => {
         :smtp_url => SMTP_URL,
         :smtp_port => SMTP_PORT,
@@ -146,16 +160,24 @@ BlackOps.set(
         :signature_name => 'Leandro D. Sardi',
         :signature_position => 'Founder & CEO',
     },
+=end
 
-    # invoicing and payments processing
+    # Invoicing and payments processing
+    # Uncomment this piece of code if you implement payments processing.
+    # 
+=begin
     :i2p => {
         # paypal
         :paypal_ipn_listener => 'https://b5f4-181-164-172-11.ngrok-free.app',
         :paypal_business_email => 'sardi.leandro.daniel-facilitator@gmail.com',
         :paypal_orders_url => 'https://sandbox.paypal.com',
     }, 
+=end
 
-    # monitoring
+    # Monitoring
+    # Uncomment this piece of code if you implement transactional emails.
+    # 
+=begin
     :monitoring => {
         :cpu_threshold => 50,
         :ram_threshold => 50,
@@ -169,6 +191,7 @@ BlackOps.set(
             'puma',
         ],
     },
+=end
 
     # master node parameters
     :mysaas => {
@@ -179,7 +202,7 @@ BlackOps.set(
         # Used to sign and encrypt session cookies for security. This should be a long,
         # random, and unique string. In production, do NOT hardcode this — Setup it in
         # your BlackOpsFile.
-        :session_secret => '000b6013-bbc9-412a-816c-c3eea0c0c68a',
+        :session_secret => SESSION_SECRET,
 
         # name of database to connect
         :postgres_database => POSTGRES_DATABASE,
@@ -254,17 +277,32 @@ BlackOps.set(
     },
 }
 
+# Database Node
+#
+BlackOps.add_node({
+    :name => 'local',
+    :ip => '127.0.0.1',
+    :port => '5432',
+}.merge(
+    @t[:ssh],
+    @t[:postgres],
+))
+
+# Web Server Node
+#
 BlackOps.add_node({
     :name => 'local',
     :ip => '127.0.0.1',
     :port => '3000',
 }.merge(
+    @t[:commons],
     @t[:ssh],
-    @t[:postgres],
     @t[:mysaas],
 
+    # Git credentials for secret repositories.
     #@t[:git],
-    #@t[:commons],
+
+    # Transactional Emails
     #@t[:emails],
 
     # Invoicing and Payments Processing extension.
