@@ -280,7 +280,7 @@ BlackOps.set(
 # Database Node
 #
 BlackOps.add_node({
-    :name => 'local',
+    :name => 'db',
     :ip => '127.0.0.1',
     :port => '5432',
 }.merge(
@@ -291,7 +291,7 @@ BlackOps.add_node({
 # Web Server Node
 #
 BlackOps.add_node({
-    :name => 'local',
+    :name => 'web',
     :ip => '127.0.0.1',
     :port => '3000',
 }.merge(

@@ -1,12 +1,23 @@
 ## Installation
 
-MySaaS is currently supporting **Ubuntu 20.04** and **Ubuntu 22.04**.
+Follow the steps below on a **fresh** installation of **Ubuntu 22.04**.
 
 ### 1. Install the `saas` command
 
 You need to [install the BlackOps's `saas` commnad](https://github.com/leandrosardi/blackops?tab=readme-ov-file#install-the-saas-command) in your local environment.
 
-### 2. Download Required Operation Scripts
+### 2. Download the `BlackOpsFile`
+
+This is a basic configuration for installing a local environment.
+
+If you want to know more about `BlackOpsFile`, refer to [this tutorial](https://github.com/leandrosardi/blackops?tab=readme-ov-file#3-configuration-files).
+
+```
+cd ~ && \
+wget https://raw.githubusercontent.com/leandrosardi/my.saas/refs/heads/main/BlackOpsFile
+```
+
+### 3. Download Required Operation Scripts
 
 Some `.op` files are required to install **My.SaaS** using [BlackOps](https://github.com/leandrosardi/blackops).
 
@@ -17,26 +28,28 @@ wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.postgresql.op
 ```
 
-### 3. Setup the Enrivonmnet Variable `MYSAAS_ROOT_PASSWORD`
+### 4. Setup the Enrivonmnet Variable `MYSAAS_ROOT_PASSWORD`
 
 ```
 export MYSAAS_ROOT_PASSWORD=<root password of your local computer>
 ```
 
-### 4. Install the Environment
+### 5. Install the Environment
+
+The line below will install both, **web server** and **database server**
 
 ```
-saas install --config=./BlackOpsFile --node=local --root
+saas install --config=./BlackOpsFile --node=* --root
 ```
 
-### 4. Deploy the Software
+### 6. Deploy the Software
 
 _pending instructions to deploy both, source code and migrations_
 
-### 5. Starting My.SaaS Service
+### 7. Starting My.SaaS Service
 
 _pending_
 
-### 6. Stopping My.SaaS Service
+### 8. Stopping My.SaaS Service
 
 _pending_
