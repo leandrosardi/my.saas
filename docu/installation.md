@@ -52,10 +52,16 @@ saas install --config=./BlackOpsFile --node=* --root
 saas deploy --config=./BlackOpsFile --node=web
 ```
 
-### 7. Starting My.SaaS Service
+### 7. Run Database Migrations
+
+```
+saas migrations --config=./BlackOpsFile --node=web
+```
+
+### 8. Starting My.SaaS Service
 
 _pending_
 
-### 8. Stopping My.SaaS Service
+### 9. Stopping My.SaaS Service
 
 _pending_

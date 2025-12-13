@@ -271,16 +271,16 @@ BlackOps.add_node({
     ],
 
     :migration_folders => [
-        "/home/#{SSH_USERNAME}/code1/my.aaas/sql",
+        "/home/#{SSH_USERNAME}/code1/my.saas/sql",
 
         # Invoicing and Payments Processing extension.
-        #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/i2p/sql",
+        #"/home/#{SSH_USERNAME}/code1/my.saas/extensions/i2p/sql",
 
         # CMS extension.
-        #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/content/sql",
+        #"/home/#{SSH_USERNAME}/code1/my.saas/extensions/content/sql",
 
         # Security and Users Monitoring extension.
-        #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/monitoring/sql",
+        #"/home/#{SSH_USERNAME}/code1/my.saas/extensions/monitoring/sql",
     ],
 
     :start_ops => [
