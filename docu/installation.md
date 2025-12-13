@@ -26,6 +26,7 @@ cd ~ && \
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/hostname.op && \
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.base.op && \
 wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.install.ubuntu_22_04.postgresql.op
+wget https://raw.githubusercontent.com/leandrosardi/blackops/refs/heads/main/ops/mysaas.deploy.op
 ```
 
 ### 4. Setup the Enrivonmnet Variable `MYSAAS_ROOT_PASSWORD`
@@ -46,7 +47,9 @@ saas install --config=./BlackOpsFile --node=* --root
 
 ### 6. Deploy the Software
 
-_pending instructions to deploy both, source code and migrations_
+```
+saas deploy --config=./BlackOpsFile --node=web
+```
 
 ### 7. Starting My.SaaS Service
 

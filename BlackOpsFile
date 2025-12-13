@@ -101,14 +101,10 @@ BlackOps.set(
 
     # PostgreSQL credentials.
     :postgres => {
+        :postgres_url => POSTGRES_URL,
         :postgres_port => POSTGRES_PORT,
+        :postgres_database => POSTGRES_DATABASE,
         :postgres_username => POSTGRES_USERNAME,
-        # IMPORTANT: for postgres_password, it is a good practice to define unique values for each node.
-
-        # NOTE: In a local environment, the master, slave and worker
-        # share same domain, ssh password and postgres password.
-        #
-        # postgres password
         :postgres_password => POSTGRES_PASSWORD,
     },
 
@@ -121,21 +117,6 @@ BlackOps.set(
         :git_password => GIT_PASSWORD,
     },
 =end
-
-    # Credentials of other commons
-    #
-    # IMPORTANT: Don't submit/store this secret into any node.
-    # Use when running operations from your local computer only.
-    #
-    :commons => {
-        :su_api_key => SU_API_KEY,
-
-        # NOTE: In a local environment, the master, slave and worker
-        # share same domain, ssh password and postgres password.
-        #
-        # domain
-        :domain => '127.0.0.1',
-    },
 
     # Transactional emails
     # Uncomment this piece of code if you implement transactional emails.
@@ -192,89 +173,6 @@ BlackOps.set(
         ],
     },
 =end
-
-    # master node parameters
-    :mysaas => {
-        :git_repository => 'leandrosardi/my.saas',
-        :git_branch => 'main',
-        :code_folder => 'my.saas', # folder inside /home/$$ssh_username/code1
-
-        # Used to sign and encrypt session cookies for security. This should be a long,
-        # random, and unique string. In production, do NOT hardcode this — Setup it in
-        # your BlackOpsFile.
-        :session_secret => SESSION_SECRET,
-
-        # name of database to connect
-        :postgres_database => POSTGRES_DATABASE,
-
-        :install_ops => [
-            'hostname.op',
-            'mysaas.install.ubuntu_22_04.base.op',
-            #'mysaas.install.ubuntu_22_04.nginx.op', # ==> nginx installation is not required in local environment
-            'mysaas.install.ubuntu_22_04.postgresql.op',
-            
-            # Invoicing and Payments Processing extension.
-            #'i2p.install',
-            
-            # CMS extension.
-            #'content.install',
-            
-            # Security and Users Monitoring extension.
-            #'monitoring.install',
-        ],
-
-        :deploy_ops => [
-            'mysaas.deploy.op'
-
-            # Invoicing and Payments Processing extension.
-            #'i2p.deploy',
-            
-            # CMS extension.
-            #'content.deploy',
-            
-            # Security and Users Monitoring extension.
-            #'monitoring.deploy',
-        ],
-
-        :migration_folders => [
-            "/home/#{SSH_USERNAME}/code1/my.aaas/sql",
-
-            # Invoicing and Payments Processing extension.
-            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/i2p/sql",
-
-            # CMS extension.
-            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/content/sql",
-
-            # Security and Users Monitoring extension.
-            #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/monitoring/sql",
-        ],
-
-        :start_ops => [
-            'mass.mysaas.start.op',
-
-            # Invoicing and Payments Processing extension.
-            #'i2p.start',
-            
-            # CMS extension.
-            #'content.start',
-            
-            # Security and Users Monitoring extension.
-            #'monitoring.start',
-        ],
-
-        :stop_ops => [
-            'mass.mysaas.stop.op',
-
-            # Invoicing and Payments Processing extension.
-            #'i2p.stop',
-            
-            # CMS extension.
-            #'content.stop',
-            
-            # Security and Users Monitoring extension.
-            #'monitoring.stop',
-        ],
-    },
 }
 
 # Database Node
@@ -282,7 +180,29 @@ BlackOps.set(
 BlackOps.add_node({
     :name => 'db',
     :ip => '127.0.0.1',
-    :port => '5432',
+
+    :install_ops => [
+        'hostname.op',
+        'mysaas.install.ubuntu_22_04.base.op',
+        'mysaas.install.ubuntu_22_04.postgresql.op',
+    ],
+
+    :deploy_ops => [
+        # no deployment ops
+    ],
+
+    :migration_folders => [
+        # no migration ops
+    ],
+
+    :start_ops => [
+        # no start ops
+    ],
+
+    :stop_ops => [
+        # no stop ops
+    ],
+
 }.merge(
     @t[:ssh],
     @t[:postgres],
@@ -292,12 +212,101 @@ BlackOps.add_node({
 #
 BlackOps.add_node({
     :name => 'web',
+
+    # Webserver IP, domain and port
+    # NOTE: In a local environment, domain is 127.0.0.1.
+    #
     :ip => '127.0.0.1',
+    :domain => '127.0.0.1',
     :port => '3000',
+
+    # API key of the super-user
+    :su_api_key => SU_API_KEY,
+
+    # GitHub repository and branch of the source code.
+    :git_repository => 'leandrosardi/my.saas',
+    :git_branch => 'main',
+
+    # folder inside /home/$$ssh_username/code1
+    :code_folder => 'my.saas', 
+
+    # Used to sign and encrypt session cookies for security. This should be a long,
+    # random, and unique string. In production, do NOT hardcode this — Setup it in
+    # your BlackOpsFile.
+    :session_secret => SESSION_SECRET,
+
+    # name of database to connect
+    :postgres_database => POSTGRES_DATABASE,
+
+    :install_ops => [
+        'hostname.op',
+        'mysaas.install.ubuntu_22_04.base.op',
+        #'mysaas.install.ubuntu_22_04.nginx.op', # ==> nginx installation is not required in local environment
+        
+        # Invoicing and Payments Processing extension.
+        #'i2p.install',
+        
+        # CMS extension.
+        #'content.install',
+        
+        # Security and Users Monitoring extension.
+        #'monitoring.install',
+    ],
+
+    :deploy_ops => [
+        'mysaas.deploy.op'
+
+        # Invoicing and Payments Processing extension.
+        #'i2p.deploy',
+        
+        # CMS extension.
+        #'content.deploy',
+        
+        # Security and Users Monitoring extension.
+        #'monitoring.deploy',
+    ],
+
+    :migration_folders => [
+        "/home/#{SSH_USERNAME}/code1/my.aaas/sql",
+
+        # Invoicing and Payments Processing extension.
+        #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/i2p/sql",
+
+        # CMS extension.
+        #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/content/sql",
+
+        # Security and Users Monitoring extension.
+        #"/home/#{SSH_USERNAME}/code1/my.aaas/extensions/monitoring/sql",
+    ],
+
+    :start_ops => [
+        'mysaas.start.op',
+
+        # Invoicing and Payments Processing extension.
+        #'i2p.start',
+        
+        # CMS extension.
+        #'content.start',
+        
+        # Security and Users Monitoring extension.
+        #'monitoring.start',
+    ],
+
+    :stop_ops => [
+        'mysaas.stop.op',
+
+        # Invoicing and Payments Processing extension.
+        #'i2p.stop',
+        
+        # CMS extension.
+        #'content.stop',
+        
+        # Security and Users Monitoring extension.
+        #'monitoring.stop',
+    ],
 }.merge(
-    @t[:commons],
     @t[:ssh],
-    @t[:mysaas],
+    @t[:postgres],
 
     # Git credentials for secret repositories.
     #@t[:git],
