@@ -241,6 +241,7 @@ BlackOps.add_node({
     :install_ops => [
         'hostname.op',
         'mysaas.install.ubuntu_22_04.base.op',
+        'mysaas.install.ubuntu_22_04.service.op',
         #'mysaas.install.ubuntu_22_04.nginx.op', # ==> nginx installation is not required in local environment
         
         # Invoicing and Payments Processing extension.
@@ -254,7 +255,10 @@ BlackOps.add_node({
     ],
 
     :deploy_ops => [
-        'mysaas.deploy.op'
+        'mysaas.deploy.base.op',
+
+        # Transactional emails - Setup SMTP parameters in `config.rb`
+        #'mysaas.deploy.transactional-emails.op',
 
         # Invoicing and Payments Processing extension.
         #'i2p.deploy',
