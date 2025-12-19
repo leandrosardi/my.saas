@@ -33,7 +33,7 @@ platform for develop your own Software as a Service (SaaS).
 _(pending to write documentation)_
 
 - UI Components
-- Bootcamp pages 
+- Funnel Setup 
 - User Preferences
 - User Storage
 - Building an API
