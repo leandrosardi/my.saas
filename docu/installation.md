@@ -47,7 +47,7 @@ In a production environment, `web` and `db` are hosted in different servers beca
 ```
 saas install --config=./BlackOpsFile --node=* --root && \
 saas deploy --config=./BlackOpsFile --node=web && \
-saas migrations --config=./BlackOpsFile --node=web && \
+saas migrations --config=./BlackOpsFile --node=web
 ```
 
 ### 6. Start My.SaaS Service

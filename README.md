@@ -28,12 +28,11 @@ platform for develop your own Software as a Service (SaaS).
 
 ## Documentation
 
-- Getting Started _(pending to write a simple docker deployment)_
 - [Installation](./docu/installation.md)
 
 _(pending to write documentation)_
 
-- UI Components _(one chapter for adminflare, one chapter for new layout)_
+- UI Components
 - Bootcamp pages 
 - User Preferences
 - User Storage
@@ -43,7 +42,7 @@ _(pending to write documentation)_
 - Transactional Emails
 - Invoicing and Payments Processing
 - Affiliates Tracking
-- Contant Management System
+- Content Management System
 - Infrastrucutre Monitoring
 - Building Extensions
 - Distributed Processing
