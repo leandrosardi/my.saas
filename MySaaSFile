@@ -26,7 +26,7 @@
 # => this constant is concatenated. 
 #
 # -----------------------------------------------------------------------------
-APP_DOMAIN = BlackStack.sandbox? ? '127.0.0.1' : '!!domain'
+APP_DOMAIN = '127.0.0.1' # BlackStack.sandbox? ? '127.0.0.1' : '!!domain'
 APP_NAME = 'My.SaaS'
 APP_SHORT_NAME = 'mysaas'
 
@@ -46,9 +46,9 @@ PRIVACY_URL = 'http://127.0.0.1/privacy' # Privacy Policy URL.
 HELPDESK_URL = 'http://127.0.0.1/help' # Helpdesk URL.
 
 # app url
-CS_HOME_PAGE_PROTOCOL = 'http' #BlackStack.sandbox? ? 'http' : 'https'
-CS_HOME_PAGE_DOMAIN = '127.0.0.1' #BlackStack.sandbox? ? '127.0.0.1' : '!!domain'
-CS_HOME_PAGE_PORT = '3000' #BlackStack.sandbox? ? '3000' : '443'
+CS_HOME_PAGE_PROTOCOL = 'http' # BlackStack.sandbox? ? 'http' : 'https'
+CS_HOME_PAGE_DOMAIN = '127.0.0.1' # BlackStack.sandbox? ? '127.0.0.1' : '!!domain'
+CS_HOME_PAGE_PORT = '3000' # BlackStack.sandbox? ? '3000' : '443'
 CS_HOME_WEBSITE = CS_HOME_PAGE_PROTOCOL+'://'+CS_HOME_PAGE_DOMAIN+':'+CS_HOME_PAGE_PORT
 CS_HOME_LOGO = CS_HOME_WEBSITE + '/core/images/logo.png'
 CS_HOME_FAVICON = CS_HOME_WEBSITE + '/core/images/favicon.png'
@@ -210,7 +210,7 @@ BlackStack::Funnel.set({
     # code by following the steps in this tutorial:
     # https://www.monsterinsights.com/docs/where-to-find-utm-tracking-code-results-data-in-google-analytics
     # 
-    :ga => nil, #BlackStack.sandbox? ? 'G-*****LRH' : 'G-****LRH',
+    :ga => nil, # BlackStack.sandbox? ? 'G-*****LRH' : 'G-****LRH',
 
     # reCaptcha v2 keys
     # 
