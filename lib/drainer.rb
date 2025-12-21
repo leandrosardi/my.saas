@@ -307,15 +307,15 @@ module BlackStack
 
             # Load account object 
             l.logs "Load accounts to drain... "
-            if BlackStack.sandbox?
-                accounts = BlackStack::MySaaS::Account.where(
-                    Sequel.lit("
-                        delete_time IS NOT NULL AND
-                        delete_time <= NOW() - INTERVAL '#{h[:days_to_keep]} days' --AND
-                        --draining_success IS NULL
-                    ")
-                ).all
-            else
+            #if BlackStack.sandbox?
+            #    accounts = BlackStack::MySaaS::Account.where(
+            #        Sequel.lit("
+            #            delete_time IS NOT NULL AND
+            #            delete_time <= NOW() - INTERVAL '#{h[:days_to_keep]} days' --AND
+            #            --draining_success IS NULL
+            #        ")
+            #    ).all
+            #else
                 accounts = BlackStack::MySaaS::Account.where(
                     Sequel.lit("
                         delete_time IS NOT NULL AND
@@ -323,7 +323,7 @@ module BlackStack
                         draining_success IS NULL
                     ")
                 ).all
-            end
+            #end
             l.done(details: accounts.length.to_s.blue)
 
             accounts.each { |a|

@@ -203,7 +203,7 @@ BlackStack::API.set_client(
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 # 
-BlackStack::Drainer.add_steps([
+BlackStack::git ([
     # I2P - master and slave
     { table: :movement, action: :delete },
     { 
