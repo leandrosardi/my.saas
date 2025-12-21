@@ -226,8 +226,18 @@ module BlackStack
             :steps => [
                 # one has descriptor for each table to delete and each foraing key to unlink
             ],
-            # number of days to keep data in the drainer before deleting them permanently
+
+            # number of days after setting `account.delete_time` to keep data in the drainer before deleting them permanently
             :days_to_keep => 7,
+
+            # custom code to run after draining an account
+            # examples:
+            # - call micro-service nodes to delete related data in other systems
+            # - delete AWS resources related to the account
+            #
+            :after_draining_hook => lambda { |id_account|
+              # override this function if you need to run custom code after draining an account  
+            }, 
         }
 
         # initialize @@setup hash descriptor

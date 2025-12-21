@@ -29,14 +29,14 @@ touch /home/code1/my.saas/.sandbox
 - If you prefer to run a Ruby script manually from `p/`, move the flag down to that folder so a bare `ruby notifier.rb` inherits the sandbox context too,
 
 ```
-cd /home/code1/my.saas/p
+cd /home/mysaas/code1/my.saas/p
 touch .sandbox
 ```
 
 and then run `notifier.rb` manually.
 
 ```
-export RUBYLIB=/home/code1/my.saas
+export RUBYLIB=/home/mysaas/code1/my.saas
 ruby notifier.rb
 ```
 

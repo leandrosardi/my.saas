@@ -37,6 +37,7 @@ platform for develop your own Software as a Service (SaaS).
 
 - [Installation](./docu/installation.md)
 - [Sandbox Flag](./docu/sandbox-flag.md)
+- [User Data Deletion](./docu/user-data-deletion.md)
 
 _(pending to write documentation)_
 
@@ -57,4 +58,3 @@ _(pending to write documentation)_
 - Distributed Processing
 - White Labeling
 - SSL Auto-Renew
-- [User Deletion](./docu/user-deletion.mduser-deletion.md)
