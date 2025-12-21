@@ -265,13 +265,11 @@ BlackStack::Funnel.add({
 # BREAKPOINTS SUPPORT
 # --------------------------------------------------------------
 # --------------------------------------------------------------
-=begin
 # setting up breakpoints for backend processes.
 # enabling/disabling the flag  will enable/disable the function 
 BlackStack::Debugging::set({
   :allow_breakpoints => BlackStack.sandbox?,
 })
-=end
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
