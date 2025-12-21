@@ -48,3 +48,48 @@ BlackStack::Drainer.add_steps([
 ])
 ```
 
+### 3. Unlink Records
+
+When a table owns foreign keys to other rows, you may need to drop those references before deleting the parent. 
+
+The drainer supports `:action => :unlink` with a `:key` so it can nullify the column. 
+
+For example, the `:trigger` steps below remove references from the `id_source` column first and then delete the orphaned rows:
+
+```ruby
+BlackStack::Drainer.add_steps([
+  { table: :trigger, action: :unlink, key: :id_source },
+  { table: :trigger, action: :unlink, key: :id_action },
+  { table: :trigger, action: :unlink, key: :id_rule },
+  { table: :trigger, action: :unlink, key: :id_link },
+])
+```
+
+### 4. Batch Size
+
+Each delete/unlink loop pulls up to `:batch_size` rows before issuing the destructive SQL, so setting it smaller keeps transactions lightweight during draining and larger values improve throughput once you trust the performance.
+
+```ruby
+BlackStack::Drainer.set(
+	batch_size: 200 # process two hundred rows per iteration for safer draining
+)
+```
+
+### 5. Accounts Auto-Deletion
+
+The `:account_auto_delete` lambda is invoked before the draining loop to flag idle accounts for removal. 
+
+By default, it selects accounts with no logins or transactions within the last `days` window and marks them as `delete_time` candidates so they eventually reach the draining retention threshold.
+
+```ruby
+BlackStack::Drainer.set(
+	account_auto_delete: lambda { |limit:, days:|
+		DB[:account]
+			.where(delete_time: nil)
+			.where(Sequel.lit("last_login < NOW() - INTERVAL '#{days} days'"))
+			.limit(limit)
+			.select_map(:id)
+	}
+)
+```
+
