@@ -44,14 +44,40 @@ while true
 # Draininng configuration
 h = {
     :batch_size => 1000, # number of records to process by batch
+
+    # custom function to choose accounts to delete
+    :account_selector => lambda { 
+        limit = 100
+        days = 30
+        # select accounts with no recent logins, and no active subscriptions, and no paid accounts in the last 30 days
+        DB["
+            select 
+                a.id, a.name, c.email, a.api_key,
+                count(l.id) as recent_logins, 
+                count(m.id) as recent_movments
+            from \"account\" a
+            left join \"user\" c on c.id = a.id_user_to_contact 
+            join \"user\" u on a.id = u.id_account
+            left join \"login\" l on (
+                u.id = l.id_user and
+                l.create_time > current_timestamp - interval '#{days.to_s} day'
+            )
+            left join \"movement\" m on (
+                a.id = m.id_account and
+                m.create_time > current_timestamp - interval '#{days.to_s} day'
+            )
+            where a.delete_time is null
+            and a.api_key <> '#{SU_API_KEY}' -- never delete the admin
+            group by a.id, a.name, c.email, a.api_key
+            having 
+                count(l.id) = 0 and
+                count(m.id) = 0
+            limit #{limit.to_s}
+        "].all.map { |r| r[:id] }
+    },                
+
+    # steps to perform to drain an account
     :steps => [
-=begin
-        # master
-        :lease,
-        :allocation,
-        # update subaccount set id_subscription = null where id_subscription is not null;
-        # update subaccount set allocation_success=null where allocation_success is not null; -- no subscription, no allocation
-=end
         # I2P - master and slave
         { table: :movement, action: :delete },
         { 
@@ -195,24 +221,6 @@ h = {
                     DB[:login].join(:user, id: :id_user).where(Sequel[:user][:id_account] => id_account)
                 },
         },
-
-=begin
-        :allocation,
-
-        # update profile set id_subaccount=null where id_subaccount is not null;
-        :subaccount,
-        # update account set premium=false where premium=true;
-        :requirement,
-        :profile,
-        :subaccount,
-
-        :source_type,
-        :enrichment_type,
-        :outreach_type,
-        :profile,
-        :profile_type,
-        :channel,
-=end
     ],
     # number of days to keep data in the drainer before deleting them permanently
     :days_to_keep => 7,
