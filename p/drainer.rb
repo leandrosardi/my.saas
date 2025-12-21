@@ -87,6 +87,115 @@ h = {
         { table: :lead_tag, action: :unlink, key: :id_rule_instance_delete },
         { table: :company_tag, action: :unlink, key: :id_rule_instance_create },
         { table: :company_tag, action: :unlink, key: :id_rule_instance_delete },
+        { table: :rule_instance, action: :unlink, key: :id_rule_instance },
+        { table: :rule_instance, action: :delete },
+        { table: :rule, action: :delete },
+        { table: :trigger, action: :delete },
+        { table: :job_cost, action: :delete },
+        { table: :job_screenshot, action: :delete },
+        { table: :event_picture, action: :delete },
+        { table: :event_job, action: :delete },
+        { table: :event, action: :delete },
+        { table: :job, action: :delete },
+        { table: :source, action: :delete },
+        { table: :open, action: :delete },
+        { table: :click, action: :delete },
+        { table: :unsubscribe, action: :delete },
+        { table: :link, action: :delete },
+        { table: :outreach_cost, action: :delete },
+        { table: :outreach_seen, action: :delete },
+        { table: :outreach, action: :delete },
+        { table: :enrichment_cost, action: :delete },
+        { table: :enrichment_screenshot, action: :delete },
+        { table: :enrichment_snapshot, action: :delete },
+        { table: :enrichment, action: :delete },
+        { table: :inboxcheck, action: :delete },
+        { table: :connectioncheck, action: :delete },
+        { table: :request, action: :delete },
+        { table: :import_mapping, action: :delete },
+        { table: :import_row, action: :delete },
+        { table: :import, action: :delete },
+        { table: :filter_country, action: :delete },
+        #{ table: :filter_headcount, action: :delete },
+        { table: :filter_industry, action: :delete },
+        { table: :filter_keyword, action: :delete },
+        { table: :filter_location, action: :delete },
+        { table: :filter_naics, action: :delete },
+        { table: :filter_revenue, action: :delete },
+        { table: :filter_sic, action: :delete },
+        { table: :filter_tag, action: :delete },
+        { table: :trigger, action: :delete },
+        { table: :filter, action: :delete },
+        { table: :action, action: :delete },
+        { table: :lead_data, action: :delete },
+        { table: :lead_tag, action: :delete },
+        { table: :lead, action: :delete },
+        { table: :company_data, action: :delete },
+        { table: :company_industry, action: :delete },
+        { table: :company_naics, action: :delete },
+        { table: :company_sic, action: :delete },
+        { table: :company_tag, action: :delete },
+        { table: :company, action: :delete },
+        { table: :industry, action: :delete },
+        { table: :location, action: :delete },
+        #{ table: :naics, action: :delete },
+        #{ table: :sic, action: :delete },
+        { table: :headcount, action: :delete },
+        { table: :revenue, action: :delete },
+        { table: :inboxcheck, action: :delete },
+        { table: :connectioncheck, action: :delete },
+        { table: :profile, action: :delete },
+        { table: :bulk_action, action: :delete },
+        { table: :tag, action: :delete },
+        { table: :source_type, action: :delete },
+        { table: :enrichment_type, action: :delete },
+        { table: :outreach_type, action: :delete },
+        { table: :profile_type, action: :delete },
+        { table: :channel, action: :delete },
+        { table: :data_type, action: :delete },
+        { table: :ai_agent, action: :delete },
+        { 
+            table: :notification, 
+            action: :delete, 
+            :dataset_function=>
+            # custom function to get the dataset to process  
+                lambda { |id_account|
+                    # join tables notification, user and account to get the notifications
+                    DB[:notification].join(:user, id: :id_user).where(Sequel[:user][:id_account] => id_account)
+                },
+        },
+        { table: :api_call, action: :delete },
+        { 
+            table: :preference, 
+            action: :delete, 
+            :dataset_function=>
+            # custom function to get the dataset to process  
+                lambda { |id_account|
+                    # join tables notification, user and account to get the notifications
+                    DB[:preference].join(:user, id: :id_user).where(Sequel[:user][:id_account] => id_account)
+                },
+        },
+        { 
+            table: :user_role, 
+            action: :delete, 
+            :dataset_function=>
+            # custom function to get the dataset to process  
+                lambda { |id_account|
+                    # join tables notification, user and account to get the notifications
+                    DB[:user_role].join(:user, id: :id_user).where(Sequel[:user][:id_account] => id_account)
+                },
+        },
+        { 
+            table: :login, 
+            action: :delete, 
+            :dataset_function=>
+            # custom function to get the dataset to process  
+                lambda { |id_account|
+                    # join tables notification, user and account to get the notifications
+                    DB[:login].join(:user, id: :id_user).where(Sequel[:user][:id_account] => id_account)
+                },
+        },
+
 =begin
         :allocation,
 
@@ -153,7 +262,7 @@ h = {
                         loop do
                             # get a batch of records to delete
                             records = ds.limit(z).all
-                            break if records.length == 0
+                            break if records.length <= 0
                             # delete records
                             l.logs "Remaining #{count.to_s.blue}... "
                             DB[table].where(id: records.map { |r| r[:id] }).delete
@@ -175,7 +284,7 @@ h = {
                         loop do
                             # get a batch of records to unlink
                             records = ds.limit(z).all
-                            break if records.length == 0
+                            break if records.length <= 0
                             # unlink records
                             l.logs "Remaining #{count.to_s.blue}... "
                             DB[table].where(id: records.map { |r| r[:id] }).update(key => nil)
