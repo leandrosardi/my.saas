@@ -308,7 +308,6 @@ h = {
                 l.log "Error draining account #{a.id.to_s.red}: #{e.to_console.red}"
                 a.draining_success = false
                 a.draining_error_description = e.to_console
-binding.pry
             ensure
                 a.save
             end

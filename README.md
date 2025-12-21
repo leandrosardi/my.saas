@@ -36,10 +36,10 @@ platform for develop your own Software as a Service (SaaS).
 ## Documentation
 
 - [Installation](./docu/installation.md)
+- [Sandbox Flag](./docu/sandbox-flag.md)
 
 _(pending to write documentation)_
 
-- Sandbox Flag
 - Extensiblility
 - UI Components
 - Funnel Setup 
@@ -56,3 +56,5 @@ _(pending to write documentation)_
 - Building Extensions
 - Distributed Processing
 - White Labeling
+- SSL Auto-Renew
+- [User Deletion](./docu/user-deletion.mduser-deletion.md)
