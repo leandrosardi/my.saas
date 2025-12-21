@@ -1,6 +1,13 @@
 ![GitHub issues](https://img.shields.io/github/issues/leandrosardi/my.saas) ![GitHub](https://img.shields.io/github/license/leandrosardi/my.saas) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/leandrosardi/my.saas) ![GitHub last commit](https://img.shields.io/github/last-commit/leandrosardi/my.saas)
 
-# My.SaaS
+```
+  /\ "-./  \   /\ \_\ \   /\  ___\   /\  __ \   /\  __ \   /\  ___\
+  \ \ \-./\ \  \ \____ \  \ \___  \  \ \  __ \  \ \  __ \  \ \___  \
+   \ \_\ \ \_\  \/\_____\  \/\_____\  \ \_\ \_\  \ \_\ \_\  \/\_____\
+    \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/
+```
+
+# MySaaS
 
 **TL;DR**
 An open-source Ruby framework that accelerates SaaS development by unifying rapid app creation, automated deployment, and built-in monitoring.
