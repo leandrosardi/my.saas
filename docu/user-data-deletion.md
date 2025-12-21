@@ -2,6 +2,13 @@
 
 BlackStack keeps an account's footprint in the database for a few days after the user requests deletion, then a dedicated drainer job walks across every configured table and removes the remaining rows and foreign keys. The drainer can also delete stale accounts automatically through `:account_auto_delete`, so it keeps storage lean without manual intervention.
 
+- [1. Getting started](#1-getting-started)
+- [2. Custom DataSet Functions](#2-custom-dataset-functions)
+- [3. Unlink Records](#3-unlink-records)
+- [4. Batch Size](#4-batch-size)
+- [5. Accounts Auto-Deletion](#5-accounts-auto-deletion)
+- [6. After Draining Hook](#6-after-draining-hook)
+
 ### 1. Getting started
 
 1. Tune the global retention window in your `MySaaSFile` (or another initializer) so that `:days_to_keep` matches how long you must keep deleted records:

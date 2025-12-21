@@ -36,6 +36,7 @@ platform for develop your own Software as a Service (SaaS).
 ## Documentation
 
 - [Installation](./docu/installation.md)
+- [Configuration](./docu/configuration.md)
 - [Sandbox Flag](./docu/sandbox-flag.md)
 - [User Data Deletion](./docu/user-data-deletion.md)
 
