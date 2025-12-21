@@ -24,7 +24,7 @@ PARSER = BlackStack::SimpleCommandLineParser.new(
     :configuration => [{
         :name=>'delay',
         :mandatory=>false,
-        :default=>10, # 25 seconds 
+        :default=>60*60*1, # 1 hour 
         :description=>'Minimum delay between loops. A minimum of 10 seconds is recommended, in order to don\'t hard the database server. Default is 30 seconds.', 
         :type=>BlackStack::SimpleCommandLineParser::INT,
     }]
@@ -259,15 +259,18 @@ h = {
                             ds = DB[table].where(id_account: a.id)
                         end
                         count = ds.count
+                        id_column = Sequel.qualify(table, :id)
                         loop do
-                            # get a batch of records to delete
-                            records = ds.limit(z).all
-                            break if records.length <= 0
+                            # get a batch of ids to delete
+                            batch = ds.select(id_column).limit(z).all
+                            break if batch.empty?
+                            ids = batch.map { |r| r[id_column] }.compact
+                            break if ids.empty?
                             # delete records
                             l.logs "Remaining #{count.to_s.blue}... "
-                            DB[table].where(id: records.map { |r| r[:id] }).delete
-                            count -= records.length
-                            l.logf "deleted #{records.length.to_s.blue}"
+                            DB[table].where(id: ids).delete
+                            count -= ids.length
+                            l.logf "deleted #{ids.length.to_s.blue}"
                         end
                         l.done
                     elsif action == :unlink
@@ -281,15 +284,18 @@ h = {
                             ds = DB[table].where(Sequel.lit("#{key} IS NOT NULL AND id_account = '#{a.id.to_s}'"))
                         end
                         count = ds.count
+                        id_column = Sequel.qualify(table, :id)
                         loop do
-                            # get a batch of records to unlink
-                            records = ds.limit(z).all
-                            break if records.length <= 0
+                            # get a batch of ids to unlink
+                            batch = ds.select(id_column).limit(z).all
+                            break if batch.empty?
+                            ids = batch.map { |r| r[id_column] }.compact
+                            break if ids.empty?
                             # unlink records
                             l.logs "Remaining #{count.to_s.blue}... "
-                            DB[table].where(id: records.map { |r| r[:id] }).update(key => nil)
-                            count -= records.length
-                            l.logf "unlinked #{records.length.to_s.blue}"
+                            DB[table].where(id: ids).update(key => nil)
+                            count -= ids.length
+                            l.logf "unlinked #{ids.length.to_s.blue}"
                         end
                         l.done
                     end # if action 
