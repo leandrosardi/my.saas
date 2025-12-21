@@ -235,8 +235,9 @@ module BlackStack
             # - call micro-service nodes to delete related data in other systems
             # - delete AWS resources related to the account
             #
-            :after_draining_hook => lambda { |id_account|
-              # override this function if you need to run custom code after draining an account  
+            :after_draining_hook => lambda { |id_account, logger: nil|
+                l = logger || BlackStack::DummyLogger.new(nil)
+                # override this function if you need to run custom code after draining an account  
             }, 
         }
 
@@ -395,9 +396,9 @@ module BlackStack
                             l.done
                         end # if action 
                     }
+                    h[:after_draining_hook].call(a.id, logger: l)
                     a.draining_success = true
                     l.done
-
                 rescue => e
                     l.reset
                     l.log "Error draining account #{a.id.to_s.red}: #{e.to_console.red}"

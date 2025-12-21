@@ -93,3 +93,17 @@ BlackStack::Drainer.set(
 )
 ```
 
+### 6. After Draining Hook
+
+Use `:after_draining_hook` to invoke external cleanup once every account finishes draining. The drainer calls this lambda with the drained account ID so you can notify other micro-services, delete cloud assets (e.g.: like AWS/S3), or fire webhooks.
+
+```ruby
+BlackStack::Drainer.set(
+  after_draining_hook: lambda { |id_account, logger: nil|
+    logger ||= BlackStack::DummyLogger.new(nil)
+    # Delete AWS/S3 files or call propietary micro-services requesting deletion.
+    logger.log("Notified ecosystem that account #{id_account} was drained")
+  }
+)
+```
+
