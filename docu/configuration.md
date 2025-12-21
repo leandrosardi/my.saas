@@ -50,7 +50,11 @@ BlackOps.add_node({
 })
 ```
 
-If you change a node attribute, rerun `saas deploy --node=foo` so the template is regenerated with the fresh values.
+If you change a node attribute, rerun deployment so the template is regenerated with the fresh values.
+
+```
+saas deploy --node=web
+```
 
 ### 3. Secrets Management
 
