@@ -7,7 +7,7 @@
     \/_/  \/_/   \/_____/   \/_____/   \/_/\/_/   \/_/\/_/   \/_____/
 ```
 
-# MySaaS
+# MySaaS - The All-In-One SaaS Framework 
 
 **TL;DR**
 An open-source Ruby framework that accelerates SaaS development by unifying rapid app creation, automated deployment, and built-in monitoring.
