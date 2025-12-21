@@ -33,6 +33,7 @@ platform for develop your own Software as a Service (SaaS).
 _(pending to write documentation)_
 
 - Sandbox Flag
+- Extensiblility
 - UI Components
 - Funnel Setup 
 - User Preferences
