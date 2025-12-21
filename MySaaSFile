@@ -199,6 +199,28 @@ BlackStack::API.set_client(
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
+# DRAINER - AUTO-DELETION OF INACTIVE ACCOUNTS
+# --------------------------------------------------------------
+# --------------------------------------------------------------
+# 
+BlackStack::Drainer.add_steps([
+    # I2P - master and slave
+    { table: :movement, action: :delete },
+    { 
+        table: :invoice_item, 
+        action: :delete, 
+        dataset_function: # custom function to get the dataset to process  
+            lambda { |id_account|
+                DB[:invoice_item].join(:invoice, id: :id_invoice).where(Sequel[:invoice][:id_account] => id_account)
+            },
+    },
+    { table: :invoice, action: :delete },
+    { table: :subscription, action: :delete },
+    #{ table: :buffer_paypal_notification, action: :delete },
+])
+
+# --------------------------------------------------------------
+# --------------------------------------------------------------
 # FUNNEL - USER JOURNEY CONFIGURATION
 # --------------------------------------------------------------
 # --------------------------------------------------------------
