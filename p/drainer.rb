@@ -43,7 +43,7 @@ while true
 
 # Draininng configuration
 h = {
-    :batch_size => 100, # number of records to process by batch
+    :batch_size => 1000, # number of records to process by batch
     :steps => [
 =begin
         # master
@@ -66,8 +66,27 @@ h = {
         { table: :subscription, action: :delete },
         #{ table: :buffer_paypal_notification, action: :delete },
 
-        
-
+        # Slave
+        { table: :timeline, action: :delete },
+        { table: :trigger, action: :unlink, key: :id_source },
+        { table: :trigger, action: :unlink, key: :id_action },
+        { table: :trigger, action: :unlink, key: :id_rule },
+        { table: :trigger, action: :unlink, key: :id_link },
+        { table: :rule, action: :unlink, key: :id_filter },
+        { table: :action, action: :unlink, key: :id_filter },
+        { table: :enrichment, action: :unlink, key: :id_action },
+        { table: :outreach, action: :unlink, key: :id_action },
+        { table: :lead_tag, action: :unlink, key: :id_action_create },
+        { table: :lead_tag, action: :unlink, key: :id_action_delete },
+        { table: :company_tag, action: :unlink, key: :id_action_create },
+        { table: :company_tag, action: :unlink, key: :id_action_delete },
+        { table: :rule_instance, action: :unlink, key: :id_enrichment },
+        { table: :enrichment, action: :unlink, key: :id_rule_instance },
+        { table: :outreach, action: :unlink, key: :id_rule_instance },
+        { table: :lead_tag, action: :unlink, key: :id_rule_instance_create },
+        { table: :lead_tag, action: :unlink, key: :id_rule_instance_delete },
+        { table: :company_tag, action: :unlink, key: :id_rule_instance_create },
+        { table: :company_tag, action: :unlink, key: :id_rule_instance_delete },
 =begin
         :allocation,
 
@@ -94,13 +113,23 @@ h = {
 
         # Load account object 
         l.logs "Load accounts to drain... "
-        accounts = BlackStack::MySaaS::Account.where(
-            Sequel.lit("
-                delete_time IS NOT NULL AND
-                delete_time <= NOW() - INTERVAL '#{h[:days_to_keep]} days' AND
-                draining_success IS NULL
-            ")
-        ).all
+        if BlackStack.sandbox?
+            accounts = BlackStack::MySaaS::Account.where(
+                Sequel.lit("
+                    delete_time IS NOT NULL AND
+                    delete_time <= NOW() - INTERVAL '#{h[:days_to_keep]} days' --AND
+                    --draining_success IS NULL
+                ")
+            ).all
+        else
+            accounts = BlackStack::MySaaS::Account.where(
+                Sequel.lit("
+                    delete_time IS NOT NULL AND
+                    delete_time <= NOW() - INTERVAL '#{h[:days_to_keep]} days' AND
+                    draining_success IS NULL
+                ")
+            ).all
+        end
         l.done(details: accounts.length.to_s.blue)
 
         accounts.each { |a|
@@ -130,6 +159,28 @@ h = {
                             DB[table].where(id: records.map { |r| r[:id] }).delete
                             count -= records.length
                             l.logf "deleted #{records.length.to_s.blue}"
+                        end
+                        l.done
+                    elsif action == :unlink
+                        key = step[:key]
+                        l.logs "Unlinking #{table.to_s.blue}.#{key.to_s.blue}... "
+                        if dataset_function
+                            # use custom function to get the dataset
+                            ds = dataset_function.call(a.id)
+                        else
+                            # use default dataset
+                            ds = DB[table].where(Sequel.lit("#{key} IS NOT NULL AND id_account = '#{a.id.to_s}'"))
+                        end
+                        count = ds.count
+                        loop do
+                            # get a batch of records to unlink
+                            records = ds.limit(z).all
+                            break if records.length == 0
+                            # unlink records
+                            l.logs "Remaining #{count.to_s.blue}... "
+                            DB[table].where(id: records.map { |r| r[:id] }).update(key => nil)
+                            count -= records.length
+                            l.logf "unlinked #{records.length.to_s.blue}"
                         end
                         l.done
                     end # if action 
