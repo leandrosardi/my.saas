@@ -21,6 +21,7 @@ begin
 	account = @login.user.account
 	unless account.delete_time.nil?
 		account.delete_time = nil
+		account.draining_success = nil
 		account.save
 	end
 
