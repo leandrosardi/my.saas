@@ -553,6 +553,9 @@ BlackStack::Notifications.add(
           WHERE a.delete_time IS NOT NULL
           AND a.delete_time > CAST('#{now()}' AS timestamp) - interval '#{BlackStack::Drainer.days_to_keep} day'
         )
+        AND
+        -- notify accounts created after Nov-2025
+        create_time > '2025-11-01'
         AND 
         -- followup every 4 days
         NOT EXISTS (
