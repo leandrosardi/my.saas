@@ -213,7 +213,7 @@ BlackStack::Drainer.set(
           SELECT v.* FROM (
             #{q1}
           ) AS v
-          --WHERE v.create_time > '2026-01-01'
+          WHERE v.create_time > '2026-01-01'
         "
         ds2 = DB[q2].limit(limit)
         ds2.all.map { |r| r[:id] }
