@@ -15,6 +15,15 @@ begin
 	@login = BlackStack::MySaaS::User.login(params)
 	session["login.id"] = @login.id
 	
+	# un-delete account
+	# reference: https://github.com/leandrosardi/my.saas/issues/73
+	#
+	account = @login.user.account
+	unless account.delete_time.nil?
+		account.delete_time = nil
+		account.save
+	end
+
 	# track IP
 	@login.ip = request.ip
 	@login.save
