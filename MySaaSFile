@@ -203,6 +203,23 @@ BlackStack::API.set_client(
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 # 
+=begin
+BlackStack::Drainer.set(
+    # start auto-delete in 2026
+    account_auto_delete: lambda { |limit: 100, days: 30|
+        ds1 = BlackStack::Drainer.default_account_auto_delete_dataset(days: days)
+        q1 = ds1.sql
+        q2 = "
+          SELECT v.* FROM (
+            #{q1}
+          ) AS v
+          --WHERE v.create_time > '2026-01-01'
+        "
+        ds2 = DB[q2].limit(limit)
+        ds2.all.map { |r| r[:id] }
+    },                
+)
+=end
 BlackStack::Drainer.add_steps ([
     # I2P - master and slave
     { table: :movement, action: :delete },
@@ -537,12 +554,13 @@ BlackStack::Notifications.add(
           AND a.delete_time > CAST('#{now()}' AS timestamp) - interval '#{BlackStack::Drainer.days_to_keep} day'
         )
         AND 
+        -- followup every 4 days
         NOT EXISTS (
           SELECT 1
           FROM \"notification\"
           WHERE \"notification\".id_user = \"user\".id
           AND type = 15
-          AND delivery_time > CAST('#{now()}' AS timestamp) - interval '3 day'
+          AND delivery_time > CAST('#{now()}' AS timestamp) - interval '4 day'
         )
       "))
     end,

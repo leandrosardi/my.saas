@@ -10,7 +10,7 @@
         # select accounts with no recent logins, and no active subscriptions, and no paid accounts in the last 30 days
         DB["
             select 
-                a.id, a.name, c.email, a.api_key,
+                a.id, a.name, c.email, a.api_key, a.create_time,
                 count(l.id) as recent_logins, 
                 count(m.id) as recent_movments
             from \"account\" a
@@ -26,7 +26,7 @@
             )
             where a.delete_time is null
             and a.api_key <> '#{SU_API_KEY}' -- never delete the admin
-            group by a.id, a.name, c.email, a.api_key
+            group by a.id, a.name, c.email, a.api_key, a.create_time
             having 
                 count(l.id) = 0 and
                 count(m.id) = 0
@@ -195,31 +195,7 @@ module BlackStack
 
             # custom function to choose accounts to delete
             :account_auto_delete => lambda { |limit: 100, days: 30|
-                # select accounts with no recent logins, and no active subscriptions, and no paid accounts in the last 30 days
-                DB["
-                    select 
-                        a.id, a.name, c.email, a.api_key,
-                        count(l.id) as recent_logins, 
-                        count(m.id) as recent_movments
-                    from \"account\" a
-                    left join \"user\" c on c.id = a.id_user_to_contact 
-                    join \"user\" u on a.id = u.id_account
-                    left join \"login\" l on (
-                        u.id = l.id_user and
-                        l.create_time > current_timestamp - interval '#{days.to_s} day'
-                    )
-                    left join \"movement\" m on (
-                        a.id = m.id_account and
-                        m.create_time > current_timestamp - interval '#{days.to_s} day'
-                    )
-                    where a.delete_time is null
-                    and a.api_key <> '#{SU_API_KEY}' -- never delete the admin
-                    group by a.id, a.name, c.email, a.api_key
-                    having 
-                        count(l.id) = 0 and
-                        count(m.id) = 0
-                    limit #{limit.to_s}
-                "].all.map { |r| r[:id] }
+                BlackStack::Drainer.default_account_auto_delete_dataset(days: days).limit(limit).all.map { |r| r[:id] }  
             },                
 
             # steps to perform to drain an account
@@ -240,6 +216,34 @@ module BlackStack
                 # override this function if you need to run custom code after draining an account  
             }, 
         }
+
+        # default accounts selection
+        def self.default_account_auto_delete_dataset(days: 30)
+            # select accounts with no recent logins, and no active subscriptions, and no paid accounts in the last 30 days
+            DB["
+                select 
+                    a.id, a.name, c.email, a.api_key, a.create_time,
+                    count(l.id) as recent_logins, 
+                    count(m.id) as recent_movments
+                from \"account\" a
+                left join \"user\" c on c.id = a.id_user_to_contact 
+                join \"user\" u on a.id = u.id_account
+                left join \"login\" l on (
+                    u.id = l.id_user and
+                    l.create_time > current_timestamp - interval '#{days.to_s} day'
+                )
+                left join \"movement\" m on (
+                    a.id = m.id_account and
+                    m.create_time > current_timestamp - interval '#{days.to_s} day'
+                )
+                where a.delete_time is null
+                and a.api_key <> '#{SU_API_KEY}' -- never delete the admin
+                group by a.id, a.name, c.email, a.api_key, a.create_time
+                having 
+                    count(l.id) = 0 and
+                    count(m.id) = 0
+            "]
+        end # default_account_auto_delete
 
         # getter
         def self.days_to_keep
@@ -304,22 +308,24 @@ module BlackStack
             h = self.to_h
 
             # load accounts to delete
-            accounts_to_delete = h[:account_auto_delete].call(
-                limit: auto_deletion_batch_size,
-                days: auto_deletion_inactivity_days
-            )
-
-            while accounts_to_delete.size > 0
-                l.logs "Auto-deleting #{accounts_to_delete.size.to_s.blue} accounts... "
-                DB[:account].where(id: accounts_to_delete).update(
-                    delete_time: now
-                )
-                l.logf 'done'.green
+            if h[:account_auto_delete]
                 accounts_to_delete = h[:account_auto_delete].call(
-                    limit: PARSER.value('auto_deletion_batch_size'), 
-                    days: PARSER.value('auto_deletion_inactivity_days')
+                    limit: auto_deletion_batch_size,
+                    days: auto_deletion_inactivity_days
                 )
-            end # while
+
+                while accounts_to_delete.size > 0
+                    l.logs "Auto-deleting #{accounts_to_delete.size.to_s.blue} accounts... "
+                    DB[:account].where(id: accounts_to_delete).update(
+                        delete_time: now
+                    )
+                    l.logf 'done'.green
+                    accounts_to_delete = h[:account_auto_delete].call(
+                        limit: PARSER.value('auto_deletion_batch_size'), 
+                        days: PARSER.value('auto_deletion_inactivity_days')
+                    )
+                end # while
+            end # if h[:account_auto_delete]
 
             # Load account object 
             l.logs "Load accounts to drain... "
