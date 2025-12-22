@@ -93,7 +93,7 @@ module BlackStack
           # sometimes, notifications are not for delivering emails, but for other things (like push a user to the CRM)
           # https://github.com/MassProspecting/docs/issues/632
           #
-          if subject && bodyexx
+          if subject && body
             n = BlackStack::MySaaS::Notification.new(o, h)
             n.deliver
             n.save

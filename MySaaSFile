@@ -516,6 +516,85 @@ BlackStack::Notifications.add(
     end,
   },
 )
+
+BlackStack::Notifications.add(
+  {
+    # descriptive name for this transactional email
+    :name => 'account_deletion_notice',
+    # unique code for this transactional email - this value will be saved in the filed `code` of the `notification` table.
+    :type => 15,
+    # activate this flags if you want to track opens and/or click for these transactional emails/
+    :track_opens => true,
+    :track_clicks => true,
+    # return a Sequel dataset of objects to deliver transactional emails.
+    # Usually, it finds for records with a specific flag activated (e.g.: notification_you_have_been_added).
+    :objects => Proc.new do |*args|
+      BlackStack::MySaaS::User.select(:id, :email, :id_account).where(Sequel.lit("
+        \"id_account\" IN (
+          SELECT a.id 
+          FROM \"account\" a 
+          WHERE a.delete_time IS NOT NULL
+          AND a.delete_time > CAST('#{now()}' AS timestamp) - interval '#{BlackStack::Drainer.days_to_keep} day'
+        )
+        AND 
+        NOT EXISTS (
+          SELECT 1
+          FROM \"notification\"
+          WHERE \"notification\".id_user = \"user\".id
+          AND type = 15
+          AND delivery_time > CAST('#{now()}' AS timestamp) - interval '3 day'
+        )
+      "))
+    end,
+    # event to fire after the notification is delivered
+    # Usually, turns off a specific flag activated (e.g.: notification_you_have_been_added).
+    :after_deliver => Proc.new do |o, *args|
+      #o.notificatied_of_account_deletion=false
+      #o.save
+    end,
+    # return user to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :user => Proc.new do |o, *args|
+      o
+    end, 
+    # return email to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :email_to => Proc.new do |o, *args|
+      o.email
+    end, 
+    # return name to send the notification
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :name_to => Proc.new do |o, *args|
+      o.name || o.email
+    end, 
+    # return the subject of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :subject => Proc.new do |o, *args|
+      n = BlackStack::Drainer.days_to_keep - ((now() - o.account.delete_time).to_f / 86_400).ceil
+      s = "In #{n} Days"
+      n <= 0 ? nil : "Action Required: Your #{APP_NAME} Account Will Be Deleted #{s}"
+    end, 
+    # return the body of the email
+    # - `o`: the object to deliver a notification about. It is an object of the same class than the object returned by the `:objects` procedure.
+    :body => Proc.new do |o, *args|
+      n = BlackStack::Drainer.days_to_keep - ((now() - o.account.delete_time).to_f / 86_400).ceil
+      s = "in #{n} days"
+      n <= 0 ? nil : "
+        <p style='font-size:14px;'>Hi,</p>
+        <p style='font-size:14px;'>We're reaching out to let you know that your #{APP_NAME} account is scheduled for deletion #{s} due to inactivity.</p>
+        <br/>
+        <p style='font-size:14px;'>To keep our platform clean and secure, we automatically remove accounts that haven’t been used for a while.</p>
+        <p style='font-size:14px;font-weight:bold;'>No worries though — this is easy to stop.</p>
+        <br/>
+        <a href='#{CS_HOME_WEBSITE}/login'>Simply log in to your account, and your account will be automatically reactivated.</a>
+        <br/>
+        <p style='font-size:14px;'>No other action is required.</p>
+        <p style='font-size:14px;'>If you don’t log in within this period, your account and associated data will be permanently deleted.</p>
+        <p style='font-size:14px;'>If you have any questions or need help getting back in, feel free to reach out.</p>
+      " 
+    end,
+  },
+)
 =end
 
 # --------------------------------------------------------------
