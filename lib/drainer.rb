@@ -241,6 +241,11 @@ module BlackStack
             }, 
         }
 
+        # getter
+        def self.days_to_keep
+            return @@setup[:days_to_keep]
+        end # getter
+
         # initialize @@setup hash descriptor
         def self.set(
             batch_size: nil,

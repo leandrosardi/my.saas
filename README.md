@@ -46,6 +46,7 @@ _(pending to write documentation)_
 - UI Components
 - Funnel Setup 
 - User Preferences
+- Fake SignUps
 - User Storage
 - Building an API
 - Users Managment 

@@ -83,7 +83,6 @@ module BlackStack
         # if l.nil? then create a dummy logger
         l = logger || BlackStack::DummyLogger.new(nil)
         # get the list of followups
-
         l.logs "Processing followup #{h[:name].blue}... "
         rows = h[:objects].call().all
         rows.each { |o|
@@ -94,7 +93,7 @@ module BlackStack
           # sometimes, notifications are not for delivering emails, but for other things (like push a user to the CRM)
           # https://github.com/MassProspecting/docs/issues/632
           #
-          if subject && body
+          if subject && bodyexx
             n = BlackStack::MySaaS::Notification.new(o, h)
             n.deliver
             n.save
