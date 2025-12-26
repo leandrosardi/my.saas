@@ -117,9 +117,11 @@ module BlackStack
           self.after_deliver = h[:after_deliver] if h.has_key?(:after_deliver)
           self.object = o
           # apply !nid merge-tag
-          self.body = self.body.gsub('!nid', self.id.to_guid)
           # apply body frame
-          self.body = NOTIFICATION_BODY_FRAME.gsub(/#{NOTIFICATION_CONTENT_MERGE_TAG}/, self.body)
+          if self.body
+            self.body = self.body.gsub('!nid', self.id.to_guid) 
+            self.body = NOTIFICATION_BODY_FRAME.gsub(/#{NOTIFICATION_CONTENT_MERGE_TAG}/, self.body)
+          end
           # replace all links by tracking links
           if self.track_clicks
             # number of URL
@@ -146,7 +148,7 @@ module BlackStack
             self.body = fragment.to_html            
           end # if self.track_clicks
           # apply the pixel for open tracking
-          if self.track_opens
+          if self.track_opens && self.body
             self.body = self.body.gsub(/#{Regexp.escape(PIXEL_MERGE_TAG)}/, "<img src='#{self.pixel_url}' height='1px' width='1px' />")
           end
         end
@@ -181,9 +183,13 @@ module BlackStack
           # update the email status
           self.delivery_time = now
           self.save
+        end # def delivery
+
+        # call after_deliver event to mark the notification as done.
+        def done
           # call after_deliver event
           self.after_deliver.call(self.object) if !self.after_deliver.nil?
-        end # def delivery
+        end # def done
 
       end # class Notification
     end # module MySaaS

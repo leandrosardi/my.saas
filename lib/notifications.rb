@@ -93,11 +93,12 @@ module BlackStack
           # sometimes, notifications are not for delivering emails, but for other things (like push a user to the CRM)
           # https://github.com/MassProspecting/docs/issues/632
           #
+          n = BlackStack::MySaaS::Notification.new(o, h)
           if subject && body
-            n = BlackStack::MySaaS::Notification.new(o, h)
-            n.deliver
+            n.deliver 
             n.save
           end
+          n.done # mark the notification as done
           l.done
         }
         l.done(details: "#{rows.size.to_s.blue} users")
