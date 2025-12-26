@@ -39,6 +39,7 @@ platform for develop your own Software as a Service (SaaS).
 - [Configuration](./docu/configuration.md)
 - [Sandbox Flag](./docu/sandbox-flag.md)
 - [Data CleanUp](./docu/data-cleanup.md)
+- Transactional Emails
 
 _(pending to write documentation)_
 
@@ -51,7 +52,6 @@ _(pending to write documentation)_
 - Building an API
 - Users Managment 
 - Visitors Tracking
-- Transactional Emails
 - Invoicing and Payments Processing
 - Affiliates Tracking
 - Content Management System
