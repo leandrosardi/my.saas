@@ -39,7 +39,7 @@ platform for develop your own Software as a Service (SaaS).
 - [Configuration](./docu/configuration.md)
 - [Sandbox Flag](./docu/sandbox-flag.md)
 - [Data CleanUp](./docu/data-cleanup.md)
-- Transactional Emails
+- Transactional Emails _(soon)_
 
 _(pending to write documentation)_
 
