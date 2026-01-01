@@ -87,6 +87,10 @@ module BlackStack
           end
 
           DB.transaction do
+            # obtener el account del sysowner 
+            # para setear `id_user_to_contact` de forma temporal.
+            temp_account = BlackStack::MySaaS::Account.where(:api_key=>SU_API_KEY).first
+
             # crear el cliente
             a = BlackStack::MySaaS::Account.new
             a.id = guid
@@ -95,6 +99,7 @@ module BlackStack
             a.name = companyname
             a.create_time = now
             a.id_timezone = t.id
+            a.id_user_to_contact = temp_account.id_user_to_contact  # se actualizara luego de crear el usuario owner
             # DEPRECATED            
             #a.storage_total_kb = BlackStack::Storage::storage_default_max_allowed_kilobytes
             a.save

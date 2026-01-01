@@ -6,15 +6,23 @@ params_to_session
 redirect_on_success = session['redirect_on_success']
 redirect_on_error = session['redirect_on_error']
 
-# validate recaptcha_response is not an empty string
-recaptcha_response = params[:recaptcha_response]
-if recaptcha_response.to_s.size == 0 && BlackStack::Funnel.recaptcha2_site_key
-	redirect "/signup?err=#{CGI::escape("Recaptcha is Required.")}"
-	#halt
-end
+# force companyname parameter to be the same than username
+params['companyname'] = params['username']
 
 # setup default values
-redirect_on_error = "/signup" if redirect_on_error.to_s.size == 0
+redirect_on_success = BlackStack::Funnel.url_root(@login, 'funnels.main') if redirect_on_error.to_s.size == 0
+
+# setup default values
+redirect_on_error = BlackStack::Funnel.url_landing(@login, 'funnels.main') if redirect_on_error.to_s.size == 0
+
+# validate recaptcha_response is not an empty string
+if !BlackStack.sandbox?
+	recaptcha_response = params[:recaptcha_response]
+	if recaptcha_response.to_s.size == 0 && BlackStack::Funnel.recaptcha2_site_key
+		redirect "#{redirect_on_error}?err=#{CGI::escape("Recaptcha is Required.")}"
+		#halt
+	end
+end # if !BlackStack.sandbox?
 
 # signup new account
 begin
