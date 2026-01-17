@@ -58,7 +58,7 @@ export MYSAAS_ROOT_PASSWORD=<root password of your local computer>
 
 The line below will install 2 nodes, **web server** (`web`) and **database server** (`db`) in your local computer.
 
-In a production environment, `web` and `db` are hosted in different servers because of a security reasons.
+In a production environment, `web` and `db` are hosted in different servers because of security reasons.
 
 ```
 saas install --config=./BlackOpsFile --node=* --root && \
