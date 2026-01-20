@@ -4,6 +4,7 @@ begin
   require 'sinatra'
   require 'mysaas'
   require 'lib/stubs'
+  Thread.report_on_exception = true
   puts 'done'.green
 
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -214,7 +215,7 @@ begin
     set :server_settings, {
       bind: "tcp://0.0.0.0:#{PORT}",
       daemonize: false,
-      threads: "2:5", etc. any Puma settings you want
+      threads: "2:#{MAX_THREADS}"
     }
   end
   set :bind, '0.0.0.0'
@@ -285,26 +286,32 @@ begin
       utm_payload = params.select { |k,_| k.start_with?("utm_") }
       # e.g. {"utm_source"=>"google", "utm_campaign"=>"promo_may"}
 
-      # 6) Insert into affiliate_visit
-      Thread.new { 
-        DB[:visit].insert(
-          id:                   SecureRandom.uuid,
-          create_time:          Time.now,
-          id_account_affiliate:  @affid,
-          id_visitor:           @vid,
-          ip:                   request.ip,
-          user_agent:           request.user_agent,
-          referer:              request.referer || request.env["HTTP_REFERER"],
-          page_url:             request.url,
-          path_info:            request.path_info,
-          query_string:         request.query_string,
-          accept_language:      request.env["HTTP_ACCEPT_LANGUAGE"],
-          utm_params:           Sequel.pg_jsonb(utm_payload),
-          country_code:         country,
-          city_name:            city,
-          device_type:          device_type
-        )
+      # 6) Insert into affiliate_visit using a background thread with copied data to avoid cross-thread Rack access
+      visit_payload = {
+        id:                   SecureRandom.uuid,
+        create_time:          Time.now,
+        id_account_affiliate: @affid,
+        id_visitor:           @vid,
+        ip:                   request.ip,
+        user_agent:           request.user_agent,
+        referer:              request.referer || request.env["HTTP_REFERER"],
+        page_url:             request.url,
+        path_info:            request.path_info,
+        query_string:         request.query_string,
+        accept_language:      request.env["HTTP_ACCEPT_LANGUAGE"],
+        utm_params:           Sequel.pg_jsonb(utm_payload),
+        country_code:         country,
+        city_name:            city,
+        device_type:          device_type
       }
+
+      Thread.new do
+        begin
+          DB[:visit].insert(visit_payload)
+        rescue => e
+          warn "[visit-tracker] #{e.class}: #{e.message}"
+        end
+      end
     end # if request.url !~ /api1\.0/
     # —————————————————————————————————————————————————————————————————————————
     

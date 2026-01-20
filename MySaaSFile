@@ -20,6 +20,9 @@
 # --------------------------------------------------------------
 # --------------------------------------------------------------
 
+# maximum number of threads to use in parallel processes of webserver and postgresql
+MAX_THREADS = 16
+
 # -----------------------------------------------------------------------------
 # IMPORTANT NOTE: This value should have a format like FOO.COM. 
 # => Other formats can generate bugs in the piece of codes where 
@@ -143,7 +146,7 @@ BlackStack::PostgreSQL::set_db_params({
   :db_name => '!!postgres_database',
   :db_user => '!!postgres_username',
   :db_password => '!!postgres_password',
-  :max_connections => 20,
+  :max_connections => MAX_THREADS,
 })
 
 # --------------------------------------------------------------
