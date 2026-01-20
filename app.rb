@@ -244,6 +244,8 @@ begin
   # https://github.com/MassProspecting/docs/issues/477
   # https://github.com/MassProspecting/docs/issues/647
   before do
+    @start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
     if request.url !~ /api1\.0/ && request.url !~ /api2\.0/
       # —————————————————————————————————————————————————————————————————————————
       # affiliate tracking: if ?affid=... is present, stash it in session,
@@ -284,23 +286,25 @@ begin
       # e.g. {"utm_source"=>"google", "utm_campaign"=>"promo_may"}
 
       # 6) Insert into affiliate_visit
-      DB[:visit].insert(
-        id:                   SecureRandom.uuid,
-        create_time:          Time.now,
-        id_account_affiliate:  @affid,
-        id_visitor:           @vid,
-        ip:                   request.ip,
-        user_agent:           request.user_agent,
-        referer:              request.referer || request.env["HTTP_REFERER"],
-        page_url:             request.url,
-        path_info:            request.path_info,
-        query_string:         request.query_string,
-        accept_language:      request.env["HTTP_ACCEPT_LANGUAGE"],
-        utm_params:           Sequel.pg_jsonb(utm_payload),
-        country_code:         country,
-        city_name:            city,
-        device_type:          device_type
-      )
+      Thread.new { 
+        DB[:visit].insert(
+          id:                   SecureRandom.uuid,
+          create_time:          Time.now,
+          id_account_affiliate:  @affid,
+          id_visitor:           @vid,
+          ip:                   request.ip,
+          user_agent:           request.user_agent,
+          referer:              request.referer || request.env["HTTP_REFERER"],
+          page_url:             request.url,
+          path_info:            request.path_info,
+          query_string:         request.query_string,
+          accept_language:      request.env["HTTP_ACCEPT_LANGUAGE"],
+          utm_params:           Sequel.pg_jsonb(utm_payload),
+          country_code:         country,
+          city_name:            city,
+          device_type:          device_type
+        )
+      }
     end # if request.url !~ /api1\.0/
     # —————————————————————————————————————————————————————————————————————————
     
@@ -496,6 +500,9 @@ begin
   end
 
   after do
+    duration = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - @start) * 1000).round
+    puts "[#{request.path}] #{duration}ms" # TODO: Store this in database or log file
+
     # only run if we kicked off an api_track insert
     if defined?(@api_call_row_id) && @api_call_row_id
       # compute duration
