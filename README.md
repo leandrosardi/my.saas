@@ -46,8 +46,9 @@ _(pending to write documentation)_
 - Extensiblility
 - UI Components
 - Funnel Setup 
+- Users and Visitors Tracking - IP Geolocation
+- Fake SignUps Detection
 - User Preferences
-- Fake SignUps
 - User Storage
 - Building an API
 - Users Managment 

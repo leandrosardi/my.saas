@@ -143,6 +143,7 @@ BlackStack::PostgreSQL::set_db_params({
   :db_name => '!!postgres_database',
   :db_user => '!!postgres_username',
   :db_password => '!!postgres_password',
+  :max_connections => 20,
 })
 
 # --------------------------------------------------------------

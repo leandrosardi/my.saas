@@ -165,6 +165,10 @@ begin
   COUNTRIES = BlackStack::MySaaS::Country.order(:name).all
   puts 'done'.green + " (#{COUNTRIES.size.to_s.blue} records)"
 
+  print 'Loading GeoIP database... '
+  GEOIP = MaxMindDB.new('./GeoLite2-City.mmdb')
+  puts 'done'.green
+
   # --------------------------------------------------------------------------------------------------------------------------------------------------------------------
   # Run webserver.
   #
@@ -210,7 +214,7 @@ begin
     set :server_settings, {
       bind: "tcp://0.0.0.0:#{PORT}",
       daemonize: false,
-      # threads: "0:5", etc. any Puma settings you want
+      threads: "2:5", etc. any Puma settings you want
     }
   end
   set :bind, '0.0.0.0'
@@ -256,8 +260,7 @@ begin
 
       begin
         the_ip = request.ip
-        db = MaxMindDB.new('./GeoLite2-City.mmdb')
-        result = db.lookup(the_ip)
+        result = GEOIP.lookup(the_ip)
         if result.found?
           city     = result.city.name               # => e.g. "New York"
           country  = result.country.name            # => e.g. "United States"
