@@ -17,7 +17,9 @@ require 'pampa'
 require 'adspower-client'
 #require 'mass-client'
 #require_relative '../pampa/lib/pampa.rb'
+
 require 'my_s3/client'
+#require_relative '../my.s3-client/lib/my_s3/client.rb'
 
 # DEPRECATED
 #require 'workmesh'

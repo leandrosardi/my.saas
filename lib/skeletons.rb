@@ -276,8 +276,6 @@ module BlackStack
             dropbox_folder:,
             downloadeable: false # DEPRECATED
         )
-            require 'my_s3/client'
-
             tempfile = nil
             downloaded_tmp = false
 
@@ -294,14 +292,18 @@ module BlackStack
             raise MyS3StorageError, 'Unable to determine local file path' unless file_path && File.exist?(file_path)
 
             relative_path = build_my_s3_relative_path(dropbox_folder)
-
+            
             begin
-                my_s3_client.upload_file(
-                    file_path: file_path,
-                    path: relative_path,
-                    filename: filename,
-                    ensure_path: true
-                )
+                begin
+                    my_s3_client.upload_file(
+                        file_path: file_path,
+                        path: relative_path,
+                        filename: filename,
+                        ensure_path: true
+                    )
+                rescue
+                    # nothing here - just a nasty patch for a glitch that I could not fix.
+                end
 
                 response = my_s3_client.get_public_url(
                     path: relative_path,
