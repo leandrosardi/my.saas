@@ -15,7 +15,7 @@ gem 'pampa', '~>2.1.5'
 gem 'my-dropbox-api', '~>1.0.3'
 #gem 'zyte-client', '~>1.0.6'
 gem 'contabo-client', '~>0.1.1'
-gem 'mass-client', '~>1.0.36'
+gem 'mass-client', '~>1.0.39'
 
 # Other gems needed for running mysaas
 gem 'ruby-openai', '~>6.5.0'
