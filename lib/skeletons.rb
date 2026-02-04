@@ -1,4 +1,5 @@
 require 'lib/stubs'
+require 'securerandom'
 require 'models/skeleton/core/account'
 require 'models/skeleton/core/user'
 require 'models/skeleton/core/login'
@@ -291,22 +292,18 @@ module BlackStack
             file_path = tempfile.respond_to?(:path) ? tempfile.path : nil
             raise MyS3StorageError, 'Unable to determine local file path' unless file_path && File.exist?(file_path)
 
-            relative_path = build_my_s3_relative_path(dropbox_folder)
-            
+            #relative_path = build_my_s3_relative_path(dropbox_folder)
+            #filename_to_use = unique_filename(filename)
             begin
-                begin
-                    my_s3_client.upload_file(
-                        file_path: file_path,
-                        path: relative_path,
-                        filename: filename,
-                        ensure_path: true
-                    )
-                rescue
-                    # nothing here - just a nasty patch for a glitch that I could not fix.
-                end
+                my_s3_client.upload_file(
+                    file_path: file_path,
+                    path: dropbox_folder,
+                    filename: filename,
+                    ensure_path: true
+                )
 
                 response = my_s3_client.get_public_url(
-                    path: relative_path,
+                    path: dropbox_folder,
                     filename: filename
                 )
 
@@ -324,16 +321,6 @@ module BlackStack
         end
 
         private
-
-        def build_my_s3_relative_path(dropbox_folder)
-            timestamp = Time.now.utc
-            year = timestamp.year.to_s.rjust(4, '0')
-            month = timestamp.month.to_s.rjust(2, '0')
-
-            prefix = dropbox_folder.to_s.gsub(/^\/+/, '').gsub(/\.+$/, '')
-            relative_path = [prefix, year, month].reject { |segment| segment.nil? || segment.empty? }.join('/')
-            relative_path.gsub(%r{/+}, '/').gsub(%r{^/+}, '')
-        end
 
         def my_s3_client
             @my_s3_client ||= MyS3::Client.new(
