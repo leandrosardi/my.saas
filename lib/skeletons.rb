@@ -276,10 +276,7 @@ module BlackStack
             dropbox_folder:,
             downloadeable: false # DEPRECATED
         )
-            require 'net/http'
-            require 'json'
-            require 'securerandom'
-            require 'uri'
+            require 'my_s3/client'
 
             tempfile = nil
             downloaded_tmp = false
@@ -293,20 +290,28 @@ module BlackStack
                 raise MyS3StorageError, "Unsupported URL schema for #{url}"
             end
 
-            timestamp = Time.now.utc
-            year = timestamp.year.to_s.rjust(4, '0')
-            month = timestamp.month.to_s.rjust(2, '0')
-
-            prefix = dropbox_folder.to_s.gsub(/^\/+/, '').gsub(/\.+$/, '')
-            relative_path = [prefix, year, month].reject { |segment| segment.nil? || segment.empty? }.join('/')
-            relative_path = relative_path.gsub(%r{/+}, '/').gsub(%r{^/+}, '')
-
             file_path = tempfile.respond_to?(:path) ? tempfile.path : nil
             raise MyS3StorageError, 'Unable to determine local file path' unless file_path && File.exist?(file_path)
 
-            ensure_my_s3_path_exists(relative_path)
-            my_s3_upload_file(relative_path: relative_path, filename: filename, local_path: file_path)
-            my_s3_public_url(relative_path: relative_path, filename: filename)
+            relative_path = build_my_s3_relative_path(dropbox_folder)
+
+            begin
+                my_s3_client.upload_file(
+                    file_path: file_path,
+                    path: relative_path,
+                    filename: filename,
+                    ensure_path: true
+                )
+
+                response = my_s3_client.get_public_url(
+                    path: relative_path,
+                    filename: filename
+                )
+
+                response['public_url'] || raise(MyS3StorageError, 'MyS3 did not return a public_url')
+            rescue MyS3::Client::Error => e
+                raise MyS3StorageError, e.message
+            end
         ensure
             if tempfile
                 tempfile.close if tempfile.respond_to?(:close) && !tempfile.closed?
@@ -318,94 +323,21 @@ module BlackStack
 
         private
 
-        def ensure_my_s3_path_exists(relative_path)
-            sanitized = relative_path.to_s.strip.gsub(%r{^/+|/+$}, '')
-            return true if sanitized.empty?
+        def build_my_s3_relative_path(dropbox_folder)
+            timestamp = Time.now.utc
+            year = timestamp.year.to_s.rjust(4, '0')
+            month = timestamp.month.to_s.rjust(2, '0')
 
-            current = ''
-            sanitized.split('/').each do |segment|
-                begin
-                    my_s3_json_post('/create_folder.json', {
-                        path: current,
-                        folder_name: segment
-                    })
-                rescue MyS3StorageError => e
-                    raise unless e.message =~ /folder already exists/i
-                end
-                current = current.empty? ? segment : "#{current}/#{segment}"
-            end
-
-            true
+            prefix = dropbox_folder.to_s.gsub(/^\/+/, '').gsub(/\.+$/, '')
+            relative_path = [prefix, year, month].reject { |segment| segment.nil? || segment.empty? }.join('/')
+            relative_path.gsub(%r{/+}, '/').gsub(%r{^/+}, '')
         end
 
-        def my_s3_upload_file(relative_path:, filename:, local_path:)
-            boundary = "----BlackStackMyS3#{SecureRandom.hex(12)}"
-            uri = my_s3_uri_for('/upload.json')
-            request = Net::HTTP::Post.new(uri)
-            request['X-API-Key'] = my_s3_api_key!
-            request['Content-Type'] = "multipart/form-data; boundary=#{boundary}"
-            request.body = build_my_s3_multipart(boundary, relative_path.to_s, filename.to_s, local_path)
-
-            response = my_s3_http(uri).request(request)
-            json = parse_my_s3_json(response.body)
-            return json if response.is_a?(Net::HTTPSuccess) && json['success']
-
-            message = json.dig('error', 'message') || response.body
-            raise MyS3StorageError, message
-        end
-
-        def my_s3_public_url(relative_path:, filename:)
-            response = my_s3_json_post('/get_public_url.json', {
-                path: relative_path.to_s,
-                filename: filename.to_s
-            })
-
-            response['public_url'] || raise(MyS3StorageError, 'MyS3 did not return a public_url')
-        end
-
-        def build_my_s3_multipart(boundary, relative_path, filename, local_path)
-            body = []
-            body << "--#{boundary}\r\n"
-            body << "Content-Disposition: form-data; name=\"path\"\r\n\r\n"
-            body << "#{relative_path}\r\n"
-            body << "--#{boundary}\r\n"
-            body << "Content-Disposition: form-data; name=\"file\"; filename=\"#{filename}\"\r\n"
-            body << "Content-Type: application/octet-stream\r\n\r\n"
-            body << File.binread(local_path)
-            body << "\r\n--#{boundary}--\r\n"
-            body.join
-        end
-
-        def my_s3_json_post(endpoint, payload)
-            uri = my_s3_uri_for(endpoint)
-            request = Net::HTTP::Post.new(uri)
-            request['Content-Type'] = 'application/json'
-            request['X-API-Key'] = my_s3_api_key!
-            request.body = JSON.generate(payload)
-
-            response = my_s3_http(uri).request(request)
-            json = parse_my_s3_json(response.body)
-            return json if response.is_a?(Net::HTTPSuccess) && json['success']
-
-            message = json.dig('error', 'message') || response.body
-            raise MyS3StorageError, message
-        end
-
-        def parse_my_s3_json(body)
-            return {} if body.nil? || body.strip.empty?
-            JSON.parse(body)
-        rescue JSON::ParserError
-            raise MyS3StorageError, "Invalid JSON response: #{body}"
-        end
-
-        def my_s3_uri_for(endpoint)
-            URI.join(my_s3_base_url!, endpoint.to_s.sub(%r{^/+}, ''))
-        end
-
-        def my_s3_http(uri)
-            http = Net::HTTP.new(uri.host, uri.port)
-            http.use_ssl = uri.scheme == 'https'
-            http
+        def my_s3_client
+            @my_s3_client ||= MyS3::Client.new(
+                base_url: my_s3_base_url!,
+                api_key: my_s3_api_key!
+            )
         end
 
         def my_s3_base_url!
