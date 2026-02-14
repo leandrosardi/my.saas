@@ -227,12 +227,12 @@ CREATE TABLE IF NOT EXISTS public."subscription" (
 	CONSTRAINT fk_id_buffer_paypal_notification_ref_buffer_paypal_notification FOREIGN KEY (id_buffer_paypal_notification) REFERENCES public.buffer_paypal_notification(id)
 );
 
--- reference: https://github.com/MassProspecting/docs/issues/259
+-- reference: https://github.com/connection-sphere/docs/issues/259
 -- 0: PayPal
 -- 1: manual payment
 alter table "subscription" add column if not exists "type" int not null default 0;  
 
--- reference: https://github.com/MassProspecting/docs/issues/260
+-- reference: https://github.com/connection-sphere/docs/issues/260
 -- cancelation requests
 alter table "subscription" add column if not exists "cancellation_requested" boolean not null default false;  
 alter table "subscription" add column if not exists "cancellation_request_time" timestamp null;  

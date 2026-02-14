@@ -242,8 +242,8 @@ begin
     enable :cross_origin
   end
 
-  # https://github.com/MassProspecting/docs/issues/477
-  # https://github.com/MassProspecting/docs/issues/647
+  # https://github.com/connection-sphere/docs/issues/477
+  # https://github.com/connection-sphere/docs/issues/647
   before do
     @start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -1059,7 +1059,7 @@ begin
     erb :"views/api1.0/upsert"
   end
 
-  # https://github.com/MassProspecting/docs/issues/378
+  # https://github.com/connection-sphere/docs/issues/378
   # 
   post "/api1.0/:object/upsert2.json", :api_key => true do
     erb :"views/api1.0/upsert2"

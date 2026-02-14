@@ -34,7 +34,7 @@ APP_NAME = 'My.SaaS'
 APP_SHORT_NAME = 'mysaas'
 
 # Email to contact support
-HELPDESK_EMAIL = 'leandro@massprospecting.com'
+HELPDESK_EMAIL = 'leandro@connectionsphere.com'
 
 # Company Information for invoicing
 COMPANY_NAME = 'My First SaaS'
@@ -194,7 +194,7 @@ BlackStack::Logger.set(
 #
 BlackStack::API.set_client(
     api_key: SU_API_KEY,
-    api_url: BlackStack.sandbox? ? 'http://127.0.0.1' : 'https://' + HOSTNAME + '.massprospecting.com',
+    api_url: BlackStack.sandbox? ? 'http://127.0.0.1' : 'https://' + HOSTNAME + '.connectionsphere.com',
     api_port: BlackStack.sandbox? ? 3000 : 443,
     api_version: '1.0',
     backtrace: BlackStack.sandbox?
@@ -684,7 +684,7 @@ BlackStack::I2P::set({
 BlackStack::I2P::add_services([
     { 
         :code=>'subaccount-growth', 
-        :name=>'MassProspecting Growth', 
+        :name=>'ConnectionSphere Growth', 
         :unit_name=>'subaccount-growth', 
         :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
         # hide this service in the transactions screen or not.
@@ -694,11 +694,11 @@ BlackStack::I2P::add_services([
         # if you assign credits and an amount of money when a user pay for this service
         :mode=>BlackStack::I2P::MODE_CREDITS,
         # formal description to show in the list of products
-        :description=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :description=>'Sub-Accounts to run ConnectionSphere for you or your clients.',
         # persuasive description to show in the sales letter
         :title=>'Sub-Accounts',
         # larger persuasive description to show in the sales letter
-        :summary=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :summary=>'Sub-Accounts to run ConnectionSphere for you or your clients.',
         :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
         :return_path=>CS_HOME_WEBSITE+'/',
         # what is the life time of this product or service?
@@ -706,7 +706,7 @@ BlackStack::I2P::add_services([
         :credits_expiration_units => 3, # credits rollover during 3 months
     }, {
         :code=>'subaccount-hypergrowth', 
-        :name=>'MassProspecting Hypergrowth', 
+        :name=>'ConnectionSphere Hypergrowth', 
         :unit_name=>'subaccount-hypergrowth', 
         :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
         # hide this service in the transactions screen or not.
@@ -716,11 +716,11 @@ BlackStack::I2P::add_services([
         # if you assign credits and an amount of money when a user pay for this service
         :mode=>BlackStack::I2P::MODE_CREDITS,
         # formal description to show in the list of products
-        :description=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :description=>'Sub-Accounts to run ConnectionSphere for you or your clients.',
         # persuasive description to show in the sales letter
         :title=>'Sub-Accounts',
         # larger persuasive description to show in the sales letter
-        :summary=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :summary=>'Sub-Accounts to run ConnectionSphere for you or your clients.',
         :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
         :return_path=>CS_HOME_WEBSITE+'/',
         # what is the life time of this product or service?
@@ -728,7 +728,7 @@ BlackStack::I2P::add_services([
         :credits_expiration_units => 3, # credits rollover during 3 months
     }, {
         :code=>'subaccount-lightspeed', 
-        :name=>'MassProspecting Light Speed', 
+        :name=>'ConnectionSphere Light Speed', 
         :unit_name=>'subaccount-lightspeed', 
         :consumption=>BlackStack::I2P::CONSUMPTION_BY_TIME, 
         # hide this service in the transactions screen or not.
@@ -738,11 +738,11 @@ BlackStack::I2P::add_services([
         # if you assign credits and an amount of money when a user pay for this service
         :mode=>BlackStack::I2P::MODE_CREDITS,
         # formal description to show in the list of products
-        :description=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :description=>'Sub-Accounts to run ConnectionSphere for you or your clients.',
         # persuasive description to show in the sales letter
         :title=>'Sub-Accounts',
         # larger persuasive description to show in the sales letter
-        :summary=>'Sub-Accounts to run MassProspecting for you or your clients.',
+        :summary=>'Sub-Accounts to run ConnectionSphere for you or your clients.',
         :thumbnail=>CS_HOME_WEBSITE+'/images/logo.png',
         :return_path=>CS_HOME_WEBSITE+'/',
         # what is the life time of this product or service?

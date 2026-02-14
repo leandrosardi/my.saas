@@ -100,7 +100,7 @@ module BlackStack
         # return the object
         #
         # Unlike the `upsert` method, the `upsert2` calls the `find2` method instead of `find`, and if the record already existed but deleted `upsert2` will remove the `delete_time`.
-        # Refer to: https://github.com/MassProspecting/docs/issues/378
+        # Refer to: https://github.com/connection-sphere/docs/issues/378
         #
         def upsert2(h={}, in_memory_only: false, upsert_children: true)
             o = self.find2(h)

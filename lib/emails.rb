@@ -20,14 +20,14 @@ module BlackStack
         @@tracking_domain_port = nil
 
         # --- SMTP pooling / transaction counting (MailerSend: 5 mails per connection) ---
-        # Reference: https://github.com/MassProspecting/hub/issues/21
+        # Reference: https://github.com/connection-sphere/hub/issues/21
         @@smtp_session = nil
         @@smtp_sent_in_session = 0
         @@smtp_mutex = Mutex.new
         SMTP_MAX_PER_CONNECTION = 5
 
         # Helper: ensure we have an open session, or open a fresh one
-        # Reference: https://github.com/MassProspecting/hub/issues/21
+        # Reference: https://github.com/connection-sphere/hub/issues/21
         def self.ensure_smtp_session!
             # called inside @@smtp_mutex.synchronize
             if @@smtp_session.nil? || !@@smtp_session.started? || @@smtp_sent_in_session >= SMTP_MAX_PER_CONNECTION
@@ -55,7 +55,7 @@ module BlackStack
         end
 
         # Helper: safely finish and clear session
-        # Reference: https://github.com/MassProspecting/hub/issues/21
+        # Reference: https://github.com/connection-sphere/hub/issues/21
         def self.close_smtp_session!
             begin
                 if @@smtp_session && @@smtp_session.started?

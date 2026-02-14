@@ -136,8 +136,8 @@ BlackOps.set(
         :tracking_domain_tld => 'localhost',
         :tracking_domain_port => 3000,
 
-        :logo_url => 'https://massprospecting.com/mass.account/images/logo.png',
-        :signature_picture_url => 'https://raw.githubusercontent.com/MassProspecting/docs/refs/heads/main/assets/marketing/leandro5-rounded.png',
+        :logo_url => 'https://connectionsphere.com/mass.account/images/logo.png',
+        :signature_picture_url => 'https://raw.githubusercontent.com/connection-sphere/docs/refs/heads/main/assets/marketing/leandro5-rounded.png',
         :signature_name => 'Leandro D. Sardi',
         :signature_position => 'Founder & CEO',
     },

@@ -91,7 +91,7 @@ module BlackStack
           subject = h[:subject].call(o)
           body = h[:body].call(o)
           # sometimes, notifications are not for delivering emails, but for other things (like push a user to the CRM)
-          # https://github.com/MassProspecting/docs/issues/632
+          # https://github.com/connection-sphere/docs/issues/632
           #
           n = BlackStack::MySaaS::Notification.new(o, h)
           if subject && body
