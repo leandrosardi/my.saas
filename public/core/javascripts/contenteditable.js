@@ -170,25 +170,29 @@ function init_search(url=null) {
     if (url == null) {
       url = window.location.href.split('?')[0]
     }
-    // when click on #search, redirect to /leads?q=...
-    // the value of q is in the input #q
-    // encode the value of q
+
+    function redirect_with_filters() {
+      let q = $('#q').val() || '';
+      let params = ['q=' + encodeURIComponent(q)];
+
+      if ($('#status').length > 0) {
+        let status = $('#status').val();
+        if (status === undefined || status === null) {
+          status = '';
+        }
+        params.push('status=' + encodeURIComponent(status));
+      }
+
+      window.location.href = url + '?' + params.join('&');
+    }
+
     $("#search").click(function() {
-      // get the value of the input #q
-      let q = $('#q').val();
-      // reload the same page (I don't know its URL a priori) with the q parameter
-      window.location.href = url + '?q=' + encodeURIComponent(q);
+      redirect_with_filters();
     });
 
-    // when press enter on #q, redirect to /leads?q=...
-    // the value of q is in the input #q
-    // encode the value of q
     $("#q").keypress(function(e) {
       if (e.which == 13) {
-        // get the value of the input #q
-        let q = $('#q').val();
-        // redirect to /leads?q=...
-        window.location.href = url + '?q=' + encodeURIComponent(q);
+        redirect_with_filters();
       }
     });
 };
