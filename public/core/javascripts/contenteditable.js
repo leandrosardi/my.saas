@@ -190,6 +190,12 @@ function init_search(url=null) {
       redirect_with_filters();
     });
 
+    $("#status").keypress(function(e) {
+      if (e.which == 13) {
+        redirect_with_filters();
+      }
+    });
+
     $("#q").keypress(function(e) {
       if (e.which == 13) {
         redirect_with_filters();
