@@ -379,10 +379,24 @@ module BlackStack
 
                             loop do
                                 # get a batch of ids to delete
+                                l.logs "Getting batch of ids to delete... "
                                 batch = ds.select(id_column).limit(z).all
-                                break if batch.empty?
+                                if batch.empty?
+                                    l.logf "no more records to delete".green
+                                    break 
+                                else
+                                    l.done(details: batch.length.to_s.blue)
+                                end
+
+                                l.logs "Extracting ids from batch... "
                                 ids = batch.map { |r| r[id_column] }.compact
-                                break if ids.empty?
+                                if ids.empty?
+                                    l.logs "no more ids to delete".green
+                                    break
+                                else
+                                    l.done(details: ids.length.to_s.blue)
+                                end 
+
                                 # delete records
                                 l.logs "Remaining #{count.to_s.blue}... "
                                 DB[table].where(id: ids).delete
