@@ -360,61 +360,73 @@ module BlackStack
                         action = step[:action]
                         dataset_function = step[:dataset_function]
                         z_step = step[:batch_size] || z
-                        if action == :delete
-                            if dataset_function
-                                l.logs "Deleting #{table.to_s.blue} with custom dataset function... "
-                                # use custom function to get the dataset
-                                ds = dataset_function.call(a.id)
-                            else
-                                l.logs "Deleting #{table.to_s.blue} with default dataset... "
-                                # use default dataset
-                                ds = DB[table].where(id_account: a.id)
+                        disable_constraints = step[:disable_constraints] == true
+                        constraints_disabled = false
+                        begin
+                            if disable_constraints
+                                constraints_disabled = self.disable_table_constraints(table, logger: l)
                             end
-                            l.logs "Counting records to delete... "
-                            count = ds.count
-                            l.done(details: count.to_s.blue)
 
-                            l.logs "Getting id column... "
-                            id_column = Sequel.qualify(table, :id)
-                            l.done(details: id_column.to_s.blue)
-
-                            loop do
-                                # delete a batch directly in SQL (avoid pulling ids into Ruby)
-                                l.logs "Remaining #{count.to_s.blue}... "
-                                subquery = ds.select(id_column).distinct.limit(z_step)
-                                deleted = DB[table].where(id: subquery).delete
-                                if deleted <= 0
-                                    l.logf "no more records to delete".yellow
-                                    break
+                            if action == :delete
+                                if dataset_function
+                                    l.logs "Deleting #{table.to_s.blue} with custom dataset function... "
+                                    # use custom function to get the dataset
+                                    ds = dataset_function.call(a.id)
+                                else
+                                    l.logs "Deleting #{table.to_s.blue} with default dataset... "
+                                    # use default dataset
+                                    ds = DB[table].where(id_account: a.id)
                                 end
-                                count -= deleted
-                                l.logf "deleted #{deleted.to_s.blue}"
+                                l.logs "Counting records to delete... "
+                                count = ds.count
+                                l.done(details: count.to_s.blue)
+
+                                l.logs "Getting id column... "
+                                id_column = Sequel.qualify(table, :id)
+                                l.done(details: id_column.to_s.blue)
+
+                                loop do
+                                    # delete a batch directly in SQL (avoid pulling ids into Ruby)
+                                    l.logs "Remaining #{count.to_s.blue}... "
+                                    subquery = ds.select(id_column).distinct.limit(z_step)
+                                    deleted = DB[table].where(id: subquery).delete
+                                    if deleted <= 0
+                                        l.logf "no more records to delete".yellow
+                                        break
+                                    end
+                                    count -= deleted
+                                    l.logf "deleted #{deleted.to_s.blue}"
+                                end
+                                l.done
+                            elsif action == :unlink
+                                key = step[:key]
+                                l.logs "Unlinking #{table.to_s.blue}.#{key.to_s.blue}... "
+                                if dataset_function
+                                    # use custom function to get the dataset
+                                    ds = dataset_function.call(a.id)
+                                else
+                                    # use default dataset
+                                    ds = DB[table].where(Sequel.lit("#{key} IS NOT NULL AND id_account = '#{a.id.to_s}'"))
+                                end
+                                count = ds.count
+                                id_column = Sequel.qualify(table, :id)
+                                loop do
+                                    # unlink a batch directly in SQL (avoid pulling ids into Ruby)
+                                    l.logs "Remaining #{count.to_s.blue}... "
+                                    subquery = ds.select(id_column).distinct.limit(z_step)
+                                    unlinked = DB[table].where(id: subquery).update(key => nil)
+                                    l.logf "no more records to unlink".yellow if unlinked <= 0
+                                    break if unlinked <= 0
+                                    count -= unlinked
+                                    l.logf "unlinked #{unlinked.to_s.blue}"
+                                end
+                                l.done
+                            end # if action
+                        ensure
+                            if constraints_disabled
+                                self.enable_table_constraints(table, logger: l)
                             end
-                            l.done
-                        elsif action == :unlink
-                            key = step[:key]
-                            l.logs "Unlinking #{table.to_s.blue}.#{key.to_s.blue}... "
-                            if dataset_function
-                                # use custom function to get the dataset
-                                ds = dataset_function.call(a.id)
-                            else
-                                # use default dataset
-                                ds = DB[table].where(Sequel.lit("#{key} IS NOT NULL AND id_account = '#{a.id.to_s}'"))
-                            end
-                            count = ds.count
-                            id_column = Sequel.qualify(table, :id)
-                            loop do
-                                # unlink a batch directly in SQL (avoid pulling ids into Ruby)
-                                l.logs "Remaining #{count.to_s.blue}... "
-                                subquery = ds.select(id_column).distinct.limit(z_step)
-                                unlinked = DB[table].where(id: subquery).update(key => nil)
-                                l.logf "no more records to unlink".yellow if unlinked <= 0
-                                break if unlinked <= 0
-                                count -= unlinked
-                                l.logf "unlinked #{unlinked.to_s.blue}"
-                            end
-                            l.done
-                        end # if action 
+                        end
                     }
                     h[:after_draining_hook].call(a.id, logger: l)
                     a.draining_success = true
@@ -431,6 +443,28 @@ module BlackStack
         end # run
 
         private
+
+        # disable table constraints/triggers for faster bulk operations (PostgreSQL only)
+        def self.disable_table_constraints(table, logger: nil)
+            l = logger || BlackStack::DummyLogger.new(nil)
+            return false unless DB.database_type.to_s == 'postgres'
+            l.logs "Disabling constraints on #{table.to_s.blue}... "
+            table_sql = DB.literal(Sequel.identifier(table))
+            DB.run("ALTER TABLE #{table_sql} DISABLE TRIGGER ALL")
+            l.logf 'done'.green
+            true
+        end # disable_table_constraints
+
+        # re-enable table constraints/triggers after bulk operations (PostgreSQL only)
+        def self.enable_table_constraints(table, logger: nil)
+            l = logger || BlackStack::DummyLogger.new(nil)
+            return false unless DB.database_type.to_s == 'postgres'
+            l.logs "Re-enabling constraints on #{table.to_s.blue}... "
+            table_sql = DB.literal(Sequel.identifier(table))
+            DB.run("ALTER TABLE #{table_sql} ENABLE TRIGGER ALL")
+            l.logf 'done'.green
+            true
+        end # enable_table_constraints
 
         # return array of errors found in the step hash descriptor
         def self.valid_step?(h)
@@ -451,6 +485,10 @@ module BlackStack
             # optional per-step batch size
             if h.key?(:batch_size)
                 ret << 'batch_size must be a positive integer' unless h[:batch_size].is_a?(Integer) && h[:batch_size] > 0
+            end
+            # optional per-step disable constraints flag
+            if h.key?(:disable_constraints)
+                ret << 'disable_constraints must be true or false' unless [true, false].include?(h[:disable_constraints])
             end
             return ret
         end # valid_step?

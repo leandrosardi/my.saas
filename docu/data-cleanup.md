@@ -6,8 +6,9 @@ MySaaS keeps an account's data in the database for a few days after the user req
 - [2. Custom DataSet Functions](#2-custom-dataset-functions)
 - [3. Unlink Records](#3-unlink-records)
 - [4. Batch Size](#4-batch-size)
-- [5. Accounts Auto-Deletion](#5-accounts-auto-deletion)
-- [6. After Draining Hook](#6-after-draining-hook)
+- [5. Disable Constraints Per Step](#5-disable-constraints-per-step)
+- [6. Accounts Auto-Deletion](#6-accounts-auto-deletion)
+- [7. After Draining Hook](#7-after-draining-hook)
 
 ### 1. Getting started
 
@@ -82,7 +83,38 @@ BlackStack::Drainer.set(
 )
 ```
 
-### 5. Accounts Auto-Deletion
+You can also override batch size per step when a specific table is expensive (for example `rule_instance`):
+
+```ruby
+BlackStack::Drainer.add_steps([
+	{ table: :rule_instance, action: :unlink, key: :id_rule_instance, batch_size: 50 },
+	{ table: :rule_instance, action: :delete, batch_size: 50 },
+])
+```
+
+### 5. Disable Constraints Per Step
+
+For very heavy tables with many foreign keys/triggers, the drainer can temporarily disable constraints for one step using `disable_constraints: true`.
+
+```ruby
+BlackStack::Drainer.add_steps([
+	{ table: :rule_instance, action: :unlink, key: :id_rule_instance, batch_size: 50, disable_constraints: true },
+	{ table: :rule_instance, action: :delete, batch_size: 50, disable_constraints: true },
+])
+```
+
+How it works:
+
+- Before the step: `ALTER TABLE ... DISABLE TRIGGER ALL`
+- After the step (always, even on errors): `ALTER TABLE ... ENABLE TRIGGER ALL`
+
+Important:
+
+- PostgreSQL only.
+- Requires elevated DB permissions.
+- While disabled, FK checks/triggers are bypassed for that table. Use only when your unlink/delete order is correct.
+
+### 6. Accounts Auto-Deletion
 
 The `:account_auto_delete` lambda is invoked before the draining loop to flag idle accounts for removal. 
 
@@ -100,7 +132,7 @@ BlackStack::Drainer.set(
 )
 ```
 
-### 6. After Draining Hook
+### 7. After Draining Hook
 
 Use `:after_draining_hook` to invoke external cleanup once every account finishes draining. The drainer calls this lambda with the drained account ID so you can notify other micro-services, delete cloud assets (e.g.: like AWS/S3), or fire webhooks.
 
