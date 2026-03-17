@@ -375,12 +375,13 @@ module BlackStack
 
                             l.logs "Getting id column... "
                             id_column = Sequel.qualify(table, :id)
+                            id_alias = :_drainer_id
                             l.done(details: id_column.to_s.blue)
 
                             loop do
                                 # get a batch of ids to delete
                                 l.logs "Getting batch of ids to delete... "
-                                batch = ds.select(id_column).limit(z).all
+                                batch = ds.select(Sequel.as(id_column, id_alias)).distinct.limit(z).all
                                 if batch.empty?
                                     l.logf "no more records to delete".yellow
                                     break 
@@ -389,7 +390,7 @@ module BlackStack
                                 end
 
                                 l.logs "Extracting ids from batch... "
-                                ids = batch.map { |r| r[id_column] }.compact
+                                ids = batch.map { |r| r[id_alias] || r[:id] || r[id_column] }.compact
                                 if ids.empty?
                                     l.logf "no more ids to delete".yellow
                                     break
@@ -416,11 +417,12 @@ module BlackStack
                             end
                             count = ds.count
                             id_column = Sequel.qualify(table, :id)
+                            id_alias = :_drainer_id
                             loop do
                                 # get a batch of ids to unlink
-                                batch = ds.select(id_column).limit(z).all
+                                batch = ds.select(Sequel.as(id_column, id_alias)).distinct.limit(z).all
                                 break if batch.empty?
-                                ids = batch.map { |r| r[id_column] }.compact
+                                ids = batch.map { |r| r[id_alias] || r[:id] || r[id_column] }.compact
                                 break if ids.empty?
                                 # unlink records
                                 l.logs "Remaining #{count.to_s.blue}... "
