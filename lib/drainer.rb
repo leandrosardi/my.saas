@@ -351,22 +351,32 @@ module BlackStack
             accounts.each { |a|
                 l.logs "Draining account #{a.id.to_s.blue}... "
                 begin
+                    l.logs "Mapping batch size... "
                     z = h[:batch_size]
+                    l.done(details: z.to_s.blue)
+
                     h[:steps].each { |step|
                         table = step[:table]
                         action = step[:action]
                         dataset_function = step[:dataset_function]
                         if action == :delete
-                            l.logs "Deleting #{table.to_s.blue}... "
                             if dataset_function
+                                l.logs "Deleting #{table.to_s.blue} with custom dataset function... "
                                 # use custom function to get the dataset
                                 ds = dataset_function.call(a.id)
                             else
+                                l.logs "Deleting #{table.to_s.blue} with default dataset... "
                                 # use default dataset
                                 ds = DB[table].where(id_account: a.id)
                             end
+                            l.logs "Counting records to delete... "
                             count = ds.count
+                            l.done(details: count.to_s.blue)
+
+                            l.logs "Getting id column... "
                             id_column = Sequel.qualify(table, :id)
+                            l.done(details: id_column.to_s.blue)
+
                             loop do
                                 # get a batch of ids to delete
                                 batch = ds.select(id_column).limit(z).all
