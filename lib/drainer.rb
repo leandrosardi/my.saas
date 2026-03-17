@@ -359,6 +359,7 @@ module BlackStack
                         table = step[:table]
                         action = step[:action]
                         dataset_function = step[:dataset_function]
+                        z_step = step[:batch_size] || z
                         if action == :delete
                             if dataset_function
                                 l.logs "Deleting #{table.to_s.blue} with custom dataset function... "
@@ -375,34 +376,19 @@ module BlackStack
 
                             l.logs "Getting id column... "
                             id_column = Sequel.qualify(table, :id)
-                            id_alias = :_drainer_id
                             l.done(details: id_column.to_s.blue)
 
                             loop do
-                                # get a batch of ids to delete
-                                l.logs "Getting batch of ids to delete... "
-                                batch = ds.select(Sequel.as(id_column, id_alias)).distinct.limit(z).all
-                                if batch.empty?
-                                    l.logf "no more records to delete".yellow
-                                    break 
-                                else
-                                    l.done(details: batch.length.to_s.blue)
-                                end
-
-                                l.logs "Extracting ids from batch... "
-                                ids = batch.map { |r| r[id_alias] || r[:id] || r[id_column] }.compact
-                                if ids.empty?
-                                    l.logf "no more ids to delete".yellow
-                                    break
-                                else
-                                    l.done(details: ids.length.to_s.blue)
-                                end 
-
-                                # delete records
+                                # delete a batch directly in SQL (avoid pulling ids into Ruby)
                                 l.logs "Remaining #{count.to_s.blue}... "
-                                DB[table].where(id: ids).delete
-                                count -= ids.length
-                                l.logf "deleted #{ids.length.to_s.blue}"
+                                subquery = ds.select(id_column).distinct.limit(z_step)
+                                deleted = DB[table].where(id: subquery).delete
+                                if deleted <= 0
+                                    l.logf "no more records to delete".yellow
+                                    break
+                                end
+                                count -= deleted
+                                l.logf "deleted #{deleted.to_s.blue}"
                             end
                             l.done
                         elsif action == :unlink
@@ -417,18 +403,14 @@ module BlackStack
                             end
                             count = ds.count
                             id_column = Sequel.qualify(table, :id)
-                            id_alias = :_drainer_id
                             loop do
-                                # get a batch of ids to unlink
-                                batch = ds.select(Sequel.as(id_column, id_alias)).distinct.limit(z).all
-                                break if batch.empty?
-                                ids = batch.map { |r| r[id_alias] || r[:id] || r[id_column] }.compact
-                                break if ids.empty?
-                                # unlink records
+                                # unlink a batch directly in SQL (avoid pulling ids into Ruby)
                                 l.logs "Remaining #{count.to_s.blue}... "
-                                DB[table].where(id: ids).update(key => nil)
-                                count -= ids.length
-                                l.logf "unlinked #{ids.length.to_s.blue}"
+                                subquery = ds.select(id_column).distinct.limit(z_step)
+                                unlinked = DB[table].where(id: subquery).update(key => nil)
+                                break if unlinked <= 0
+                                count -= unlinked
+                                l.logf "unlinked #{unlinked.to_s.blue}"
                             end
                             l.done
                         end # if action 
@@ -464,6 +446,10 @@ module BlackStack
             # if action is :unlink, key is required
             if h[:action] == :unlink
                 ret << 'key is required when action is :unlink' unless h.key?(:key)
+            end
+            # optional per-step batch size
+            if h.key?(:batch_size)
+                ret << 'batch_size must be a positive integer' unless h[:batch_size].is_a?(Integer) && h[:batch_size] > 0
             end
             return ret
         end # valid_step?
