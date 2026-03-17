@@ -408,6 +408,7 @@ module BlackStack
                                 l.logs "Remaining #{count.to_s.blue}... "
                                 subquery = ds.select(id_column).distinct.limit(z_step)
                                 unlinked = DB[table].where(id: subquery).update(key => nil)
+                                l.logf "no more records to unlink".yellow if unlinked <= 0
                                 break if unlinked <= 0
                                 count -= unlinked
                                 l.logf "unlinked #{unlinked.to_s.blue}"
