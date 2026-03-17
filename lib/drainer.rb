@@ -382,7 +382,7 @@ module BlackStack
                                 l.logs "Getting batch of ids to delete... "
                                 batch = ds.select(id_column).limit(z).all
                                 if batch.empty?
-                                    l.logf "no more records to delete".green
+                                    l.logf "no more records to delete".yellow
                                     break 
                                 else
                                     l.done(details: batch.length.to_s.blue)
@@ -391,7 +391,7 @@ module BlackStack
                                 l.logs "Extracting ids from batch... "
                                 ids = batch.map { |r| r[id_column] }.compact
                                 if ids.empty?
-                                    l.logs "no more ids to delete".green
+                                    l.logf "no more ids to delete".yellow
                                     break
                                 else
                                     l.done(details: ids.length.to_s.blue)
