@@ -34,7 +34,7 @@ BlackStack::Drainer.add_steps([
 ```
 cd /home/mysaas/code1/my.saas/p
 export RUBYLIB=/home/mysaas/code1/my.saas
-ruby notifier.rb
+ruby drainer.rb
 ```
 
 ### 2. Custom DataSet Functions
