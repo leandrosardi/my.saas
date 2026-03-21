@@ -257,6 +257,9 @@ BlackOps.add_node({
     :deploy_ops => [
         'mysaas.deploy.base.op',
 
+        # Create a `.sandbox` file in your local/development environment
+        #'sandbox.op',
+
         # Transactional emails - Setup SMTP parameters in `config.rb`
         #'mysaas.deploy.transactional-emails.op',
 
