@@ -11,7 +11,15 @@ begin
     else # !@account.sysowner?
         desc['id_account'] = @account.id
     end
-    @return_message['result'] = cls.upsert(desc).to_h
+    o = cls.upsert(desc)
+
+    # Large job upserts may include many events and nested descriptors.
+    # Returning the full object tree can become the slowest part of the request.
+    if object.to_s == 'job' && desc.is_a?(Hash) && desc['events'].is_a?(Array) && desc['events'].size > 0 && o.respond_to?(:to_h_compact)
+        @return_message['result'] = o.to_h_compact
+    else
+        @return_message['result'] = o.to_h
+    end
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
