@@ -13,9 +13,9 @@ begin
     end
     o = cls.upsert(desc)
 
-    # Large job upserts may include many events and nested descriptors.
-    # Returning the full object tree can become the slowest part of the request.
-    if object.to_s == 'job' && desc.is_a?(Hash) && desc['events'].is_a?(Array) && desc['events'].size > 0 && o.respond_to?(:to_h_compact)
+    # Job responses can become extremely expensive when serializing nested events.
+    # For SDK flows we only need a lightweight acknowledgement after upsert.
+    if object.to_s == 'job' && o.respond_to?(:to_h_compact)
         @return_message['result'] = o.to_h_compact
     else
         @return_message['result'] = o.to_h

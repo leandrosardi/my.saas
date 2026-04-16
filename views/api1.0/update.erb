@@ -13,7 +13,15 @@ begin
     end
     raise "id not found" if o.nil?
     desc['id_account'] = @account.id
-    @return_message['result'] = o.update(desc).to_h
+    o = o.update(desc)
+
+    # Job responses can become extremely expensive when serializing nested events.
+    # For SDK flows we only need a lightweight acknowledgement after update.
+    if object.to_s == 'job' && o.respond_to?(:to_h_compact)
+        @return_message['result'] = o.to_h_compact
+    else
+        @return_message['result'] = o.to_h
+    end
 rescue Exception => e
     @return_message['status'] = @body['backtrace'] ? e.to_console : e.message
 end
